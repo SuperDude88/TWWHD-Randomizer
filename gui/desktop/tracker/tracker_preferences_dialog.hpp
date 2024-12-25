@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ui_tracker_preferences_dialog.h"
+#include <ui_tracker_preferences_dialog.h>
 
 #include <QDialog>
 

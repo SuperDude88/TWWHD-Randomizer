@@ -5,14 +5,11 @@
 
 #include <QToolTip>
 
-#include <iostream>
-
 TrackerInventoryButton::TrackerInventoryButton() {}
 
-TrackerInventoryButton::TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent, bool onlyText_, MainWindow* mainWindow_) :
+TrackerInventoryButton::TrackerInventoryButton(const std::vector<TrackerInventoryItem>& itemStates_, QWidget* parent, MainWindow* mainWindow_) :
     QLabel("", parent),
     itemStates(itemStates_),
-    onlyText(onlyText_),
     mainWindow(mainWindow_)
 {
     state = 0;
@@ -35,41 +32,18 @@ TrackerInventoryButton::TrackerInventoryButton(const std::vector<TrackerInventor
             }
         }
     }
-
-    // Set text if this is a text only button as well as mouse tracking
-    if (onlyText)
-    {
-        setMouseTracking(true);
-        setText(itemStates[state].trackerLabelStr.c_str());
-    }
 }
 
 void TrackerInventoryButton::updateIcon()
 {
-    // If this is a text button (currently only on the chart list)
-    // then style it's colors properly
-    if (onlyText)
-    {
-        if (itemStates[state].gameItem == GameItem::NOTHING)
-        {
-            setStyleSheet("color: blue;");
-        }
-        else
-        {
-            setStyleSheet("color: black; text-decoration: line-through;");
-        }
-    }
-    else
-    {
-        setStyleSheet("background-image: url(" + getTrackerAssetPath(itemStates[state].filename) + ");"
-                    + "background-repeat: none;"
-                    + "background-position: center;");
-    }
+    setStyleSheet("background-image: url(" + getTrackerAssetPath(itemStates[state].filename) + ");"
+                + "background-repeat: none;"
+                + "background-position: center;");
 }
 
 void TrackerInventoryButton::removeCurrentItem()
 {
-    if (itemStates[state].gameItem != GameItem::NOTHING && !forbiddenStates.contains(state - 1) && !onChartListWhenRandomCharts())
+    if (itemStates[state].gameItem != GameItem::NOTHING && !forbiddenStates.contains(state - 1))
     {
         removeElementFromPool(*trackerInventory, Item(itemStates[state].gameItem, trackerWorld));
     }
@@ -77,7 +51,7 @@ void TrackerInventoryButton::removeCurrentItem()
 
 void TrackerInventoryButton::addCurrentItem()
 {
-    if (itemStates[state].gameItem != GameItem::NOTHING && !forbiddenStates.contains(state - 1) && !onChartListWhenRandomCharts())
+    if (itemStates[state].gameItem != GameItem::NOTHING && !forbiddenStates.contains(state - 1))
     {
         addElementToPool(*trackerInventory, Item(itemStates[state].gameItem, trackerWorld));
     }
@@ -87,7 +61,7 @@ void TrackerInventoryButton::removeAllItems()
 {
     for (size_t i = 0; i < itemStates.size(); i++)
     {
-        if (forbiddenStates.contains(i-1) || onChartListWhenRandomCharts())
+        if (forbiddenStates.contains(i-1))
         {
             continue;
         }
@@ -101,7 +75,7 @@ void TrackerInventoryButton::addAllItems()
 {
     for (size_t i = 0; i < itemStates.size(); i++)
     {
-        if (forbiddenStates.contains(i-1) || onChartListWhenRandomCharts())
+        if (forbiddenStates.contains(i-1))
         {
             continue;
         }
@@ -113,15 +87,11 @@ void TrackerInventoryButton::addAllItems()
 
 void TrackerInventoryButton::clearForbiddenStates() {
     forbiddenStates.clear();
-
-    updateDuplicates();
 }
 
 void TrackerInventoryButton::addForbiddenState(int state)
 {
     forbiddenStates.insert(state);
-
-    updateDuplicates();
 }
 
 int TrackerInventoryButton::getState() {
@@ -130,20 +100,6 @@ int TrackerInventoryButton::getState() {
 
 void TrackerInventoryButton::setState(int state_) {
     this->state = state_;
-
-    updateDuplicates();
-}
-
-bool TrackerInventoryButton::onChartListWhenRandomCharts()
-{
-    return onlyText && mainWindow && mainWindow->trackerSettings.randomize_charts && Item(itemStates[1].gameItem, nullptr).isChartForSunkenTreasure();
-}
-
-void TrackerInventoryButton::showChartTooltip()
-{
-    auto coords = mapToGlobal(QPoint(mouseEnterPosition.x() + 30, height() - 15));
-    auto text = std::string("Chart leads to<br><b>") + roomNumToIslandName(chartToDefaultRoomNum(itemStates[1].gameItem)) + "</b>";
-    QToolTip::showText(coords, text.c_str());
 }
 
 void TrackerInventoryButton::mouseReleaseEvent(QMouseEvent* e)
@@ -178,29 +134,16 @@ void TrackerInventoryButton::mouseReleaseEvent(QMouseEvent* e)
     }
     updateIcon();
     emit inventory_button_pressed();
-    if (!onChartListWhenRandomCharts())
-    {
-        emit mouse_over_item(itemStates[state].trackerLabelStr);
-    }
-
-    updateDuplicates();
+    emit mouse_over_item(itemStates[state].trackerLabelStr);
 }
 
 void TrackerInventoryButton::mouseMoveEvent(QMouseEvent* e)
-{
-    if (onlyText && Item(itemStates[1].gameItem, nullptr).isChartForSunkenTreasure() && mainWindow && !mainWindow->trackerSettings.randomize_charts)
-    {
-        showChartTooltip();
-    }
-}
+{}
 
 void TrackerInventoryButton::enterEvent(QEnterEvent* e)
 {
     mouseEnterPosition = e->position().toPoint();
-    if (!onChartListWhenRandomCharts())
-    {
-        emit mouse_over_item(itemStates[state].trackerLabelStr);
-    }
+    emit mouse_over_item(itemStates[state].trackerLabelStr);
 }
 
 void TrackerInventoryButton::leaveEvent(QEvent* e)
@@ -208,16 +151,75 @@ void TrackerInventoryButton::leaveEvent(QEvent* e)
     emit mouse_over_item("");
 }
 
-void TrackerInventoryButton::updateDuplicates() {
-    // Update duplicate buttons to the proper state. This is
-    // mainly just for charts on the chart list and their
-    // corresponding chart buttons on the map
-    for (auto duplicate : duplicates)
-    {
-        if (!duplicate->onChartListWhenRandomCharts() && !onChartListWhenRandomCharts())
-        {
-            duplicate->state = state;
-            duplicate->updateIcon();
+TrackerChartButton::TrackerChartButton(const uint8_t& island, MainWindow* mainWindow_, QWidget* parent) :
+    QLabel("", parent),
+    islandNum(island),
+    mainWindow(mainWindow_)
+{
+    setCursor(Qt::PointingHandCursor);
+    updateIcon();
+}
+
+void TrackerChartButton::updateIcon()
+{
+    std::string chartState = "treasure_chart_closed.png";
+    if(mainWindow->trackerSettings.randomize_charts) {
+        if(const GameItem chart = mainWindow->chartForIsland(islandNum); chart != GameItem::INVALID) {
+            if(chart == GameItem::TriforceChart1 || chart == GameItem::TriforceChart2 || chart == GameItem::TriforceChart3) {
+                chartState = "triforce_chart_open.png";
+            }
+            else {
+                chartState = "treasure_chart_open.png";
+            }
         }
     }
+    else if(const GameItem chart = roomNumToDefaultChart(islandNum); elementInPool(Item(chart, &mainWindow->trackerWorlds[0]), mainWindow->trackerInventory)) {
+        if(chart == GameItem::TriforceChart1 || chart == GameItem::TriforceChart2 || chart == GameItem::TriforceChart3) {
+            chartState = "triforce_chart_open.png";
+        }
+        else {
+            chartState = "treasure_chart_open.png";
+        }
+    }
+    else {
+        if(chart == GameItem::TriforceChart1 || chart == GameItem::TriforceChart2 || chart == GameItem::TriforceChart3) {
+            chartState = "triforce_chart_closed.png";
+        }
+    }
+
+    setStyleSheet("background-image: url(" + getTrackerAssetPath(chartState) + ");"
+                + "background-repeat: none;"
+                + "background-position: center;");
+}
+
+void TrackerChartButton::mouseReleaseEvent(QMouseEvent* e)
+{
+    if (e->button() == Qt::LeftButton)
+    {
+        emit chart_map_button_pressed(islandNum);
+    }
+}
+
+void TrackerChartButton::mouseMoveEvent(QMouseEvent* e)
+{}
+
+void TrackerChartButton::enterEvent(QEnterEvent* e)
+{
+    mouseEnterPosition = e->position().toPoint();
+    if(mainWindow->trackerSettings.randomize_charts) {
+        if(!mainWindow->isIslandMappedToChart(islandNum)) {
+            emit mouse_over_item("Chart for " + roomNumToIslandName(islandNum));
+        }
+        else {
+            emit mouse_over_item(gameItemToName(mainWindow->chartForIsland(islandNum)) + " -> " + roomNumToIslandName(islandNum));
+        }
+    }
+    else {
+        emit mouse_over_item(gameItemToName(mainWindow->chartForIsland(islandNum)));
+    }
+}
+
+void TrackerChartButton::leaveEvent(QEvent* e)
+{
+    emit mouse_over_item("");
 }

@@ -15,7 +15,7 @@
 #endif
 #define TOOLTIP_MET "dodgerblue"
 
-TrackerLabel::TrackerLabel(TrackerLabelType type_, int pointSize, MainWindow* mainWindow_, Location* location_, Entrance* entrance_) : type(type_), mainWindow(mainWindow_)
+TrackerLabel::TrackerLabel(TrackerLabelType type_, int pointSize, MainWindow* mainWindow_, Location* location_, Entrance* entrance_, GameItem chart_) : type(type_), mainWindow(mainWindow_)
 {
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
     set_font(this, "fira_sans", pointSize);
@@ -38,6 +38,12 @@ TrackerLabel::TrackerLabel(TrackerLabelType type_, int pointSize, MainWindow* ma
         setMinimumHeight(15);
         setMaximumWidth(345);
         set_entrance(entrance_);
+        break;
+
+    case TrackerLabelType::Chart:
+        setMinimumHeight(15);
+        setMaximumWidth(345);
+        set_chart(chart_);
         break;
 
     default:
@@ -107,6 +113,16 @@ QPushButton* TrackerLabel::get_disconnect_button() const
     return disconnectButton;
 }
 
+void TrackerLabel::set_chart(GameItem chart_) {
+    chart = chart_;
+    setText(gameItemToName(chart_).c_str());
+    update_colors();
+}
+
+GameItem TrackerLabel::get_chart() const {
+    return chart;
+}
+
 void TrackerLabel::mark_location()
 {
     location->marked = !location->marked;
@@ -134,6 +150,8 @@ void TrackerLabel::mouseReleaseEvent(QMouseEvent* e)
         break;
     case TrackerLabelType::EntranceDestination:
         emit entrance_destination_label_clicked(entrance);
+    case TrackerLabelType::Chart:
+        emit chart_label_clicked(this, chart);
     default:
         break;
     }
@@ -164,6 +182,10 @@ void TrackerLabel::enterEvent(QEnterEvent* e)
         case TrackerLabelType::EntranceDestination:
             emit mouse_over_entrance_label(entrance);
             break;
+        case TrackerLabelType::Chart:
+            emit mouse_over_chart_label(gameItemToName(chart));
+            showLogicTooltip();
+            break;
         case TrackerLabelType::NONE:
         default:
             break;
@@ -180,6 +202,9 @@ void TrackerLabel::leaveEvent(QEvent* e)
         case TrackerLabelType::EntranceSource:
         case TrackerLabelType::EntranceDestination:
             emit mouse_left_entrance_label();
+            break;
+        case TrackerLabelType::Chart:
+            emit mouse_left_chart_label();
             break;
         case TrackerLabelType::NONE:
         default:
@@ -226,6 +251,28 @@ void TrackerLabel::update_colors()
         break;
     case TrackerLabelType::EntranceDestination:
         setStyleSheet("color: black;");
+        break;
+    case TrackerLabelType::Chart:
+        if (mainWindow->isMappingChart())
+        {
+            if(mainWindow->isChartMapped(chart)) {
+                setStyleSheet("color: black; text-decoration: line-through;");
+            }
+            else if(elementInPool(Item(chart, &mainWindow->trackerWorlds[0]), mainWindow->trackerInventory)) {
+                setStyleSheet("color: blue;");
+            }
+            else {
+                setStyleSheet("color: red;");
+            }
+        }
+        else if(elementInPool(Item(chart, &mainWindow->trackerWorlds[0]), mainWindow->trackerInventory)) {
+            setStyleSheet("color: black; text-decoration: line-through;");
+        }
+        else {
+            setStyleSheet("color: blue;");
+        }
+
+        break;
     default:
         break;
     }
@@ -243,8 +290,8 @@ void TrackerLabel::updateShowLogic(int show, bool started)
 
 void TrackerLabel::showLogicTooltip()
 {
-    // Don't show tooltips if logic isn't being shown
-    if (!showLogic)
+    // Don't show tooltips if logic isn't being shown (unless this is a chart mapped to an island)
+    if ((type != TrackerLabelType::Chart && !showLogic) || (type == TrackerLabelType::Chart && !mainWindow->isChartMapped(chart)))
     {
         return;
     }
@@ -270,7 +317,13 @@ QString TrackerLabel::getTooltipText()
     // First, list the entrance path for this location if there is one
     EntrancePath entrancePath = {{}, EntrancePath::Logicality::None};
     auto& currentArea = mainWindow->currentTrackerArea;
-    if (type == TrackerLabelType::Location)
+    if(type == TrackerLabelType::Chart)
+    {
+        returnStr = "Chart leads to:<ul style=\"margin-top: 0px; margin-bottom: " + marginBottom + "px; margin-left: 8px; margin-right: 0px; -qt-list-indent:0;\"><li>";
+        returnStr += roomNumToIslandName(mainWindow->islandForChart(chart));
+        return returnStr;
+    }
+    else if (type == TrackerLabelType::Location)
     {
         if (mainWindow->entrancePathsByLocation.contains(location) && currentArea != "")
         {
@@ -371,6 +424,16 @@ QString TrackerLabel::getTooltipText()
             str = "<span style=\"color:" + color + "\">Triforce of Courage</span>";
             // Skip over the rest of the shards
             i += 7;
+        }
+        else if(str == "<span>RANDOMIZED CHART PLACEHOLDER</span>") {
+            const std::string island = mainWindow->trackerWorlds[0].getArea(mainWindow->currentTrackerArea)->island;
+            const uint8_t islandNum = islandNameToRoomNum(island);
+            if(!mainWindow->isIslandMappedToChart(islandNum)) {
+                str = std::string("<span style=\"color:" TOOLTIP_UNMET "\">Chart for " + island + "</span>").c_str();
+            }
+            else {
+                str = std::string("<span style=\"color:" TOOLTIP_MET "\">" + gameItemToName(mainWindow->chartForIsland(islandNum)) + " -> " + island + "</span>").c_str();
+            }
         }
         if (str.size() == 0)
         {
@@ -477,6 +540,14 @@ QString TrackerLabel::formatRequirement(const Requirement& req, const bool& isTo
     case RequirementType::HAS_ITEM:
         // Determine if the user has marked this item
         item = std::get<Item>(req.args[0]);
+
+        // Special case for randomized charts: this requires some knowledge of the island this requirement is for
+        // so put a placeholder we can handle higher in the tooltip code (in TrackerLabel::getTooltipText)
+        // There's probably better ways to do this, but this was easy enough for now
+        if(mainWindow->trackerSettings.randomize_charts && item.isChartForSunkenTreasure()) {
+            return "<span>RANDOMIZED CHART PLACEHOLDER</span>";
+        }
+
         color = elementInPool(item, mainWindow->trackerInventory) || elementInPool(item, mainWindow->trackerWorlds[0].getStartingItems()) ? TOOLTIP_MET : TOOLTIP_UNMET;
         return "<span style=\"color:" + color + "\">" + prettyTrackerName(item, 1, mainWindow) + "</span>";
     case RequirementType::COUNT:
