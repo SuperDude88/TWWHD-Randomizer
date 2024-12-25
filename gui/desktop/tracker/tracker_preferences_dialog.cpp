@@ -35,7 +35,7 @@ void TrackerPreferencesDialog::on_show_location_logic_stateChanged(int arg1)
     }
 
     main->trackerPreferences.showLocationLogic = arg1;
-    main->autosave_current_tracker_preferences(); //TODO: error handling?
+    main->autosave_current_tracker_preferences();
 }
 
 

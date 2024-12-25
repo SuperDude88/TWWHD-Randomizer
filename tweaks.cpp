@@ -1141,7 +1141,7 @@ TweakError update_text_replacements(World& world) {
         }
     }
 
-  return TweakError::NONE;
+    return TweakError::NONE;
 }
 
 TweakError shorten_zephos_event() {

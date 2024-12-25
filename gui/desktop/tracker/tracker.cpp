@@ -9,6 +9,7 @@
 
 #include <filesystem>
 
+#include <../ui_mainwindow.h>
 #include <gui/desktop/tracker/tracker_inventory_button.hpp>
 #include <gui/desktop/tracker/tracker_area_widget.hpp>
 #include <gui/desktop/tracker/tracker_preferences_dialog.hpp>
@@ -1204,7 +1205,7 @@ void MainWindow::update_items_color() {
                                                    "background-position: center;"
                                                    "}");
     }
-    autosave_current_tracker_preferences(); // TODO: handle error?
+    autosave_current_tracker_preferences();
 }
 
 void MainWindow::update_locations_color()
@@ -1215,7 +1216,7 @@ void MainWindow::update_locations_color()
     else {
         ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
     }
-    autosave_current_tracker_preferences(); // TODO: handle error?
+    autosave_current_tracker_preferences();
 }
 
 void MainWindow::update_stats_color()
@@ -1226,7 +1227,7 @@ void MainWindow::update_stats_color()
     else {
         ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
     }
-    autosave_current_tracker_preferences(); // TODO: handle error?
+    autosave_current_tracker_preferences();
 }
 
 void MainWindow::on_open_chart_list_button_clicked()
