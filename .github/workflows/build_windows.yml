@@ -88,7 +88,7 @@ jobs:
         shell: cmd # Setting up environment vars only works properly in cmd?
         run: |
           mkdir wwhd_rando_windows
-          cp wwhd_rando.exe wwhd_rando_windows\wwhd_rando.exe
+          cp ${{ inputs.build_type }}\wwhd_rando.exe wwhd_rando_windows\wwhd_rando.exe
           cd ${{ github.workspace }}\build\wwhd_rando_windows && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
 
       - name: Save Artifact
