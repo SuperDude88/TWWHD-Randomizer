@@ -1965,7 +1965,7 @@
       DRC Switch Behind Wooden Barrier Room: count(2, Dragon_Roost_Cavern_Small_Key)
       DRC Hub Room Mouth Area: Can_Fly_With_Deku_Leaf_Indoors or Ice_Arrows or
           (can_access(DRC Hub Room Highest Platform) and Can_Cut_Down_Hanging_DRC_Platform)
-      DRC First Room: count(4, Dragon_Roost_Cavern_Small_Key)
+      DRC First Room: Nothing
 
 - Name: DRC Hub Room Lower Area Near Dim Room
   Dungeon: Dragon Roost Cavern
@@ -2025,7 +2025,7 @@
       Dragon Roost Cavern - Bird's Nest: Nothing
   Exits:
       DRC Dark Room Chest Area: count(4, Dragon_Roost_Cavern_Small_Key)
-      DRC Rat Room: count(4, Dragon_Roost_Cavern_Small_Key)
+      DRC Rat Room: Nothing
       DRC Outside Lower Area: Can_Fly_With_Deku_Leaf_Outdoors
 
 - Name: DRC Dark Room Chest Area
@@ -2034,7 +2034,7 @@
       Dragon Roost Cavern - Dark Room Chest: Nothing
   Exits:
       DRC Dark Room Past Wooden Barrier: Nothing
-      DRC Outside Upper Area: count(4, Dragon_Roost_Cavern_Small_Key)
+      DRC Outside Upper Area: Nothing
 
 - Name: DRC Dark Room Past Wooden Barrier
   Dungeon: Dragon Roost Cavern
@@ -2274,7 +2274,7 @@
   Dungeon: Forbidden Woods
   Exits:
       FW Cable Ride Above Poison Water Room Lower North: Can_Fly_With_Deku_Leaf_Indoors
-      FW Hub Room Third Floor Upper: count(1, Forbidden_Woods_Small_Key)
+      FW Hub Room Third Floor Upper: Nothing
 
 - Name: FW Cable Ride Above Poison Water Room Lower North
   Dungeon: Forbidden Woods
@@ -2677,7 +2677,7 @@
   Dungeon: Earth Temple
   Exits:
       ET Block Push Corridor: Power_Bracelets and Fire_Arrows
-      ET Giant Statue Room: count(3, Earth_Temple_Small_Key)
+      ET Giant Statue Room: Nothing
 
 - Name: ET Block Push Corridor
   Dungeon: Earth Temple
@@ -2782,7 +2782,7 @@
 - Name: ET Poes and Bubbles Room
   Dungeon: Earth Temple
   Exits:
-      ET Basement Hub Room Upper Ledge: count(3, Earth_Temple_Small_Key)
+      ET Basement Hub Room Upper Ledge: Nothing
       ET Third Crypt:
           Skull_Hammer and Power_Bracelets and Can_Play_CM and Can_Aim_Mirror_Shield
           and can_access(ET Poes and Bubbles Room Behind Grating)
@@ -3094,7 +3094,7 @@
           Hookshot and Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and
           Can_Defeat_Blue_Bubbles and Can_Defeat_Stalfos and Can_Defeat_Wizzrobes and Can_Defeat_Morths
   Exits:
-      WT Hub Room Basement Below Fan: count(2, Wind_Temple_Small_Key) # Requires 2 to prevent an entrance rando lockout going backwards -> use 1 key on miniboss
+      WT Hub Room Basement Below Fan: Nothing
       WT Long Narrow Room: Hookshot and Iron_Boots
 
 - Name: WT Long Narrow Room
