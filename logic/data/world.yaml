@@ -1947,15 +1947,15 @@
 - Name: DRC First Room
   Dungeon: Dragon Roost Cavern
   Dungeon Starting Room: Dragon Roost Cavern
-  Events:
-      Can Open DRC Green Pot: Nothing # already open
+  #Events:
+  #    Can Open DRC Green Pot: Nothing # Don't make this area-access dependent, it's always open
   Locations:
       Dragon Roost Cavern - First Room Chest: Nothing
   Exits:
       DRC Hub Room Lower Area: count(1, Dragon_Roost_Cavern_Small_Key)
       Dragon Roost Pond Past Statues: Nothing
-      DRC Hub Room Upper Bridge: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Blue_Pot'"
-      DRC Boss Door Room Before Lava: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
+      DRC Hub Room Upper Bridge: "'Can_Open_DRC_Blue_Pot'"
+      DRC Boss Door Room Before Lava: "'Can_Open_DRC_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
 - Name: DRC Hub Room Lower Area
   Dungeon: Dragon Roost Cavern
@@ -2053,7 +2053,7 @@
       DRC Triple Bokoblin Room: Nothing
       DRC Hub Room Lower Area: Nothing
       DRC Hub Room Mouth Area: Can_Fly_With_Deku_Leaf_Indoors
-      DRC First Room: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      DRC First Room: "'Can_Open_DRC_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
       DRC Boss Door Room Before Lava: "'Can_Open_DRC_Blue_Pot' and 'Can_Open_DRC_Gold_Pot'"
 
 - Name: DRC Triple Bokoblin Room
@@ -2079,7 +2079,7 @@
       DRC Mini Boss Upper Area: Nothing
       DRC Boss Door Room Across Lava: Grappling_Hook or Hookshot or Can_Fly_With_Deku_Leaf_Indoors or Ice_Arrows
       DRC Magtail Lava Geyser Room: Nothing
-      DRC First Room: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Gold_Pot'"
+      DRC First Room: "'Can_Open_DRC_Gold_Pot'"
       DRC Hub Room Upper Bridge: "'Can_Open_DRC_Blue_Pot' and 'Can_Open_DRC_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: DRC Boss Door Room Across Lava
@@ -2160,15 +2160,15 @@
 - Name: FW First Room
   Dungeon: Forbidden Woods
   Dungeon Starting Room: Forbidden Woods
-  Events:
-      Can Open FW Green Pot: Nothing # already open
+  #Events:
+  #    Can Open FW Green Pot: Nothing # Don't make this area-access dependent, it's always open
   Locations:
       Forbidden Woods - First Room Chest: Nothing
   Exits:
       FW Second Room South Platform: Nothing
       FW Entrance Platform: Nothing
-      FW Hub Room Third Floor Upper West Platform: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Blue_Pot'"
-      FW Boss Door Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
+      FW Hub Room Third Floor Upper West Platform: "'Can_Open_FW_Blue_Pot'"
+      FW Boss Door Room: "'Can_Open_FW_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
 - Name: FW Second Room South Platform
   Dungeon: Forbidden Woods
@@ -2250,7 +2250,7 @@
       FW Hub Room Third Floor Lower: Nothing # can jump from warp pot ledge
       FW Hub Room Second Floor: Nothing
       FW Hub Room First Floor: Boomerang
-      FW First Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      FW First Room: "'Can_Open_FW_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
       FW Boss Door Room: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'"
 
 - Name: FW Morth Pit Hallway
@@ -2396,7 +2396,7 @@
   Exits:
       Kalle Demos Battle Arena: Forbidden_Woods_Big_Key
       FW Mothula Hallway: Nothing
-      FW First Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Gold_Pot'"
+      FW First Room: "'Can_Open_FW_Gold_Pot'"
       FW Hub Room Third Floor Upper West Platform: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: Kalle Demos Battle Arena
