@@ -133,16 +133,49 @@
       Forsaken Fortress Barrel Storage Room Lower: Can_Defeat_Phantom_Ganon
       Forsaken Fortress Sleeping Quarters Outside Ledge: Can_Fly_With_Deku_Leaf_Outdoors
       Forsaken Fortress Up Switch Back Stairs: Skull_Hammer
-      Forsaken Fortress Sector: Bombs
-      The Great Sea: Can_Play_BoG and Can_Sail_Away
+      Forsaken Fortress Sector: Bombs or Can_Play_BoG
+
+- Name: Forsaken Fortress Sleeping Quarters Outside Ledge
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Sleeping Quarters: Can_Defeat_Phantom_Ganon
+
+- Name: Forsaken Fortress Sleeping Quarters
+  Dungeon: Forsaken Fortress
+  Locations:
+      Forsaken Fortress - Chest on Bed: Nothing
+  Exits:
+      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
+      Forsaken Fortress Southwest Hallway Upper: Nothing
+      Forsaken Fortress Sleeping Quarters Past Hammer Pegs: Can_Fly_With_Deku_Leaf_Indoors and Skull_Hammer
+      Forsaken Fortress Northwest Hallway Lower: Nothing
+
+- Name: Forsaken Fortress Northwest Hallway Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Sleeping Quarters: Nothing
+      Forsaken Fortress Boat Room Lower: Nothing
+
+- Name: Forsaken Fortress Boat Room Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Northwest Hallway Lower: Nothing
+      Forsaken Fortress Northeast Hallway Lower: Nothing
+
+- Name: Forsaken Fortress Northeast Hallway Lower
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Boat Room Lower: Nothing
+      Forsaken Fortress Barrel Storage Room Lower: Skull_Hammer
 
 - Name: Forsaken Fortress Barrel Storage Room Lower
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress North Hallway Lower: Nothing
-      Forsaken Fortress Northwest Hallway Lower: Skull_Hammer
+      Forsaken Fortress Southeast Hallway Lower: Nothing
+      Forsaken Fortress Northeast Hallway Lower: Skull_Hammer
 
-- Name: Forsaken Fortress North Hallway Lower
+- Name: Forsaken Fortress Southeast Hallway Lower
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Mess Hall Lower: Skull_Hammer
@@ -151,12 +184,12 @@
 - Name: Forsaken Fortress Mess Hall Lower
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress East Hallway Lower: Nothing
-      Forsaken Fortress North Hallway Lower: Skull_Hammer
-      Forsaken Fortress Mess Hall Upper East: Hookshot # can hookshot the chest after climbing the ladder
-      Forsaken Fortress Mess Hall Upper West: Skull_Hammer # can jump to the platform after climbing the ladder, need hammer to get past the pegs
+      Forsaken Fortress South Hallway Lower: Nothing
+      Forsaken Fortress Southeast Hallway Lower: Skull_Hammer
+      Forsaken Fortress Mess Hall Upper South: Hookshot # can hookshot the chest after climbing the ladder
+      Forsaken Fortress Mess Hall Upper North: Skull_Hammer # can jump to the platform after climbing the ladder, need hammer to get past the pegs
 
-- Name: Forsaken Fortress East Hallway Lower
+- Name: Forsaken Fortress South Hallway Lower
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Mess Hall Lower: Nothing
@@ -167,146 +200,164 @@
   Locations:
       Forsaken Fortress - Chest Inside Lower Jail Cell: Nothing
   Exits:
-      Forsaken Fortress East Hallway Lower: Nothing
+      Forsaken Fortress South Hallway Lower: Nothing
 
-- Name: Forsaken Fortress Northwest Hallway Lower
+- Name: Forsaken Fortress Sleeping Quarters Past Hammer Pegs
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress Boat Room Lower: Nothing
-      Forsaken Fortress Barrel Storage Room Lower: Skull_Hammer
-
-- Name: Forsaken Fortress Boat Room Lower
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Southwest Hallway Lower: Nothing
-      Forsaken Fortress Northwest Hallway Lower: Nothing
-
-- Name: Forsaken Fortress Southwest Hallway Lower
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Sleeping Quarters: Nothing
-      Forsaken Fortress Boat Room Lower: Nothing
-
-- Name: Forsaken Fortress Sleeping Quarters
-  Dungeon: Forsaken Fortress
-  Locations:
-      Forsaken Fortress - Chest on Bed: Nothing
-  Exits:
-      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
-      Forsaken Fortress South Hallway Upper: Nothing
-      Forsaken Fortress Sleeping Quarters Past Hammer Pegs: Can_Fly_With_Deku_Leaf_Indoors and Skull_Hammer
-      Forsaken Fortress Southwest Hallway Lower: Nothing
-
-- Name: Forsaken Fortress Sleeping Quarters Outside Ledge
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Sleeping Quarters: Can_Defeat_Phantom_Ganon
-
-- Name: Forsaken Fortress South Hallway Upper
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Up Switch Back Stairs: Nothing
-      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
-      Forsaken Fortress Jail Cell Upper: Nothing
-      Forsaken Fortress Sleeping Quarters: Nothing
-
-- Name: Forsaken Fortress Up Switch Back Stairs
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Jail Cell Upper: Nothing
-      Forsaken Fortress South Hallway Upper: Can_Fly_With_Deku_Leaf_Indoors
-      Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Mess Hall Upper East: Nothing
-      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
-
-- Name: Forsaken Fortress Jail Cell Upper
-  Dungeon: Forsaken Fortress
-  Locations:
-      Forsaken Fortress - Chest Outside Upper Jail Cell: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
-  Exits:
-      Forsaken Fortress Jail Cell Lower: Nothing
-      Forsaken Fortress South Hallway Upper: Nothing
-      Forsaken Fortress Up Switch Back Stairs: Nothing
-
-- Name: Forsaken Fortress Mess Hall Upper East
-  Dungeon: Forsaken Fortress
-  Locations:
-      Forsaken Fortress - Chest Guarded by Bokoblin: Nothing
-  Exits:
-      Forsaken Fortress Mess Hall Upper West: Skull_Hammer and Can_Fly_With_Deku_Leaf_Indoors
-      Forsaken Fortress Mess Hall Lower: Nothing
-      Forsaken Fortress Up Switch Back Stairs: Nothing
-
-- Name: Forsaken Fortress Mess Hall Upper West
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress North Hallway Upper: Nothing
-      Forsaken Fortress Mess Hall Lower: Skull_Hammer
-      Forsaken Fortress Mess Hall Upper East: Skull_Hammer and (Hookshot or Can_Fly_With_Deku_Leaf_Indoors)
-
-- Name: Forsaken Fortress North Hallway Upper
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Barrel Storage Room Upper East: Nothing
-      Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Mess Hall Upper West: Nothing
-
-- Name: Forsaken Fortress Barrel Storage Room Upper East
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Barrel Storage Room Upper West: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
-      Forsaken Fortress Barrel Storage Room Lower: Nothing
-      Forsaken Fortress North Hallway Upper: Nothing
-
-- Name: Forsaken Fortress Barrel Storage Room Upper West
-  Dungeon: Forsaken Fortress
-  Exits:
+      Forsaken Fortress Sleeping Quarters: Skull_Hammer
       Forsaken Fortress Northwest Hallway Upper: Nothing
-      Forsaken Fortress Barrel Storage Room Lower: Nothing
-      Forsaken Fortress Barrel Storage Room Upper East: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
 
 - Name: Forsaken Fortress Northwest Hallway Upper
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Boat Room Upper: Nothing
-      Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Barrel Storage Room Upper West: Nothing
-
-- Name: Forsaken Fortress Boat Room Upper
-  Dungeon: Forsaken Fortress
-  Exits:
-      Forsaken Fortress Southwest Hallway Upper: Nothing
-      Forsaken Fortress Boat Room Lower: Nothing
-      Forsaken Fortress Outside Path to Boss: Nothing
-      Forsaken Fortress Northwest Hallway Upper: Nothing
-
-- Name: Forsaken Fortress Southwest Hallway Upper
   Dungeon: Forsaken Fortress
   Exits:
       Forsaken Fortress Sleeping Quarters Past Hammer Pegs: Nothing
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Boat Room Upper: Nothing
 
-- Name: Forsaken Fortress Sleeping Quarters Past Hammer Pegs
+- Name: Forsaken Fortress Boat Room Upper
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress Sleeping Quarters: Skull_Hammer
+      Forsaken Fortress Northwest Hallway Upper: Nothing
+      Forsaken Fortress Boat Room Lower: Nothing
+      Forsaken Fortress Outside Path to Boss: Nothing
+      Forsaken Fortress Northeast Hallway Upper: Nothing
+
+- Name: Forsaken Fortress Northeast Hallway Upper
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Boat Room Upper: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Barrel Storage Room Upper North: Nothing
+
+- Name: Forsaken Fortress Barrel Storage Room Upper North
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Barrel Storage Room Upper South: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+      Forsaken Fortress Barrel Storage Room Lower: Nothing
+      Forsaken Fortress Northeast Hallway Upper: Nothing
+
+- Name: Forsaken Fortress Barrel Storage Room Upper South
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Southeast Hallway Upper: Nothing
+      Forsaken Fortress Barrel Storage Room Lower: Nothing
+      Forsaken Fortress Barrel Storage Room Upper North: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: Forsaken Fortress Southeast Hallway Upper
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Barrel Storage Room Upper South: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Mess Hall Upper North: Nothing
+      Forsaken Fortress Southeast Searchlight: Nothing
+
+- Name: Forsaken Fortress Southeast Searchlight
+  Dungeon: Forsaken Fortress
+  Events:
+      Can Disable Southeast Searchlight: Can_Defeat_Bokoblins
+  Exits:
+      Forsaken Fortress Southeast Hallway Upper: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+
+- Name: Forsaken Fortress Mess Hall Upper North
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Southeast Hallway Upper: Nothing
+      Forsaken Fortress Mess Hall Lower: Skull_Hammer
+      Forsaken Fortress Mess Hall Upper South: Skull_Hammer and (Hookshot or Can_Fly_With_Deku_Leaf_Indoors)
+
+- Name: Forsaken Fortress Mess Hall Upper South
+  Dungeon: Forsaken Fortress
+  Locations:
+      Forsaken Fortress - Chest Guarded by Bokoblin: Nothing
+  Exits:
+      Forsaken Fortress Mess Hall Upper North: Skull_Hammer and Can_Fly_With_Deku_Leaf_Indoors
+      Forsaken Fortress Mess Hall Lower: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+
+- Name: Forsaken Fortress Up Switch Back Stairs
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Jail Cell Upper East: Nothing
       Forsaken Fortress Southwest Hallway Upper: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Mess Hall Upper South: Nothing
+      Forsaken Fortress Southwest Searchlight: Nothing
+      Forsaken Fortress West Searchlight: Nothing
+      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
+
+- Name: Forsaken Fortress Southwest Searchlight
+  Dungeon: Forsaken Fortress
+  Events:
+      Can Disable Southwest Searchlight: Can_Defeat_Bokoblins
+  Exits:
+      Forsaken Fortress Southwest Hallway Upper: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+
+- Name: Forsaken Fortress West Searchlight
+  Dungeon: Forsaken Fortress
+  Events:
+      Can Disable West Searchlight: Can_Defeat_Bokoblins
+  Exits:
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+      Forsaken Fortress Sleeping Quarters Outside Ledge: Nothing
+
+- Name: Forsaken Fortress Jail Cell Upper East
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Jail Cell Upper West: Can_Fly_With_Deku_Leaf_Indoors or Hookshot
+      Forsaken Fortress Jail Cell Lower: Nothing
+      Forsaken Fortress Southwest Hallway Upper: Nothing
+      Forsaken Fortress Up Switch Back Stairs: Nothing
+
+- Name: Forsaken Fortress Jail Cell Upper West
+  Dungeon: Forsaken Fortress
+  Locations:
+      Forsaken Fortress - Chest Outside Upper Jail Cell: Nothing
+  Exits:
+      Forsaken Fortress Jail Cell Upper East: Can_Fly_With_Deku_Leaf_Indoors
+      Forsaken Fortress Jail Cell Lower: Nothing
+
+- Name: Forsaken Fortress Southwest Hallway Upper
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Jail Cell Upper East: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Sleeping Quarters: Nothing
 
 - Name: Forsaken Fortress Outside Path to Boss
   Dungeon: Forsaken Fortress
   Exits:
-      Forsaken Fortress Before Boss Door: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook or Can_Defeat_Bokoblins
+      Forsaken Fortress Before First Sidle Gap: Skull_Hammer
       Forsaken Fortress Inner Courtyard: Nothing
       Forsaken Fortress Boat Room Upper: Nothing
+
+- Name: Forsaken Fortress Before First Sidle Gap
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Before Second Sidle Gap: Nothing
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Southeast Hallway Upper: Nothing # Can jump down
+      Forsaken Fortress Outside Path to Boss: Skull_Hammer
+
+- Name: Forsaken Fortress Before Second Sidle Gap
+  Dungeon: Forsaken Fortress
+  Exits:
+      Forsaken Fortress Before Boss Door: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook or 'Can_Disable_Southeast_Searchlight'
+      Forsaken Fortress Inner Courtyard: Nothing
+      Forsaken Fortress Southeast Hallway Upper: Nothing # Can jump down
+      Forsaken Fortress Before First Sidle Gap: Nothing
 
 - Name: Forsaken Fortress Before Boss Door
   Dungeon: Forsaken Fortress
   Exits:
       Helmaroc King Battle Arena: Skull_Hammer
       Forsaken Fortress Inner Courtyard: Nothing
-      Forsaken Fortress Outside Path to Boss: Can_Fly_With_Deku_Leaf_Outdoors or Grappling_Hook or Can_Defeat_Bokoblins
+      Forsaken Fortress Before Second Sidle Gap: Nothing # Can jump back across the platforms
 
 - Name: Helmaroc King Battle Arena
   Locations:
@@ -482,6 +533,8 @@
       Can Get Fairies: Nothing
   Locations:
       Mother & Child Isles - Inside Mother Isle: Nothing
+  Exits:
+      The Great Sea: Can_Play_BoG
 
 - Name: Spectacle Island
   Island: Spectacle Island
@@ -508,11 +561,11 @@
 - Name: Windfall Island
   Island: Windfall Island
   Events:
-      Activate Windmill: Can_Play_WR
+      Activate Ferris Wheel: Can_Play_WR
       Can Farm Lots Of Rupees: Nothing
   Locations:
       Windfall Island - Ivan Catch Killer Bees: can_access(Windfall School of Joy)
-      Windfall Island - Transparent Chest: Fire_Arrows and 'Activate_Windmill' and (Hookshot or Can_Fly_With_Deku_Leaf_Outdoors)
+      Windfall Island - Transparent Chest: "'Can_Light_Windfall_Lighthouse' and (Hookshot or Can_Fly_With_Deku_Leaf_Outdoors)"
       Windfall Island - Tott Teach Rhythm: Wind_Waker
       Windfall Island - Zunari Exotic Flower: Rescued_Aryll and Delivery_Bag and can_access(Greatfish Isle)
       Windfall Island - Sam Decorate Island: Rescued_Aryll and Delivery_Bag
@@ -527,13 +580,14 @@
       Windfall Island - Minenco Miss Windfall Picture: Deluxe_Picto_Box
       Windfall Island - Sunken Treasure: Chart_For_Island_11 and Grappling_Hook
   Exits:
+      Windfall Island Riding Ferris Wheel: "'Activate_Ferris_Wheel' and (Can_Fly_With_Deku_Leaf_Outdoors or Heros_Sword or Skull_Hammer)" # can fly from the area with the ferris wheel switch
       Windfall Jail: Nothing
       Windfall School of Joy: Nothing
       Windfall Lenzo's House from Bottom Entry: Nothing
-      Windfall Lenzo's House Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors or ('Activate_Windmill' and (Heros_Sword or Skull_Hammer))
+      Windfall Lenzo's House Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors
       Windfall Cafe Bar: Nothing
       Windfall Battle Squid Interior: Nothing
-      Windfall Battle Squid Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors or ('Activate_Windmill' and (Heros_Sword or Skull_Hammer))
+      Windfall Battle Squid Upper Ledge: Can_Fly_With_Deku_Leaf_Outdoors # can fly from the area with the ferris wheel switch
       Windfall House of Wealth Lower: Nothing
       Windfall House of Wealth Upper: Nothing
       Windfall Potion Shop: Nothing
@@ -543,6 +597,14 @@
       Windfall Beedle Shop: Nothing
       Mailbox Checks: Nothing
       The Great Sea: Nothing
+
+- Name: Windfall Island Riding Ferris Wheel # specifically the moving wheel
+  Events:
+      Can Light Windfall Lighthouse: Fire_Arrows and Can_Play_SoP
+  Exits:
+      Windfall Island: Nothing
+      Windfall Lenzo's House Upper Ledge: Nothing
+      Windfall Battle Squid Upper Ledge: Nothing
 
 - Name: Windfall Jail
   Events:
@@ -611,11 +673,11 @@
 - Name: Windfall Battle Squid Upper Ledge
   Island: Windfall Island
   Locations:
-      Windfall Island - Kreeb Light the Lighthouse: Fire_Arrows and 'Activate_Windmill'
+      Windfall Island - Kreeb Light the Lighthouse: "'Can_Light_Windfall_Lighthouse'"
   Exits:
       Windfall Island: Nothing
       Windfall Battle Squid Interior: Nothing
-      Windfall Lenzo's House Upper Ledge: "'Activate_Windmill'"
+      Windfall Island Riding Ferris Wheel: "'Activate_Ferris_Wheel'"
 
 - Name: Windfall House of Wealth Lower
   Locations:
@@ -1571,7 +1633,7 @@
   Island: Horseshoe Island
   Locations:
       Horseshoe Island - Play Golf: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
-      Horseshoe Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
+      Horseshoe Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus # Can also use the nut (for obscure tricks later)
       Horseshoe Island - Old Man Ho Ho: Nothing
   Exits:
       Horseshoe Island: Nothing
@@ -1885,15 +1947,15 @@
 - Name: DRC First Room
   Dungeon: Dragon Roost Cavern
   Dungeon Starting Room: Dragon Roost Cavern
-  Events:
-      Can Open DRC Green Pot: Nothing # already open
+  #Events:
+  #    Can Open DRC Green Pot: Nothing # Don't make this area-access dependent, it's always open
   Locations:
       Dragon Roost Cavern - First Room Chest: Nothing
   Exits:
       DRC Hub Room Lower Area: count(1, Dragon_Roost_Cavern_Small_Key)
       Dragon Roost Pond Past Statues: Nothing
-      DRC Hub Room Upper Bridge: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Blue_Pot'"
-      DRC Boss Door Room Before Lava: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
+      DRC Hub Room Upper Bridge: "'Can_Open_DRC_Blue_Pot'"
+      DRC Boss Door Room Before Lava: "'Can_Open_DRC_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
 - Name: DRC Hub Room Lower Area
   Dungeon: Dragon Roost Cavern
@@ -1972,7 +2034,7 @@
       Dragon Roost Cavern - Dark Room Chest: Nothing
   Exits:
       DRC Dark Room Past Wooden Barrier: Nothing
-      DRC Outside Upper Area: count(1, Dragon_Roost_Cavern_Small_Key)
+      DRC Outside Upper Area: Nothing
 
 - Name: DRC Dark Room Past Wooden Barrier
   Dungeon: Dragon Roost Cavern
@@ -1991,7 +2053,7 @@
       DRC Triple Bokoblin Room: Nothing
       DRC Hub Room Lower Area: Nothing
       DRC Hub Room Mouth Area: Can_Fly_With_Deku_Leaf_Indoors
-      DRC First Room: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      DRC First Room: "'Can_Open_DRC_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
       DRC Boss Door Room Before Lava: "'Can_Open_DRC_Blue_Pot' and 'Can_Open_DRC_Gold_Pot'"
 
 - Name: DRC Triple Bokoblin Room
@@ -2017,7 +2079,7 @@
       DRC Mini Boss Upper Area: Nothing
       DRC Boss Door Room Across Lava: Grappling_Hook or Hookshot or Can_Fly_With_Deku_Leaf_Indoors or Ice_Arrows
       DRC Magtail Lava Geyser Room: Nothing
-      DRC First Room: "'Can_Open_DRC_Green_Pot' and 'Can_Open_DRC_Gold_Pot'"
+      DRC First Room: "'Can_Open_DRC_Gold_Pot'"
       DRC Hub Room Upper Bridge: "'Can_Open_DRC_Blue_Pot' and 'Can_Open_DRC_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: DRC Boss Door Room Across Lava
@@ -2098,15 +2160,15 @@
 - Name: FW First Room
   Dungeon: Forbidden Woods
   Dungeon Starting Room: Forbidden Woods
-  Events:
-      Can Open FW Green Pot: Nothing # already open
+  #Events:
+  #    Can Open FW Green Pot: Nothing # Don't make this area-access dependent, it's always open
   Locations:
       Forbidden Woods - First Room Chest: Nothing
   Exits:
       FW Second Room South Platform: Nothing
       FW Entrance Platform: Nothing
-      FW Hub Room Upper Area: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Blue_Pot'"
-      FW Boss Door Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
+      FW Hub Room Third Floor Upper West Platform: "'Can_Open_FW_Blue_Pot'"
+      FW Boss Door Room: "'Can_Open_FW_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
 - Name: FW Second Room South Platform
   Dungeon: Forbidden Woods
@@ -2134,14 +2196,14 @@
 - Name: FW Short Cable Ride Room South Side
   Dungeon: Forbidden Woods
   Exits:
-      FW Short Cable Ride Room North Side: Can_Fly_With_Deku_Leaf_Indoors
-      FW Second Room North Platform: Can_Fly_With_Deku_Leaf_Indoors
+      FW Short Cable Ride Room North Side: Can_Fan_With_Deku_Leaf
+      FW Second Room North Platform: Nothing
 
 - Name: FW Short Cable Ride Room North Side
   Dungeon: Forbidden Woods
   Exits:
       FW Hole in Tree Room Near Lower Door: Nothing
-      FW Short Cable Ride Room South Side: Can_Fly_With_Deku_Leaf_Indoors
+      FW Short Cable Ride Room South Side: Can_Fan_With_Deku_Leaf
 
 - Name: FW Hole in Tree Room Near Lower Door
   Dungeon: Forbidden Woods
@@ -2152,7 +2214,7 @@
 - Name: FW Hole in Tree Room Near Upper Door
   Dungeon: Forbidden Woods
   Locations:
-      Forbidden Woods - Hole In Tree Chest: Can_Fly_With_Deku_Leaf_Indoors
+      Forbidden Woods - Hole In Tree Chest: Can_Fly_With_Deku_Leaf_Indoors # you can drop down and do this with no extra items but it's obscure
   Exits:
       FW Vine Circle Hallway: Can_Defeat_Boko_Babas
       FW Hole in Tree Room Near Lower Door: Nothing
@@ -2161,25 +2223,34 @@
   Dungeon: Forbidden Woods
   Exits:
       FW Hole in Tree Room Near Upper Door: Nothing
-      FW Hub Room Middle Area: Can_Fly_With_Deku_Leaf_Indoors or Can_Defeat_Door_Flowers
+      FW Hub Room Third Floor Lower: Can_Fan_With_Deku_Leaf or Can_Defeat_Door_Flowers
 
-- Name: FW Hub Room Middle Area
+- Name: FW Hub Room Third Floor Lower
   Dungeon: Forbidden Woods
   Exits:
-      FW Hub Room Upper Area: Grappling_Hook
-      FW Mothula Hallway: Can_Defeat_Door_Flowers or can_access(FW Hub Room Upper Area)
+      FW Hub Room Third Floor Upper: Grappling_Hook
+      FW Hub Room Second Floor: Nothing
       FW Vine Circle Hallway: Nothing
 
-- Name: FW Hub Room Upper Area
+- Name: FW Hub Room Third Floor Upper
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Hub Room Third Floor Upper West Platform: Can_Fly_With_Deku_Leaf_Indoors # if you cut down the blue flower before traveling here you need leaf
+      FW Cable Ride Above Poison Water Room Lower South: count(1, Forbidden_Woods_Small_Key)
+      FW Hub Room Third Floor Lower: Grappling_Hook # can not jump to here if you cut down the blue flower first
+      FW Hub Room Second Floor: Nothing
+
+- Name: FW Hub Room Third Floor Upper West Platform # by Morth Pit Hallway
   Dungeon: Forbidden Woods
   Events:
       Can Open FW Blue Pot: Can_Destroy_Leaf_Piles
   Exits:
-      FW Morth Pit Hallway: Nothing
-      FW Cable Ride Above Poison Water Room Lower West: count(1, Forbidden_Woods_Small_Key)
-      FW Hub Room Lower Area: Boomerang
-      FW Hub Room Middle Area: Nothing
-      FW First Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
+      FW Morth Pit Hallway: Can_Defeat_Door_Flowers # can't bring the nut over if the flower is cut down
+      FW Hub Room Third Floor Upper: Can_Fly_With_Deku_Leaf_Indoors # if you cut down the blue flower you need leaf
+      FW Hub Room Third Floor Lower: Nothing # can jump from warp pot ledge
+      FW Hub Room Second Floor: Nothing
+      FW Hub Room First Floor: Boomerang
+      FW First Room: "'Can_Open_FW_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
       FW Boss Door Room: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'"
 
 - Name: FW Morth Pit Hallway
@@ -2188,7 +2259,7 @@
       Forbidden Woods - Morth Pit Chest: Nothing
   Exits:
       FW Vine Maze Room: Nothing
-      FW Hub Room Middle Area: Nothing
+      FW Hub Room Third Floor Upper West Platform: Nothing
 
 - Name: FW Vine Maze Room
   Dungeon: Forbidden Woods
@@ -2199,17 +2270,17 @@
   Exits:
       FW Morth Pit Hallway: Nothing
 
-- Name: FW Cable Ride Above Poison Water Room Lower West
+- Name: FW Cable Ride Above Poison Water Room Lower South
   Dungeon: Forbidden Woods
   Exits:
-      FW Cable Ride Above Poison Water Room Lower East: Can_Fly_With_Deku_Leaf_Indoors
-      FW Hub Room Upper Area: count(1, Forbidden_Woods_Small_Key)
+      FW Cable Ride Above Poison Water Room Lower North: Can_Fly_With_Deku_Leaf_Indoors
+      FW Hub Room Third Floor Upper: Nothing
 
-- Name: FW Cable Ride Above Poison Water Room Lower East
+- Name: FW Cable Ride Above Poison Water Room Lower North
   Dungeon: Forbidden Woods
   Exits:
       FW Tall Room Before Mini Boss: Nothing
-      FW Cable Ride Above Poison Water Room Lower West: Nothing
+      FW Cable Ride Above Poison Water Room Lower South: Nothing
 
 - Name: FW Tall Room Before Mini Boss
   Dungeon: Forbidden Woods
@@ -2217,8 +2288,8 @@
       Forbidden Woods - Tall Room Chest: Grappling_Hook
   Exits:
       FW Mini Boss Room: Nothing
-      FW Cable Ride Above Poison Water Room Upper East: Can_Defeat_Door_Flowers
-      FW Cable Ride Above Poison Water Room Lower East: Nothing
+      FW Cable Ride Above Poison Water Room Upper North: Can_Defeat_Door_Flowers
+      FW Cable Ride Above Poison Water Room Lower North: Nothing
 
 - Name: FW Mini Boss Room
   Locations:
@@ -2226,47 +2297,54 @@
   Exits:
       FW Tall Room Before Mini Boss: Boomerang
 
-- Name: FW Cable Ride Above Poison Water Room Upper East
+- Name: FW Cable Ride Above Poison Water Room Upper North
   Dungeon: Forbidden Woods
   Exits:
-      FW Cable Ride Above Poison Water Room Upper West: Can_Destroy_Hanging_Seeds and (Hookshot or Can_Fly_With_Deku_Leaf_Indoors)
-      FW Cable Ride Above Poison Water Room Lower East: Nothing
+      FW Cable Ride Above Poison Water Room Upper South: Can_Destroy_Hanging_Seeds and (Hookshot or Can_Fly_With_Deku_Leaf_Indoors)
+      FW Cable Ride Above Poison Water Room Lower North: Nothing # drop down onto the moving platform below
       FW Tall Room Before Mini Boss: Nothing
 
-- Name: FW Cable Ride Above Poison Water Room Upper West
+- Name: FW Cable Ride Above Poison Water Room Upper South
   Dungeon: Forbidden Woods
   Locations:
       Forbidden Woods - Past Seeds Hanging by Vines Chest: Nothing
   Exits:
-      FW Cable Ride Above Poison Water Room Upper East: Can_Fly_With_Deku_Leaf_Indoors and Can_Destroy_Hanging_Seeds
-      FW Cable Ride Above Poison Water Room Lower West: Nothing
+      FW Cable Ride Above Poison Water Room Upper North: Can_Fly_With_Deku_Leaf_Indoors and Can_Destroy_Hanging_Seeds
+      FW Cable Ride Above Poison Water Room Lower South: Nothing
       FW Hub Room Highest Platform: Nothing
 
 - Name: FW Hub Room Highest Platform
   Dungeon: Forbidden Woods
   Exits:
-      FW Cable Ride Above Poison Water Room Upper West: Nothing
-      FW Hub Room Upper Area: Nothing
+      FW Cable Ride Above Poison Water Room Upper South: Nothing
+      FW Hub Room Third Floor Upper: Nothing
+      FW Hub Room First Floor: Boomerang
 
-- Name: FW Hub Room Lower Area
+- Name: FW Hub Room Second Floor
+  Dungeon: Forbidden Woods
+  Exits:
+      FW Mothula Hallway: Can_Defeat_Door_Flowers or can_access(FW Hub Room Third Floor Upper)
+      FW Hub Room Third Floor Lower: Can_Fly_With_Deku_Leaf_Indoors
+
+- Name: FW Hub Room First Floor
   Dungeon: Forbidden Woods
   Exits:
       FW Forked Hallway Lower: Nothing
-      FW Hub Room Middle Area: Can_Fly_With_Deku_Leaf_Indoors
+      FW Hub Room Second Floor: Can_Fly_With_Deku_Leaf_Indoors
 
 - Name: FW Forked Hallway Lower
   Dungeon: Forbidden Woods
   Exits:
       FW Poison River Room Before River: Nothing
-      FW Hub Room Lower Area: Nothing
+      FW Hub Room First Floor: Nothing
 
 - Name: FW Poison River Room Before River
   Dungeon: Forbidden Woods
   Locations:
-      Forbidden Woods - Chest Across Hanging Flower: Nothing
+      Forbidden Woods - Chest Across Hanging Flower: Nothing # can reload the room after cutting down the flower
   Exits:
-      FW Poison River Room After River: Boomerang and Can_Fly_With_Deku_Leaf_Indoors
-      FW Tingle Chest Room: Boomerang or Can_Destroy_Wooden_Barriers
+      FW Poison River Room After River: (Boomerang or Heros_Sword) and Can_Fan_With_Deku_Leaf # can spin attack the vines on the flower
+      FW Tingle Chest Room: (Boomerang or Heros_Sword) or Can_Destroy_Wooden_Barriers
       FW Forked Hallway Lower: Nothing
 
 - Name: FW Poison River Room After River
@@ -2278,8 +2356,8 @@
 - Name: FW Tingle Chest Room
   Dungeon: Forbidden Woods
   Locations:
-      Forbidden Woods - Tingle Statue Chest: Bombs
-      Forbidden Woods - Locked Tree Trunk Chest: Can_Defeat_Boko_Babas and (Fire_Arrows or Bombs or Can_Fly_With_Deku_Leaf_Indoors)
+      Forbidden Woods - Tingle Statue Chest: Bombs # can also use the bomb flower but it's pretty obscure so not in logic
+      Forbidden Woods - Locked Tree Trunk Chest: Bombs or Fire_Arrows or (Can_Defeat_Boko_Babas_At_Range and Can_Fly_With_Deku_Leaf_Indoors)
   Exits:
       FW Poison River Room Before River: Nothing
 
@@ -2293,7 +2371,7 @@
 - Name: FW Big Key Room Higher Ledge
   Dungeon: Forbidden Woods
   Exits:
-      FW Forked Hallway Higher Ledge: Boomerang and Can_Defeat_Moblins and can_access(FW Big Key Room)
+      FW Forked Hallway Higher Ledge: Boomerang and Can_Defeat_Moblins
       FW Big Key Room: Nothing
 
 - Name: FW Forked Hallway Higher Ledge
@@ -2308,7 +2386,7 @@
       Forbidden Woods - Double Mothula Room Chest: Can_Defeat_Mothulas
   Exits:
       FW Boss Door Room: Can_Defeat_Mothulas
-      FW Hub Room Middle Area: Can_Defeat_Mothulas
+      FW Hub Room Second Floor: Can_Defeat_Mothulas
 
 - Name: FW Boss Door Room
   Dungeon: Forbidden Woods
@@ -2318,8 +2396,8 @@
   Exits:
       Kalle Demos Battle Arena: Forbidden_Woods_Big_Key
       FW Mothula Hallway: Nothing
-      FW First Room: "'Can_Open_FW_Green_Pot' and 'Can_Open_FW_Gold_Pot'"
-      FW Hub Room Upper Area: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
+      FW First Room: "'Can_Open_FW_Gold_Pot'"
+      FW Hub Room Third Floor Upper West Platform: "'Can_Open_FW_Blue_Pot' and 'Can_Open_FW_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: Kalle Demos Battle Arena
   Boss Room: Forbidden Woods
@@ -2585,10 +2663,10 @@
   Locations:
       Earth Temple - First Crypt Chest: Power_Bracelets and (Can_Play_CM or Can_Aim_Mirror_Shield)
   Exits:
-      ET Small Room South of First Crypt: Nothing
+      ET Small Room West of First Crypt: Nothing
       ET Giant Statue Room: Nothing
 
-- Name: ET Small Room South of First Crypt
+- Name: ET Small Room West of First Crypt
   Dungeon: Earth Temple
   Locations:
       Earth Temple - Chest Behind Destructable Wall: Can_Aim_Mirror_Shield
@@ -2704,7 +2782,7 @@
 - Name: ET Poes and Bubbles Room
   Dungeon: Earth Temple
   Exits:
-      ET Basement Hub Room Upper Ledge: count(1, Earth_Temple_Small_Key)
+      ET Basement Hub Room Upper Ledge: Nothing
       ET Third Crypt:
           Skull_Hammer and Power_Bracelets and Can_Play_CM and Can_Aim_Mirror_Shield
           and can_access(ET Poes and Bubbles Room Behind Grating)
@@ -2778,7 +2856,6 @@
   Dungeon: Wind Temple
   Exits:
       WT First Warp Pot Room Lower Area: Nothing
-      WT First Warp Pot Room Back: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM # iron boots in case you fall
       WT First Room: Nothing
 
 - Name: WT First Warp Pot Room Lower Area
@@ -2789,8 +2866,8 @@
       Wind Temple - Between Dirt Patches Chest: Can_Play_CM
   Exits:
       WT First Warp Pot Room Front: Iron_Boots
-      WT First Room: Nothing
-      WT Hub Room Middle South Platform: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'"
+      WT First Warp Pot Room Back: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM
+      WT Hub Room First Floor South Platform: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'"
       WT Three Big Fans Room Past Song Stone: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes green -> gold or green -> blue -> gold
 
 - Name: WT First Warp Pot Room Back
@@ -2831,38 +2908,53 @@
   Locations:
       Wind Temple - Tingle Statue Chest: Bombs
   Exits:
-      WT Hub Room Middle West Platform: Can_Play_CM
+      WT Hub Room First Floor West Platform: Can_Play_CM
       WT Makar Capture Room Upper Platform: Hookshot and Can_Play_CM and Can_Defeat_Wizzrobes_At_Range
       WT Early Turn Floor Room Past Turn Floor: Nothing
 
-- Name: WT Hub Room Middle West Platform
+# Some of these connections are weird but it still works out
+# For instance, the logic might see it as possible to traverse directly from the First Floor West Platform to First Floor East Platform
+# While this technically isn't possible, it is possible to go from West -> North -> East with no extra requirements
+# Is a tradeoff but it simplifies some much more annoying hub room logic with fan activation
+- Name: WT Hub Room Above First Floor Grate
   Dungeon: Wind Temple
   Exits:
-      WT Hub Room Middle North platform: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Compass Chest Platform: Iron_Boots and can_access(WT Hub Room Middle South Platform)
+      WT Hub Room First Floor North Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room First Floor South Platform: Can_Fly_With_Deku_Leaf_Indoors and 'Can_Start_WT_Hub_Room_Fan'
+      WT Hub Room First Floor West Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room First Floor East Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Second Floor South Platform: Can_Fly_With_Deku_Leaf_Indoors and 'Can_Start_WT_Hub_Room_Fan'
+      WT Hub Room Second Floor East Platform: Can_Fly_With_Deku_Leaf_Indoors and 'Can_Start_WT_Hub_Room_Fan'
+      WT Hub Room Basement Above Fan: "'Can_Open_WT_Hub_Room_1F_Grate'"
+
+- Name: WT Hub Room First Floor West Platform
+  Dungeon: Wind Temple
+  Exits:
+      WT Hub Room Above First Floor Grate: Nothing
+      WT Hub Room First Floor North Platform: Hookshot and 'Can_Open_WT_Hub_Room_1F_Grate' # leaf is accounted for by "WT Hub Room Above First Floor Grate"
+      WT Hub Room Compass Chest Platform: "'Can_Open_WT_Hub_Room_1F_Grate'" # can drop down onto the platform
       WT Makar Capture Room: Nothing
 
-- Name: WT Hub Room Middle North platform
+- Name: WT Hub Room First Floor North Platform
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Behind Stone Head Chest: Hookshot and Iron_Boots
   Exits:
-      WT Hub Room Middle East Platform: Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Compass Chest Platform: Iron_Boots and can_access(WT Hub Room Middle South Platform)
-      WT Hub Room Middle West Platform: Hookshot or Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Above First Floor Grate: Nothing
+      WT Hub Room First Floor West Platform: Hookshot and 'Can_Open_WT_Hub_Room_1F_Grate'
+      WT Hub Room Compass Chest Platform: "'Can_Open_WT_Hub_Room_1F_Grate'" # can drop down the platforms
 
-- Name: WT Hub Room Middle East Platform
+- Name: WT Hub Room First Floor East Platform
   Dungeon: Wind Temple
   Exits:
       WT Song Stone and Turn Platform Near Hub Room: Nothing
-      WT Hub Room Middle North platform: Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Lower Area: Iron_Boots and can_access(WT Hub Room Middle South Platform)
+      WT Hub Room Above First Floor Grate: Nothing
 
 - Name: WT Song Stone and Turn Platform Near Hub Room
   Dungeon: Wind Temple
   Exits:
-      WT Hub Room Middle East Platform: Nothing
-      WT Song Stone and Turn Platform Near Cyclones Room: Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room First Floor East Platform: Nothing
+      WT Song Stone and Turn Platform Near Cyclones Room: Iron_Boots and Can_Fan_With_Deku_Leaf
 
 - Name: WT Song Stone and Turn Platform Near Cyclones Room
   Dungeon: Wind Temple
@@ -2871,7 +2963,7 @@
   Exits:
       WT Many Cyclones Room East Side: Nothing
       WT Big Key Chest Room: Can_Play_WGA
-      WT Song Stone and Turn Platform Near Hub Room: Can_Fly_With_Deku_Leaf_Indoors
+      WT Song Stone and Turn Platform Near Hub Room: Can_Fan_With_Deku_Leaf
 
 - Name: WT Big Key Chest Room
   Dungeon: Wind Temple
@@ -2884,31 +2976,28 @@
 
 - Name: WT Many Cyclones Room East Side
   Dungeon: Wind Temple
+  Locations:
+      Wind Temple - Cyclones Room Chest: Can_Fly_With_Deku_Leaf_Indoors and (Can_Cut_Grass or Double_Magic)
   Exits:
       WT Many Cyclones Room West Side: Can_Fly_With_Deku_Leaf_Indoors and (Can_Cut_Grass or Double_Magic)
-      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
       WT Song Stone and Turn Platform Near Cyclones Room: Nothing
 
 - Name: WT Many Cyclones Room West Side
   Dungeon: Wind Temple
   Locations:
-      Wind Temple - Cyclones Room Chest: Can_Fly_With_Deku_Leaf_Indoors and (Can_Cut_Grass or Double_Magic)
       Wind Temple - Behind Stone Head in Many Cyclones Room: Hookshot and Iron_Boots
   Exits:
-      WT Hub Room Middle South Platform: Nothing
-      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
-      WT Many Cyclones Room East Side: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room First Floor South Platform: Nothing
+      WT Many Cyclones Room East Side: Nothing # there's vines to climb back up
 
-- Name: WT Hub Room Middle South Platform
+- Name: WT Hub Room First Floor South Platform
   Dungeon: Wind Temple
   Events:
       Can Open WT Blue Pot: Bombs or Fire_Arrows or Skull_Hammer or Heros_Sword
+      Can Open WT Hub Room 1F Grate: Iron_Boots
   Exits:
-      WT Hub Room Compass Chest Platform: Iron_Boots
-      WT Hub Room Middle East Platform: Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Middle West Platform: Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Above First Floor Grate: Nothing
       WT Many Cyclones Room West Side: Nothing
-      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM and can_access(WT Hub Room Lower Area)
       WT First Warp Pot Room Lower Area: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
       WT Three Big Fans Room Past Song Stone: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'"
 
@@ -2917,23 +3006,26 @@
   Locations:
       Wind Temple - Hub Room Center Chest: Nothing
   Exits:
-      WT Hub Room Lower Area: Nothing
-      WT Hub Room Middle West Platform: Hookshot and Iron_Boots
+      WT Hub Room Basement Above Fan: Nothing
+      WT Hub Room First Floor West Platform: Hookshot and Iron_Boots and 'Can_Open_WT_Hub_Room_1F_Grate''
+      WT Hub Room First Floor North Platform: Hookshot and Iron_Boots and 'Can_Open_WT_Hub_Room_1F_Grate''
 
-- Name: WT Hub Room Lower Area
+- Name: WT Hub Room Basement Above Fan
   Dungeon: Wind Temple
+  Events:
+      Can Start WT Hub Room Fan: Can_Play_CM
   Exits:
       WT Cracked Floors Room: Nothing
       WT Mini Boss Room: count(2, Wind_Temple_Small_Key)
-      WT Hub Room Compass Chest Platform: Hookshot and Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Upper South Platform: Can_Fly_With_Deku_Leaf_Indoors and Can_Play_CM
-      WT Hub Room Below Fan: can_access(WT Hub Room Upper North Platform)
+      WT Hub Room Compass Chest Platform: (Hookshot or 'Can_Start_WT_Hub_Room_Fan') and Can_Fly_With_Deku_Leaf_Indoors
+      WT Hub Room Above First Floor Grate: "'Can_Open_WT_Hub_Room_1F_Grate' and 'Can_Start_WT_Hub_Room_Fan'"
+      WT Hub Room Basement Below Fan: "'Can_Open_WT_Hub_Room_Fan_Grate'"
 
 - Name: WT Mini Boss Room
   Locations:
       Wind Temple - Wizzrobe Mini Boss: Can_Defeat_Darknuts and Can_Defeat_Wizzrobes and Can_Remove_Peahat_Armor
   Exits:
-      WT Hub Room Lower Area: Hookshot and Skull_Hammer and Can_Defeat_Darknuts and Can_Defeat_Wizzrobes and Can_Remove_Peahat_Armor
+      WT Hub Room Basement Above Fan: Hookshot and Skull_Hammer
 
 - Name: WT Cracked Floors Room
   Dungeon: Wind Temple
@@ -2941,7 +3033,7 @@
       Wind Temple - Spike Wall Room First Chest: Iron_Boots
       Wind Temple - Spike Wall Room Destroy Floors: Iron_Boots and Can_Defeat_Floormasters
   Exits:
-      WT Hub Room Lower Area: Nothing
+      WT Hub Room Basement Above Fan: Nothing
 
 - Name: WT Makar Capture Room Upper Platform
   Dungeon: Wind Temple
@@ -2958,41 +3050,41 @@
 - Name: WT Blue Bubbles Room Upper Ledge
   Dungeon: Wind Temple
   Exits:
-      WT Hub Room Upper North Platform: Nothing
+      WT Hub Room Second Floor North Platform: Nothing
       WT Blue Bubbles Room: Nothing
 
-- Name: WT Hub Room Upper North Platform
+- Name: WT Hub Room Second Floor North Platform
   Dungeon: Wind Temple
+  Events:
+      Can Open WT Hub Room Fan Grate: Nothing
   Exits:
-      WT Hub Room Upper East Platform: Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Middle North platform: Nothing
+      WT Hub Room Above First Floor Grate: Nothing
       WT Blue Bubbles Room Upper Ledge: Nothing
 
-- Name: WT Hub Room Upper East Platform
+- Name: WT Hub Room Second Floor East Platform
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Hub Room Top Chest: Nothing
   Exits:
-      WT Hub Room Middle East Platform: Nothing
+      WT Hub Room Above First Floor Grate: Nothing
 
-- Name: WT Hub Room Upper South Platform
+- Name: WT Hub Room Second Floor South Platform
   Dungeon: Wind Temple
   Exits:
       WT Seven Armos Room: Nothing
-      WT Hub Room Upper East Platform: Can_Fly_With_Deku_Leaf_Indoors
-      WT Hub Room Middle South Platform: Nothing
+      WT Hub Room Above First Floor Grate: Nothing
 
 - Name: WT Seven Armos Room
   Dungeon: Wind Temple
   Locations:
       Wind Temple - Behind Armos Chest: Can_Defeat_Armos
   Exits:
-      WT Hub Room Upper South Platform: Can_Defeat_Armos
+      WT Hub Room Second Floor South Platform: Can_Defeat_Armos
 
-- Name: WT Hub Room Below Fan
+- Name: WT Hub Room Basement Below Fan
   Dungeon: Wind Temple
   Exits:
-      WT Hub Room Lower Area: Nothing
+      WT Hub Room Basement Above Fan: Nothing
       WT Tall Basement Room: count(2, Wind_Temple_Small_Key)
 
 - Name: WT Tall Basement Room
@@ -3002,7 +3094,7 @@
           Hookshot and Iron_Boots and Can_Fly_With_Deku_Leaf_Indoors and
           Can_Defeat_Blue_Bubbles and Can_Defeat_Stalfos and Can_Defeat_Wizzrobes and Can_Defeat_Morths
   Exits:
-      WT Hub Room Below Fan: Nothing
+      WT Hub Room Basement Below Fan: Nothing
       WT Long Narrow Room: Hookshot and Iron_Boots
 
 - Name: WT Long Narrow Room
@@ -3014,7 +3106,7 @@
 - Name: WT Long Narrow Room Past Gap
   Dungeon: Wind Temple
   Exits:
-      WT Long Narrow Room: Can_Fly_With_Deku_Leaf_Indoors
+      WT Long Narrow Room: Nothing # there are vines you can climb to get back up
       WT Three Big Fans Room: Nothing
 
 - Name: WT Three Big Fans Room
@@ -3031,7 +3123,7 @@
   Exits:
       Molgera Battle Arena: Wind_Temple_Big_Key
       WT First Warp Pot Room Lower Area: "'Can_Open_WT_Green_Pot' and 'Can_Open_WT_Gold_Pot'"
-      WT Hub Room Middle South Platform: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
+      WT Hub Room First Floor South Platform: "'Can_Open_WT_Blue_Pot' and 'Can_Open_WT_Gold_Pot'" # either goes gold -> blue or gold -> green -> blue
 
 - Name: Molgera Battle Arena
   Boss Room: Wind Temple
@@ -3163,13 +3255,48 @@
 - Name: Ganon's Tower Final Staircase
   Hint Region: Ganon's Tower
   Exits:
-      Ganon's Tower Puppet Ganon Boss Room: Can_Defeat_Moblins and Can_Defeat_Mighty_Darknuts
+      Ganon's Tower Puppet Ganon Boss Arena: Can_Defeat_Moblins and Can_Defeat_Mighty_Darknuts
       Ganon's Tower Middle Hub Room: Nothing
 
-- Name: Ganon's Tower Puppet Ganon Boss Room
+- Name: Ganon's Tower Puppet Ganon Boss Arena
   Hint Region: Ganon's Tower
   Exits:
-      Ganon's Tower Spire: Can_Defeat_Puppet_Ganon
+      Ganon's Tower Puppet Ganon Boss Arena Side Shelves: Hookshot
+      Ganon's Tower Puppet Ganon Boss Room Lowest Platform: Can_Defeat_Puppet_Ganon
+      Ganon's Tower Puppet Ganon Boss Room Morth Platform: "'Can_Open_PG_Warp_Pot'"
+
+- Name: Ganon's Tower Puppet Ganon Boss Arena Side Shelves
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Puppet Ganon Boss Arena: Nothing
+
+- Name: Ganon's Tower Puppet Ganon Boss Room Lowest Platform
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Puppet Ganon Boss Arena: Nothing
+      Ganon's Tower Puppet Ganon Boss Room Pot Platform: Grappling_Hook
+
+- Name: Ganon's Tower Puppet Ganon Boss Room Pot Platform
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Puppet Ganon Boss Arena: Nothing
+      Ganon's Tower Puppet Ganon Boss Room Morth Platform: Grappling_Hook
+
+- Name: Ganon's Tower Puppet Ganon Boss Room Morth Platform
+  Hint Region: Ganon's Tower
+  Events:
+      Can Open PG Warp Pot: Nothing # Can throw a pot at it
+  Exits:
+      Ganon's Tower Puppet Ganon Boss Arena: Nothing
+      Ganon's Tower Puppet Ganon Boss Room Pot Platform: Nothing
+      Ganon's Tower Puppet Ganon Boss Room Highest Platform: Hookshot
+
+- Name: Ganon's Tower Puppet Ganon Boss Room Highest Platform
+  Hint Region: Ganon's Tower
+  Exits:
+      Ganon's Tower Puppet Ganon Boss Arena: Nothing
+      Ganon's Tower Puppet Ganon Boss Room Highest Platform: Nothing
+      Ganon's Tower Spire: Nothing
 
 - Name: Ganon's Tower Spire
   Hint Region: Ganon's Tower
