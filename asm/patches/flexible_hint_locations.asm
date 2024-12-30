@@ -58,3 +58,13 @@ continue_no_next_hint_message:
 
 continue_check_other_messages:
   b 0x02481054
+
+; KoRL also has some late-game text that triggers based on a few milestones:
+; - Opening the dark portal ("If you wish to return to the world above" / "we must return to Ganon's Tower")
+; - Breaking the barrier ("Long ago, Ganon's Tower was an impenetrable fortress")
+; - Defeating the Mighty Darknuts in the Master Sword Chamber ("So, despite our efforts, the princess")
+; - Being in Hyrule before any of the other 3 have triggered ("I am concerned about Princess Zelda")
+; These don't make as much sense in the randomizer, and cause issues if KoRL hints are enabled
+; Skip checking for them and just show the randomizer's text instead
+.org 0x024734F4 ; In daShip_c::setInitMessage
+  beq 0x024741E0 ; Show message 3443 (0xD73)
