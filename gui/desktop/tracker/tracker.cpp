@@ -1084,7 +1084,7 @@ void MainWindow::on_entrance_list_locations_button_released()
 
 void MainWindow::on_source_entrance_filter_lineedit_textChanged(const QString &arg1)
 {
-    filter_entrance_list(arg1.toLower());
+    filter_entrance_list(arg1.toLower(), true);
 }
 
 
@@ -1096,10 +1096,10 @@ void MainWindow::on_entrance_destination_back_button_released()
 
 void MainWindow::on_target_entrance_filter_lineedit_textChanged(const QString &arg1)
 {
-    filter_entrance_list(arg1.toLower());
+    filter_entrance_list(arg1.toLower(), false);
 }
 
-void MainWindow::filter_entrance_list(const QString& filter)
+void MainWindow::filter_entrance_list(const QString& filter, const bool arenaExitNameChange)
 {
     // Hide entrance labels which don't fit the filter
     // The labels should be shown if any part of the entrance's original name
@@ -1109,7 +1109,7 @@ void MainWindow::filter_entrance_list(const QString& filter)
         auto entrance = targetLabel->get_entrance();
         if (entrance)
         {
-            auto entranceName = QString::fromStdString(entrance->getOriginalName(true)).toLower();
+            auto entranceName = QString::fromStdString(entrance->getOriginalName(arenaExitNameChange)).toLower();
             QString connectedAreaName = "";
 
             // If this is a target entrance, use the original name of the entrance this target
@@ -1117,7 +1117,7 @@ void MainWindow::filter_entrance_list(const QString& filter)
             // entrances that all lead to the same area
             if (entranceName.startsWith("root -> "))
             {
-                entranceName = QString::fromStdString(entrance->getReplaces()->getOriginalName(true)).toLower();
+                entranceName = QString::fromStdString(entrance->getReplaces()->getOriginalName(arenaExitNameChange)).toLower();
             }
 
             // If this entrance is connected to another area, include that in the filter.

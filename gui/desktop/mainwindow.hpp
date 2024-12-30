@@ -124,7 +124,7 @@ public:
     void autosave_current_tracker();
     bool autosave_current_tracker_config();
     bool autosave_current_tracker_preferences();
-    void filter_entrance_list(const QString& filter);
+    void filter_entrance_list(const QString& filter, const bool arenaExitNameChange);
     bool isMappingChart();
     bool isChartMapped(GameItem chart);
     void mapChart(GameItem chart, uint8_t islandNum);
