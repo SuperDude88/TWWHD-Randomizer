@@ -76,7 +76,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         env:
           SEED_KEY: ${{ secrets.SEED_KEY }}
-        run: cmake -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DQT_GUI=True -DEMBED_DATA=True ${{ env.EXTRA_CMAKE_FLAGS }}
+        run: cmake -G "MinGW Makefiles" -B build -DGITHUB_WORKFLOW=True -DQT_GUI=True -DEMBED_DATA=True "${{ env.EXTRA_CMAKE_FLAGS }}"
         
       - name: Build
         working-directory: ${{ github.workspace }}
