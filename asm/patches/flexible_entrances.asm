@@ -131,7 +131,7 @@ check_entering_door12_forwards:
     beq door12_entering_lock_forwards
     b 0x02129330 ; continue with opening the door
 door12_entering_lock_forwards:
-    lbz r0, 0x7B8(r12) ; replace the line we overwrote to jump here
+    lbz r12, 0x7B8(r12) ; replace the line we overwrote to jump here
     b 0x02129328 ; continue to check the key counter
 
 
