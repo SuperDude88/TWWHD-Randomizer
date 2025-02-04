@@ -59,6 +59,18 @@ namespace Utility {
         return path;
     }
 
+    
+    fspath get_models_dir() {
+        const fspath path = get_app_save_path() / "custom_models/";
+
+        if (!std::filesystem::is_directory(path))
+        {
+            Utility::create_directories(path);
+        }
+
+        return path;
+    }
+
     fspath get_temp_dir() {
         // could get the OS-provided temp folder with Qt but it might be harder to find and debug should we use it for anything
         const fspath path = get_app_save_path() / "temp/";
