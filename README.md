@@ -1,47 +1,3 @@
-# Custom model build instruction
-## Instructions (because that's probably why you're here for)
-### Extracting nessecary files
-Download any custom model from Gamebanana and extract the zip file. You will probably find a bunch of folders and from there we want to find some files : 
-- Either a `permanent_3d.pack` file or a `Link.szs` file (the latter being more convienient)
-- Optionnaly, a `Jailnit.aaf` file for voice clips
-- Optionnaly, a `voice_0.aw` file for voice clips
-
-If you could find them within an "Raw files" or "Extra files" folder, great! Copy them in a separate folder. 
-If not, we'll need to find them. First, try to find a folder containing the `Cafe` and `Common` folders inside. You will most likely find them in a folder called `content`. Those folders contain our nessecary files : 
-- `permanent_3d.pack` can be found in `Common\Pack\`
-- `Jailnit.aaf` can be found in `Cafe\US\AudioRes\JAudioRes\`
-- `voice_0.aw` can be found in `Cafe\US\AudioRes\JAudioRes\Banks\`
-
-Copy those files in a separate folder. If you have `permanent_3d.pack` and not `Link.szs`, we'll need just a few more steps.
-
-### Extracting Link.szs from permanent_3d.pack
-Download [Toolbox](https://github.com/KillzXGaming/Switch-Toolbox/releases/tag/Final). Extract the zip file somewhere, then run `Toolbox.exe`. Drag and drop the `permanent_3d.pack` file inside Toolbox's window.
-
-![1](https://i.imgur.com/LcQGo0k.png)
-
-Click on the Plus icon on the left of the folder. Scroll down until you find Link.szs and right click on it. Select "Export Raw Data".
-
-![2](https://i.imgur.com/pISwYHr.png)
-
-Save the file in the same folder as the other files. You can delete `permanent_3d.pack` now.
-
-![3](https://i.imgur.com/pISwYHr.png)
-
-### On console 
-Make sure you followed the instructions for the official build. We will need pretty much everything the official build installs to be already installed on the wii u.
-
-Go to the latest release for this branch. Copy `wwhd_randomizer_t4b.wuhb` into your SD card at `sd:\wiiu\apps`. You will see the build on your home screen (the one with farore's pearl). Run it once to generate all the files, then exit to the main menu.
-
-Access your SD card and go to `sd:/wiiu/apps/save/<8 hex digits> (TWWHD Randomizer T4B)`. You will find another folder inside called `model`. In here you want to put the `Link.szs`, optionnaly `JaiInit.aaf` and optionnaly `voice_0.aw` files you extracted earlier. You can now open the app on your Wii U again
-
-In the Colors tab, you will find the toggle for custom models. Make sure it is enabled, then you can randomize your game.
-
-After that, your model will be applied to the game. Have fun!
-
-
-
-
-
 # TWWHD-Randomizer
 As this is a new randomizer, there may still be bugs until it is more thoroughly tested. Some of the information below may change with time.
 
@@ -77,7 +33,7 @@ This randomizer currently supports the USA version of TWWHD. The European and Ja
 Playing the randomizer on console requires a Wii U with the Aroma environment and sigpatches. A guide for installing Aroma can be found [here](https://wiiu.hacks.guide). After following the guide, you will need to add [01_sigpatches.rpx](https://github.com/marco-calautti/SigpatchesModuleWiiU/releases) to `sd:/wiiu/environments/aroma/modules/setup`. Make sure to read each page of the guide closely, and pay attention to which environment you are booting into.
 
 #### Using the Homebrew Application
-The patcher requires an accessible version of TWWHD (USA) on your Wii U (digital install or inserted disc). Discs have not yet been tested, but if they are not working, you can dump installable files using [wudd](https://github.com/wiiu-env/wudd). You must also have 2GB of space available for the randomized channel, either on the console's internal memory or a connected USB storage device (*\*This storage is reserved after first-time setup*).
+The patcher requires an accessible version of TWWHD (USA) on your Wii U (digital install or inserted disc). You must also have 2GB of space available for the randomized channel, either on the console's internal memory or a connected USB storage device (*\*This storage is reserved after first-time setup*).
 
 Once homebrew is set up, copy the `wwhd_randomizer.wuhb` from the releases page into `sd:/wiiu/apps`. Run the app from the home menu to open the patcher.
 

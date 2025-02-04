@@ -4,8 +4,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-project(wwhd_rando_t4b VERSION 0.1 LANGUAGES C CXX) # not sure how to handle this version variable, putting it here for the mac bundle
+project(wwhd_rando VERSION 0.1 LANGUAGES C CXX) # not sure how to handle this version variable, putting it here for the mac bundle
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+
 if(DEFINED DEVKITPRO)
   add_compile_definitions(DEVKITPRO)
   add_compile_options(-Ofast -mcpu=750 -meabi -mhard-float -ffunction-sections -flto -Wall)
@@ -88,25 +89,25 @@ if(DEFINED QT_GUI)
   set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
   if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(wwhd_rando_t4b MACOSX_BUNDLE main.cpp ${app_icon_macos})
+    qt_add_executable(wwhd_rando MACOSX_BUNDLE main.cpp ${app_icon_macos})
   else()
-    add_executable(wwhd_rando_t4b main.cpp)
+    add_executable(wwhd_rando main.cpp)
   endif()
 
   add_subdirectory("gui/desktop")
 else()
-  add_executable(wwhd_rando_t4b main.cpp)
+  add_executable(wwhd_rando main.cpp)
 endif()
 
 if(GET_THREADS)
   find_package(Threads REQUIRED)
 
   if(CMAKE_USE_PTHREADS_INIT)
-    target_link_libraries(wwhd_rando_t4b PRIVATE Threads::Threads)
+    target_link_libraries(wwhd_rando PRIVATE Threads::Threads)
   endif()
 endif()
 
-target_sources(wwhd_rando_t4b PRIVATE "randomizer.cpp" "options.cpp" "tweaks.cpp" "text_replacements.cpp")
+target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp" "tweaks.cpp" "text_replacements.cpp")
 add_subdirectory("libs")
 add_subdirectory("utility")
 add_subdirectory("command")
@@ -115,7 +116,8 @@ add_subdirectory("seedgen")
 add_subdirectory("logic")
 add_subdirectory("nuspack")
 add_subdirectory("customizer")
-target_include_directories(wwhd_rando_t4b PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+
+target_include_directories(wwhd_rando PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
 if(DEFINED DEVKITPRO)
   # Some code specific to Wii U
@@ -124,15 +126,15 @@ if(DEFINED DEVKITPRO)
 
   # Use libmocha for filesystem access
   find_library(LIBMOCHA mocha REQUIRED HINTS "${DEVKITPRO}/wut/usr/lib")
-  target_include_directories(wwhd_rando_t4b PRIVATE "${DEVKITPRO}/wut/usr/include")
-  target_link_libraries(wwhd_rando_t4b PRIVATE "${LIBMOCHA}")
+  target_include_directories(wwhd_rando PRIVATE "${DEVKITPRO}/wut/usr/include")
+  target_link_libraries(wwhd_rando PRIVATE "${LIBMOCHA}")
   
-  wut_create_rpx(wwhd_rando_t4b)
-  wut_create_wuhb(wwhd_rando_t4b
-    NAME       "The Legend of Zelda: The Wind Waker HD Randomizer -- TEOTIA444 BUILD"
+  wut_create_rpx(wwhd_rando)
+  wut_create_wuhb(wwhd_rando
+    NAME       "The Legend of Zelda: The Wind Waker HD Randomizer"
 
     CONTENT    "${CMAKE_BINARY_DIR}/data"
-    SHORTNAME  "TWWHD Randomizer T4B"
+    SHORTNAME  "TWWHD Randomizer"
     AUTHOR     "SuperDude88, csunday95, gymnast86"
     ICON       "${CMAKE_SOURCE_DIR}/platform/Icon.png"
     #TVSPLASH   "${CMAKE_SOURCE_DIR}/platform/Splash.png"

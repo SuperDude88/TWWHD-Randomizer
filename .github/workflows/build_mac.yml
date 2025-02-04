@@ -26,7 +26,7 @@ on:
         required: false
 
 env:
-  QT_VERSION: 6.7.1
+  QT_VERSION: 6.8.1
   EXTRA_CMAKE_FLAGS: ""
 
 jobs:
@@ -61,7 +61,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         env:
           SEED_KEY: ${{ secrets.SEED_KEY }}
-        run: cmake -B build -DGITHUB_WORKFLOW=True -DQT_GUI=True -DEMBED_DATA=True -DMAC_APP_DIRS=True ${{ env.EXTRA_CMAKE_FLAGS }} -DCMAKE_C_COMPILER=$(brew --prefix llvm@15)/bin/clang -DCMAKE_CXX_COMPILER=$(brew --prefix llvm@15)/bin/clang++
+        run: cmake -B build -DGITHUB_WORKFLOW=True -DQT_GUI=True -DEMBED_DATA=True -DMAC_APP_DIRS=True "${{ env.EXTRA_CMAKE_FLAGS }}" -DCMAKE_C_COMPILER=$(brew --prefix llvm@15)/bin/clang -DCMAKE_CXX_COMPILER=$(brew --prefix llvm@15)/bin/clang++
 
       - name: Build
         working-directory: ${{ github.workspace }}

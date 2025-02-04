@@ -1,4 +1,3 @@
-#include "../ui_mainwindow.h"
 #include "../mainwindow.hpp"
 
 #include <QAbstractButton>
@@ -6,11 +5,15 @@
 #include <QMessageBox>
 #include <QColorDialog>
 
+#include <../ui_mainwindow.h>
+
 #include <filesystem>
 
+#include <../ui_mainwindow.h>
 #include <gui/desktop/tracker/tracker_inventory_button.hpp>
 #include <gui/desktop/tracker/tracker_area_widget.hpp>
 #include <gui/desktop/tracker/tracker_preferences_dialog.hpp>
+#include <gui/desktop/tracker/tracker_label.hpp>
 #include <gui/desktop/tracker/set_font.hpp>
 
 #include <logic/Fill.hpp>
@@ -26,7 +29,8 @@
 void MainWindow::initialize_tracker_world(Settings& settings,
                                           const GameItemPool& markedItems,
                                           const std::vector<std::string>& markedLocations,
-                                          const std::unordered_map<std::string, std::string>& connectedEntrances)
+                                          const std::unordered_map<std::string, std::string>& connectedEntrances,
+                                          const std::map<GameItem, uint8_t>& chartMappings)
 {
     trackerStarted = true;
 
@@ -41,30 +45,15 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     // Copy settings to modify them
     trackerSettings = settings;
 
-    // Turn off randomize charts when creating the world
-    // and also set chart imaages for sectors which normally
-    // have sunken treasure from triforce charts
+    selectedChartIsland = 0;
     if (settings.randomize_charts)
     {
-        trackerSettings.randomize_charts = false;
+        // With charts shuffled the required ones can be on any island
+        // So for tracker purposes, treat all 49 charts as potentially progress
         if (trackerSettings.progression_treasure_charts || trackerSettings.progression_triforce_charts)
         {
             trackerSettings.progression_treasure_charts = true;
             trackerSettings.progression_triforce_charts = true;
-        }
-
-        for (auto trackerTriforceChart : {&trackerTriforceChart1, &trackerTriforceChart2, &trackerTriforceChart3})
-        {
-            trackerTriforceChart->itemStates[0].filename = "treasure_chart_closed.png";
-            trackerTriforceChart->itemStates[1].filename = "treasure_chart_open.png";
-        }
-    }
-    else
-    {
-        for (auto trackerTriforceChart : {&trackerTriforceChart1, &trackerTriforceChart2, &trackerTriforceChart3})
-        {
-            trackerTriforceChart->itemStates[0].filename = "triforce_chart_closed.png";
-            trackerTriforceChart->itemStates[1].filename = "triforce_chart_open.png";
         }
     }
 
@@ -91,7 +80,22 @@ void MainWindow::initialize_tracker_world(Settings& settings,
         show_error_dialog("Could not build world for app tracker");
         return;
     }
+
     trackerWorld.determineChartMappings();
+    // Use loaded chart mappings
+    mappedCharts.clear();
+    if(trackerSettings.randomize_charts) {
+        for(const auto& [chart, island] : chartMappings) {
+            mapChart(chart, island);
+        }
+    }
+    // Otherwise map like vanilla
+    else {
+        for(size_t i = 1; i < 50; i++) {
+            mapChart(roomNumToDefaultChart(i), i);
+        }
+    }
+
     trackerWorld.determineProgressionLocations();
     trackerWorld.setItemPools();
 
@@ -116,9 +120,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     }
 
     placeVanillaItems(trackerWorlds);
-
-    // Reset trackerSettings.randomize_charts so we can check it later
-    trackerSettings.randomize_charts = settings.randomize_charts;
 
     setup_tracker_entrances();
 
@@ -165,7 +166,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     auto trackerInventoryCopy = trackerInventory;
 
     // Make sure our buttons start at 0
-    // This is done before any buttons are updated so duplicates are not set then reset in a later iteration
     for (auto inventoryButton : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
     {
         inventoryButton->setState(0);
@@ -293,6 +293,8 @@ void MainWindow::on_start_tracker_button_clicked()
         return;
     }
 
+    trackerPreferences.autosaveFilePath = Utility::get_app_save_path() / "tracker_autosave.yaml";
+
     initialize_tracker_world(config.settings);
 
     // Get the first search iteration
@@ -303,21 +305,31 @@ void MainWindow::on_start_tracker_button_clicked()
 
 void MainWindow::autosave_current_tracker()
 {
+    if(!autosave_current_tracker_config()) {
+        // error?
+    }
+    if(!autosave_current_tracker_preferences()) {
+        // error?
+    }
+}
+
+bool MainWindow::autosave_current_tracker_config()
+{
     auto& trackerWorld = trackerWorlds[0];
 
     Config trackerConfig;
     trackerConfig.settings = trackerSettings;
     // Save current config
-    auto configErr = trackerConfig.writeToFile(Utility::get_app_save_path() / "tracker_autosave.yaml", Utility::get_app_save_path() / "tracker_preferences.yaml");
+    auto configErr = trackerConfig.writeSettings(trackerPreferences.autosaveFilePath);
     if (configErr != ConfigError::NONE)
     {
         show_error_dialog("Could not save tracker config to file\n Error: " + ConfigErrorGetName(configErr));
-        return;
+        return false;
     }
 
     // Read it back and add extra tracker data
     std::string autosave;
-    Utility::getFileContents(Utility::get_app_save_path() / "tracker_autosave.yaml", autosave);
+    Utility::getFileContents(trackerPreferences.autosaveFilePath, autosave);
     YAML::Node root = YAML::Load(autosave);
 
     // Save which locations have been marked
@@ -351,15 +363,38 @@ void MainWindow::autosave_current_tracker()
         root["connected_entrances"][entrance->getOriginalName()] = target->getReplaces()->getOriginalName();
     }
 
+    // Save which charts have been mapped
+    if(trackerSettings.randomize_charts) {
+        for (auto& [chart, island] : mappedCharts)
+        {
+            root["mapped_charts"][gameItemToName(chart)] = roomNumToIslandName(island);
+        }
+    }
 
-    std::ofstream autosave_file(Utility::get_app_save_path() / "tracker_autosave.yaml");
+    std::ofstream autosave_file(trackerPreferences.autosaveFilePath);
     if (autosave_file.is_open() == false)
     {
-        show_error_dialog("Failed to open tracker_autosave.yaml");
-        return;
+        show_error_dialog("Failed to open " + Utility::toUtf8String(trackerPreferences.autosaveFilePath));
+        return false;
     }
 
     autosave_file << root;
+    autosave_file.close();
+
+    return true;
+}
+
+bool MainWindow::autosave_current_tracker_preferences()
+{
+    Config trackerConfig;
+    trackerConfig.settings = trackerSettings;
+    // Save current config
+    auto configErr = trackerConfig.writePreferences(Utility::get_app_save_path() / "tracker_preferences.yaml");
+    if (configErr != ConfigError::NONE)
+    {
+        show_error_dialog("Could not save tracker preferences to file\n Error: " + ConfigErrorGetName(configErr));
+        return false;
+    }
 
     // Save preferences back to tracker_preferences
     std::string preferences;
@@ -376,92 +411,38 @@ void MainWindow::autosave_current_tracker()
     pref["items_color"] = trackerPreferences.itemsColor.name().toStdString();
     pref["locations_color"] = trackerPreferences.locationsColor.name().toStdString();
     pref["stats_color"] = trackerPreferences.statsColor.name().toStdString();
+    pref["autosave_file_override"] = Utility::toUtf8String(trackerPreferences.autosaveFilePath);
 
     std::ofstream preferences_file(Utility::get_app_save_path() / "tracker_preferences.yaml");
     if (preferences_file.is_open() == false)
     {
         show_error_dialog("Failed to open tracker_preferences.yaml");
-        return;
+        return false;
     }
 
     preferences_file << pref;
     preferences_file.close();
+
+    return true;
 }
 
 void MainWindow::load_tracker_autosave()
 {
-    if (!std::filesystem::exists(Utility::get_app_save_path() / "tracker_autosave.yaml") || !std::filesystem::exists(Utility::get_app_save_path() / "tracker_preferences.yaml"))
-    {
+    // Load tracker preferences
+    std::string preferences;
+    if(Utility::getFileContents(Utility::get_app_save_path() / "tracker_preferences.yaml", preferences) != 0) {
         // No autosave file, don't try to do anything
         return;
     }
-
-    Config trackerConfig;
-    auto configErr = trackerConfig.loadFromFile(Utility::get_app_save_path() / "tracker_autosave.yaml", Utility::get_app_save_path() / "tracker_preferences.yaml", true);
-    if (configErr != ConfigError::NONE)
-    {
-        show_warning_dialog("Could not load tracker autosave config\nError: " + ConfigErrorGetName(configErr));
-        return;
-    }
-
-    std::string autosave;
-    Utility::getFileContents(Utility::get_app_save_path() / "tracker_autosave.yaml", autosave);
-    YAML::Node root = YAML::Load(autosave);
-
-    // Load marked locations
-    std::vector<std::string> markedLocations = {};
-    if (root["marked_locations"].IsSequence())
-    {
-        for (const auto& locationName : root["marked_locations"])
-        {
-            markedLocations.push_back(locationName.as<std::string>());
-        }
-    }
-    else if (root["marked_locations"] && root["marked_locations"].as<std::string>() != "None")
-    {
-        show_warning_dialog("Unable to load marked locations from tracker autosave");
-    }
-
-
-    // Load marked items
-    GameItemPool markedItems = {};
-    if (root["marked_items"].IsSequence())
-    {
-        for (const auto& item : root["marked_items"])
-        {
-            const std::string itemName = item.as<std::string>();
-            if (nameToGameItem(itemName) != GameItem::INVALID)
-            {
-                markedItems.push_back(nameToGameItem(itemName));
-            }
-            else
-            {
-                show_warning_dialog("Unknown item \"" + itemName + "\" in tracker autosave file");
-            }
-        }
-    }
-    else if (root["marked_items"] && root["marked_items"].as<std::string>() != "None")
-    {
-        show_warning_dialog("Unable to load marked items from tracker autosave");
-    }
-
-    std::unordered_map<std::string, std::string> entranceConnections = {};
-    const auto& connectedEntrances = root["connected_entrances"];
-    if (!connectedEntrances.IsNull())
-    {
-        for (auto entranceItr = connectedEntrances.begin(); entranceItr != connectedEntrances.end(); entranceItr++)
-        {
-            auto entranceConnection = *entranceItr;
-            entranceConnections[entranceConnection.first.as<std::string>()] = entranceConnection.second.as<std::string>();
-        }
-    }
-
-    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections);
-
-    // Load tracker preferences
-    std::string preferences;
-    Utility::getFileContents(Utility::get_app_save_path() / "tracker_preferences.yaml", preferences);
     YAML::Node pref = YAML::Load(preferences);
+
+    // Last saved tracker location
+    if(pref["autosave_file_override"]) {
+        trackerPreferences.autosaveFilePath = Utility::Str::toUTF16(pref["autosave_file_override"].as<std::string>());
+    }
+    else {
+        trackerPreferences.autosaveFilePath = Utility::get_app_save_path() / "tracker_autosave.yaml";
+    }
 
     // Color override preferences
     if (pref["items_color"])
@@ -517,6 +498,86 @@ void MainWindow::load_tracker_autosave()
     {
         trackerPreferences.clearAllIncludesDungeonMail = pref["clear_all_includes_dungeon_mail"].as<bool>();
     }
+
+    if (!std::filesystem::exists(trackerPreferences.autosaveFilePath) || !std::filesystem::exists(Utility::get_app_save_path() / "tracker_preferences.yaml"))
+    {
+        // No autosave file, don't try to do anything
+        return;
+    }
+
+    Config trackerConfig;
+    auto configErr = trackerConfig.loadFromFile(trackerPreferences.autosaveFilePath, Utility::get_app_save_path() / "tracker_preferences.yaml", true);
+    if (configErr != ConfigError::NONE)
+    {
+        show_warning_dialog("Could not load tracker autosave config\nError: " + ConfigErrorGetName(configErr));
+        return;
+    }
+
+    std::string autosave;
+    Utility::getFileContents(trackerPreferences.autosaveFilePath, autosave);
+    YAML::Node root = YAML::Load(autosave);
+
+    // Load marked locations
+    std::vector<std::string> markedLocations = {};
+    if (root["marked_locations"].IsSequence())
+    {
+        for (const auto& locationName : root["marked_locations"])
+        {
+            markedLocations.push_back(locationName.as<std::string>());
+        }
+    }
+    else if (root["marked_locations"] && root["marked_locations"].as<std::string>() != "None")
+    {
+        show_warning_dialog("Unable to load marked locations from tracker autosave");
+    }
+
+
+    // Load marked items
+    GameItemPool markedItems = {};
+    if (root["marked_items"].IsSequence())
+    {
+        for (const auto& item : root["marked_items"])
+        {
+            const std::string itemName = item.as<std::string>();
+            if (nameToGameItem(itemName) != GameItem::INVALID)
+            {
+                markedItems.push_back(nameToGameItem(itemName));
+            }
+            else
+            {
+                show_warning_dialog("Unknown item \"" + itemName + "\" in tracker autosave file");
+            }
+        }
+    }
+    else if (root["marked_items"] && root["marked_items"].as<std::string>() != "None")
+    {
+        show_warning_dialog("Unable to load marked items from tracker autosave");
+    }
+
+    std::unordered_map<std::string, std::string> entranceConnections = {};
+    const auto& connectedEntrances = root["connected_entrances"];
+    if (!connectedEntrances.IsNull())
+    {
+        for (auto entranceItr = connectedEntrances.begin(); entranceItr != connectedEntrances.end(); entranceItr++)
+        {
+            auto entranceConnection = *entranceItr;
+            entranceConnections[entranceConnection.first.as<std::string>()] = entranceConnection.second.as<std::string>();
+        }
+    }
+
+    // Load saved mappings
+    std::map<GameItem, uint8_t> chartMappings = {};
+    const auto& charts = root["mapped_charts"];
+    if(charts.IsMap())
+    {
+        for (auto chartItr = charts.begin(); chartItr != charts.end(); chartItr++)
+        {
+            auto chartMapping = *chartItr;
+            chartMappings[nameToGameItem(chartMapping.first.as<std::string>())] = islandNameToRoomNum(chartMapping.second.as<std::string>());
+        }
+    }
+
+    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections, chartMappings);
 
     update_tracker();
 }
@@ -610,12 +671,14 @@ void MainWindow::initialize_tracker()
     for (auto i = 1; i <= 49; i++)
     {
         auto chartName = i <= 46 ? "Treasure Chart " + std::to_string(i) : "Triforce Chart " + std::to_string(i - 46);
-        auto chartGameItem = nameToGameItem(chartName);
         // This technically results in dangling pointers, but they're still kept by the widgets and this function
         // will only ever be run once per execution of the application, so it should never result in any memory leaks
-        auto chartButton = new TIB({{GameItem::NOTHING, ""}, {chartGameItem, ""}}, nullptr, /*onlytext = */true);
+        auto chartButton = new TrackerLabel(TrackerLabelType::Chart, 9, this, nullptr, nullptr, nameToGameItem(chartName));
         set_font(chartButton, "fira_sans", 9);
         SET_BUTTON_TO_LAYOUT(*chartButton, chart_list_layout, (i - 1) % 17, (i - 1) / 17);
+        connect(chartButton, &TrackerLabel::chart_label_clicked, this, &MainWindow::tracker_give_and_map_chart);
+        connect(chartButton, &TrackerLabel::mouse_over_chart_label, this, &MainWindow::tracker_display_current_item_text);
+        connect(chartButton, &TrackerLabel::mouse_left_chart_label, this, &MainWindow::tracker_clear_current_item_text);
     }
 
     // Add Background Images and Colors (can't do this in Qt Designer since the DATA_PATH changes
@@ -637,55 +700,16 @@ void MainWindow::initialize_tracker()
 
     // Add area widgets to the overworld
     using TAW = TrackerAreaWidget;
-    ui->overworld_map_layout_2->addWidget(new TAW("Forsaken Fortress Sector", &trackerTreasureChart25), 0, 0);
-    ui->overworld_map_layout_2->addWidget(new TAW("Star Island",              &trackerTreasureChart7),  0, 1);
-    ui->overworld_map_layout_2->addWidget(new TAW("Northern Fairy Island",    &trackerTreasureChart24), 0, 2);
-    ui->overworld_map_layout_2->addWidget(new TAW("Gale Isle",                &trackerTreasureChart42), 0, 3);
-    ui->overworld_map_layout_2->addWidget(new TAW("Crescent Moon Island",     &trackerTreasureChart11), 0, 4);
-    ui->overworld_map_layout_2->addWidget(new TAW("Seven Star Isles",         &trackerTreasureChart45), 0, 5);
-    ui->overworld_map_layout_2->addWidget(new TAW("Overlook Island",          &trackerTreasureChart13), 0, 6);
-    ui->overworld_map_layout_2->addWidget(new TAW("Four Eye Reef",            &trackerTreasureChart41), 1, 0);
-    ui->overworld_map_layout_2->addWidget(new TAW("Mother & Child Isles",     &trackerTreasureChart29), 1, 1);
-    ui->overworld_map_layout_2->addWidget(new TAW("Spectacle Island",         &trackerTreasureChart22), 1, 2);
-    ui->overworld_map_layout_2->addWidget(new TAW("Windfall Island",          &trackerTreasureChart18), 1, 3);
-    ui->overworld_map_layout_2->addWidget(new TAW("Pawprint Isle",            &trackerTreasureChart30), 1, 4);
-    ui->overworld_map_layout_2->addWidget(new TAW("Dragon Roost Island",      &trackerTreasureChart39), 1, 5);
-    ui->overworld_map_layout_2->addWidget(new TAW("Flight Control Platform",  &trackerTreasureChart19), 1, 6);
-    ui->overworld_map_layout_2->addWidget(new TAW("Western Fairy Island",     &trackerTreasureChart8),  2, 0);
-    ui->overworld_map_layout_2->addWidget(new TAW("Rock Spire Isle",          &trackerTreasureChart2),  2, 1);
-    ui->overworld_map_layout_2->addWidget(new TAW("Tingle Island",            &trackerTreasureChart10), 2, 2);
-    ui->overworld_map_layout_2->addWidget(new TAW("Northern Triangle Island", &trackerTreasureChart26), 2, 3);
-    ui->overworld_map_layout_2->addWidget(new TAW("Eastern Fairy Island",     &trackerTreasureChart3),  2, 4);
-    ui->overworld_map_layout_2->addWidget(new TAW("Fire Mountain",            &trackerTreasureChart37), 2, 5);
-    ui->overworld_map_layout_2->addWidget(new TAW("Star Belt Archipelago",    &trackerTreasureChart27), 2, 6);
-    ui->overworld_map_layout_2->addWidget(new TAW("Three Eye Reef",           &trackerTreasureChart38), 3, 0);
-    ui->overworld_map_layout_2->addWidget(new TAW("Greatfish Isle",           &trackerTriforceChart1),  3, 1);
-    ui->overworld_map_layout_2->addWidget(new TAW("Cyclops Reef",             &trackerTreasureChart21), 3, 2);
-    ui->overworld_map_layout_2->addWidget(new TAW("Six Eye Reef",             &trackerTreasureChart6),  3, 3);
-    ui->overworld_map_layout_2->addWidget(new TAW("Tower of the Gods Sector", &trackerTreasureChart14), 3, 4);
-    ui->overworld_map_layout_2->addWidget(new TAW("Eastern Triangle Island",  &trackerTreasureChart34), 3, 5);
-    ui->overworld_map_layout_2->addWidget(new TAW("Thorned Fairy Island",     &trackerTreasureChart5),  3, 6);
-    ui->overworld_map_layout_2->addWidget(new TAW("Needle Rock Isle",         &trackerTreasureChart28), 4, 0);
-    ui->overworld_map_layout_2->addWidget(new TAW("Islet of Steel",           &trackerTreasureChart35), 4, 1);
-    ui->overworld_map_layout_2->addWidget(new TAW("Stone Watcher Island",     &trackerTriforceChart2),  4, 2);
-    ui->overworld_map_layout_2->addWidget(new TAW("Southern Triangle Island", &trackerTreasureChart44), 4, 3);
-    ui->overworld_map_layout_2->addWidget(new TAW("Private Oasis",            &trackerTreasureChart1),  4, 4);
-    ui->overworld_map_layout_2->addWidget(new TAW("Bomb Island",              &trackerTreasureChart20), 4, 5);
-    ui->overworld_map_layout_2->addWidget(new TAW("Birds Peak Rock",          &trackerTreasureChart36), 4, 6);
-    ui->overworld_map_layout_2->addWidget(new TAW("Diamond Steppe Island",    &trackerTreasureChart23), 5, 0);
-    ui->overworld_map_layout_2->addWidget(new TAW("Five Eye Reef",            &trackerTreasureChart12), 5, 1);
-    ui->overworld_map_layout_2->addWidget(new TAW("Shark Island",             &trackerTreasureChart16), 5, 2);
-    ui->overworld_map_layout_2->addWidget(new TAW("Southern Fairy Island",    &trackerTreasureChart4),  5, 3);
-    ui->overworld_map_layout_2->addWidget(new TAW("Ice Ring Isle",            &trackerTreasureChart17), 5, 4);
-    ui->overworld_map_layout_2->addWidget(new TAW("Forest Haven",             &trackerTreasureChart31), 5, 5);
-    ui->overworld_map_layout_2->addWidget(new TAW("Cliff Plateau Isles",      &trackerTriforceChart3),  5, 6);
-    ui->overworld_map_layout_2->addWidget(new TAW("Horseshoe Island",         &trackerTreasureChart9),  6, 0);
-    ui->overworld_map_layout_2->addWidget(new TAW("Outset Island",            &trackerTreasureChart43), 6, 1);
-    ui->overworld_map_layout_2->addWidget(new TAW("Headstone Island",         &trackerTreasureChart40), 6, 2);
-    ui->overworld_map_layout_2->addWidget(new TAW("Two Eye Reef",             &trackerTreasureChart46), 6, 3);
-    ui->overworld_map_layout_2->addWidget(new TAW("Angular Isles",            &trackerTreasureChart15), 6, 4);
-    ui->overworld_map_layout_2->addWidget(new TAW("Boating Course",           &trackerTreasureChart32), 6, 5);
-    ui->overworld_map_layout_2->addWidget(new TAW("Five Star Isles",          &trackerTreasureChart33), 6, 6);
+    for(size_t row = 0; row < 7; row++) {
+        for(size_t col = 0; col < 7; col++) {
+            uint8_t islandNum = row * 7 + col + 1;
+            TrackerChartButton* chartButton = new TrackerChartButton(islandNum, this);
+            ui->overworld_map_layout_2->addWidget(new TAW(roomNumToIslandName(islandNum), chartButton), row, col);
+            connect(chartButton, &TrackerChartButton::chart_map_button_pressed, this, &MainWindow::open_chart_mapping_list);
+            connect(chartButton, &TrackerChartButton::mouse_over_item, this, &MainWindow::tracker_display_current_item_text);
+            connect(chartButton, &TrackerChartButton::mouse_left_item, this, &MainWindow::tracker_clear_current_item_text);
+        }
+    }
 
     ui->other_areas_layout->addWidget(new TAW("Dragon Roost Cavern", "gohma",         &trackerDRCSmallKeys,  &trackerDRCBigKey,  &trackerDRCDungeonMap,  &trackerDRCCompass),  0, 0);
     ui->other_areas_layout->addWidget(new TAW("Forbidden Woods",     "kalle_demos",   &trackerFWSmallKeys,   &trackerFWBigKey,   &trackerFWDungeonMap,   &trackerFWCompass),   0, 1);
@@ -706,18 +730,6 @@ void MainWindow::initialize_tracker()
         inventoryButton->mainWindow = this;
         connect(inventoryButton, &TrackerInventoryButton::inventory_button_pressed, this, &MainWindow::update_tracker);
         connect(inventoryButton, &TrackerInventoryButton::mouse_over_item, this, &MainWindow::tracker_display_current_item_text);
-
-        // Set inventory button duplicates (just for charts on the overworld map and in the chart list for now)
-        for (auto potentialDuplicate : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
-        {
-            // If the first real item in the buttons' itemState's gameItem matches,
-            // then this is a button which is tracking the same item. Also
-            // compare the pointers to avoid labeling itself as a duplicate.
-            if (potentialDuplicate != inventoryButton && potentialDuplicate->itemStates[1].gameItem == inventoryButton->itemStates[1].gameItem)
-            {
-                inventoryButton->duplicates.insert(potentialDuplicate);
-            }
-        }
     }
 
     // Connect left-clicking area widgets to showing the checks in that area
@@ -749,6 +761,12 @@ void MainWindow::update_tracker()
     update_tracker_areas_and_autosave();
 
     auto& trackerWorld = trackerWorlds[0];
+
+    // Update all the chart icons
+    for(size_t islandNum = 1; islandNum < 50; islandNum++) {
+        TrackerAreaWidget* w1 = dynamic_cast<TrackerAreaWidget*>(ui->overworld_map_layout_2->itemAtPosition((islandNum - 1) / 7, (islandNum - 1) % 7)->widget());
+        dynamic_cast<TrackerChartButton*>(w1->stackedLayout.itemAt(0)->widget())->updateIcon();
+    }
 
     // Only update the widget we're displaying
     if (ui->tracker_locations_widget->currentIndex() == LOCATION_TRACKER_OVERWORLD)
@@ -816,13 +834,14 @@ void MainWindow::update_tracker()
             }
         }
 
-        auto area = trackerWorld.getArea(currentTrackerArea);
-        if (!area && areaEntranceParents.size() > 0)
-        {
-            area = areaEntranceParents.front();
-        }
         // Use the area entrance parents to find all shuffled entrances in this area
-        shuffledEntrances = area ? area->findShuffledEntrances(areaEntranceParents) : std::list<std::list<Entrance*>>();
+        if (trackerWorld.areaTable.contains(currentTrackerArea))
+        {
+            shuffledEntrances = trackerWorld.getArea(currentTrackerArea)->findShuffledEntrances(areaEntranceParents);
+        }
+        else if(areaEntranceParents.size() > 0) {
+            shuffledEntrances = areaEntranceParents.front()->findShuffledEntrances(areaEntranceParents);
+        }
     }
 
     // If the current tracker area is empty, then show all entrances
@@ -876,7 +895,7 @@ void MainWindow::update_tracker()
 }
 
 // Under certain circumstances we want to mark certain
-// locations as accessible even if they logically aren't
+// locations as accessible even if they logically aren't (and vice versa)
 void MainWindow::check_special_accessibility_conditions()
 {
     // If the user has marked a boss location that has chain
@@ -911,6 +930,16 @@ void MainWindow::check_special_accessibility_conditions()
             (elementInPool(deliveryBag, trackerInventory) || elementInPool(deliveryBag, startingItems)))
         {
             trackerWorld.locationTable["Mailbox - Letter from Baito"]->hasBeenFound = true;
+        }
+    }
+
+    // If chart randomization is on, the tracker logic uses the world's chart mappings and not just the tracked ones
+    // That can leak the mappings, so set the location as inaccessible as long as its chart mapping is not tracked
+    if(trackerSettings.randomize_charts) {
+        for(size_t i = 1; i < 50; i++) {
+            if(!isIslandMappedToChart(i)) {
+                trackerWorld.locationTable[roomNumToIslandName(i) + " - Sunken Treasure"]->hasBeenFound = false;
+            }
         }
     }
 }
@@ -1027,6 +1056,9 @@ void MainWindow::switch_to_entrance_destinations_tracker()
 
 void MainWindow::switch_to_chart_list_tracker()
 {
+    for(auto label : ui->chart_list_widget->findChildren<TrackerLabel*>()) {
+        label->update_colors();
+    }
     ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_CHART_LIST);
 }
 
@@ -1052,7 +1084,7 @@ void MainWindow::on_entrance_list_locations_button_released()
 
 void MainWindow::on_source_entrance_filter_lineedit_textChanged(const QString &arg1)
 {
-    filter_entrance_list(arg1.toLower());
+    filter_entrance_list(arg1.toLower(), true);
 }
 
 
@@ -1064,10 +1096,10 @@ void MainWindow::on_entrance_destination_back_button_released()
 
 void MainWindow::on_target_entrance_filter_lineedit_textChanged(const QString &arg1)
 {
-    filter_entrance_list(arg1.toLower());
+    filter_entrance_list(arg1.toLower(), false);
 }
 
-void MainWindow::filter_entrance_list(const QString& filter)
+void MainWindow::filter_entrance_list(const QString& filter, const bool arenaExitNameChange)
 {
     // Hide entrance labels which don't fit the filter
     // The labels should be shown if any part of the entrance's original name
@@ -1077,7 +1109,7 @@ void MainWindow::filter_entrance_list(const QString& filter)
         auto entrance = targetLabel->get_entrance();
         if (entrance)
         {
-            auto entranceName = QString::fromStdString(entrance->getOriginalName(true)).toLower();
+            auto entranceName = QString::fromStdString(entrance->getOriginalName(arenaExitNameChange)).toLower();
             QString connectedAreaName = "";
 
             // If this is a target entrance, use the original name of the entrance this target
@@ -1085,7 +1117,7 @@ void MainWindow::filter_entrance_list(const QString& filter)
             // entrances that all lead to the same area
             if (entranceName.startsWith("root -> "))
             {
-                entranceName = QString::fromStdString(entrance->getReplaces()->getOriginalName(true)).toLower();
+                entranceName = QString::fromStdString(entrance->getReplaces()->getOriginalName(arenaExitNameChange)).toLower();
             }
 
             // If this entrance is connected to another area, include that in the filter.
@@ -1108,6 +1140,44 @@ void MainWindow::filter_entrance_list(const QString& filter)
     }
 }
 
+bool MainWindow::isMappingChart() {
+    return selectedChartIsland != 0;
+}
+
+bool MainWindow::isChartMapped(GameItem chart) {
+    return mappedCharts.contains(chart);
+}
+
+void MainWindow::mapChart(GameItem chart, uint8_t islandNum) {
+    if(isIslandMappedToChart(islandNum)) {
+        std::erase_if(mappedCharts, [islandNum](const auto& mapping) { return mapping.second == islandNum; });
+        trackerWorlds[0].macros[trackerWorlds[0].macroNameMap.at("Chart For Island " + std::to_string(islandNum))].args[0] = Item(trackerWorlds[0].chartMappings[islandNum], &trackerWorlds[0]);
+    }
+
+    mappedCharts[chart] = islandNum;
+    trackerWorlds[0].macros[trackerWorlds[0].macroNameMap.at("Chart For Island " + std::to_string(islandNum))].args[0] = Item(chart, &trackerWorlds[0]);
+}
+
+bool MainWindow::isIslandMappedToChart(uint8_t island) {
+    return std::ranges::find_if(mappedCharts, [island](const auto& mapping) { return mapping.second == island; }) != mappedCharts.end();
+}
+
+uint8_t MainWindow::islandForChart(GameItem chart) { 
+    if(mappedCharts.contains(chart)) {
+        return mappedCharts.at(chart);
+    }
+
+    return 0;
+}
+
+GameItem MainWindow::chartForIsland(uint8_t islandNum) { 
+    if(!isIslandMappedToChart(islandNum)) {
+        return GameItem::INVALID;
+    }
+
+    return std::ranges::find_if(mappedCharts, [islandNum](const auto& mapping) { return mapping.second == islandNum; })->first;
+}
+
 void MainWindow::on_clear_all_button_released()
 {
     tracker_clear_specific_area(currentTrackerArea);
@@ -1115,6 +1185,9 @@ void MainWindow::on_clear_all_button_released()
 
 void MainWindow::on_chart_list_back_button_released()
 {
+    if(selectedChartIsland != 0) {
+        selectedChartIsland = 0;
+    }
     switch_to_overworld_tracker();
 }
 
@@ -1132,7 +1205,7 @@ void MainWindow::update_items_color() {
                                                    "background-position: center;"
                                                    "}");
     }
-    autosave_current_tracker();
+    autosave_current_tracker_preferences();
 }
 
 void MainWindow::update_locations_color()
@@ -1143,7 +1216,7 @@ void MainWindow::update_locations_color()
     else {
         ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
     }
-    autosave_current_tracker();
+    autosave_current_tracker_preferences();
 }
 
 void MainWindow::update_stats_color()
@@ -1154,7 +1227,7 @@ void MainWindow::update_stats_color()
     else {
         ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
     }
-    autosave_current_tracker();
+    autosave_current_tracker_preferences();
 }
 
 void MainWindow::on_open_chart_list_button_clicked()
@@ -1190,6 +1263,58 @@ void MainWindow::on_view_all_entrances_button_clicked()
 {
     set_current_tracker_area("");
     switch_to_entrances_tracker();
+    update_tracker();
+}
+
+void MainWindow::open_chart_mapping_list(uint8_t islandNum) {
+    if(!trackerSettings.randomize_charts) {
+        const Item chart = Item(roomNumToDefaultChart(islandNum), &trackerWorlds[0]);
+        if(!elementInPool(chart, trackerInventory)) {
+            addElementToPool(trackerInventory, chart);
+        }
+        else {
+            removeElementFromPool(trackerInventory, chart);
+        }
+
+        update_tracker();
+
+        return;
+    }
+
+    selectedChartIsland = islandNum;
+    switch_to_chart_list_tracker();
+}
+
+void MainWindow::tracker_give_and_map_chart(TrackerLabel* label, GameItem chart) {
+    // if mapping a chart
+    if(selectedChartIsland != 0) {
+        if(!elementInPool(Item(chart, &trackerWorlds[0]), trackerInventory)) {
+            addElementToPool(trackerInventory, Item(chart, &trackerWorlds[0]));
+        }
+
+        if(isIslandMappedToChart(selectedChartIsland)) {
+            std::erase_if(mappedCharts, [selectedChartIsland = this->selectedChartIsland](const auto& mapping) { return mapping.second == selectedChartIsland; });
+        }
+
+        mapChart(chart, selectedChartIsland);
+        on_chart_list_back_button_released();
+    }
+    // normal chart list
+    else {
+        if(!elementInPool(Item(chart, &trackerWorlds[0]), trackerInventory)) {
+            addElementToPool(trackerInventory, Item(chart, &trackerWorlds[0]));
+        }
+        else {
+            removeElementFromPool(trackerInventory, Item(chart, &trackerWorlds[0]));
+            if(trackerSettings.randomize_charts && mappedCharts.contains(chart)) {
+                const uint8_t oldIsland = mappedCharts.at(chart);
+                mappedCharts.erase(chart);
+                trackerWorlds[0].macros[trackerWorlds[0].macroNameMap.at("Chart For Island " + std::to_string(oldIsland))].args[0] = Item(trackerWorlds[0].chartMappings[oldIsland], &trackerWorlds[0]);
+            }
+        }
+    }
+
+    label->update_colors();
     update_tracker();
 }
 
@@ -1264,15 +1389,7 @@ void MainWindow::set_location_list_widget_background(const std::string& area)
 
 void MainWindow::tracker_display_current_item_text(const std::string& currentItem)
 {
-    if (trackerSettings.randomize_charts && (currentItem.starts_with("Treasure Chart") || currentItem.starts_with("Triforce Chart")))
-    {
-        ui->current_item_label->setText(std::string("Chart for " + ui->current_area_name_label->text().toStdString()).c_str());;
-    }
-    else
-    {
-        ui->current_item_label->setText(currentItem.c_str());
-    }
-
+    ui->current_item_label->setText(currentItem.c_str());
 }
 
 void MainWindow::tracker_clear_current_item_text()
@@ -1600,7 +1717,7 @@ void MainWindow::calculate_entrance_paths()
         {
             area = trackerWorld.getArea("Forsaken Fortress Sector");
         }
-        else {
+        else if(trackerWorld.areaTable.contains(region)) {
             area = trackerWorld.getArea(region);
         }
 
@@ -1735,12 +1852,14 @@ QString prettyTrackerName(Item& item, const int& count, MainWindow* mainWindow)
             // Change the name of the chart if randomize charts is on
             if (item.isChartForSunkenTreasure() && mainWindow->trackerSettings.randomize_charts)
             {
-                for (auto& [islandNum, chart] : item.getWorld()->chartMappings)
+                if(mainWindow->isChartMapped(item.getGameItemId()))
                 {
-                    if (item.getGameItemId() == chart)
-                    {
-                        return std::string("Chart for " + roomIndexToIslandName(islandNum)).c_str();
-                    }
+                    return std::string(item.getName() + " -> " + roomNumToIslandName(mainWindow->islandForChart(item.getGameItemId()))).c_str();
+                }
+                else
+                {
+                    uint8_t island = std::ranges::find_if(mainWindow->trackerWorlds[0].chartMappings, [item](const auto& mapping){ return mapping.second == item.getGameItemId(); })->first;
+                    return std::string("Chart for " + roomNumToIslandName(island)).c_str();
                 }
             }
             return QString(item.getName().c_str());

@@ -61,8 +61,8 @@
   Return:  ET Mini Boss Room, ET Two Moblins and Poes Room Past Stairs,                      M_DaiMB, 12,          0, M_Dai,    7,     9
   Savewarp: true
 - Type: MINIBOSS
-  Forward: WT Hub Room Lower Area,                 WT Mini Boss Room,                        kaze,     2,          3, kazeMB,   6,     0
-  Return:  WT Mini Boss Room,                      WT Hub Room Lower Area,                   kazeMB,   6,          0, kaze,     2,    20
+  Forward: WT Hub Room Basement Above Fan,         WT Mini Boss Room,                        kaze,     2,          3, kazeMB,   6,     0
+  Return:  WT Mini Boss Room,                      WT Hub Room Basement Above Fan,           kazeMB,   6,          0, kaze,     2,    20
   Savewarp: true
 - Type: MINIBOSS
   Forward: Hyrule Castle Interior,                 Hyrule Castle Sword Chamber,              Hyroom,   0,          2, kenroom,  0,     0

@@ -11,13 +11,13 @@ FlattenSearch::FlattenSearch(World* world_) {
         for (auto& exit : area->exits)
         {
             auto visit = visitor(&exit, this);
-            visitReq(exit.getRequirement(), visit);
+            visitReq(exit.getRequirement(), visit, world);
         }
 
         for (auto& event : area->events)
         {
             auto visit = visitor(&event, this);
-            visitReq(event.requirement, visit);
+            visitReq(event.requirement, visit, world);
         }
     }
 
@@ -232,6 +232,9 @@ DNF evaluatePartialRequirement(BitIndex& bitIndex, const Requirement& req, Flatt
     case RequirementType::EVENT:
         event = std::get<EventId>(req.args[0]);
         return search->eventExprs[event];
+
+    case RequirementType::MACRO:
+        return evaluatePartialRequirement(bitIndex, search->world->macros[std::get<MacroIndex>(req.args[0])], search);
 
     // count requirements frequently have to unify with weaker terms,
     // so a count requirement always requires all lesser item counts too.

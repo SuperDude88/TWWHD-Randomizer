@@ -49,8 +49,8 @@ Double Magic: count(2, Progressive_Magic_Meter)
 All 8 Shards: Triforce_Shard_1 and Triforce_Shard_2 and Triforce_Shard_3 and Triforce_Shard_4 and Triforce_Shard_5 and Triforce_Shard_6 and Triforce_Shard_7 and Triforce_Shard_8
 Can Defeat Phantom Ganon: (Outside_Swordless_Mode and Master_Sword) or (In_Swordless_Mode and Skull_Hammer)
 Can Get Past Hyrule Barrier: In_Swordless_Mode or (Full_Power_Master_Sword and All_8_Shards)
-Can Defeat Puppet Ganon: health(3) and Light_Arrows and Hookshot and Grappling_Hook and Boomerang
-Can Defeat Ganondorf: health(3) and Heros_Shield and (In_Swordless_Mode or Heros_Sword)
+Can Defeat Puppet Ganon: health(3) and Light_Arrows and Boomerang
+Can Defeat Ganondorf: health(3) and Heros_Shield and (In_Swordless_Mode or Master_Sword) # Hero's Sword crashes for some reason
 Rescued Aryll: Nothing
 
 Can Farm Joy Pendants: Grappling_Hook and Spoils_Bag
@@ -83,6 +83,7 @@ Can Defeat Kargarocs: Heros_Sword or Hookshot or Heros_Bow or Skull_Hammer or Bo
 Can Defeat Peahats: Heros_Bow or Skull_Hammer or Bombs or Boomerang or (Heros_Sword and (Hookshot or Can_Fan_With_Deku_Leaf))
 Can Remove Peahat Armor: Heros_Bow or Hookshot or Skull_Hammer or Bombs or Boomerang or Can_Fan_With_Deku_Leaf
 Can Defeat Boko Babas: Heros_Sword or Hookshot or Heros_Bow or Skull_Hammer or Bombs or Boomerang or (Grappling_Hook and Can_Fan_With_Deku_Leaf)
+Can Defeat Boko Babas At Range: Hookshot or Heros_Bow or Bombs or Boomerang or (Grappling_Hook and Can_Fan_With_Deku_Leaf)
 Can Defeat Mothulas: Heros_Sword or Heros_Bow or Bombs or Skull_Hammer
 Can Defeat Winged Mothulas: Heros_Sword or Heros_Bow or Bombs or Skull_Hammer
 Can Defeat Wizzrobes: Heros_Sword or Heros_Bow or Bombs or Skull_Hammer or Hookshot

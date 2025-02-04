@@ -264,6 +264,7 @@ big_key_label_safestring:
 
 
 
+; In daPy_lk_c::playerInit
 .org 0x024126b8
 	bl check_player_in_casual_clothes
 	cmpwi r3, 0
@@ -294,6 +295,11 @@ check_player_in_casual_clothes:
   mtlr r0
   addi sp, sp, 0x10
   blr
+
+; In some J3DPacketS-related function, affects reflection in Puppet Ganon's room
+.org 0x02083028
+  bl check_player_in_casual_clothes
+  cmpwi r3, 0
 
 
 ; Make Aryll always wear her pirate outfit, not just in Second Quest.
@@ -598,22 +604,6 @@ custom_damage_multiplier:
 ; .org 0x02005f14
 ;   lis r0, 0x3CB0 ; Up the root heap size
 ;   ori r0, r0, 0x0000
-
-; Alter savewarping so that players respawn at their last visited ocean sector
-; instead of whatever sector the cave/interior/area normally tries to savewarp
-; them to. This is specifically for entrance randomizer so players don't
-; end up savewarping to an island they weren't on.
-.org 0x025220C4
-	bl set_return_place_as_last_visited_ocean_sector
-.org @NextFreeSpace
-.global set_return_place_as_last_visited_ocean_sector
-set_return_place_as_last_visited_ocean_sector:
-  lis r5, some_gfx_ptr@ha
-	lwz r5, some_gfx_ptr@l(r5)
-	lwz r5, 0x218 (r5)
-	lbz r5, 0x3E (r5)
-	addi r5, r5, 1
-  b 0x025B50DC ; dSv_player_return_place_c::set
 
 ; Slightly increase the PermanentResource heap size
 ; It seems like Nintendo was flying really close to the sun with these and our slightly larger files cause issues

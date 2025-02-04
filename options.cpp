@@ -134,7 +134,7 @@ void Settings::resetDefaultPreferences(const bool& paths) {
     ui_display = UIDisplayPreference::On;
 
     selectedModel.casual = false;
-    selectedModel.custom = false;
+    selectedModel.user_provided = false;
     selectedModel.modelName = "Link";
     selectedModel.resetColors();
 

@@ -254,7 +254,7 @@ void World::determineChartMappings()
     std::vector<GameItem> charts = {};
     for (auto i = 1; i <= 49; i++) // first island index is 1 (room 0 is sea floor)
     {
-        charts.push_back(roomIndexToChart(i));
+        charts.push_back(roomNumToDefaultChart(i));
     }
 
     // Only shuffle around the charts if we're randomizing them
@@ -289,7 +289,7 @@ bool World::chartLeadsToSunkenTreasure(Location* location, const std::string& it
         return false;
     }
     auto islandName = location->getName().substr(0, location->getName().find(" - Sunken Treasure"));
-    size_t islandNumber = islandNameToRoomIndex(islandName);
+    size_t islandNumber = islandNameToRoomNum(islandName);
     return gameItemToName(chartMappings[islandNumber]).find(itemPrefix) != std::string::npos;
 }
 
@@ -1442,7 +1442,7 @@ void World::flattenLogicRequirements()
     // for this location.
     for (auto& [name, loc] : locationTable)
     {
-        loc->itemsInComputedRequirement = loc->computedRequirement.getItems();
+        loc->itemsInComputedRequirement = loc->computedRequirement.getItems(this);
 
         // For each item listed, set this location as a chain
         // location of the item

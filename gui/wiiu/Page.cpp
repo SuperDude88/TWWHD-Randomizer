@@ -235,7 +235,7 @@ bool ProgressionPage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-
+    
     return moved || buttonColumns[curCol][curRow]->update();
 }
 
@@ -459,7 +459,7 @@ bool EntrancePage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-
+    
     return moved || buttonColumns[curCol][curRow]->update();
 }
 
@@ -679,7 +679,7 @@ bool AdvancedPage::update() {
 
         buttonColumns[curCol][curRow]->hovered();
     }
-
+    
     return moved || buttonColumns[curCol][curRow]->update();
 }
 
@@ -819,7 +819,7 @@ void ItemsPage::open() {
     curRow = 0;
     listScrollPos = 0;
 
-    if(getValue(Option::RemoveSwords) == "Disabled") {
+    if(getValue(Option::RemoveSwords) == "Disabled") { 
         // only add swords if they aren't already there
         if(std::find(listButtons.begin(), listButtons.end(), GameItem::ProgressiveSword) == listButtons.end()) {
             for(size_t count = 1; count <= 4; count++) {
@@ -835,7 +835,7 @@ void ItemsPage::open() {
         std::erase(listButtons, GameItem::ProgressiveSword); // erase all swords
         std::erase(listButtons, GameItem::HurricaneSpin); // erase hurricane spin
     }
-
+    
     // make sure our buttons are in order
     std::sort(listButtons.begin(), listButtons.end());
 
@@ -909,7 +909,7 @@ bool ItemsPage::update() {
                 else {
                     curRow -= 1; //up one row
                 }
-
+                
                 countButtons[curRow]->hovered();
 
                 break;
@@ -934,7 +934,7 @@ bool ItemsPage::update() {
                 else {
                     curRow += 1;
                 }
-
+                
                 listButtons[listScrollPos + curRow].hovered();
 
                 break;
@@ -947,7 +947,7 @@ bool ItemsPage::update() {
                 else {
                     curRow += 1; //down one row
                 }
-
+                
                 countButtons[curRow]->hovered();
 
                 break;
@@ -976,7 +976,7 @@ bool ItemsPage::update() {
             btnUpdate = countButtons[curRow]->update();
             break;
     }
-
+    
     return moved || btnUpdate;
 }
 
@@ -992,7 +992,7 @@ void ItemsPage::drawTV() const {
     for(size_t row = 0; row < countButtons.size(); row++) {
         countButtons[row]->drawTV(PAGE_FIRST_ROW + row, countStartCol + 1, countStartCol + 1 + 30);
     }
-
+    
     // draw cursor
     switch(curCol) {
         case Column::LIST:
@@ -1107,7 +1107,7 @@ bool LocationsPage::update() {
         else {
             curRow += 1;
         }
-
+        
         listButtons[listScrollPos + curRow].hovered();
 
         moved = true;
@@ -1125,7 +1125,7 @@ bool LocationsPage::update() {
             }
         }
     }
-
+    
     return moved || btnUpdate;
 }
 
@@ -1135,7 +1135,7 @@ void LocationsPage::drawTV() const {
     for(size_t row = 0; row < LIST_HEIGHT; row++) {
         listButtons[listScrollPos + row].drawTV(PAGE_FIRST_ROW + row, 3, 1);
     }
-
+    
     // draw cursor
     OSScreenPutFontEx(SCREEN_TV, listStartCol, PAGE_FIRST_ROW + curRow, ">");
 }
@@ -1190,11 +1190,11 @@ void ColorPage::drawDRC() const {
     }
 }
 
-ColorPage::PresetsSubpage::PresetsSubpage(ColorPage& parent_) :
+ColorPage::PresetsSubpage::PresetsSubpage(ColorPage& parent_) : 
     parent(parent_)
 {
-    toggles[0] = std::make_unique<ActionButton>("Casual Clothes", "Enable this if you want to wear your casual clothes instead of the Hero's Clothes.", &OptionCB::toggleCasualClothes, &OptionCB::isCasual);
-    toggles[1] = std::make_unique<ActionButton>("Custom Model", "Enable this to use a custom model. See how to install the model on the github for this branch \nWarning: This feature is experimental and could lead to softlocks and crashes.", &OptionCB::toggleCustomModel, &OptionCB::customModel);
+    toggles[0] = std::make_unique<ActionButton>("Link Model", "Select a model for Link. To install more, read https://github.com/mcy/TWWHD-Randomizer/tree/main/customizer/INSTALL.md", &OptionCB::toggleCustomModel, &OptionCB::customModel);
+    toggles[1] = std::make_unique<ActionButton>("Casual Clothes", "Enable this if you want to wear your casual clothes instead of the Hero's Clothes. Custom models will have their own variant of casual clothes", &OptionCB::toggleCasualClothes, &OptionCB::isCasual);
     toggles[2] = std::make_unique<ActionButton>("Randomize Colors Orderly", "", &OptionCB::randomizeColorsOrderly);
     toggles[3] = std::make_unique<ActionButton>("Randomize Colors Chaotically", "", &OptionCB::randomizeColorsChaotically);
     toggles[4] = std::make_unique<FunctionButton>("Select Colors Manually", "", std::bind(&ColorPage::setSubpage, &parent, Subpage::COLOR_PICKER));
@@ -1311,7 +1311,7 @@ bool ColorPage::PresetsSubpage::update() {
             btnUpdate = toggles[curRow]->update();
             break;
     }
-
+    
     return moved || btnUpdate;
 }
 
@@ -1361,7 +1361,7 @@ void ColorPage::PresetsSubpage::drawTV() const {
     for(size_t row = 0; row < toggles.size(); row++) {
         toggles[row]->drawTV(PAGE_FIRST_ROW + row, countStartCol + 1, countStartCol + 1 + 30);
     }
-
+    
     // draw loaded colors
     static constexpr uint32_t starting_y_pos = 247;
     const std::array<std::string, 11>& textures = getModel().casual ? casualTextures : heroTextures;
@@ -1377,7 +1377,7 @@ void ColorPage::PresetsSubpage::drawTV() const {
         OSScreenPutFontEx(SCREEN_TV, countStartCol + 1 + 15, row, hexColor.c_str());
         drawSquare(std::stoi(hexColor, nullptr, 16) << 8, 13 * (countStartCol + 1 + 15 + 6), starting_y_pos + i * 24, 24);
     }
-
+    
     // draw cursor
     switch(curCol) {
         case Column::LIST:
@@ -1406,7 +1406,7 @@ void ColorPage::PresetsSubpage::drawDRC() const {
     }
 }
 
-ColorPage::ColorPickerSubpage::ColorPickerSubpage(ColorPage& parent_) :
+ColorPage::ColorPickerSubpage::ColorPickerSubpage(ColorPage& parent_) : 
     parent(parent_),
     actions{
         ColorButton("Random", "", &ColorCB::randomizeColor),
@@ -1567,7 +1567,7 @@ bool ColorPage::ColorPickerSubpage::updateList() {
     else {
         btnUpdate = actions[curCol].update(heroTextures[listScrollPos + curRow]);
     }
-
+    
     return moved || btnUpdate;
 }
 
@@ -1585,12 +1585,12 @@ void ColorPage::ColorPickerSubpage::drawListTV() const {
 
         OSScreenPutFontEx(SCREEN_TV, startCol + 13, PAGE_FIRST_ROW + row, hexColor.c_str());
         drawSquare(std::stoi(hexColor, nullptr, 16) << 8, 14 * (startCol + 13 + 7), starting_y_pos + row * 24, 24);
-
+        
         actions[0].drawTV(row + PAGE_FIRST_ROW, startCol + 23, startCol + 23 + 1);
         actions[1].drawTV(row + PAGE_FIRST_ROW, startCol + 31, startCol + 31 + 1);
         actions[2].drawTV(row + PAGE_FIRST_ROW, startCol + 37, startCol + 37 + 1);
     }
-
+    
     // draw cursor
     size_t cursorCol = 0;
     switch(curCol) {
@@ -1662,7 +1662,7 @@ MetaPage::MetaPage() {
             LOG_TO_DEBUG("Displaying fallback save path, RPXLoader_GetVersion encountered error " + std::to_string(err));
             return;
         }
-
+        
         if(version < 3) {
             LOG_TO_DEBUG("Displaying fallback save path, librpxloader is outdated.");
             return;
@@ -1722,12 +1722,12 @@ bool MetaPage::update() {
 
     //    return true;
     //}
-
+    
     return false;
 }
 
 void MetaPage::drawTV() const {
-    const std::vector<std::string>& lines = wrap_string("Written by csunday95, gymnast86, and SuperDude88.\n\nIf you get stuck, check the seed's spoiler log in " + savePath + ".\nReport any issues in the Discord server or create a GitHub issue.\n\nModified Teotia444 Build.", ScreenSizeData::tv_line_length);
+    const std::vector<std::string>& lines = wrap_string("Written by csunday95, gymnast86, and SuperDude88.\n\nIf you get stuck, check the seed's spoiler log in " + savePath + ".\nReport any issues in the Discord server or create a GitHub issue.", ScreenSizeData::tv_line_length);
 
     for(size_t i = 0; i < lines.size(); i++) {
         OSScreenPutFontEx(SCREEN_TV, 0, PAGE_FIRST_ROW + i, lines[i].c_str());

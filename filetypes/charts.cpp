@@ -7,58 +7,6 @@
 
 using eType = Utility::Endian::Type;
 
-static constexpr std::array<GameItem, 49> island_num_to_item = {
-    GameItem::TreasureChart25, // Sector 1 Forsaken Fortress
-    GameItem::TreasureChart7,  // Sector 2 Star Island
-    GameItem::TreasureChart24, // etc...
-    GameItem::TreasureChart42,
-    GameItem::TreasureChart11,
-    GameItem::TreasureChart45,
-    GameItem::TreasureChart13,
-    GameItem::TreasureChart41,
-    GameItem::TreasureChart29,
-    GameItem::TreasureChart22,
-    GameItem::TreasureChart18,
-    GameItem::TreasureChart30,
-    GameItem::TreasureChart39,
-    GameItem::TreasureChart19,
-    GameItem::TreasureChart8,
-    GameItem::TreasureChart2,
-    GameItem::TreasureChart10,
-    GameItem::TreasureChart26,
-    GameItem::TreasureChart3,
-    GameItem::TreasureChart37,
-    GameItem::TreasureChart27,
-    GameItem::TreasureChart38,
-    GameItem::TriforceChart1,
-    GameItem::TreasureChart21,
-    GameItem::TreasureChart6,
-    GameItem::TreasureChart14,
-    GameItem::TreasureChart34,
-    GameItem::TreasureChart5,
-    GameItem::TreasureChart28,
-    GameItem::TreasureChart35,
-    GameItem::TriforceChart2,
-    GameItem::TreasureChart44,
-    GameItem::TreasureChart1,
-    GameItem::TreasureChart20,
-    GameItem::TreasureChart36,
-    GameItem::TreasureChart23,
-    GameItem::TreasureChart12,
-    GameItem::TreasureChart16,
-    GameItem::TreasureChart4,
-    GameItem::TreasureChart17,
-    GameItem::TreasureChart31,
-    GameItem::TriforceChart3,
-    GameItem::TreasureChart9,
-    GameItem::TreasureChart43,
-    GameItem::TreasureChart40,
-    GameItem::TreasureChart46,
-    GameItem::TreasureChart15,
-    GameItem::TreasureChart32,
-    GameItem::TreasureChart33 // Sector 49 Five Star Isles
-};
-
 ChartError ChartPos::read(std::istream& in) {
 	if (!in.read(reinterpret_cast<char*>(&tex_x_offset), sizeof(tex_x_offset))) {
 		LOG_ERR_AND_RETURN(ChartError::REACHED_EOF);
@@ -121,7 +69,7 @@ ChartError Chart::read(std::istream& in) {
 		possible_positions[i] = pos;
 	}
 
-	if(number >= 1 && number <= 49) item_name = island_num_to_item[getIslandNumber() - 1];
+	if(number >= 1 && number <= 49) item_name = roomNumToDefaultChart(getIslandNumber());
 
 	return ChartError::NONE;
 }

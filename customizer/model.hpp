@@ -39,8 +39,7 @@ private:
     ColorPreset colors;
 
 public:
-    bool casual;
-    bool custom;
+    bool casual, user_provided = false;
     std::string modelName;
     // holds ordering of the customizable colors in the gui
     std::list<std::string> heroOrdering;
@@ -62,9 +61,10 @@ public:
     void randomizeOrderly();
     void randomizeChaotically();
 
+    void nextModel();
+
     ModelError loadFromFolder();
-    ModelError applyModel() const;
-    ModelError customModel() const;
+    ModelError applyModel() const;    
 };
 
 std::string errorToName(const ModelError& err);

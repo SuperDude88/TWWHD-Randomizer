@@ -61,7 +61,11 @@ bool checkEnoughFreeSpace(const MCPInstallTarget& device, const uint64_t& minSpa
 
     uint64_t freeSize = 0;
     FSError ret = FSAGetFreeSpaceSize(handle, path.c_str(), &freeSize);
-    if(ret != FS_ERROR_OK) {
+    if(ret == FS_ERROR_STORAGE_FULL) {
+        ErrorLog::getInstance().log("Storage device " + path + " is full!");
+        return false;
+    }
+    else if(ret != FS_ERROR_OK) {
         ErrorLog::getInstance().log("Failed to get free space size, error " + std::to_string(ret));
         return false;
     }
@@ -299,8 +303,8 @@ static bool packFreeChannel(const fspath& baseDir) {
     tinyxml2::XMLPrinter printer;
 
     tinyxml2::XMLDocument meta;
-    if(tinyxml2::XMLError err = LoadXML(meta, DataPath / "meta" / "meta.xml"); err != tinyxml2::XMLError::XML_SUCCESS) {
-        ErrorLog::getInstance().log("Could not parse " + (DataPath / "meta" / "meta.xml").string() + ", got error " + std::to_string(err));
+    if(const tinyxml2::XMLError err = LoadXML(meta, DataPath / "meta" / "meta.xml"); err != tinyxml2::XMLError::XML_SUCCESS) {
+        ErrorLog::getInstance().log("Could not parse " + (DataPath / "meta" / "meta.xml").string() + ", " + meta.ErrorStr());
         return false;
     }
 
@@ -315,8 +319,8 @@ static bool packFreeChannel(const fspath& baseDir) {
     printer.ClearBuffer();
 
     tinyxml2::XMLDocument app;
-    if(tinyxml2::XMLError err = LoadXML(app, DataPath / "code" / "app.xml"); err != tinyxml2::XMLError::XML_SUCCESS) {
-        ErrorLog::getInstance().log("Could not parse " + (DataPath / "code" / "app.xml").string() + ", got error " + std::to_string(err));
+    if(const tinyxml2::XMLError err = LoadXML(app, DataPath / "code" / "app.xml"); err != tinyxml2::XMLError::XML_SUCCESS) {
+        ErrorLog::getInstance().log("Could not parse " + (DataPath / "code" / "app.xml").string() + ", " + app.ErrorStr());
         return false;
     }
 

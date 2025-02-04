@@ -4,9 +4,9 @@ if(CMAKE_VERSION VERSION_LESS "3.13")
 		cmake_policy(SET CMP0076 OLD)
 	endif()
 	
-    target_sources(wwhd_rando_t4b PRIVATE nuspack/contents/contentInfo.cpp nuspack/contents/contents.cpp)
+    target_sources(wwhd_rando PRIVATE nuspack/contents/contentInfo.cpp nuspack/contents/contents.cpp)
 else()
 	cmake_policy(SET CMP0076 NEW)
 
-        target_sources(wwhd_rando_t4b PRIVATE contentInfo.cpp contents.cpp)
+	target_sources(wwhd_rando PRIVATE contentInfo.cpp contents.cpp)
 endif()

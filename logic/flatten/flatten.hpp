@@ -2,6 +2,7 @@
 
 #include <logic/Entrance.hpp>
 #include <logic/Area.hpp>
+#include <logic/World.hpp>
 #include <logic/flatten/simplify_algebraic.hpp>
 
 #include <functional>
@@ -74,15 +75,19 @@ std::function<void(const Requirement& req)> visitor(T* thing, FlattenSearch* sea
 }
 
 template<typename Func>
-void visitReq(const Requirement& req, Func f)
+void visitReq(const Requirement& req, Func f, World* world)
 {
     f(req);
     if (req.type == RequirementType::AND or req.type == RequirementType::OR)
     {
         for (auto& arg : req.args)
         {
-            visitReq(std::get<Requirement>(arg), f);
+            visitReq(std::get<Requirement>(arg), f, world);
         }
+    }
+    else if (req.type == RequirementType::MACRO)
+    {
+        visitReq(world->macros[std::get<MacroIndex>(req.args[0])], f, world);
     }
 }
 

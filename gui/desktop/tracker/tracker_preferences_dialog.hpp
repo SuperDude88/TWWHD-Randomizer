@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ui_tracker_preferences_dialog.h"
+#include <ui_tracker_preferences_dialog.h>
 
 #include <QDialog>
 
@@ -23,6 +23,8 @@ private slots:
     void on_pick_items_background_color_clicked();
     void on_pick_locations_background_color_clicked();
     void on_pick_statistics_background_color_clicked();
+    void on_tracker_save_path_browse_button_clicked();
+    void on_tracker_load_path_browse_button_clicked();
 
 private:
     Ui::TrackerPreferencesDialog ui;

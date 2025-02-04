@@ -103,8 +103,7 @@ private:
     void load_locations();
 
     void initialize_tracker();
-    void initialize_tracker_world(Settings& settings, const GameItemPool& markedItems = {}, const std::vector<std::string>& markedLocations = {}, const std::unordered_map<std::string, std::string>& connectedEntrances = {});
-    void load_tracker_autosave();
+    void initialize_tracker_world(Settings& settings, const GameItemPool& markedItems = {}, const std::vector<std::string>& markedLocations = {}, const std::unordered_map<std::string, std::string>& connectedEntrances = {}, const std::map<GameItem, uint8_t>& chartMappings = {});
     void calculate_own_dungeon_key_locations();
     void set_location_list_widget_background(const std::string& area);
     void clear_tracker_labels(QLayout* layout);
@@ -121,8 +120,17 @@ public:
     void set_current_tracker_area(const std::string& areaPrefix);
     void update_tracker();
     void setup_tracker_entrances();
+    void load_tracker_autosave();
     void autosave_current_tracker();
-    void filter_entrance_list(const QString& filter);
+    bool autosave_current_tracker_config();
+    bool autosave_current_tracker_preferences();
+    void filter_entrance_list(const QString& filter, const bool arenaExitNameChange);
+    bool isMappingChart();
+    bool isChartMapped(GameItem chart);
+    void mapChart(GameItem chart, uint8_t islandNum);
+    bool isIslandMappedToChart(uint8_t island);
+    uint8_t islandForChart(GameItem chart);
+    GameItem chartForIsland(uint8_t islandNum);
 
 private slots:
     void show_error_dialog(const std::string& s, const std::string& title = "An error has occured!");
@@ -222,6 +230,7 @@ private slots:
     void on_classic_mode_stateChanged(int arg1);
     void on_performance_stateChanged(int arg1);
     void on_plandomizer_stateChanged(int arg1);
+    void validate_plandomizer_path();
     void on_plandomizer_path_browse_button_clicked();
     void on_plandomizer_path_editingFinished();
     void on_fix_rng_stateChanged(int arg1);
@@ -290,9 +299,9 @@ private slots:
     void on_open_tracker_settings_button_clicked();
     void tracker_preferences_closed(int result);
     void on_view_all_entrances_button_clicked();
+    void open_chart_mapping_list(uint8_t islandNum);
+    void tracker_give_and_map_chart(TrackerLabel* label, GameItem chart);
 
-
-    void on_install_custom_model_clicked();
 
 public:
     void update_items_color();
@@ -329,6 +338,11 @@ private:
 
     EntrancePools targetEntrancePools = {};
     Entrance* selectedEntrance = nullptr;
+
+    // Maps room numbers to their (randomized) chart
+    //TODO: make this entire system less sketchy
+    std::map<GameItem, uint8_t> mappedCharts = {};
+    uint8_t selectedChartIsland = 0;
 
     TrackerPreferencesDialog* prefDialog = nullptr;
 
@@ -447,106 +461,6 @@ private:
     TIB trackerProgressiveMagicMeter = TIB({{GameItem::NOTHING,               "magic_bottle_gray.png",               "Magic Meter"},
                                             {GameItem::ProgressiveMagicMeter, "magic_bottle_color.png",              "Magic Meter"},
                                             {GameItem::ProgressiveMagicMeter, "magic_double_bottle_color.png",       "Magic Meter Upgrade"}});
-
-    // Treasure and Triforce Charts
-    TIB trackerTreasureChart1        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart1,        "treasure_chart_open.png"}});
-    TIB trackerTreasureChart2        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart2,        "treasure_chart_open.png"}});
-    TIB trackerTreasureChart3        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart3,        "treasure_chart_open.png"}});
-    TIB trackerTreasureChart4        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart4,        "treasure_chart_open.png"}});
-    TIB trackerTreasureChart5        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart5,        "treasure_chart_open.png"}});
-    TIB trackerTreasureChart6        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart6,        "treasure_chart_open.png"}});
-    TIB trackerTreasureChart7        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart7,        "treasure_chart_open.png"}});
-    TIB trackerTreasureChart8        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart8,        "treasure_chart_open.png"}});
-    TIB trackerTreasureChart9        = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart9,        "treasure_chart_open.png"}});
-    TIB trackerTreasureChart10       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart10,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart11       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart11,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart12       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart12,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart13       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart13,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart14       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart14,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart15       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart15,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart16       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart16,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart17       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart17,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart18       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart18,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart19       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart19,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart20       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart20,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart21       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart21,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart22       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart22,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart23       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart23,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart24       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart24,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart25       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart25,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart26       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart26,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart27       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart27,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart28       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart28,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart29       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart29,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart30       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart30,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart31       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart31,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart32       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart32,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart33       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart33,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart34       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart34,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart35       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart35,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart36       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart36,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart37       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart37,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart38       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart38,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart39       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart39,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart40       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart40,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart41       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart41,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart42       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart42,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart43       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart43,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart44       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart44,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart45       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart45,       "treasure_chart_open.png"}});
-    TIB trackerTreasureChart46       = TIB({{GameItem::NOTHING,               "treasure_chart_closed.png"},
-                                            {GameItem::TreasureChart46,       "treasure_chart_open.png"}});
-    TIB trackerTriforceChart1        = TIB({{GameItem::NOTHING,               "triforce_chart_closed.png"},
-                                            {GameItem::TriforceChart1,        "triforce_chart_open.png"}});
-    TIB trackerTriforceChart2        = TIB({{GameItem::NOTHING,               "triforce_chart_closed.png"},
-                                            {GameItem::TriforceChart2,        "triforce_chart_open.png"}});
-    TIB trackerTriforceChart3        = TIB({{GameItem::NOTHING,               "triforce_chart_closed.png"},
-                                            {GameItem::TriforceChart3,        "triforce_chart_open.png"}});
 
     // Dungeon Item Inventory Buttons
     TIB trackerWTSmallKeys           = TIB({{GameItem::NOTHING,               "small_key_gray.png",        "WT Small Key (0/2)"},

@@ -1,7 +1,9 @@
 #include "OptionActions.hpp"
+#include "utility/path.hpp"
 
 #include <algorithm>
 
+#include <filesystem>
 #include <utility/platform.hpp>
 #include <command/Log.hpp>
 #include <seedgen/seed.hpp>
@@ -507,14 +509,6 @@ namespace OptionCB {
     std::string isCasual() {
         return fromBool(conf.settings.selectedModel.casual);
     }
-    std::string toggleCustomModel() {
-        conf.settings.selectedModel.custom = !conf.settings.selectedModel.custom;
-        return fromBool(conf.settings.selectedModel.custom);
-    }
-
-    std::string customModel() {
-        return fromBool(conf.settings.selectedModel.custom);
-    }
 
     std::string randomizeColorsOrderly() {
         conf.settings.selectedModel.randomizeOrderly();
@@ -524,6 +518,18 @@ namespace OptionCB {
     std::string randomizeColorsChaotically() {
         conf.settings.selectedModel.randomizeChaotically();
         return "";
+    }
+
+    std::string toggleCustomModel() {
+        conf.settings.selectedModel.nextModel();
+        return customModel();
+    }
+
+    std::string customModel() {
+        if (conf.settings.selectedModel.modelName.empty()) {
+            return "Link";
+        }
+        return conf.settings.selectedModel.modelName;
     }
 
     std::string cyclePigColor() {

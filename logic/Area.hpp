@@ -48,7 +48,5 @@ public:
     std::unordered_map<Area*, EntrancePath> findEntrancePaths();
 };
 
-std::string roomIndexToIslandName(const uint8_t& startingIslandRoomIndex);
-uint8_t islandNameToRoomIndex(const std::string& islandArea);
-uint8_t chartToRoomIndex(const GameItem& chart);
-GameItem roomIndexToChart(const uint8_t& room);
+std::string roomNumToIslandName(const uint8_t& startingIslandRoomNum);
+uint8_t islandNameToRoomNum(const std::string& islandArea);

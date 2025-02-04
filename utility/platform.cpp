@@ -78,7 +78,7 @@ void closeMocha() {
     }
 
     if(DiscMounted) {
-        if(const MochaUtilsStatus status = Mocha_UnmountFS("storage_odd_content"); status != MOCHA_RESULT_SUCCESS) {
+        if(const MochaUtilsStatus status = Mocha_UnmountFS("storage_odd03"); status != MOCHA_RESULT_SUCCESS) {
             ErrorLog::getInstance().log(std::string("Error unmounting disc: ") + Mocha_GetStatusStr(status));
         }
         DiscMounted = false;

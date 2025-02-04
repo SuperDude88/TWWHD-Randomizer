@@ -74,19 +74,6 @@ World 1:
 World 1:
     starting island: Five Eye Reef
 
-# EXTRA PROGRESSION LOCATIONS
-# For more fine-tuned control over which locations are in logic, you can specify extra
-# locations whose categories are not selected by listing them under an "extra progression locations"
-# element. For example, if we don't have spoils trading or long sidequests enabled
-# but we still want to have the Windfall potion sellers checks as potential
-# progression locations, we can type:
-World 1:
-    extra progression locations:
-        - Windfall Island - Potion Shop 15 Blue Chu
-        - Windfall Island - Potion Shop 15 Green Chu
-
-# Alternatively, to disable specific locations, you can plandomizer junk on them
-
 # RANDOM STARTING ITEMS
 # If "Start With Random Item" is enabled, you can override the pool it picks from.
 # By default, the pool includes the Bait Bag, Bombs, Boomerang, Bow, Deku Leaf,

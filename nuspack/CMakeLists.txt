@@ -4,11 +4,11 @@ if(CMAKE_VERSION VERSION_LESS "3.13")
 		cmake_policy(SET CMP0076 OLD)
 	endif()
 	
-    target_sources(wwhd_rando_t4b PRIVATE nuspack/packer.cpp nuspack/appinfo.cpp)
+    target_sources(wwhd_rando PRIVATE nuspack/packer.cpp nuspack/appinfo.cpp)
 else()
 	cmake_policy(SET CMP0076 NEW)
 
-        target_sources(wwhd_rando_t4b PRIVATE packer.cpp appinfo.cpp)
+	target_sources(wwhd_rando PRIVATE packer.cpp appinfo.cpp)
 endif()
 
 add_subdirectory("packaging")

@@ -53,8 +53,8 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
         // Process starting island
         if (!plandoStartingIsland.empty())
         {
-            plandomizer.startingIslandRoomIndex = islandNameToRoomIndex(plandoStartingIsland);
-            if (plandomizer.startingIslandRoomIndex == 0)
+            plandomizer.startingIslandRoomNum = islandNameToRoomNum(plandoStartingIsland);
+            if (plandomizer.startingIslandRoomNum == 0)
             {
                 ErrorLog::getInstance().log("Plandomizer Error: Starting island name \"" + plandoStartingIsland + "\" is not recognized");
                 return PlandomizerError::BAD_STARTING_ISLAND;

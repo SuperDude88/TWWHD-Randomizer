@@ -235,6 +235,16 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                     if (!loc->currentItem.canBeInBarrenRegion())
                     {
                         LOG_TO_DEBUG(dungeonName + " removed from barren pool due to " + loc->currentItem.getName() + " at outside location " + loc->getName());
+                        world.barrenRegions.erase(dungeonName);
+                        // Also remove any islands this dungeon is on from the barren pool
+                        for (const auto& island : dungeon.islands)
+                        {
+                            if (world.barrenRegions.contains(island))
+                            {
+                                LOG_TO_DEBUG(island + " removed from barren pool due to " + loc->currentItem.getName() + " at outside location " + loc->getName());
+                                world.barrenRegions.erase(island);
+                            }
+                        }
                     }
                 }
             }

@@ -59,8 +59,9 @@ namespace Utility {
         return path;
     }
 
-    fspath get_model_path() {
-        const fspath path = get_app_save_path() / "model/";
+    
+    fspath get_models_dir() {
+        const fspath path = get_app_save_path() / "custom_models/";
 
         if (!std::filesystem::is_directory(path))
         {
