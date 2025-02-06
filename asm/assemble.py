@@ -377,8 +377,8 @@ Dumper.add_representer(elf.Relocation, lambda dumper, data: dumper.represent_map
   flow_style=True,
 ))
 Dumper.add_representer(
-  list,
-  lambda dumper, data: dumper.represent_sequence(u"tag:yaml.org,2002:seq", data, flow_style=True)
+  bytes,
+  lambda dumper, data: dumper.represent_sequence(u"tag:yaml.org,2002:seq", list(data), flow_style=True)
 )
 
 def main():
@@ -429,7 +429,7 @@ def main():
         text, relos = chunk.link(ld_script)
       except Exception as e:
         raise Exception(f'{chunk.path()}: {e}') from e
-      diff["Data"][chunk.origin] = [b for b in text]
+      diff["Data"][chunk.origin] = text
       diff["Relocations"] += relos
 
     if diff["Relocations"] == []:
