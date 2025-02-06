@@ -50,9 +50,20 @@ def run(tool: str, args: List[Any], *, input: str = None) -> bytes:
   if isinstance(input, str):
     input = input.encode('utf-8')
   
-  print(find_tool(tool), *args)
+  for i, arg in enumerate(args):
+    if not isinstance(arg, Path):
+      continue
+    try:
+      arg = arg.relative_to(TEMP)
+    except ValueError:
+      if not arg.is_absolute():
+        arg = arg.absolute
+    args[i] = arg
+
+  print(tool, *args)
   result = subprocess.run(
     [find_tool(tool)] + args,
+    cwd=TEMP,
     input=input,
     capture_output=True,
   )
@@ -70,9 +81,11 @@ def preprocess(path: Path) -> Path:
   Executes the C preprocessor on the given assembly file text.
   Returns a path to the result.
   """
-  out = TEMP / (path.stem + ".i")
+  out = TEMP / (path.name + ".i")
 
-  run("powerpc-eabi-gcc", ["-E", "-xassembler-with-cpp", "-o", out, path])
+  # GCC does not like the .asm suffix. It really wants it to be .S, but we
+  # use .asm, so we need to specify the language with -x.
+  run("powerpc-eabi-gcc", ["-E", "-x", "assembler-with-cpp", "-o", out, path])
   return out
 
 COMMENT_PAT = re.compile(r"[#;].*$")
@@ -82,24 +95,56 @@ BRANCH_PAT  = re.compile(r"(?:b|beq|bne|blt|bgt|ble|bge)\s+0x([0-9a-fA-F]+)(?:$|
 
 TEMP = Path(tempfile.mkdtemp())
 
+CPP_FLAGS = []
+
+ASSEMBLY_FLAGS = [
+  "-mregnames", # Allow naming registers r0, r1, r2, etc. This is a PPC quirk.
+  "-x", "assembler", # We use .asm instead of .S; this confuses GCC.
+]
+
 @dataclass
 class Chunk:
   source: Path
-  index: int
+  tag: int = None
 
-  origin: int  # None -> NextFreeSpace.
-  code: List[str] = field(default_factory=list)
+  origin: int = None # None -> NextFreeSpace.
+  code: str = ""
   labels: Dict[str, int] = field(default_factory=dict)
+
+  gcc_flags: List[str] = field(default_factory=list)
 
   _object_path: Path = None
   _object: elf.ELF = None
 
   @staticmethod
-  def parse_file(path: Path) -> List["Chunk"]:
+  def parse(path: Path) -> List["Chunk"]:
     """
-    Decomposes an assembly file into chunks of code with specified origins.
+    Parses this file into one or more code chunks, each of which may or may
+    not have their own start offset.
     """
 
+    if path.suffix in [".asm", ".S"]:
+      return Chunk.parse_asm_file(path)
+    else:
+      return [Chunk.parse_cpp_file(path)]
+
+  @staticmethod
+  def parse_cpp_file(path: Path) -> "Chunk":
+    """
+    Parses a C/C++ file into a single code chunk.
+    """
+
+    return Chunk(
+      source=path,
+      code=path.read_text(),
+      gcc_flags=CPP_FLAGS + (['-std=c++20'] if path.suffix != '.c' else ['-std=c17'])
+    )
+
+  @staticmethod
+  def parse_asm_file(path: Path) -> List["Chunk"]:
+    """
+    Parses an assembly file into code chunks.
+    """
     index = 0
     chunks: List[Chunk] = []
     for line in preprocess(path).read_text().splitlines():
@@ -116,13 +161,13 @@ class Chunk:
         assert offset >= DATA_START or offset < FREE_SPACE_START, \
           f"tried to manually set the origin point to after the start of free space at {offset:#x}; use \".org @NextFreeSpace\" instead to get an automatically assigned free space offset"
         
-        chunks.append(Chunk(source=path, index=index, origin=offset))
+        chunks.append(Chunk(source=path, tag=f"{offset:#x}", origin=offset))
         index += 1
         continue
 
       match = ORG_FREE_PAT.match(line)
       if match:
-        chunks.append(Chunk(source=path, index=index, origin=None))
+        chunks.append(Chunk(source=path, tag=f"block{index}", origin=None))
         index += 1
         continue
 
@@ -137,7 +182,10 @@ class Chunk:
         chunks[-1].labels[label] = dst
         line = line.replace("0x" + match.group(1), label, 1)
       
-      chunks[-1].code.append(line)
+      chunks[-1].code += "\n" + line
+
+    for chunk in chunks:
+      chunk.gcc_flags = ASSEMBLY_FLAGS
 
     return chunks
       
@@ -145,23 +193,39 @@ class Chunk:
     """
     Returns a unique path for this chunk.
     """
-    path = self.source
-    return path.with_stem(f"{path.stem}_{self.index}")
+    if self.tag is None:
+      return self.source
 
-  def assemble(self) -> elf.ELF:
+    path = self.source
+    return path.with_stem(f"{path.stem}_{self.tag}")
+
+  def compile(self) -> elf.ELF:
     """
-    Assembles this code chunk, producing an ELF object file.
+    Compiles this code chunk, producing an ELF object file.
     """
 
     if self._object is not None:
       return self._object
 
+    # Spill the code3 into a file. This enables GCC to give us diagnostics
+    # that actually have a file name in them.
+    src = TEMP / self.path().name
+    src.write_text(self.code)
+
     self._object_path = TEMP / (self.path().stem + ".o")
-    run(
-      "powerpc-eabi-gcc", ["-mregnames", "-xassembler", "-c", "-o", self._object_path, "-"],
-      input="\n".join(self.code))
+    run("powerpc-eabi-gcc", self.gcc_flags + ["-c", src])
     
     self._object = elf.ELF(self._object_path.read_bytes())
+
+    for section in self._object.sections:
+      # We do not currently support .data, .bss, or extra .text sections.
+
+      if section.name.startswith('.data'):
+        assert section.data == b"", "declaring globals is NYI"
+
+      assert section.name == '.text' or not section.name.startswith('.text'), \
+        "found extra .text section, probably due to template or virtual functions"
+
     return self._object
 
   def link(self, ld_script: Path) -> Tuple[bytes, List[elf.Relocation]]:
@@ -172,11 +236,12 @@ class Chunk:
 
     binary = self._object_path.with_suffix(".elf")
     run("powerpc-eabi-ld", [
-      "-Ttext", str(hex(self.origin)),
-      "--just-symbols=", ld_script,
-      "--relocatable",
-      self._object_path,
+      "-Ttext", str(hex(self.origin)), # Specify where we want this chunk to begin.
+                                       # All data for this chunk is in .text already.
+      "--just-symbols", ld_script,     # Include the global symbols we dug up.
+      "--relocatable",                 # Ask ld to generate relocations for us.
       "-o", binary,
+      self._object_path,
     ])
 
     # Extract the text section and apply relocations to it.
@@ -197,11 +262,11 @@ def allocate_free_space(chunks: List[Chunk]):
 
     chunk.origin = next_offset
     try:
-      next_offset += len(chunk.assemble().sections_by_name[".text"].data)
+      next_offset += len(chunk.compile().sections_by_name[".text"].data)
     except Exception as e:
       raise Exception(f'{chunk.path()}: {e}') from e
 
-def dump_symbols(chunks: List[Chunk]) -> Dict[str, int]:
+def find_globals(chunks: List[Chunk]) -> Dict[str, int]:
   """
   Calculates the desired for all global symbols, which can then
   be converted into linker directives.
@@ -210,7 +275,7 @@ def dump_symbols(chunks: List[Chunk]) -> Dict[str, int]:
   table = {}
   for chunk in chunks:
     try:
-      for _, syms in chunk.assemble().symbols.items():
+      for _, syms in chunk.compile().symbols.items():
         for sym in syms:
           if sym.name in chunk.labels:
             table[sym.name] = chunk.labels[sym.name]
@@ -389,20 +454,22 @@ def main():
   for diff_path in path_glob('patch_diffs/*_diff.yaml'):
     diff_path.unlink()
   
-  patches = list(path_glob('patches/*.asm'))
+  patches = [
+    path for path in path_glob('patches/*')
+    if path.suffix not in ['.h', '.hpp']
+  ]
   patches.sort(key=lambda p: str(p).lower())
   
   chunks: List[Chunk] = []
   for patch in patches:
     try:
-      chunks += Chunk.parse_file(patch)
+      chunks += Chunk.parse(patch)
     except Exception as e:
       raise Exception(f'{patch}: {e}') from e
-      raise
   
   allocate_free_space(chunks)
 
-  symbols = dump_symbols(chunks)
+  symbols = find_globals(chunks)
   (root / 'custom_symbols.yaml').write_text(
     yaml.dump(
       {sym: addr for sym, addr in symbols.items() if not sym.startswith(".L_")},
