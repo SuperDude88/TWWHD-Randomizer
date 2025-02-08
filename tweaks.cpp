@@ -3587,8 +3587,8 @@ TweakError add_debug_menu_pane() {
         Pane& newPane = layout.rootPane.children[0].duplicateChildPane(2); // rupee count text
         newPane.pane->name = "T_Menu_00";
         newPane.pane->name.resize(0x18);
-        newPane.pane->translation.X = -1750;
-        newPane.pane->translation.Y = 600;
+        newPane.pane->translation.X = -1200;
+        newPane.pane->translation.Y = 450;
         newPane.pane->width = 1280;
         newPane.pane->height = 720;
         dynamic_cast<txt1*>(newPane.pane.get())->text = u"test text\nline2\nline3\nline4\nline5\nline6\nline7\nline8\nline9\nline10\n"; // 42 + 23
@@ -3596,6 +3596,8 @@ TweakError add_debug_menu_pane() {
         dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = dynamic_cast<txt1*>(newPane.pane.get())->text.length() * 2; //includes null
         dynamic_cast<txt1*>(newPane.pane.get())->lineAlignment = txt1::LineAlignment::LEFT;
         dynamic_cast<txt1*>(newPane.pane.get())->txtFlags &= ~0b00000010; // don't restrict text length
+        dynamic_cast<txt1*>(newPane.pane.get())->textAlignment &= ~0b1111; // clear text origin flags
+        dynamic_cast<txt1*>(newPane.pane.get())->textAlignment |= 0b0101; // start text at top left
 
         return true;
     });
