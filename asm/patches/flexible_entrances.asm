@@ -135,6 +135,36 @@ door12_entering_lock_forwards:
     b 0x02129328 ; continue to check the key counter
 
 
+; The door on Private Oasis always requires the cabana deed, even from inside the cabana
+; This can also be annoying with entrance randomizer, so change it to only require deed when entering
+.org 0x021A4548 ; In daKnob00_c::actionVilla
+    b check_leaving_cabana
+.org @NextFreeSpace
+.global check_leaving_cabana
+check_leaving_cabana:
+    ; Check if Link is open the door from the front
+    lbz r0, 0x3BC(r31) ; What side Link is opening the door from
+    cmpwi r0, 0 ; 0 -> Opening forwards
+    beq cabana_set_normal_event_data
+
+    ; setEventPrm sets event data based on the state the door is in
+    ; If we are opening from the back, pretend we are in the waiting state so Deed isn't required
+    li r3, 1 ; Wait state
+    stb r3, 0x5A4(r31) ; Store to door's state
+    mr r3, r31 ; Replace the line we overwrote to jump here
+    bl daKnob_00_setEventPrm ; Set event data as if we're in the waiting state
+
+    ; If we don't reset back to the Cabana state, the door will stay permanently in the waiting state on its next execute cycle
+    ; This means that walking behind the door on Private Oasis and going back in front unlocks it even without Cabana Deed
+    ; Which is definitely undesirable
+    li r3, 8 ; Villa state
+    stb r3, 0x5A4(r31) ; Restore to door's state so it doesn't break completely
+    b 0x021A4550 ; Return
+cabana_set_normal_event_data:
+    mr r3, r31 ; Replace the line we overwrote to jump here
+    b 0x021A454C ; Continue setting up the door event as normal
+
+
 ; Alter savewarping so that players respawn at their last visited ocean sector
 ; instead of whatever sector the cave/interior/area normally tries to savewarp
 ; them to. This is so players don't end up savewarping to an island they weren't on.

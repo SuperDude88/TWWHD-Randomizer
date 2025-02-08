@@ -1271,7 +1271,7 @@
 - Name: The Cabana
   Exits:
       Cabana Labyrinth: Grappling_Hook
-      Private Oasis: Delivery_Bag and Cabana_Deed
+      Private Oasis: Nothing
 
 - Name: Cabana Labyrinth
   Locations:
