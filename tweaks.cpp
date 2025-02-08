@@ -3575,6 +3575,34 @@ TweakError fix_second_quest_locations() {
     return TweakError::NONE;
 }
 
+TweakError add_debug_menu_pane() {
+    using namespace NintendoWare::Layout;
+
+    RandoSession::CacheEntry& layout = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@Rupy_00.szs@YAZ0@SARC@blyt/Rupy_00.bflyt@BFLYT");
+
+    //add menu text
+    layout.addAction([](RandoSession* sessio, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(layout, FileTypes::FLYTFile, data)
+
+        Pane& newPane = layout.rootPane.children[0].duplicateChildPane(2); // rupee count text
+        newPane.pane->name = "T_Menu_00";
+        newPane.pane->name.resize(0x18);
+        newPane.pane->translation.X = -1750;
+        newPane.pane->translation.Y = 600;
+        newPane.pane->width = 1280;
+        newPane.pane->height = 720;
+        dynamic_cast<txt1*>(newPane.pane.get())->text = u"test text\nline2\nline3\nline4\nline5\nline6\nline7\nline8\nline9\nline10\n"; // 42 + 23
+        dynamic_cast<txt1*>(newPane.pane.get())->fontIndex = 0;
+        dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = dynamic_cast<txt1*>(newPane.pane.get())->text.length() * 2; //includes null
+        dynamic_cast<txt1*>(newPane.pane.get())->lineAlignment = txt1::LineAlignment::LEFT;
+        dynamic_cast<txt1*>(newPane.pane.get())->txtFlags &= ~0b00000010; // don't restrict text length
+
+        return true;
+    });
+    
+    return TweakError::NONE;
+}
+
 TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(Utility::get_data_path() / "asm/custom_symbols.yaml"));
 
@@ -3593,6 +3621,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/fix_vanilla_bugs_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/misc_rando_features_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/switch_op_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/debug_menu_diff.yaml"));
 
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -3698,6 +3727,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(make_dungeon_joy_pendants_flexible());
     TWEAK_ERR_CHECK(prevent_fairy_island_softlocks());
     TWEAK_ERR_CHECK(give_fairy_fountains_distinct_colors());
+    TWEAK_ERR_CHECK(add_debug_menu_pane());
     //rat hole visibility
     //failsafe id 0 spawns
 

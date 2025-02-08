@@ -97,7 +97,11 @@ setFigure = 0x0229FF88;
 GetQuadrantAtLocation = 0x02680de0;
 GetWarpQuadrantByIndex = 0x0267a204;
 SetAdjacentWarpButton = 0x02681ad0;
+SetTextPaneString = 0x027046d4;
 safestring_vtbl_1010394c = 0x1010394c;
+wsafestring_vtbl_10101a6c = 0x10101a6c;
+
+debug_menu_placeholder_text = 0x101d5152; /* some random wstring in writeable data (as a proof of concept, don't actually overwrite this spot) */
 
 gameInfo_ptr = 0x101f84dc;
 mStayNo = 0x1047e6c8;
