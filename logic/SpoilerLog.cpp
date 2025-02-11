@@ -238,7 +238,7 @@ void generateSpoilerLog(WorldPool& worlds)
     for (auto& world : worlds)
     {
         // Don't print "Hints" if there are none
-        if (world.hohoHints.empty() && world.korlHints.empty())
+        if (world.hohoHints.empty() && world.korlHints.empty() && world.bigOctoFairyHintLocation == nullptr)
         {
             continue;
         }
@@ -275,6 +275,21 @@ void generateSpoilerLog(WorldPool& worlds)
                 }
                 spoilerLog << std::endl;
             }
+        }
+
+        if (world.bigOctoFairyHintLocation != nullptr)
+        {
+            spoilerLog << "    Big Octo Great Fairy:" << std::endl;
+            std::u16string hintText = world.bigOctoFairyHintLocation->hint.text["English"];
+            for (const std::u16string& eraseText : {TEXT_COLOR_RED, TEXT_COLOR_BLUE, TEXT_COLOR_CYAN, TEXT_COLOR_DEFAULT, TEXT_COLOR_GREEN, TEXT_COLOR_GRAY, TEXT_COLOR_YELLOW})
+            {
+                auto pos = std::string::npos;
+                while ((pos = hintText.find(eraseText)) != std::string::npos)
+                {
+                    hintText.erase(pos, eraseText.length());
+                }
+            }
+            spoilerLog << "        " << Utility::Str::toUTF8(hintText) << std::endl; 
         }
     }
     spoilerLog << std::endl;
