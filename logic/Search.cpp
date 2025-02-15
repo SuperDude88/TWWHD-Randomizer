@@ -299,7 +299,9 @@ static void pareDownPlaythrough(WorldPool& worlds)
     {
         for (auto& [name, location] : world.locationTable)
         {
-            if (!location->progression && !(world.getSettings().mix_bosses && (location->currentItem.isBigKey() || location->currentItem.isSmallKey())))
+            if (!location->progression && 
+                !(world.getSettings().mix_bosses && (location->currentItem.isBigKey() || location->currentItem.isSmallKey())) && 
+                !location->categories.contains(LocationCategory::BlueChuChu))
             {
                 nonRequiredLocations.insert({location.get(), location->currentItem});
                 location->currentItem = {GameItem::INVALID, &world};
