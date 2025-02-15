@@ -637,8 +637,7 @@ void MainWindow::apply_config_settings()
     APPLY_COMBOBOX_SETTING(config, ui, gyroscope);
     APPLY_COMBOBOX_SETTING(config, ui, ui_display);
 
-    // Permalink
-    ui->permalink->setText(QString::fromStdString(config.getPermalink()));
+    update_permalink_and_seed_hash();
 }
 
 void MainWindow::on_base_game_path_browse_button_clicked()
