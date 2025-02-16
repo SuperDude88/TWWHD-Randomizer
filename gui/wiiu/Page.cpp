@@ -1211,17 +1211,21 @@ ColorPage::PresetsSubpage::PresetsSubpage(ColorPage& parent_) :
 }
 
 void ColorPage::PresetsSubpage::open() {
-    curCol = Column::LIST;
-    curRow = 1;
+    
     listScrollPos = 0;
+    curRow = 0;
+    curCol = Column::BUTTONS;
 }
 
 void ColorPage::PresetsSubpage::close() {}
 
 bool ColorPage::PresetsSubpage::update() {
     bool moved = false;
+    if (getModel().user_provided) {
+        curCol = Column::BUTTONS;
+    }
 
-    if(InputManager::getInstance().pressed(ButtonInfo::LEFT) || InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
+    if(!getModel().user_provided && (InputManager::getInstance().pressed(ButtonInfo::LEFT) || InputManager::getInstance().pressed(ButtonInfo::RIGHT))) {
         switch(curCol) {
             case Column::LIST:
                 curCol = Column::BUTTONS;
@@ -1259,7 +1263,7 @@ bool ColorPage::PresetsSubpage::update() {
                 break;
             case Column::BUTTONS:
                 if(curRow <= 0) {
-                    curRow = toggles.size() - 1; //wrap on top row
+                    curRow = (getModel().user_provided ? 2 : toggles.size()) - 1; //wrap on top row
                 }
                 else {
                     curRow -= 1; //up one row
@@ -1295,7 +1299,7 @@ bool ColorPage::PresetsSubpage::update() {
 
                 break;
             case Column::BUTTONS:
-                if(curRow >= toggles.size() - 1) {
+                if (curRow >= (getModel().user_provided ? 2 : toggles.size()) - 1) {
                     curRow = 0; //wrap on bottom row
                 }
                 else {
@@ -1363,47 +1367,63 @@ static const std::array<std::string, 11> casualTextures = {
 
 void ColorPage::PresetsSubpage::drawTV() const {
     // draw current link model name
-    std::string modelName = getModel().modelName;
-    if (modelName == "") {
-        modelName = "Link";
+    std::string model = getModel().modelName;
+    if (getModel().modelName.empty()) {
+        model = "Link";
     }
-    else if (modelName == "random") {
-        modelName = "Random Model";
+    else if (getModel().modelName == "random") {
+        model = "Random Model";
     }
-    OSScreenPutFontEx(SCREEN_TV, 1, PAGE_FIRST_ROW, (std::string("Selected Model : ") + modelName).c_str());
-
-    // draw visible part of the list
-    for(size_t row = 0; row < std::min(LIST_HEIGHT, getModel().getPresets().size()); row++) {
-        OSScreenPutFontEx(SCREEN_TV, 1, PAGE_FIRST_ROW + row + 1, getModel().getPresets()[listScrollPos + row].name.c_str());
-    }
-
-    // draw second column of buttons
+    OSScreenPutFontEx(SCREEN_TV, 1, PAGE_FIRST_ROW, (std::string("Selected Model : ") + model).c_str());
     const size_t countStartCol = ScreenSizeData::tv_line_length / 2;
-    for(size_t row = 0; row < toggles.size(); row++) {
-        toggles[row]->drawTV(PAGE_FIRST_ROW + row, countStartCol + 1, countStartCol + 1 + 30);
-    }
-    
-    // draw loaded colors
-    static constexpr uint32_t starting_y_pos = 271;
-    const std::array<std::string, 11>& textures = getModel().casual ? casualTextures : heroTextures;
-    for(size_t i = 0; i < textures.size(); i++) {
-        const size_t row = PAGE_FIRST_ROW + 6 + i;
-        OSScreenPutFontEx(SCREEN_TV, countStartCol + 1, row, textures[i].c_str());
-
-        std::string hexColor = getModel().getColor(textures[i]);
-        for(auto& c : hexColor) {
-            c = std::toupper(c); //capitalize for consistency
+    //show the color stuff only if the selected model isnt custom
+    if (!getModel().user_provided) {
+        // draw visible part of the list
+        for (size_t row = 0; row < std::min(LIST_HEIGHT, getModel().getPresets().size()); row++) {
+            OSScreenPutFontEx(SCREEN_TV, 1, PAGE_FIRST_ROW + row + 1, getModel().getPresets()[listScrollPos + row].name.c_str());
         }
 
-        OSScreenPutFontEx(SCREEN_TV, countStartCol + 1 + 15, row, hexColor.c_str());
-        drawSquare(std::stoi(hexColor, nullptr, 16) << 8, 13 * (countStartCol + 1 + 15 + 6), starting_y_pos + i * 24, 24);
+        // draw second column of buttons
+        
+        for (size_t row = 0; row < toggles.size(); row++) {
+            toggles[row]->drawTV(PAGE_FIRST_ROW + row, countStartCol + 1, countStartCol + 1 + 30);
+        }
+
+        // draw loaded colors
+        static constexpr uint32_t starting_y_pos = 271;
+        const std::array<std::string, 11>& textures = getModel().casual ? casualTextures : heroTextures;
+        for (size_t i = 0; i < textures.size(); i++) {
+            const size_t row = PAGE_FIRST_ROW + 6 + i;
+            OSScreenPutFontEx(SCREEN_TV, countStartCol + 1, row, textures[i].c_str());
+
+            std::string hexColor = getModel().getColor(textures[i]);
+            for (auto& c : hexColor) {
+                c = std::toupper(c); //capitalize for consistency
+            }
+
+            OSScreenPutFontEx(SCREEN_TV, countStartCol + 1 + 15, row, hexColor.c_str());
+            drawSquare(std::stoi(hexColor, nullptr, 16) << 8, 13 * (countStartCol + 1 + 15 + 6), starting_y_pos + i * 24, 24);
+        }
     }
+    else {
+        //still show the model page button and the casual clothes toggle
+        for (size_t row = 0; row < 2; row++) {
+            toggles[row]->drawTV(PAGE_FIRST_ROW + row, countStartCol + 1, countStartCol + 1 + 30);
+        }
+        //add some text to not make the user confused
+        const std::vector<std::string>& messageLines = wrap_string("Color options are not available when using a custom model. Select the default model (Link) to access the color customizer.", ScreenSizeData::tv_line_length / 3);
+        for (size_t i = 0; i < messageLines.size(); i++) {
+            OSScreenPutFontEx(SCREEN_TV, 1, PAGE_FIRST_ROW + i + 1, messageLines[i].c_str());
+        }
+    }
+
+
+   
     
     // draw cursor
     switch(curCol) {
         case Column::LIST:
             OSScreenPutFontEx(SCREEN_TV, 0, PAGE_FIRST_ROW + curRow, ">");
-
             break;
         case Column::BUTTONS:
             OSScreenPutFontEx(SCREEN_TV, countStartCol, PAGE_FIRST_ROW + curRow, ">");
@@ -1696,13 +1716,17 @@ void ColorPage::ModelPickerSubpage::open() {
     if (getModel().modelName == "random") {
         listButtons[1].setEnabled(true);
     }
-
+    //one button for each model, select the one that corresponds to the preferences file
     for (auto entry : std::filesystem::directory_iterator(Utility::get_models_dir())) {
         if (!entry.is_directory()) continue;
         listButtons.emplace_back(entry.path().filename());
         if (entry.path().filename() == getModel().modelName) { 
             listButtons[listButtons.size() - 1].setEnabled(true);
         }
+    }
+    //if theres no custom model, remove the "random model" button
+    if (listButtons.size() <= 2) {
+        listButtons.pop_back();
     }
     
 

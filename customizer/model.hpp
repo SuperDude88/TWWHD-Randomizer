@@ -61,7 +61,7 @@ public:
     void randomizeOrderly();
     void randomizeChaotically();
 
-    void nextModel();
+    //void nextModel();
 
     ModelError loadFromFolder();
     ModelError applyModel() const;    

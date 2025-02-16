@@ -250,7 +250,7 @@ static const std::unordered_map<std::string, std::list<std::string>> casualTextu
 };
 
 
-void CustomModel::nextModel() {
+/*void CustomModel::nextModel() {
     // Each time the button is clicked, we load the directories in the
     // models dir, sort it, and then binsearch the current model in it.
     // We then go to the next one.
@@ -296,6 +296,7 @@ void CustomModel::nextModel() {
         user_provided = true;
     }
 }
+*/
 
 // IMPROVEMENT: Better generalize this in the future
 ModelError CustomModel::applyModel() const {

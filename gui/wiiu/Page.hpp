@@ -211,12 +211,12 @@ private:
             LIST = 0,
             BUTTONS = 1
         };
+        
 
-        Column curCol = Column::LIST;
-        size_t curRow = 1;
+        Column curCol = Column::BUTTONS;
+        size_t curRow = 0;
         size_t listScrollPos = 0;
         size_t selectedListIdx = 0;
-
         std::array<std::unique_ptr<BasicButton>, 5> toggles;
         
     public:

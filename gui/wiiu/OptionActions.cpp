@@ -520,15 +520,21 @@ namespace OptionCB {
         return "";
     }
 
-    std::string toggleCustomModel() {
+    /*std::string toggleCustomModel() {
         conf.settings.selectedModel.nextModel();
         return customModel();
-    }
+    }*/
 
     std::string customModel() {
         if (conf.settings.selectedModel.modelName.empty()) {
+            conf.settings.selectedModel.user_provided = false;
             return "Link";
         }
+        if (conf.settings.selectedModel.modelName == "random") {
+            conf.settings.selectedModel.user_provided = true;
+            return "Random Model";
+        }
+        conf.settings.selectedModel.user_provided = true;
         return conf.settings.selectedModel.modelName;
     }
 

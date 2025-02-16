@@ -84,7 +84,7 @@ namespace OptionCB {
     std::string isCasual();
     std::string randomizeColorsOrderly();
     std::string randomizeColorsChaotically();
-    std::string toggleCustomModel();
+    //std::string toggleCustomModel();
     std::string customModel();
 
     std::string cyclePigColor();
