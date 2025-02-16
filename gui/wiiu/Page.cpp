@@ -1,11 +1,14 @@
 #include "Page.hpp"
 
 #include <utility/color.hpp>
+#include <utility/file.hpp>
+#include <utility/platform.hpp>
 #include <platform/input.hpp>
 #include <gui/wiiu/screen.hpp>
 #include <gui/wiiu/TextWrap.hpp>
 #include <command/Log.hpp>
 #include <options.hpp>
+
 
 #ifdef USE_LIBRPXLOADER
     #include <rpxloader/rpxloader.h>
@@ -1152,7 +1155,8 @@ void LocationsPage::drawDRC() const {
 
 ColorPage::ColorPage() :
     presets(*this),
-    picker(*this)
+    color(*this),
+    model(*this)
 {}
 
 void ColorPage::open() {
@@ -1166,7 +1170,9 @@ bool ColorPage::update() {
         case Subpage::PRESETS:
             return presets.update();
         case Subpage::COLOR_PICKER:
-            return picker.update();
+            return color.update();
+        case Subpage::MODEL_PICKER:
+            return model.update();
     }
 
     return false;
@@ -1177,7 +1183,9 @@ void ColorPage::drawTV() const {
         case Subpage::PRESETS:
             return presets.drawTV();
         case Subpage::COLOR_PICKER:
-            return picker.drawTV();
+            return color.drawTV();
+        case Subpage::MODEL_PICKER:
+            return model.drawTV();
     }
 }
 
@@ -1186,14 +1194,16 @@ void ColorPage::drawDRC() const {
         case Subpage::PRESETS:
             return presets.drawDRC();
         case Subpage::COLOR_PICKER:
-            return picker.drawDRC();
+            return color.drawDRC();
+        case Subpage::MODEL_PICKER:
+            return model.drawDRC();
     }
 }
 
 ColorPage::PresetsSubpage::PresetsSubpage(ColorPage& parent_) : 
     parent(parent_)
 {
-    toggles[0] = std::make_unique<ActionButton>("Link Model", "Select a model for Link. To install more, read https://github.com/mcy/TWWHD-Randomizer/tree/main/customizer/INSTALL.md", &OptionCB::toggleCustomModel, &OptionCB::customModel);
+    toggles[0] = std::make_unique<FunctionButton>("Select Link Model", "Select a model for Link. To install more, read https://github.com/mcy/TWWHD-Randomizer/tree/main/customizer/INSTALL.md", std::bind(&ColorPage::setSubpage, &parent, Subpage::MODEL_PICKER));
     toggles[1] = std::make_unique<ActionButton>("Casual Clothes", "Enable this if you want to wear your casual clothes instead of the Hero's Clothes. Custom models will have their own variant of casual clothes", &OptionCB::toggleCasualClothes, &OptionCB::isCasual);
     toggles[2] = std::make_unique<ActionButton>("Randomize Colors Orderly", "", &OptionCB::randomizeColorsOrderly);
     toggles[3] = std::make_unique<ActionButton>("Randomize Colors Chaotically", "", &OptionCB::randomizeColorsChaotically);
@@ -1202,7 +1212,7 @@ ColorPage::PresetsSubpage::PresetsSubpage(ColorPage& parent_) :
 
 void ColorPage::PresetsSubpage::open() {
     curCol = Column::LIST;
-    curRow = 0;
+    curRow = 1;
     listScrollPos = 0;
 }
 
@@ -1215,12 +1225,12 @@ bool ColorPage::PresetsSubpage::update() {
         switch(curCol) {
             case Column::LIST:
                 curCol = Column::BUTTONS;
-                curRow = std::clamp<size_t>(curRow, 0, toggles.size() - 1);
+                curRow = std::clamp<size_t>(curRow, 0, toggles.size() - 1); 
 
                 break;
             case Column::BUTTONS:
                 curCol = Column::LIST;
-                curRow = std::clamp<size_t>(curRow, 0, std::min(LIST_HEIGHT, getModel().getPresets().size()) - 1);
+                curRow = std::clamp<size_t>(curRow, 1, std::min(LIST_HEIGHT, getModel().getPresets().size()) - 1); //cant select extra text
 
                 break;
         }
@@ -1231,9 +1241,9 @@ bool ColorPage::PresetsSubpage::update() {
     if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         switch(curCol) {
             case Column::LIST:
-                if(curRow <= 0) {
+                if(curRow <= 1) {
                     if(listScrollPos <= 0) {
-                        curRow = std::min(LIST_HEIGHT, getModel().getPresets().size()) - 1; // -1 because 0-indexed
+                        curRow = std::min(LIST_HEIGHT, getModel().getPresets().size()); // no -1 because you account for extra text
                         if(getModel().getPresets().size() > LIST_HEIGHT) {
                             listScrollPos = getModel().getPresets().size() - LIST_HEIGHT;
                         }
@@ -1263,11 +1273,12 @@ bool ColorPage::PresetsSubpage::update() {
     else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         switch(curCol) {
             case Column::LIST:
-                if(curRow >= std::min(LIST_HEIGHT, getModel().getPresets().size()) - 1) {
+                //account for additional text
+                if(curRow >= std::min(LIST_HEIGHT, getModel().getPresets().size())) {
                     if(getModel().getPresets().size() > LIST_HEIGHT) {
                         if(listScrollPos >= getModel().getPresets().size() - LIST_HEIGHT) {
                             listScrollPos = 0;
-                            curRow = 0;
+                            curRow = 1;
                         }
                         else {
                             listScrollPos += 1;
@@ -1275,7 +1286,7 @@ bool ColorPage::PresetsSubpage::update() {
                     }
                     else {
                         listScrollPos = 0;
-                        curRow = 0;
+                        curRow = 1;
                     }
                 }
                 else {
@@ -1300,10 +1311,10 @@ bool ColorPage::PresetsSubpage::update() {
     bool btnUpdate = false;
     switch(curCol) {
         case Column::LIST:
-            if(InputManager::getInstance().pressed(ButtonInfo::A)) {
+            if(InputManager::getInstance().pressed(ButtonInfo::A) && curRow != 0) {
                 btnUpdate = true;
 
-                getModel().loadPreset(listScrollPos + curRow);
+                getModel().loadPreset(listScrollPos + curRow - 1);
             }
 
             break;
@@ -1351,9 +1362,19 @@ static const std::array<std::string, 11> casualTextures = {
 };
 
 void ColorPage::PresetsSubpage::drawTV() const {
+    // draw current link model name
+    std::string modelName = getModel().modelName;
+    if (modelName == "") {
+        modelName = "Link";
+    }
+    else if (modelName == "random") {
+        modelName = "Random Model";
+    }
+    OSScreenPutFontEx(SCREEN_TV, 1, PAGE_FIRST_ROW, (std::string("Selected Model : ") + modelName).c_str());
+
     // draw visible part of the list
     for(size_t row = 0; row < std::min(LIST_HEIGHT, getModel().getPresets().size()); row++) {
-        OSScreenPutFontEx(SCREEN_TV, 1, PAGE_FIRST_ROW + row, getModel().getPresets()[listScrollPos + row].name.c_str());
+        OSScreenPutFontEx(SCREEN_TV, 1, PAGE_FIRST_ROW + row + 1, getModel().getPresets()[listScrollPos + row].name.c_str());
     }
 
     // draw second column of buttons
@@ -1363,10 +1384,10 @@ void ColorPage::PresetsSubpage::drawTV() const {
     }
     
     // draw loaded colors
-    static constexpr uint32_t starting_y_pos = 247;
+    static constexpr uint32_t starting_y_pos = 271;
     const std::array<std::string, 11>& textures = getModel().casual ? casualTextures : heroTextures;
     for(size_t i = 0; i < textures.size(); i++) {
-        const size_t row = PAGE_FIRST_ROW + 5 + i;
+        const size_t row = PAGE_FIRST_ROW + 6 + i;
         OSScreenPutFontEx(SCREEN_TV, countStartCol + 1, row, textures[i].c_str());
 
         std::string hexColor = getModel().getColor(textures[i]);
@@ -1427,7 +1448,7 @@ void ColorPage::ColorPickerSubpage::close() {}
 
 bool ColorPage::ColorPickerSubpage::update() {
     if(picking) {
-        return updatePicker();
+        return updateColorPicker();
     }
     else {
         return updateList();
@@ -1436,7 +1457,7 @@ bool ColorPage::ColorPickerSubpage::update() {
 
 void ColorPage::ColorPickerSubpage::drawTV() const {
     if(picking) {
-        return drawPickerTV();
+        return drawColorPickerTV();
     }
     else {
         return drawListTV();
@@ -1445,7 +1466,7 @@ void ColorPage::ColorPickerSubpage::drawTV() const {
 
 void ColorPage::ColorPickerSubpage::drawDRC() const {
     if(picking) {
-        return drawPickerDRC();
+        return drawColorPickerDRC();
     }
     else {
         return drawListDRC();
@@ -1612,7 +1633,7 @@ void ColorPage::ColorPickerSubpage::drawListTV() const {
 
 void ColorPage::ColorPickerSubpage::drawListDRC() const {}
 
-bool ColorPage::ColorPickerSubpage::updatePicker() {
+bool ColorPage::ColorPickerSubpage::updateColorPicker() {
     if(picking && board.isClosed()) {
         const std::array<std::string, 11>& textures = getModel().casual ? casualTextures : heroTextures;
 
@@ -1643,14 +1664,141 @@ bool ColorPage::ColorPickerSubpage::updatePicker() {
     return update;
 }
 
-void ColorPage::ColorPickerSubpage::drawPickerTV() const {
+void ColorPage::ColorPickerSubpage::drawColorPickerTV() const {
     board.drawTV(PAGE_FIRST_ROW, 0);
 }
 
-void ColorPage::ColorPickerSubpage::drawPickerDRC() const {
+void ColorPage::ColorPickerSubpage::drawColorPickerDRC() const {
     board.drawDRC();
 }
 
+ColorPage::ModelPickerSubpage::ModelPickerSubpage(ColorPage& parent_) :
+    parent(parent_)
+{}
+
+void ColorPage::ModelPickerSubpage::open() {
+    curCol = 0;
+    curRow = 0;
+    listScrollPos = 0;
+
+    listButtons.clear();
+
+    listButtons.emplace_back("Link");
+    listButtons.emplace_back("Random Model");
+    for (size_t i = 0; i < listButtons.size(); i++) {
+        listButtons[i].setEnabled(false);
+    }
+
+    if (!getModel().user_provided) {
+        listButtons[0].setEnabled(true);
+    }
+
+    if (getModel().modelName == "random") {
+        listButtons[1].setEnabled(true);
+    }
+
+    for (auto entry : std::filesystem::directory_iterator(Utility::get_models_dir())) {
+        if (!entry.is_directory()) continue;
+        listButtons.emplace_back(entry.path().filename());
+        if (entry.path().filename() == getModel().modelName) { 
+            listButtons[listButtons.size() - 1].setEnabled(true);
+        }
+    }
+    
+
+}
+
+void ColorPage::ModelPickerSubpage::close() {}
+
+bool ColorPage::ModelPickerSubpage::update() {
+    if (InputManager::getInstance().pressed(ButtonInfo::B)) {
+        parent.setSubpage(Subpage::PRESETS);
+        return true;
+    }
+    bool moved = false;
+    if (InputManager::getInstance().pressed(ButtonInfo::UP)) {
+        listButtons[listScrollPos + curRow].unhovered();
+        if (curRow <= 0) {
+            if (listScrollPos <= 0) {
+                if (listButtons.size() <= LIST_HEIGHT) {
+                    listScrollPos = 0;
+                    curRow = listButtons.size() - 1;
+                }
+                else {
+                    curRow = LIST_HEIGHT - 1; // -1 because 0-indexed
+                    listScrollPos = listButtons.size() - LIST_HEIGHT;
+                }
+            }
+            else {
+                listScrollPos -= 1;
+            }
+        }
+        else {
+            curRow -= 1;
+        }
+
+        listButtons[listScrollPos + curRow].hovered();
+        moved = true;
+    }
+
+    else if (InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
+        listButtons[listScrollPos + curRow].unhovered();
+        if (curRow >= std::min(LIST_HEIGHT, listButtons.size()) - 1) {
+            if (listButtons.size() > LIST_HEIGHT) {
+                if (listScrollPos >= listButtons.size() - LIST_HEIGHT) {
+                    listScrollPos = 0;
+                    curRow = 0;
+                }
+                else {
+                    listScrollPos += 1;
+                }
+            }
+            else {
+                listScrollPos = 0;
+                curRow = 0;
+            }
+        }
+        else {
+            curRow += 1;
+        }
+
+        listButtons[listScrollPos + curRow].hovered();
+        moved = true;
+    }
+
+    bool btnUpdate = false;
+    //only one custom model can be selected, disable every other
+    if (listButtons[listScrollPos + curRow].update()) {
+        for (size_t i = 0; i < listButtons.size(); i++) {
+            listButtons[i].setEnabled(false);
+        }
+        listButtons[listScrollPos + curRow].setEnabled(true);
+        btnUpdate = true;
+    }
+    return moved || btnUpdate;
+}
+
+void ColorPage::ModelPickerSubpage::drawTV() const {
+    // draw visible part of the list
+    const size_t listStartCol = 0;
+    if (listButtons.size() > LIST_HEIGHT) {
+        for (size_t row = 0; row < LIST_HEIGHT; row++) {
+            listButtons[listScrollPos + row].drawTV(PAGE_FIRST_ROW + row, 3, 1);
+        }
+    }
+    else {
+        for (size_t row = 0; row < listButtons.size(); row++) {
+            listButtons[listScrollPos + row].drawTV(PAGE_FIRST_ROW + row, 3, 1);
+        }
+    }
+    OSScreenPutFontEx(SCREEN_TV, ScreenSizeData::tv_line_length / 2, PAGE_FIRST_ROW, "Select a custom model from the list.");
+    OSScreenPutFontEx(SCREEN_TV, ScreenSizeData::tv_line_length / 2, PAGE_FIRST_ROW + 1, "Press B to go back.");
+    OSScreenPutFontEx(SCREEN_TV, listStartCol, PAGE_FIRST_ROW + curRow, ">");
+}
+
+void ColorPage::ModelPickerSubpage::drawDRC() const {
+    
+}
 
 
 MetaPage::MetaPage() {

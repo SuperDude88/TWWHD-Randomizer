@@ -1,6 +1,6 @@
 #include "model.hpp"
-
 #include <tuple>
+#include <cmath>
 
 #include <libs/yaml.hpp>
 #include <logic/PoolFunctions.hpp>
@@ -11,6 +11,7 @@
 #include <filetypes/bfres.hpp>
 #include <command/RandoSession.hpp>
 
+
 using eType = Utility::Endian::Type;
 
 ModelError CustomModel::loadFromFolder() {
@@ -19,7 +20,7 @@ ModelError CustomModel::loadFromFolder() {
         model = "Link";
     }
 
-    folder = Utility::get_data_path() / "customizer" / model;
+    folder = Utility::dirExists(Utility::get_models_dir() / model) ? Utility::get_models_dir() / model : Utility::get_data_path() / "customizer" / "Link";
     
     presets.clear();
     heroOrdering.clear();
@@ -301,28 +302,47 @@ ModelError CustomModel::applyModel() const {
     if (!modelName.empty()) {
         Utility::platformLog("Applying custom model " + modelName + "...");
         auto model = Utility::get_models_dir() / modelName;
+        if (modelName == "random") {
+            size_t n = 1;
+            int fileCount = std::count_if(
+                begin(std::filesystem::directory_iterator(Utility::get_models_dir())),
+                end(std::filesystem::directory_iterator(Utility::get_models_dir())),
+                [](auto& entry) { return entry.is_directory(); }
+            );
+            size_t chosen = rand() % fileCount;
+            for (const auto& entry : std::filesystem::recursive_directory_iterator(Utility::get_models_dir())) {
+                if (chosen == n) {
+                    model = entry.path().string();
+                }
+                n++;
+            }
+        } 
 
+        
         struct Resource {
             std::string_view src, dst;
             bool required = false;
         };
 
-        static constexpr std::array<Resource, 3> resources = {
-            {.src = "Link.szs", .dst = "content/Common/Pack/permanent_3d.pack@SARC@Link.szs", .required = true},
+        static constexpr Resource resources[] = {
+            {"Link.szs", "content/Common/Pack/permanent_3d.pack@SARC@Link.szs", true},
             // TODO: DungeonMapLink_00.szs, LinkPos_00.szs
             
             // Sound clips.
-            {.src = "voice_0.aw", .dst = "content/Cafe/US/AudioRes/JAudioRes/Banks/voice_0.aw"},
-            {.src = "JaiInit.aaf", .dst = "content/Cafe/US/AudioRes/JAudioRes/JaiInit.aaf"},
+            {"voice_0.aw", "content/Cafe/US/AudioRes/JAudioRes/Banks/voice_0.aw"},
+            {"JaiInit.aaf", "content/Cafe/US/AudioRes/JAudioRes/JaiInit.aaf"}
         };
 
         for (auto rec : resources) {
             auto src = model / rec.src;
-            if (!rec.required && !std::filesystem::exists(src)) continue;
+            if (!rec.required && !std::filesystem::exists(src)) {
+                g_session.openGameFile(rec.dst);
+                continue;
+            }
 
             Utility::platformLog("Patching " + std::string(rec.src) + "...");
-            if (!g_session.copyToGameFile(src, resource.)) {
-                Utility::platformLog("Couldn't patch " + rec.dst);
+            if (!g_session.copyToGameFile(src, rec.dst)) {
+                Utility::platformLog("Couldn't patch " + std::string(rec.dst));
                 return ModelError::COULD_NOT_OPEN;
             }
         }
@@ -330,6 +350,10 @@ ModelError CustomModel::applyModel() const {
         Utility::platformLog("Applied custom model " + modelName + "!");
         return ModelError::NONE;
     }
+    //openGameFile fetches files from vanilla install and stores them into the rando install
+    //Restore original files in case a custom model was perviously used (voice clips only, as permanent_3d will be called fetched after that anyway)
+    g_session.openGameFile("content/Cafe/US/AudioRes/JAudioRes/Banks/voice_0.aw");
+    g_session.openGameFile("content/Cafe/US/AudioRes/JAudioRes/JaiInit.aaf");
 
     RandoSession::CacheEntry& link = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Link.szs@YAZ0@SARC@Link.bfres@BFRES");
     link.addAction([&](RandoSession* session, FileType* data) -> int {

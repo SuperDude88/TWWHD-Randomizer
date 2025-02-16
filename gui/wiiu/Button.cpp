@@ -33,6 +33,44 @@ void BasicButton::drawDRC() const {
     }
 }
 
+bool ModelButton::update() {
+    if (InputManager::getInstance().pressed(ButtonInfo::A)) {
+        
+        if (modelName == "Link") {
+            getModel().modelName = "";
+            getModel().user_provided = false;
+        }
+        else if (modelName == "Random Model") {
+            getModel().modelName = "random";
+            getModel().user_provided = true;
+        }
+        else {
+            getModel().modelName = modelName;
+            getModel().user_provided = true;
+        }
+        return true;
+    }
+    return false;
+}
+
+void ModelButton::drawTV(const size_t row, const size_t nameCol, const size_t valCol) const {
+    OSScreenPutFontEx(SCREEN_TV, nameCol, row, modelName.c_str());
+
+    const std::string mark = enabled ? "X" : "";
+    OSScreenPutFontEx(SCREEN_TV, valCol, row, mark.c_str());
+}
+
+void ModelButton::drawDRC() const {
+    const std::vector<std::string>& descLines = wrap_string(description, ScreenSizeData::drc_line_length);
+    for (size_t i = 0; i < descLines.size(); i++) {
+        OSScreenPutFontEx(SCREEN_DRC, 0, 2 + i, descLines[i].c_str());
+    }
+}
+
+void ModelButton::setEnabled(bool value) {
+    enabled = value;
+}
+
 
 
 bool ItemButton::operator==(const ItemButton& rhs) const {

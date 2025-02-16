@@ -2,6 +2,7 @@
 
 #include <gui/wiiu/Button.hpp>
 #include <gui/wiiu/Keyboard.hpp>
+#include <utility/path.hpp>
 
 class EmptyPage {
 protected:
@@ -196,14 +197,15 @@ class ColorPage final : public EmptyPage {
 private:
     enum struct Subpage {
         PRESETS = 0,
-        COLOR_PICKER = 1
+        COLOR_PICKER = 1,
+        MODEL_PICKER = 2
     };
 
     class PresetsSubpage final : public EmptyPage {
     private:
         ColorPage& parent;
 
-        static constexpr size_t LIST_HEIGHT = 20;
+        static constexpr size_t LIST_HEIGHT = 19;
 
         enum struct Column {
             LIST = 0,
@@ -211,7 +213,7 @@ private:
         };
 
         Column curCol = Column::LIST;
-        size_t curRow = 0;
+        size_t curRow = 1;
         size_t listScrollPos = 0;
         size_t selectedListIdx = 0;
 
@@ -243,6 +245,7 @@ private:
 
         HexKeyboard board;
 
+
         bool picking = false;
         void setPicking(const bool& enable_, const std::string& color_ = "") { picking = enable_; }
 
@@ -264,9 +267,35 @@ private:
         void drawListTV() const;
         void drawListDRC() const;
 
-        bool updatePicker();
-        void drawPickerTV() const;
-        void drawPickerDRC() const;
+        bool updateColorPicker();
+        void drawColorPickerTV() const;
+        void drawColorPickerDRC() const;
+    };
+
+    class ModelPickerSubpage final : public EmptyPage {
+    private:
+        ColorPage& parent;
+
+        
+
+        size_t curCol = 0;
+        size_t curRow = 0;
+        size_t listScrollPos = 0;
+        static constexpr size_t LIST_HEIGHT = 20;
+        
+        std::vector<ModelButton> listButtons;
+        
+    public:
+        ModelPickerSubpage(ColorPage& parent_);
+    
+        std::string getName() const override { return "Model List"; }
+        std::string getDesc() const override { return "Select a custom model."; }
+
+        void open() override;
+        void close() override;
+        bool update() override;
+        void drawTV() const override;
+        void drawDRC() const override;
     };
 
     void setSubpage(const Subpage& sub_) {
@@ -274,12 +303,19 @@ private:
 
         switch(curSubpage) {
             case Subpage::PRESETS:
-                picker.close();
+                color.close();
+                model.close();
                 presets.open();
                 break;
             case Subpage::COLOR_PICKER:
                 presets.close();
-                picker.open();
+                model.close();
+                color.open();
+                break;
+            case Subpage::MODEL_PICKER:
+                color.close();
+                presets.close();
+                model.open();
                 break;
         }
     }
@@ -287,7 +323,8 @@ private:
     Subpage curSubpage;
 
     PresetsSubpage presets;
-    ColorPickerSubpage picker;
+    ColorPickerSubpage color;
+    ModelPickerSubpage model;
 
 public:
     ColorPage();
