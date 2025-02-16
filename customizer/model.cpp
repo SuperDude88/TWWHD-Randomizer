@@ -16,7 +16,7 @@ using eType = Utility::Endian::Type;
 
 ModelError CustomModel::loadFromFolder() {
     auto model = modelName;
-    if (user_provided || model == "") {
+    if (user_provided || model == "" || (!is_directory(Utility::get_models_dir() / model) && model != "random")) {
         model = "Link";
     }
 

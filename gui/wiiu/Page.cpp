@@ -1203,7 +1203,7 @@ void ColorPage::drawDRC() const {
 ColorPage::PresetsSubpage::PresetsSubpage(ColorPage& parent_) : 
     parent(parent_)
 {
-    toggles[0] = std::make_unique<FunctionButton>("Select Link Model", "Select a model for Link. To install more, read https://github.com/mcy/TWWHD-Randomizer/tree/main/customizer/INSTALL.md", std::bind(&ColorPage::setSubpage, &parent, Subpage::MODEL_PICKER));
+    toggles[0] = std::make_unique<FunctionButton>("Select Link Model", "Select a model for Link. To install more, read https://github.com/SuperDude88/TWWHD-Randomizer/tree/main/customizer/INSTALL.md", std::bind(&ColorPage::setSubpage, &parent, Subpage::MODEL_PICKER));
     toggles[1] = std::make_unique<ActionButton>("Casual Clothes", "Enable this if you want to wear your casual clothes instead of the Hero's Clothes. Custom models will have their own variant of casual clothes", &OptionCB::toggleCasualClothes, &OptionCB::isCasual);
     toggles[2] = std::make_unique<ActionButton>("Randomize Colors Orderly", "", &OptionCB::randomizeColorsOrderly);
     toggles[3] = std::make_unique<ActionButton>("Randomize Colors Chaotically", "", &OptionCB::randomizeColorsChaotically);
@@ -1368,6 +1368,7 @@ static const std::array<std::string, 11> casualTextures = {
 void ColorPage::PresetsSubpage::drawTV() const {
     // draw current link model name
     std::string model = getModel().modelName;
+
     if (getModel().modelName.empty()) {
         model = "Link";
     }
@@ -1709,13 +1710,14 @@ void ColorPage::ModelPickerSubpage::open() {
         listButtons[i].setEnabled(false);
     }
 
-    if (!getModel().user_provided) {
+    if (!getModel().user_provided || !std::filesystem::is_directory(Utility::get_models_dir() / getModel().modelName)) {
         listButtons[0].setEnabled(true);
     }
 
     if (getModel().modelName == "random") {
         listButtons[1].setEnabled(true);
     }
+
     //one button for each model, select the one that corresponds to the preferences file
     for (auto entry : std::filesystem::directory_iterator(Utility::get_models_dir())) {
         if (!entry.is_directory()) continue;
