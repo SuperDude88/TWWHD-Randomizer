@@ -300,16 +300,21 @@ static const std::unordered_map<std::string, std::list<std::string>> casualTextu
 
 // IMPROVEMENT: Better generalize this in the future
 ModelError CustomModel::applyModel() const {
-    if (!modelName.empty()) {
+    //start by counting the folders in case the user decided to select a random model even though theres no model
+    int fileCount = std::count_if(
+        begin(std::filesystem::directory_iterator(Utility::get_models_dir())),
+        end(std::filesystem::directory_iterator(Utility::get_models_dir())),
+        [](auto& entry) { return entry.is_directory(); }
+    );
+    if (!modelName.empty() && fileCount != 0) {
+
         Utility::platformLog("Applying custom model " + modelName + "...");
+
         auto model = Utility::get_models_dir() / modelName;
         if (modelName == "random") {
-            size_t n = 1;
-            int fileCount = std::count_if(
-                begin(std::filesystem::directory_iterator(Utility::get_models_dir())),
-                end(std::filesystem::directory_iterator(Utility::get_models_dir())),
-                [](auto& entry) { return entry.is_directory(); }
-            );
+            //we'll pick a random model from the models 
+            //theres probably a better way to do that but thats not very important
+            size_t n = 0;
             size_t chosen = rand() % fileCount;
             for (const auto& entry : std::filesystem::recursive_directory_iterator(Utility::get_models_dir())) {
                 if (chosen == n) {
@@ -318,7 +323,6 @@ ModelError CustomModel::applyModel() const {
                 n++;
             }
         } 
-
         
         struct Resource {
             std::string_view src, dst;
@@ -336,8 +340,13 @@ ModelError CustomModel::applyModel() const {
 
         for (auto rec : resources) {
             auto src = model / rec.src;
-            if (!rec.required && !std::filesystem::exists(src)) {
+            if (!std::filesystem::exists(src)) {
+                //if the file doesn't exist we'll restore the original
                 g_session.openGameFile(rec.dst);
+                //also check if it was required.
+                if (rec.required) {
+                    return ModelError::COULD_NOT_OPEN;
+                }
                 continue;
             }
 
@@ -352,7 +361,7 @@ ModelError CustomModel::applyModel() const {
         return ModelError::NONE;
     }
     //openGameFile fetches files from vanilla install and stores them into the rando install
-    //Restore original files in case a custom model was perviously used (voice clips only, as permanent_3d will be called fetched after that anyway)
+    //Restore original files in case a custom model was perviously used (voice clips only, as permanent_3d will be opened after that anyway)
     g_session.openGameFile("content/Cafe/US/AudioRes/JAudioRes/Banks/voice_0.aw");
     g_session.openGameFile("content/Cafe/US/AudioRes/JAudioRes/JaiInit.aaf");
 

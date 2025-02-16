@@ -35,7 +35,8 @@ void BasicButton::drawDRC() const {
 
 bool ModelButton::update() {
     if (InputManager::getInstance().pressed(ButtonInfo::A)) {
-        
+        //Handle separatly the cases where we clicked the "Link" button and the "Random Model" button
+        //I should probably make it their own attributes but i'm lazy so we'll just hardcode it
         if (modelName == "Link") {
             getModel().modelName = "";
             getModel().user_provided = false;
@@ -70,8 +71,6 @@ void ModelButton::drawDRC() const {
 void ModelButton::setEnabled(bool value) {
     enabled = value;
 }
-
-
 
 bool ItemButton::operator==(const ItemButton& rhs) const {
     return item == rhs.item && num == rhs.num;

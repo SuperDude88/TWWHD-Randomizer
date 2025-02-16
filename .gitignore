@@ -11,6 +11,3 @@ logic/out/*
 *data.qrc
 CMakeLists.txt.user
 build-*
-/cmake-build-debug
-/.idea
-wiiu.bat
