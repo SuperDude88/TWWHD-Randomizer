@@ -67,6 +67,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    if (std::string(RANDOMIZER_VERSION).empty()) {
+        show_warning_dialog("Could not determine Randomizer version. Please tell a dev if you see this message.");
+    }
+
     // Check for existing config file
     if (!std::filesystem::is_regular_file(Utility::get_app_save_path() / "config.yaml") || !std::filesystem::is_regular_file(Utility::get_app_save_path() / "preferences.yaml"))
     {
