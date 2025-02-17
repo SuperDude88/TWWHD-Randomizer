@@ -530,7 +530,7 @@ namespace OptionCB {
             conf.settings.selectedModel.user_provided = false;
             return "Link";
         }
-        if (conf.settings.selectedModel.modelName == "random") {
+        if (conf.settings.selectedModel.modelName == "?") {
             conf.settings.selectedModel.user_provided = true;
             return "Random Model";
         }

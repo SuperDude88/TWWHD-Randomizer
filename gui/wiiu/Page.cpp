@@ -1372,7 +1372,7 @@ void ColorPage::PresetsSubpage::drawTV() const {
     if (getModel().modelName.empty()) {
         model = "Link";
     }
-    else if (getModel().modelName == "random") {
+    else if (getModel().modelName == "?") {
         model = "Random Model";
     }
     OSScreenPutFontEx(SCREEN_TV, 1, PAGE_FIRST_ROW, (std::string("Selected Model : ") + model).c_str());
@@ -1714,7 +1714,7 @@ void ColorPage::ModelPickerSubpage::open() {
         listButtons[0].setEnabled(true);
     }
 
-    if (getModel().modelName == "random") {
+    if (getModel().modelName == "?") {
         listButtons[1].setEnabled(true);
     }
 

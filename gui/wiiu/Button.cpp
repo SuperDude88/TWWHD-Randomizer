@@ -42,7 +42,7 @@ bool ModelButton::update() {
             getModel().user_provided = false;
         }
         else if (modelName == "Random Model") {
-            getModel().modelName = "random";
+            getModel().modelName = "?";
             getModel().user_provided = true;
         }
         else {

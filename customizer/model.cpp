@@ -16,7 +16,7 @@ using eType = Utility::Endian::Type;
 
 ModelError CustomModel::loadFromFolder() {
     auto model = modelName;
-    if (user_provided || model == "" || (!is_directory(Utility::get_models_dir() / model) && model != "random")) {
+    if (user_provided || model == "" || (!is_directory(Utility::get_models_dir() / model) && model != "?")) {
         model = "Link";
     }
 
@@ -301,27 +301,24 @@ static const std::unordered_map<std::string, std::list<std::string>> casualTextu
 // IMPROVEMENT: Better generalize this in the future
 ModelError CustomModel::applyModel() const {
     //start by counting the folders in case the user decided to select a random model even though theres no model
-    int fileCount = std::count_if(
-        begin(std::filesystem::directory_iterator(Utility::get_models_dir())),
-        end(std::filesystem::directory_iterator(Utility::get_models_dir())),
-        [](auto& entry) { return entry.is_directory(); }
-    );
-    if (!modelName.empty() && fileCount != 0) {
+    std::vector<fspath> models;
+    bool model_exists = false;
 
-        Utility::platformLog("Applying custom model " + modelName + "...");
+    for (auto& dirent : std::filesystem::directory_iterator(Utility::get_models_dir())) {
+        if (dirent.is_directory()) models.push_back(dirent.path());
+        //also check if model folder exists
+        model_exists = (dirent.path().string() == Utility::get_models_dir() / modelName) || modelName == "?";
+    }
+    std::sort(models.begin(), models.end()); // readdir order isn't deterministic
+    if (!modelName.empty() && models.size() != 0 && model_exists) {
+
+        Utility::platformLog(modelName != "?" ? "Applying custom model " + modelName + "..." : "Applying random custom model...");
 
         auto model = Utility::get_models_dir() / modelName;
-        if (modelName == "random") {
+        if (modelName == "?") {
             //we'll pick a random model from the models 
-            //theres probably a better way to do that but thats not very important
-            size_t n = 0;
-            size_t chosen = rand() % fileCount;
-            for (const auto& entry : std::filesystem::recursive_directory_iterator(Utility::get_models_dir())) {
-                if (chosen == n) {
-                    model = entry.path().string();
-                }
-                n++;
-            }
+            size_t chosen = rand() % models.size();
+            model = models[chosen].string();
         } 
         
         struct Resource {
@@ -357,7 +354,7 @@ ModelError CustomModel::applyModel() const {
             }
         }
 
-        Utility::platformLog("Applied custom model " + modelName + "!");
+        Utility::platformLog(modelName != "?" ?"Applied custom model " + modelName + "!" : "Applied random custom model!");
         return ModelError::NONE;
     }
     //openGameFile fetches files from vanilla install and stores them into the rando install
