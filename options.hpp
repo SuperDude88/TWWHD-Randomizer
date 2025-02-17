@@ -323,6 +323,8 @@ public:
     uint8_t getSetting(const Option& option) const;
     void setSetting(const Option& option, const size_t& value);
     int evaluateOption(const std::string& optionStr) const;
+
+    bool anyEntrancesShuffled() const;
 };
 
 GameVersion nameToGameVersion(const std::string& name);
