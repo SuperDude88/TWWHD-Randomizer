@@ -1842,7 +1842,7 @@ TweakError remove_makar_kidnapping() {
 
         for (ChunkEntry* actor : actors) {
             if (std::strncmp(&actor->data[0], "wiz_r\x00\x00\x00", 8) == 0) {
-                actor->data.replace(0xA, 1, "\xFF", 1);
+                actor->data.replace(0x9, 1, "\xFF", 1);
             }
         }
 
