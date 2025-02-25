@@ -1096,3 +1096,9 @@ const std::set<std::string>& getAllLocationsNames()
 
     return locNames;
 }
+
+bool Settings::anyEntrancesShuffled() const {
+    return randomize_dungeon_entrances || randomize_boss_entrances ||
+            randomize_miniboss_entrances || randomize_cave_entrances != ShuffleCaveEntrances::Disabled ||
+            randomize_door_entrances || randomize_misc_entrances;
+}

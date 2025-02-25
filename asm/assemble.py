@@ -1,4 +1,11 @@
-from typing import List
+"""
+Custom assembler wrapper.
+
+This script is used for invoking the PowerPC assembler used for generating
+assembly patches, and then performing the necessary changes to ELF relocations
+to load the code.
+"""
+
 import struct
 import re
 import traceback
@@ -11,402 +18,504 @@ import os
 import sys
 import subprocess
 
-from elf import *
+import elf
 
-def read_all_bytes(data):
-  data.seek(0)
-  return data.read()
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Iterable, Tuple
 
-def write_u16(data, offset, new_value):
-  new_value = struct.pack(">H", new_value)
-  data.seek(offset)
-  data.write(new_value)
+FREE_SPACE_START = 0x028F87F4
+TEXT_START = 0x02000000
+DATA_START = 0x10000000
 
-def write_u32(data, offset, new_value):
-  new_value = struct.pack(">I", new_value)
-  data.seek(offset)
-  data.write(new_value)
+def find_tool(name: str) -> Path:
+  if sys.platform == "win32":
+    name += ".exe"
 
-asm_dir = os.path.dirname(__file__)
-
-if sys.platform == "win32":
-  devkitbasepath = r"C:\devkitPro\devkitPPC\bin"
-else:
-  if not "DEVKITPPC" in os.environ:
-    raise Exception(r"Could not find devkitPPC. Path to devkitPPC should be in the DEVKITPPC env var")
-  devkitbasepath = os.environ.get("DEVKITPPC") + "/bin"
-  
-def get_bin(name):
-  if not sys.platform == "win32":
-    return os.path.join(devkitbasepath, name)
-  return os.path.join(devkitbasepath, name + ".exe")
-
-if not os.path.isfile(get_bin("powerpc-eabi-as")):
-  raise Exception(r"Failed to assemble code: Could not find devkitPPC. devkitPPC should be installed to: C:\devkitPro\devkitPPC")
-
-# Output integers as hexadecimal
-yaml.Dumper.add_representer(
-  int,
-  lambda dumper, data: yaml.ScalarNode('tag:yaml.org,2002:int', "0x%02X" % data)
-)
-
-# Output ELFRelocation class
-def reloc_to_dict(data):
-  return {"r_offset": data.relocation_offset, "r_info": (data.symbol_index << 8) | (data.type & 0xFF), "r_addend": data.addend}
-
-yaml.Dumper.add_representer(
-  ELFRelocation,
-  lambda dumper, data: dumper.represent_mapping('tag:yaml.org,2002:map', reloc_to_dict(data), flow_style=True)
-)
-
-temp_dir = tempfile.mkdtemp()
-
-custom_symbols = {}
-  
-free_space_start_offset = 0x028F87F4
-next_free_space_offset = free_space_start_offset
-
-def get_code_and_relocations_from_elf(bin_name):
-  elf = ELF()
-  elf.read_from_file(bin_name)
-
-  relocations_in_elf = []
-
-  for elf_section in elf.sections:
-    if elf_section.name == ".text":
-      # Get the code and overwrite the ELF file with just the raw binary code
-      with open(bin_name, "wb") as f:
-        f.write(read_all_bytes(elf_section.data))
-    elif elf_section.type == ELFSectionType.SHT_RELA:
-      # Get the relocations
-      assert(elf_section.name == ".rela.text")
-      
-      for elf_relocation in elf.relocations[elf_section.name]:
-        elf_symbol = elf.symbols[".symtab"][elf_relocation.symbol_index]
-        is_local_relocation = try_apply_local_relocation(bin_name, elf_relocation, elf_symbol)
-
-        if not is_local_relocation:
-          if not try_fix_nonlocal_relocation(bin_name, elf_relocation, elf_symbol):
-            raise Exception("Encountered invalid non-local relocation") # TODO: make this error message better
-          
-          relocations_in_elf.append(elf_relocation)
-
-  return relocations_in_elf
-
-def try_apply_local_relocation(bin_name, elf_relocation, elf_symbol):
-  # Relocate relative branches within the RPX because doing it at runtime is unnecessary (and it won't have the symbols)
-
-  branch_src_offset = org_offset + elf_relocation.relocation_offset
-  if elf_symbol.section_index == 0xFFF1: # symbol address is absolute (0xFFF1 -> SHN_ABS)
-    branch_dest_offset = elf_symbol.address + elf_relocation.addend
-  elif elf_symbol.section_index == 0: # did not have a defined address
-    raise Exception("Tried to apply relocation against symbol with undefined address")
-  else: # symbol address is relative to the start of this patch
-    branch_dest_offset = org_offset + elf_symbol.address
-
-  relative_branch_offset = ((branch_dest_offset - branch_src_offset) // 4) << 2 # round down to nearest instruction
-
-  if elf_relocation.type == ELFRelocationType.R_PPC_REL24:
-    if relative_branch_offset > 0x1FFFFFF or relative_branch_offset < -0x2000000:
-      raise Exception("Relocation failed: Cannot branch from %X to %X with a 24-bit relative offset." % (branch_src_offset, branch_dest_offset))
-    
-    with open(bin_name, "r+b") as f:
-      instruction = read_u32(f, elf_relocation.relocation_offset)
-      instruction &= ~0x03FFFFFC
-      instruction |= relative_branch_offset & 0x03FFFFFC
-      write_u32(f, elf_relocation.relocation_offset, instruction)
-
-    return True
-
-  elif elf_relocation.type == ELFRelocationType.R_PPC_REL14:
-    if relative_branch_offset > 0x7FFF or relative_branch_offset < -0x8000:
-      raise Exception("Relocation failed: Cannot branch from %X to %X with a 14-bit relative offset." % (branch_src_offset, branch_dest_offset))
-    
-    with open(bin_name, "r+b") as f:
-      instruction = read_u32(f, elf_relocation.relocation_offset)
-      instruction &= ~0x0000FFFC
-      instruction |= relative_branch_offset & 0x0000FFFC
-      write_u32(f, elf_relocation.relocation_offset, instruction)
-
-    return True
-
-  return False
-
-section_addresses = [0, 0x02000000, 0x10000000] # null, .text, .data
-
-def try_fix_nonlocal_relocation(bin_name, elf_relocation, elf_symbol):
-  if elf_symbol.section_index == 0xFFF1: # address is absolute (0xFFF1 -> SHN_ABS)
-    if elf_symbol.address >= 0x10000000:
-      base_section_index = 2
-      absolute_symbol_address = elf_symbol.address
-    elif elf_symbol.address >= 0x02000000:
-      base_section_index = 1
-      absolute_symbol_address = elf_symbol.address
-  elif elf_symbol.section_index == 1: # address is relative to the start of this patch
-    base_section_index = 1
-    absolute_symbol_address = org_offset + elf_symbol.address
+  if "DEVKITPPC" in os.environ:
+    dkp = Path(os.environ.get("DEVKITPPC"))
+  elif sys.platform == "win32":
+    dkp = Path(r"C:\devkitPro\devkitPPC")
   else:
-    raise Exception("Invalid nonlocal relocation: unexpected section index %X" % (elf_symbol.section_index))
+    raise AssertionError("could not find DevKitPro, which must be defined in $DEVKITPPC or found at C:\devkitPro\devkitPPC")
 
-  relative_relocation_offset = elf_relocation.relocation_offset
-  elf_relocation.relocation_offset += org_offset # Calculate offset of this instruction relative to the start of the section
-  elf_relocation.symbol_index = base_section_index
-  elf_relocation.addend = absolute_symbol_address - section_addresses[base_section_index]
+  path = dkp / 'bin' / name
+  assert path.exists(), "could not find {path}"
+  return path
 
-  # This shouldn't be necessary but it makes things easier to validate
-  if elf_relocation.type == ELFRelocationType.R_PPC_ADDR32:
-    with open(bin_name, "r+b") as f:
-      write_u32(f, relative_relocation_offset, absolute_symbol_address)
-  elif elf_relocation.type == ELFRelocationType.R_PPC_ADDR16_LO:
-    with open(bin_name, "r+b") as f:
-      write_u16(f, relative_relocation_offset, absolute_symbol_address & 0x0000FFFF)
-  elif elf_relocation.type == ELFRelocationType.R_PPC_ADDR16_HI:
-    with open(bin_name, "r+b") as f:
-      write_u16(f, relative_relocation_offset, (absolute_symbol_address >> 16) & 0x0000FFFF)
-  elif elf_relocation.type == ELFRelocationType.R_PPC_ADDR16_HA:
-    with open(bin_name, "r+b") as f:
-      if absolute_symbol_address & 0x8000: # adjust for lower halfword being treated as signed
-        adjusted_address = ((absolute_symbol_address >> 16) + 1) & 0x0000FFFF
-      else:
-        adjusted_address = (absolute_symbol_address >> 16) & 0x0000FFFF
-      write_u16(f, relative_relocation_offset, adjusted_address)
-  else:
-    raise Exception("Unexpected non-local relocation type %X" % (elf_relocation.type))
-
-  return True
-
-try:
-  # First delete any old patch diffs.
-  for diff_path in glob.glob(glob.escape(asm_dir) + '/patch_diffs/*_diff.yaml'):
-    os.remove(diff_path)
+def run(tool: str, args: List[Any], *, input: str = None) -> bytes:
+  """
+  Runs a command and returns its stdout.
+  """
+  if isinstance(input, str):
+    input = input.encode('utf-8')
   
-  with open(asm_dir + "/linker.ld") as f:
-    linker_script = f.read()
-  
-  all_asm_file_paths = glob.glob(glob.escape(asm_dir) + "/patches/*.asm")
-  all_asm_files = [os.path.basename(asm_path).lower() for asm_path in all_asm_file_paths] # lowercase names to make sort more consistent
-  all_asm_files.sort()
+  for i, arg in enumerate(args):
+    if not isinstance(arg, Path):
+      continue
+    try:
+      arg = arg.relative_to(TEMP)
+    except ValueError:
+      if not arg.is_absolute():
+        arg = arg.absolute
+    args[i] = arg
 
-  all_asm_files.remove("custom_funcs.asm")
-  all_asm_files = ["custom_funcs.asm"] + all_asm_files
-  
-  code_chunks = {}
-  temp_linker_script = linker_script + "\n"
-  next_free_space_id = 1
-  
-  for patch_filename in all_asm_files:
-    patch_path = os.path.join(asm_dir, "patches", patch_filename)
-    preprocess_path = os.path.join(temp_dir, "preprocess_" + patch_filename)
+  print(tool, *args)
+  result = subprocess.run(
+    [find_tool(tool)] + args,
+    cwd=TEMP,
+    input=input,
+    capture_output=True,
+  )
 
-    command = [
-      get_bin("powerpc-eabi-gcc"),
-      "-E",
-      "-xassembler-with-cpp",
-      patch_path,
-      "-o", preprocess_path
-    ]
-    result = subprocess.call(command)
-    if result != 0:
-      raise Exception("Preprocessor call failed")
-    
-    with open(preprocess_path) as f:
-      asm = f.read()
-  
-    patch_name = os.path.splitext(patch_filename)[0]
-    code_chunks[patch_name] = {}
-    
-    most_recent_org_offset = None
-    for line in asm.splitlines():
-      line = re.sub(r";.+$", "", line)
-      line = line.strip()
+  if result.returncode != 0:
+    stderr = result.stderr
+    if isinstance(stderr, bytes):
+      stderr = stderr.decode('utf-8')
 
-      org_match = re.match(r"\.org\s+0x([0-9a-f]+)$", line, re.IGNORECASE)
-      org_symbol_match = re.match(r"\.org\s+([\._a-z][\._a-z0-9]+|@NextFreeSpace)$", line, re.IGNORECASE)
-      branch_match = re.match(r"(?:b|beq|bne|blt|bgt|ble|bge)\s+0x([0-9a-f]+)(?:$|\s)", line, re.IGNORECASE)
-      if org_match:
-        org_offset = int(org_match.group(1), 16)
-        if org_offset >= 0x10000000: #0x10000000 or above is in .data instead of .text, do not raise exception
-            pass
-        elif org_offset >= free_space_start_offset:
-          raise Exception("Tried to manually set the origin point to after the start of free space.\n.org offset: 0x%X\nUse \".org @NextFreeSpace\" instead to get an automatically assigned free space offset." % org_offset)
-        
-        code_chunks[patch_name][org_offset] = ""
-        most_recent_org_offset = org_offset
-        continue
-      elif org_symbol_match:
-        org_symbol = org_symbol_match.group(1)
+    raise Exception(f"error running {tool}. stderr:\n{stderr}")
+  return result.stdout
 
-        if org_symbol == "@NextFreeSpace":
-        # Need to make each instance of @NextFreeSpace into a unique label.
-          org_symbol = "@FreeSpace_%d" % next_free_space_id
-          next_free_space_id += 1
+def preprocess(path: Path) -> Path:
+  """
+  Executes the C preprocessor on the given assembly file text.
+  Returns a path to the result.
+  """
+  out = TEMP / (path.name + ".i")
 
-        code_chunks[patch_name][org_symbol] = ""
-        most_recent_org_offset = org_symbol
-        continue
-      elif branch_match:
-        # Replace branches to specific addresses with labels, and define the address of those labels in the linker script.
-        branch_dest = int(branch_match.group(1), 16)
-        branch_temp_label = "branch_label_%X" % branch_dest
-        temp_linker_script += "%s = 0x%X;\n" % (branch_temp_label, branch_dest)
-        line = re.sub(r"0x" + branch_match.group(1), branch_temp_label, line, 1)
-      elif not line:
+  # GCC does not like the .asm suffix. It really wants it to be .S, but we
+  # use .asm, so we need to specify the language with -x.
+  run("powerpc-eabi-gcc", ["-E", "-x", "assembler-with-cpp", "-o", out, path])
+  return out
+
+COMMENT_PAT = re.compile(r"[#;].*$")
+ORG_HEX_PAT = re.compile(r"\.org\s+0x([0-9a-fA-F]+)$")
+ORG_FREE_PAT = re.compile(r"\.org\s+@NextFreeSpace$")
+BRANCH_PAT  = re.compile(r"(?:b|beq|bne|blt|bgt|ble|bge)\s+0x([0-9a-fA-F]+)(?:$|\s)")
+
+TEMP = Path(tempfile.mkdtemp())
+
+CPP_FLAGS = []
+
+ASSEMBLY_FLAGS = [
+  "-mregnames", # Allow naming registers r0, r1, r2, etc. This is a PPC quirk.
+  "-x", "assembler", # We use .asm instead of .S; this confuses GCC.
+]
+
+@dataclass
+class Chunk:
+  source: Path
+  tag: int = None
+
+  origin: int = None # None -> NextFreeSpace.
+  code: str = ""
+  labels: Dict[str, int] = field(default_factory=dict)
+
+  gcc_flags: List[str] = field(default_factory=list)
+
+  _object_path: Path = None
+  _object: elf.ELF = None
+
+  @staticmethod
+  def parse(path: Path) -> List["Chunk"]:
+    """
+    Parses this file into one or more code chunks, each of which may or may
+    not have their own start offset.
+    """
+
+    if path.suffix in [".asm", ".S"]:
+      return Chunk.parse_asm_file(path)
+    else:
+      return [Chunk.parse_cpp_file(path)]
+
+  @staticmethod
+  def parse_cpp_file(path: Path) -> "Chunk":
+    """
+    Parses a C/C++ file into a single code chunk.
+    """
+
+    return Chunk(
+      source=path,
+      code=path.read_text(),
+      gcc_flags=CPP_FLAGS + (['-std=c++20'] if path.suffix != '.c' else ['-std=c17'])
+    )
+
+  @staticmethod
+  def parse_asm_file(path: Path) -> List["Chunk"]:
+    """
+    Parses an assembly file into code chunks.
+    """
+    index = 0
+    chunks: List[Chunk] = []
+    for line in preprocess(path).read_text().splitlines():
+      # Vaporize any comments on this line.
+      line = COMMENT_PAT.sub("", line).strip()
+      if line == "":
         # Blank line
         continue
+
+      match = ORG_HEX_PAT.match(line)
+      if match:
+        offset = int(match.group(1), 16)
+
+        assert offset >= DATA_START or offset < FREE_SPACE_START, \
+          f"tried to manually set the origin point to after the start of free space at {offset:#x}; use \".org @NextFreeSpace\" instead to get an automatically assigned free space offset"
+        
+        chunks.append(Chunk(source=path, tag=f"{offset:#x}", origin=offset))
+        index += 1
+        continue
+
+      match = ORG_FREE_PAT.match(line)
+      if match:
+        chunks.append(Chunk(source=path, tag=f"block{index}", origin=None))
+        index += 1
+        continue
+
+      assert chunks, f"found code before an .org directive"
+
+      match = BRANCH_PAT.match(line)
+      if match:
+        # Replace branches to specific addresses with labels, and define the
+        # address of those labels in the linker script.
+        dst = int(match.group(1), 16)
+        label = f".L_{dst:X}"
+        chunks[-1].labels[label] = dst
+        line = line.replace("0x" + match.group(1), label, 1)
       
-      if most_recent_org_offset is None:
-        if line[0] == ";" or line[0] == "#":
-          # Comment
-          continue
-        raise Exception("Found code before any .org directive")
+      chunks[-1].code += "\n" + line
+
+    for chunk in chunks:
+      chunk.gcc_flags = ASSEMBLY_FLAGS
+
+    return chunks
       
-      code_chunks[patch_name][most_recent_org_offset] += line + "\n"
+  def path(self) -> Path:
+    """
+    Returns a unique path for this chunk.
+    """
+    if self.tag is None:
+      return self.source
+
+    path = self.source
+    return path.with_stem(f"{path.stem}_{self.tag}")
+
+  def compile(self) -> elf.ELF:
+    """
+    Compiles this code chunk, producing an ELF object file.
+    """
+
+    if self._object is not None:
+      return self._object
+
+    # Spill the code3 into a file. This enables GCC to give us diagnostics
+    # that actually have a file name in them.
+    src = TEMP / self.path().name
+    src.write_text(self.code)
+
+    self._object_path = TEMP / (self.path().stem + ".o")
+    run("powerpc-eabi-gcc", self.gcc_flags + ["-c", src])
     
-    if not code_chunks[patch_name]:
-      raise Exception("No code found")
+    self._object = elf.ELF(self._object_path.read_bytes())
 
-    most_recent_org_offset = None
+    for section in self._object.sections:
+      # We do not currently support .data, .bss, or extra .text sections.
 
-  last_patch = ""
-  for patch_name, code_chunks_for_file in code_chunks.items():
-    if last_patch != patch_name:
-      print("Generating patch " + patch_name)
-      last_patch = patch_filename
-    
-    diffs = {}
-    diffs["Data"] = {}
-    # Sort code chunks in this patch so that free space chunks come first.
-    # This is necessary so non-free-space chunks can branch to the free space chunks.
-    def free_space_org_list_sorter(code_chunk_tuple):
-      org_offset_or_symbol, temp_asm = code_chunk_tuple
-      if isinstance(org_offset_or_symbol, int):
-        return 0
-      else:
-        org_symbol = org_offset_or_symbol
-        free_space_match = re.search(r"@FreeSpace_\d+", org_symbol)
-        if free_space_match:
-          return -1
-        else:
-          return 0
-  
-    code_chunks_for_file_sorted = list(code_chunks_for_file.items())
-    code_chunks_for_file_sorted.sort(key=free_space_org_list_sorter)
+      if section.name.startswith('.data'):
+        assert section.data == b"", "declaring globals is NYI"
 
-    # Add custom symbols in the current file to the temporary linker script.
-    for symbol_name, symbol_address in custom_symbols.items():
-      temp_linker_script += "%s = %s;\n" % (symbol_name, symbol_address)
-    
-    for org_offset_or_symbol, temp_asm in code_chunks_for_file_sorted:
-      using_free_space = False
-      if isinstance(org_offset_or_symbol, int):
-        org_offset = org_offset_or_symbol
-      else:
-        org_symbol = org_offset_or_symbol
-        free_space_match = re.search(r"@FreeSpace_\d+", org_symbol)
-        if free_space_match:
-          org_offset = next_free_space_offset
-          using_free_space = True
-        else:
-          if org_symbol not in custom_symbols:
-            raise Exception(".org specified an invalid custom symbol: %s" % org_symbol)
-          org_offset = custom_symbols[org_symbol]
+      assert section.name == '.text' or not section.name.startswith('.text'), \
+        "found extra .text section, probably due to template or virtual functions"
 
-      temp_linker_name = os.path.join(temp_dir, "tmp_linker.ld")
-      with open(temp_linker_name, "w") as f:
-        f.write(temp_linker_script)
-      
-      temp_asm_name = os.path.join(temp_dir, "tmp_" + patch_name + "_%08X.asm" % org_offset)
-      with open(temp_asm_name, "w") as f:
-        f.write("\n")
-        f.write(temp_asm)
-      
-      o_name = os.path.join(temp_dir, "tmp_" + patch_name + "_%08X.o" % org_offset)
-      command = [
-        get_bin("powerpc-eabi-as"),
-        "-mregnames",
-        temp_asm_name,
-        "-o", o_name
-      ]
-      result = subprocess.call(command)
-      if result != 0:
-        raise Exception("Assembler call failed")
-  
-      map_name = os.path.join(temp_dir, "tmp_" + patch_name + ".map")
-      bin_name = os.path.join(temp_dir, "tmp_" + patch_name + ".bin")
+    return self._object
 
-      command = [
-        get_bin("powerpc-eabi-ld"),
-        "-Ttext", str(hex(org_offset)),
-        "--just-symbols=", temp_linker_name,
-        "-Map=" + map_name,
-        o_name,
-        "-o", bin_name,
-        "--relocatable"
-      ]
-      result = subprocess.call(command)
-      if result != 0:
-        raise Exception("Linker call failed")
+  def link(self, ld_script: Path) -> Tuple[bytes, List[elf.Relocation]]:
+    """
+    Links a code chunk, returning its relocated text section, and any
+    relocations we cannot resolve statically.
+    """
 
-      with open(map_name) as f:
-        on_custom_symbols = False
-        for line in f.read().splitlines():
-          if re.search(r"^ .\S+ +0x", line):
-            on_custom_symbols = True
+    binary = self._object_path.with_suffix(".elf")
+    run("powerpc-eabi-ld", [
+      "-Ttext", str(hex(self.origin)), # Specify where we want this chunk to begin.
+                                       # All data for this chunk is in .text already.
+      "--just-symbols", ld_script,     # Include the global symbols we dug up.
+      "--relocatable",                 # Ask ld to generate relocations for us.
+      "-o", binary,
+      self._object_path,
+    ])
+
+    # Extract the text section and apply relocations to it.
+    return Linker(self.origin, elf.ELF.from_file(binary)).apply_relocations()
+
+def allocate_free_space(chunks: List[Chunk]):
+  """
+  Allocates free space for all chunks requesting the aforementioned space.
+
+  It does so by assembling each chunk and measuring the size of the text
+  section.
+  """
+
+  next_offset = FREE_SPACE_START
+  for chunk in chunks:
+    if chunk.origin is not None:
+      continue
+
+    chunk.origin = next_offset
+    try:
+      next_offset += len(chunk.compile().sections_by_name[".text"].data)
+    except Exception as e:
+      raise Exception(f'{chunk.path()}: {e}') from e
+
+def find_globals(chunks: List[Chunk]) -> Dict[str, int]:
+  """
+  Calculates the desired for all global symbols, which can then
+  be converted into linker directives.
+  """
+
+  table = {}
+  for chunk in chunks:
+    try:
+      for _, syms in chunk.compile().symbols.items():
+        for sym in syms:
+          if sym.name in chunk.labels:
+            table[sym.name] = chunk.labels[sym.name]
             continue
+
+          if sym.binding != elf.Symbol.Binding.STB_GLOBAL:
+            continue # Only care about .global symbols.
+          if sym.section_index == elf.Symbol.SpecialSection.SHN_UNDEF:
+            continue # Skip undefined symbols.
           
-          if on_custom_symbols:
-            match = re.search(r"^ +0x(?:00000000)?([0-9a-f]{8}) {16,}(\S+)", line)
-            if not match:
-              continue
+          table[sym.name] = chunk.origin + sym.address
 
-            symbol_address = int(match.group(1), 16)
-            symbol_name = match.group(2)
-            custom_symbols[symbol_name] = symbol_address
-            temp_linker_script += "%s = 0x%08X;\n" % (symbol_name, symbol_address)
+    except Exception as e:
+      raise Exception(f'{chunk.path()}: {e}') from e
 
-      relocations = get_code_and_relocations_from_elf(bin_name)
+  return table
+
+def make_ld_script(base: Path, custom_symbols: Dict[str, int]) -> Path:
+  """
+  Constructs a custom linker script and returns the path to it.
+  """
+
+  output = TEMP / "linker.ld"
+  script = base.read_text() + "\n\n" + \
+            "\n".join([f"{sym} = {addr:#x};" for sym, addr in custom_symbols.items()]) + "\n"
+  output.write_text(script)
+  return output
+
+class Linker:
+  """
+  State for linking (i.e. resolving relocations and custom asm features).
+  """
+
+  origin: int
+  binary: elf.ELF
+
+  text: elf.Cursor
+  rela: elf.Section
+  symtab: List[elf.Symbol]
+
+  def __init__(self, origin: int, binary: elf.ELF):
+    self.origin = origin
+    self.binary = binary
+    self.text = elf.Cursor(self.binary.sections_by_name[".text"].data)
+    self.symtab = self.binary.symbols[".symtab"]
+
+  def apply_relocations(self) -> Tuple[bytes, List[elf.Relocation]]:
+    if ".rela.text" not in self.binary.relocations:
+      return self.text.data(), []
+    
+    relos = []
+    for relo in self.binary.relocations[".rela.text"]:
+        symbol = self.symtab[relo.symbol_index]
+
+        if self._local(relo, symbol):
+          continue # No need to record this relocation.
+        
+        self._nonlocal(relo, symbol)
+        relos.append(relo)
+
+
+    return self.text.data(), relos
+
+  def _local(self, relo: elf.Relocation, symbol: elf.Symbol) -> bool:
+    # Relocate relative branches within the RPX because doing it at runtime
+    # is unnecessary (and it won't have the symbols)
+    src = self.origin + relo.target_offset
+    assert symbol.section_index != elf.Symbol.SpecialSection.SHN_UNDEF, \
+      f"tried to apply relocation against symbol {symbol.name} with undefined address"
+
+    dst = symbol.address
+    if symbol.section_index == elf.Symbol.SpecialSection.SHN_ABS:
+      # Absolute address.
+      dst += relo.addend
+    else:
+      # Symbol address is relative to the start of this patch.
+      dst += self.origin
+
+    relative_offset = (dst - src) & ~0b11 # Round to nearest instruction
+
+    if relo.type == elf.Relocation.Type.R_PPC_REL24:
+      assert -0x200_0000 <= relative_offset < 0x200_0000, \
+        f"relocation failed: Cannot branch from {src:#x} to {dst:#x} with a 24-bit relative offset"
       
-      if org_offset in diffs["Data"]:
-        raise Exception("Duplicate .org directive within a single asm patch: %X" % org_offset)
+      inst = self.text.read_u32(offset=relo.target_offset)
+      inst &= ~0x03FFFFFC
+      inst |= relative_offset & 0x03FFFFFC
+      self.text.write_u32(inst, offset=relo.target_offset)
+
+      return True
+
+    elif relo.type == elf.Relocation.Type.R_PPC_REL14:
+      assert -0x8000 <= relative_offset < 0x8000, \
+        f"relocation failed: Cannot branch from {src:#x} to {dst:#x} with a 14-bit relative offset"
       
-      with open(bin_name, "rb") as f:
-        binary_data = f.read()
-      
-      code_chunk_size_in_bytes = len(binary_data)
-      
-      if using_free_space:
-        next_free_space_offset += code_chunk_size_in_bytes
-      
-      diffs["Data"][org_offset] = list(struct.unpack("B"*code_chunk_size_in_bytes, binary_data))
-      if relocations:
-        if "Relocations" not in diffs:
-          diffs["Relocations"] = []
+      inst = self.text.read_u32(offset=relo.target_offset)
+      inst &= ~0xFFFC
+      inst |= relative_offset & 0xFFFC
+      self.text.write_u32(inst, offset=relo.target_offset)
 
-        diffs["Relocations"] += relocations
+      return True
 
-    diff_path = os.path.join(asm_dir, "patch_diffs", patch_name + "_diff.yaml")
-    with open(diff_path, "w") as f:
-      # Don't put every element on a separate line
-      yaml.Dumper.add_representer(
-        list,
-        lambda dumper, data: dumper.represent_sequence(u"tag:yaml.org,2002:seq", data, flow_style=True)
-      )
+    return False
 
-      f.write(yaml.dump(diffs, Dumper=yaml.Dumper, default_flow_style=False))
+  def _nonlocal(self, relo: elf.Relocation, symbol: elf.Symbol):
+    if symbol.section_index == elf.Symbol.SpecialSection.SHN_ABS:
+      # Absolute address.
+      addr = symbol.address
+      if symbol.address >= DATA_START:
+        base_section_addr = DATA_START
+        base_section_index = 2
+      elif symbol.address >= TEXT_START:
+        base_section_addr = TEXT_START
+        base_section_index = 1
 
-  with open(asm_dir + "/custom_symbols.yaml", "w") as f:
-    f.write(yaml.dump(custom_symbols, Dumper=yaml.Dumper, default_flow_style=False) + '\n')
-    print("Dumped custom symbols")
+    elif symbol.section_index == 1: # Address is relative to the start of this patch.
+      base_section_index = 1
+      base_section_addr = TEXT_START
+      addr = self.origin + symbol.address
+    
+    else:
+      raise Exception(f"invalid nonlocal relocation: unexpected section index {symbol.section_index:#x}")
 
-  print("Finished generating diffs")
+    offset = relo.target_offset
+    relo.target_offset += self.origin # Calculate offset of this instruction relative to the start of the section
+    relo.symbol_index = base_section_index
+    relo.addend = addr - base_section_addr
 
-except Exception as e:
-  stack_trace = traceback.format_exc()
-  error_message = str(e) + "\n\n" + stack_trace
-  print(error_message)
-  input()
-  raise
+    # This shouldn't be necessary but it makes things easier to validate
+    if relo.type == elf.Relocation.Type.R_PPC_ADDR32:
+      self.text.write_u32(addr, offset=offset)
+
+    elif relo.type == elf.Relocation.Type.R_PPC_ADDR16_LO:
+      self.text.write_u16(addr, offset=offset)
+
+    elif relo.type == elf.Relocation.Type.R_PPC_ADDR16_HI:
+      self.text.write_u16((addr >> 16), offset=offset)
+
+    elif relo.type == elf.Relocation.Type.R_PPC_ADDR16_HA:
+      if addr & 0x8000: # Adjust for lower halfword being treated as signed.
+        addr >>= 16
+        addr += 1
+      else:
+        addr >>= 16
+
+      self.text.write_u16(addr, offset=offset)
+
+    else:
+      raise Exception(f"Unexpected non-local relocation type {symbol.type:#x}")
+
+class Dumper(yaml.Dumper):
+  pass
+
+Dumper.add_representer(int, lambda _, data:
+  yaml.ScalarNode('tag:yaml.org,2002:int', f"0x{data:02X}")
+)
+Dumper.add_representer(elf.Relocation, lambda dumper, data: dumper.represent_mapping(
+  'tag:yaml.org,2002:map',
+  {
+    "r_offset": data.target_offset,
+    "r_info": (data.symbol_index << 8) | (data.type & 0xFF),
+    "r_addend": data.addend,
+  },
+  flow_style=True,
+))
+Dumper.add_representer(
+  bytes,
+  lambda dumper, data: dumper.represent_sequence(u"tag:yaml.org,2002:seq", list(data), flow_style=True)
+)
+
+def main():
+  # First delete any old patch diffs.
+  root = Path(__file__).parent
+  def path_glob( pattern: str) -> Iterable[Path]:
+    return map(Path, glob.glob(glob.escape(root) + '/' + pattern))
+  for diff_path in path_glob('patch_diffs/*_diff.yaml'):
+    diff_path.unlink()
   
-finally:
-  shutil.rmtree(temp_dir)
+  patches = [
+    path for path in path_glob('patches/*')
+    if path.suffix not in ['.h', '.hpp']
+  ]
+  patches.sort(key=lambda p: str(p).lower())
+  
+  chunks: List[Chunk] = []
+  for patch in patches:
+    try:
+      chunks += Chunk.parse(patch)
+    except Exception as e:
+      raise Exception(f'{patch}: {e}') from e
+  
+  allocate_free_space(chunks)
+
+  symbols = find_globals(chunks)
+  (root / 'custom_symbols.yaml').write_text(
+    yaml.dump(
+      {sym: addr for sym, addr in symbols.items() if not sym.startswith(".L_")},
+      Dumper=Dumper, default_flow_style=False) + '\n'
+  )
+  
+  ld_script = make_ld_script(root / 'linker.ld', symbols)
+
+  # Aggregate chunks by source.
+  chunks_by_source: Dict[Path, List[Chunk]] = {}
+  for chunk in chunks:
+    if chunk.source not in chunks_by_source:
+      chunks_by_source[chunk.source] = []
+    chunks_by_source[chunk.source].append(chunk)
+
+  for source, chunks in chunks_by_source.items():
+    diff = {
+      "Data": {},
+      "Relocations": []
+    }
+
+    for chunk in chunks:
+      try:
+        text, relos = chunk.link(ld_script)
+      except Exception as e:
+        raise Exception(f'{chunk.path()}: {e}') from e
+      diff["Data"][chunk.origin] = text
+      diff["Relocations"] += relos
+
+    if diff["Relocations"] == []:
+      del diff["Relocations"]
+
+    diff_yaml = root / 'patch_diffs' / (source.stem + "_diff.yaml")
+    diff_yaml.write_text(yaml.dump(diff, Dumper=Dumper, default_flow_style=False))
+    print(f"wrote {diff_yaml}")
+
+if __name__ == '__main__':
+  try:
+    main()
+
+  except Exception as e:
+    stack_trace = traceback.format_exc()
+    error_message = str(e) + "\n\n" + stack_trace
+    print(error_message)
+    sys.exit(1)
+    
+  finally:
+    shutil.rmtree(TEMP)
   

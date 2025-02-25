@@ -67,6 +67,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    if (std::string(RANDOMIZER_VERSION).empty()) {
+        show_warning_dialog("Could not determine Randomizer version. Please tell a dev if you see this message.");
+    }
+
     // Check for existing config file
     if (!std::filesystem::is_regular_file(Utility::get_app_save_path() / "config.yaml") || !std::filesystem::is_regular_file(Utility::get_app_save_path() / "preferences.yaml"))
     {
@@ -637,8 +641,7 @@ void MainWindow::apply_config_settings()
     APPLY_COMBOBOX_SETTING(config, ui, gyroscope);
     APPLY_COMBOBOX_SETTING(config, ui, ui_display);
 
-    // Permalink
-    ui->permalink->setText(QString::fromStdString(config.getPermalink()));
+    update_permalink_and_seed_hash();
 }
 
 void MainWindow::on_base_game_path_browse_button_clicked()

@@ -2642,7 +2642,7 @@
   Events:
       Can Open ET Green Pot: Nothing # can throw a skull at it
   Locations:
-      Earth Temple - Warp Pot Room Chest: Can_Play_CM or Can_Aim_Mirror_Shield
+      Earth Temple - Warp Pot Room Chest: Can_Play_CM or Mirror_Shield
       Earth Temple - Warp Pot Room Behind Curtain: Fire_Arrows and (Hookshot or Boomerang)
   Exits:
       ET Giant Statue Room: Can_Defeat_Red_Chu_Chus and Can_Defeat_Green_Chu_Chus
@@ -2661,7 +2661,7 @@
 - Name: ET First Crypt
   Dungeon: Earth Temple
   Locations:
-      Earth Temple - First Crypt Chest: Power_Bracelets and (Can_Play_CM or Can_Aim_Mirror_Shield)
+      Earth Temple - First Crypt Chest: Power_Bracelets and (Can_Play_CM or Mirror_Shield)
   Exits:
       ET Small Room West of First Crypt: Nothing
       ET Giant Statue Room: Nothing
@@ -2669,7 +2669,7 @@
 - Name: ET Small Room West of First Crypt
   Dungeon: Earth Temple
   Locations:
-      Earth Temple - Chest Behind Destructable Wall: Can_Aim_Mirror_Shield
+      Earth Temple - Chest Behind Destructable Wall: Mirror_Shield
   Exits:
       ET First Crypt: Nothing
 
@@ -2682,11 +2682,11 @@
 - Name: ET Block Push Corridor
   Dungeon: Earth Temple
   Events:
-      Can Open ET Blue Pot: Can_Defeat_Floormasters and (Can_Play_CM or Can_Aim_Mirror_Shield)
+      Can Open ET Blue Pot: Can_Defeat_Floormasters and (Can_Play_CM or Mirror_Shield)
   Locations:
       Earth Temple - Three Blocks Room Chest: Can_Defeat_Floormasters and (Can_Play_CM or Can_Aim_Mirror_Shield)
   Exits:
-      ET Two Moblins and Poes Room: Can_Defeat_Floormasters and (Can_Play_CM or Can_Aim_Mirror_Shield)
+      ET Two Moblins and Poes Room: Can_Defeat_Floormasters and (Can_Play_CM or Mirror_Shield)
       ET Chu Chus and Switches Room: Nothing
       ET Map Chest Room: "'Can_Open_ET_Green_Pot' and 'Can_Open_ET_Blue_Pot'" # either goes blue -> green or blue -> gold -> green
       ET Boss Door Room: "'Can_Open_ET_Blue_Pot' and 'Can_Open_ET_Gold_Pot'"
@@ -2694,12 +2694,10 @@
 - Name: ET Two Moblins and Poes Room
   Dungeon: Earth Temple
   Locations:
-      Earth Temple - Behind Statues Chest: Can_Play_CM or Can_Aim_Mirror_Shield
+      Earth Temple - Behind Statues Chest: Can_Play_CM or Mirror_Shield
   Exits:
-      ET Two Moblins and Poes Room Past Stairs:
-          Can_Defeat_Moblins and Can_Defeat_Poes and (Can_Play_CM
-          or Can_Aim_Mirror_Shield)
-      ET Two Moblins and Poes Room Past Light Wall: Can_Play_CM or Can_Aim_Mirror_Shield
+      ET Two Moblins and Poes Room Past Stairs: Nothing # The moblins can hit each other, then their weapon can be used to finish the rest of the enemies
+      ET Two Moblins and Poes Room Past Light Wall: Can_Play_CM and Mirror_Shield
       ET Block Push Corridor: Nothing
 
 - Name: ET Two Moblins and Poes Room Past Stairs
@@ -3210,7 +3208,7 @@
 - Name: Ganon's Tower ET Trial
   Hint Region: Ganon's Tower
   Exits:
-      Ganon's Tower Jalhalla Refight: Can_Aim_Mirror_Shield
+      Ganon's Tower Jalhalla Refight: Nothing # Can lure the ChuChus into the light ray
       Ganon's Tower Trials Hub: Nothing
 
 - Name: Ganon's Tower Jalhalla Refight

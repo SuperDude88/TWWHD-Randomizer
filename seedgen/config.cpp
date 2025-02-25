@@ -1033,10 +1033,7 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
 
 std::string Config::getPermalink(const bool& internal /* = false */) const {
     std::string permalink = "";
-    if (std::string(RANDOMIZER_VERSION).empty()) {
-        Utility::platformLog("Could not determine Randomizer version. Please tell a dev if you see this message.");
-    }
-    
+
     permalink += RANDOMIZER_VERSION;
     permalink += '\0';
     permalink += seed;

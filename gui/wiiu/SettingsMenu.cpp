@@ -16,6 +16,29 @@
 
 static const std::string line_break(ScreenSizeData::tv_line_length, '=');
 
+static void showVersionWarning() {
+    ScreenClear();
+
+    OSScreenPutFontEx(SCREEN_TV, 0, 0, "Could not determine Randomizer version. Please tell a dev if you see this message.");
+    OSScreenPutFontEx(SCREEN_TV, 0, 1, "Press any button to continue.");
+    OSScreenPutFontEx(SCREEN_DRC, 0, 0, "Could not determine Randomizer version. Please tell a dev if you see this message.");
+    OSScreenPutFontEx(SCREEN_DRC, 0, 1, "Press any button to continue.");
+
+    ScreenDraw();
+    
+    while(true) {
+        if(InputManager::getInstance().poll() != InputError::NONE) {
+            continue;
+        }
+
+        if(InputManager::getInstance().anyButtonPressed()) {
+            break;
+        }
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(17)); //update ~60 times a second
+    }
+}
+
 SettingsMenu::SettingsMenu() {
     pages[0] = std::make_unique<SeedPage>();
     pages[1] = std::make_unique<ProgressionPage>();
@@ -144,6 +167,10 @@ SettingsMenu::Result SettingsMenu::run() {
     using namespace std::literals::chrono_literals;
 
     SettingsMenu& sInstance = getInstance();
+
+    if (std::string(RANDOMIZER_VERSION).empty()) {
+        showVersionWarning();
+    }
 
     if(const ConfigError err = OptionCB::loadConfig(); err != ConfigError::NONE) {
         ErrorLog::getInstance().log("Failed to prepare config, ERROR: " + ConfigErrorGetName(err));
