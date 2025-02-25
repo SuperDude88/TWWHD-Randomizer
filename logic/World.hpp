@@ -122,7 +122,7 @@ public:
     std::unordered_map<EventId, std::string> reverseEventMap = {};
     std::map<std::string, Dungeon> dungeons = {};
     LocationPool raceModeLocations = {};
-    std::map<Location*, std::vector<Location*>, PointerLess<Location>> pathLocations = {};
+    std::list<Location*> goalLocations = {};
     std::map<std::string, std::unordered_set<Location*>> barrenRegions = {};
     std::list<Location*> korlHints = {};
     std::map<Location*, std::unordered_set<Location*>, PointerLess<Location>> hohoHints = {}; // map of Ho Ho Hint Location to hinted locations

@@ -30,13 +30,13 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
     for (auto& world : worlds)
     {
         // Defeat Ganondorf is always a goal location
-        world.pathLocations[world.locationTable["Ganon's Tower - Defeat Ganondorf"].get()] = {};
+        world.goalLocations.push_back(world.locationTable["Ganon's Tower - Defeat Ganondorf"].get());
         for (auto& [name, dungeon] : world.dungeons)
         {
             // Race mode locations are also goal locations
             if (dungeon.isRequiredDungeon)
             {
-                world.pathLocations[dungeon.raceModeLocation] = {};
+                world.goalLocations.push_back(dungeon.raceModeLocation);
             }
         }
 
@@ -55,42 +55,43 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
     for (auto& world : worlds)
     {
         auto& settings = world.getSettings();
-        for (auto& sphere : world.playthroughSpheres)
+        for (auto& potentialPathLocation : world.getLocations(true))
         {
-            for (auto location : sphere)
+            auto itemAtLocation = potentialPathLocation->currentItem;
+            if (itemAtLocation.isJunkItem())
             {
-                auto itemAtLocation = location->currentItem;
-
-                // Take the item away from the location
-                location->currentItem = Item(GameItem::INVALID, location->world);
-
-                // Run a search without the item
-                runGeneralSearch(worlds);
-
-                for (auto& [goalLocation, pathLocations] : world.pathLocations)
-                {
-                    // If we never reached the goal location, then this location
-                    // is "on the path to" the goal location. Since hints will refer
-                    // to locations in an individual's world, only add locations
-                    // which are in the same world as the goal location
-                    if (!goalLocation->hasBeenFound && goalLocation->world == location->world)
-                    {
-                        pathLocations.push_back(location);
-                    }
-                }
-
-                // Then give back the location's item
-                location->currentItem = itemAtLocation;
+                continue;
             }
+
+            // Take the item away from the location
+            potentialPathLocation->currentItem = Item(GameItem::INVALID, potentialPathLocation->world);
+
+            // Run a search without the item
+            runGeneralSearch(worlds);
+
+            for (auto& location : world.getLocations(true))
+            {
+                // If we never reached the goal location, then this location
+                // is "on the path to" the goal location. Since hints will refer
+                // to locations in an individual's world, only add locations
+                // which are in the same world as the goal location
+                if (!location->hasBeenFound)
+                {
+                    location->pathLocations.push_back(potentialPathLocation);
+                }
+            }
+
+            // Then give back the location's item
+            potentialPathLocation->currentItem = itemAtLocation;
         }
 
         #ifdef ENABLE_DEBUG
-            for (auto& [goalLocation, pathLocations] : world.pathLocations)
+            for (auto& location : world.getLocations(true))
             {
-                LOG_TO_DEBUG("Path locations for " + goalLocation->getName() + " [");
-                for (auto location : pathLocations)
+                LOG_TO_DEBUG("Path locations for " + location->getName() + " [");
+                for (auto& pathLocation : location->pathLocations)
                 {
-                    LOG_TO_DEBUG("  " + location->getName());
+                    LOG_TO_DEBUG("  " + pathLocation->getName() + " (" + pathLocation->currentItem.getName() + ")");
                 }
                 LOG_TO_DEBUG("]");
             }
@@ -147,7 +148,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 if (!chainLocations.empty())
                 {
                     // If all of this item's chain locations' items can be in barren regions (or are nonprogression locations), then this item is junk
-                    if (std::ranges::all_of(chainLocations, [](const Location* loc){ return !loc->progression || loc->currentItem.canBeInBarrenRegion(); }))
+                    if (std::ranges::all_of(chainLocations, [](const Location* loc){ return !loc->progression || loc->currentItemCanBeBarren(); }))
                     {
                         location->currentItem.setAsJunkItem();
                         LOG_TO_DEBUG(location->currentItem.getName() + " is now junk.");
@@ -176,7 +177,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
             newJunkItems = false;
             for (Item* item : potentiallyJunkItems)
             {
-                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](const Location* loc){ return !loc->progression || loc->currentItem.canBeInBarrenRegion(); }))
+                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](const Location* loc){ return !loc->progression || loc->currentItemCanBeBarren(); }))
                 {
                     newJunkItems = true;
                     item->setAsJunkItem();
@@ -208,7 +209,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                         {
                             if (world.barrenRegions.contains(hintRegion))
                             {
-                                if (location->currentItem.canBeInBarrenRegion())
+                                if (location->currentItemCanBeBarren())
                                 {
                                     world.barrenRegions[hintRegion].insert(location.get());
                                 }
@@ -319,9 +320,9 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
 {
     // Shuffle each pool of path locations so that their orders are random
     std::vector<Location*> goalLocations = {};
-    for (auto& [goalLocation, pathLocations] : world.pathLocations)
+    for (auto& goalLocation : world.goalLocations)
     {
-        shufflePool(pathLocations);
+        shufflePool(goalLocation->pathLocations);
         // Initially we want to pull path hints from race mode dungeons before pulling from Ganondorf
         if (goalLocation->getName() != "Ganon's Tower - Defeat Ganondorf")
         {
@@ -357,7 +358,7 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
             goalLocation = RandomElement(goalLocations);
         }
 
-        auto possiblePathLocations = world.pathLocations[goalLocation];
+        auto possiblePathLocations = goalLocation->pathLocations;
 
         // Filter out race mode locations, known vanilla items, and known
         // keys in dungeons from possible path locations

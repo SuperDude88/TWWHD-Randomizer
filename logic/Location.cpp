@@ -131,6 +131,52 @@ std::string Location::getName() const
     return "Names not loaded?";
 }
 
+// Calculates whether the current item can be barren given it's placement at this specific location in mind
+bool Location::currentItemCanBeBarren() const
+{
+    if (currentItem.canBeInBarrenRegion())
+    {
+        return true;
+    }
+
+    // Get a pool of start items and all items from this location's logically required path locations
+    ItemMultiSet logicallyRequiredItems = {};
+    for (const auto& item : world->getStartingItems())
+    {
+        logicallyRequiredItems.insert(item);
+    }
+    for (const auto& pathLoc : this->pathLocations)
+    {
+        logicallyRequiredItems.insert(pathLoc->currentItem);
+    }
+
+    // Dummy ownedEvents for evaluation
+    EventSet ownedEvents = {};
+
+    // Get all the progression chain locations for this location's item
+    auto chainLocations = currentItem.getChainLocations();
+    for (auto& loc : currentItem.getChainLocations())
+    {
+        // If any of the item's chain locations can be obtained with the items logically necessary to get the item at this location,
+        // then remove those locations from the list of chain locations, as this item will not help to obtain that specific chain location
+        if (!loc->progression || evaluateRequirement(world, loc->computedRequirement, &logicallyRequiredItems, &ownedEvents))
+        {
+            chainLocations.erase(loc);
+        }
+    }
+
+    // If any of the remaining chain locations have an item which can't be barren, then this location's item isn't barren either
+    for (auto& location : chainLocations)
+    {
+        if (!location->currentItem.canBeInBarrenRegion())
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 std::u16string Location::generateImportanceText(const std::string& language)
 {
     auto& item = currentItem;
@@ -168,14 +214,14 @@ std::u16string Location::generateImportanceText(const std::string& language)
     }
 
     // If this item is on the path to Ganondorf, then it is required
-    auto& requiredLocations = world->pathLocations[world->locationTable["Ganon's Tower - Defeat Ganondorf"].get()];
+    auto& requiredLocations = world->locationTable["Ganon's Tower - Defeat Ganondorf"]->pathLocations;
     if (elementInPool(this, requiredLocations))
     {
         return u" (" + TEXT_COLOR_GREEN + required + TEXT_COLOR_DEFAULT + u")";
     }
 
     // If this item can be in a barren region, then it's not required
-    if (item.canBeInBarrenRegion())
+    if (currentItemCanBeBarren())
     {
         return u" (" + TEXT_COLOR_GRAY + notRequired + TEXT_COLOR_DEFAULT + u")";
     }
