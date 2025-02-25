@@ -86,6 +86,7 @@ public:
     World* world = nullptr;
     Requirement computedRequirement = Requirement{RequirementType::IMPOSSIBLE, {}};
     std::unordered_set<GameItem> itemsInComputedRequirement = {};
+    std::vector<Location*> pathLocations = {};
 
     // Variables used for the searching algorithm
     bool hasBeenFound = false;
@@ -136,6 +137,7 @@ public:
 
     std::string getName() const;
     std::u16string generateImportanceText(const std::string& language);
+    bool currentItemCanBeBarren() const;
 };
 
 using LocationSet = std::set<Location*, PointerLess<Location>>;
