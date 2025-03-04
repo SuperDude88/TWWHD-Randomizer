@@ -20,17 +20,17 @@
 
 
 // falls back to current value if the key is not present + errors are ignored
-#define GET_FIELD(yaml, key, out)                                               \
-    if(!yaml[key]) {                                                            \
-        if (!ignoreErrors) {                                                    \
-            ErrorLog::getInstance().log("\"" key "\" not found in config.yaml");\
-            LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);                       \
-        }                                                                       \
-        else {                                                                  \
-            Utility::platformLog("\"" key "\" not found in config.yaml");       \
-            converted = true;                                                   \
-        }                                                                       \
-    }                                                                           \
+#define GET_FIELD(yaml, key, out)                                         \
+    if(!yaml[key]) {                                                      \
+        if (!ignoreErrors) {                                              \
+            ErrorLog::getInstance().log("\"" key "\" not found in yaml"); \
+            LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);                 \
+        }                                                                 \
+        else {                                                            \
+            Utility::platformLog("\"" key "\" not found in yaml");        \
+            converted = true;                                             \
+        }                                                                 \
+    }                                                                     \
     out = yaml[key].as<decltype(out)>(out);
 
 #define GET_FIELD_NO_FAIL(yaml, key, out) out = yaml[key].as<decltype(out)>(out);
@@ -201,7 +201,6 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     GET_FIELD(root, "location_hints", settings.location_hints)
 
     GET_FIELD(root, "instant_text_boxes", settings.instant_text_boxes)
-    GET_FIELD(root, "quiet_swift_sail", settings.quiet_swift_sail)
     GET_FIELD(root, "fix_rng", settings.fix_rng)
     GET_FIELD(root, "performance", settings.performance)
     GET_FIELD(root, "reveal_full_sea_chart", settings.reveal_full_sea_chart)
@@ -404,6 +403,8 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
         }
     }
 
+    GET_FIELD(preferencesRoot, "quiet_swift_sail", settings.quiet_swift_sail)
+
     GET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
     if(settings.selectedModel.loadFromFolder() != ModelError::NONE) {
         if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MODEL_ERROR);
@@ -528,7 +529,6 @@ YAML::Node Config::settingsToYaml() const {
     SET_FIELD(root, "location_hints", static_cast<uint32_t>(settings.location_hints)) // cast because uint8_t has a weird yaml output
 
     SET_FIELD(root, "instant_text_boxes", settings.instant_text_boxes)
-    SET_FIELD(root, "quiet_swift_sail", settings.quiet_swift_sail)
     SET_FIELD(root, "fix_rng", settings.fix_rng)
     SET_FIELD(root, "performance", settings.performance)
     SET_FIELD(root, "reveal_full_sea_chart", settings.reveal_full_sea_chart)
@@ -594,6 +594,8 @@ YAML::Node Config::preferencesToYaml() const {
     SET_FIELD(preferencesRoot, "first_person_camera", FirstPersonCameraPreferenceToName(settings.first_person_camera))
     SET_FIELD(preferencesRoot, "gyroscope", GyroscopePreferenceToName(settings.gyroscope))
     SET_FIELD(preferencesRoot, "ui_display", UIDisplayPreferenceToName(settings.ui_display))
+
+    SET_FIELD(preferencesRoot, "quiet_swift_sail", settings.quiet_swift_sail)
 
     SET_FIELD(preferencesRoot, "player_in_casual_clothes", settings.selectedModel.casual)
     SET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
