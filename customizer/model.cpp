@@ -14,12 +14,12 @@
 using eType = Utility::Endian::Type;
 
 ModelError CustomModel::loadFromFolder() {
-
-    if (modelName == "") {
-        modelName = "Link";
+    auto model = modelName;
+    if (user_provided || model == "") {
+        model = "Link";
     }
 
-    folder = Utility::get_data_path() / "customizer" / modelName;
+    folder = Utility::get_data_path() / "customizer" / model;
     
     presets.clear();
     heroOrdering.clear();
@@ -248,8 +248,89 @@ static const std::unordered_map<std::string, std::list<std::string>> casualTextu
     {"Shoe Soles", {"linktexbci4"}},
 };
 
+
+void CustomModel::nextModel() {
+    // Each time the button is clicked, we load the directories in the
+    // models dir, sort it, and then binsearch the current model in it.
+    // We then go to the next one.
+    //
+    // This works fine even if binsearch fails: if a model was deleted, we
+    // just go to the next one alphabetically.
+    //
+    // This also works fine when customModel is "": this will give the first
+    // element of the list.
+    
+    auto dir = Utility::get_models_dir();
+
+    std::vector<fspath> models;
+    for (auto entry : std::filesystem::directory_iterator(dir)) {
+        if (!entry.is_directory()) continue;
+        models.push_back(entry.path().filename());
+    }
+    std::sort(models.begin(), models.end());
+    // std::lower_bound returns the least element greater than or equal to
+    // current. Thus we need to do an extra == below to check if we found
+    // it and need to advance to the next slot or not.
+    auto found = std::lower_bound(models.begin(), models.end(), modelName);
+    
+    if (found == models.end()) {
+        // Wrap back around.
+        modelName = "";
+        user_provided = false;
+    } else if (*found == modelName) {
+        // Advance to the next one, unless this is the last one.
+        auto idx = found - models.begin();
+        idx++;
+        if (idx < models.size()) {
+            modelName = models[idx];
+            user_provided = true;
+        } else {
+            modelName = "";
+            user_provided = false;
+        }
+    } else {
+        // Seems that the current value isn't actually a model.
+        // The model we found is the next one after it.
+        modelName = *found;
+        user_provided = true;
+    }
+}
+
 // IMPROVEMENT: Better generalize this in the future
 ModelError CustomModel::applyModel() const {
+    if (!modelName.empty()) {
+        Utility::platformLog("Applying custom model " + modelName + "...");
+        auto model = Utility::get_models_dir() / modelName;
+
+        struct Resource {
+            std::string_view src, dst;
+            bool required = false;
+        };
+
+        static constexpr std::array<Resource, 3> resources = {
+            {.src = "Link.szs", .dst = "content/Common/Pack/permanent_3d.pack@SARC@Link.szs", .required = true},
+            // TODO: DungeonMapLink_00.szs, LinkPos_00.szs
+            
+            // Sound clips.
+            {.src = "voice_0.aw", .dst = "content/Cafe/US/AudioRes/JAudioRes/Banks/voice_0.aw"},
+            {.src = "JaiInit.aaf", .dst = "content/Cafe/US/AudioRes/JAudioRes/JaiInit.aaf"},
+        };
+
+        for (auto rec : resources) {
+            auto src = model / rec.src;
+            if (!rec.required && !std::filesystem::exists(src)) continue;
+
+            Utility::platformLog("Patching " + std::string(rec.src) + "...");
+            if (!g_session.copyToGameFile(src, resource.)) {
+                Utility::platformLog("Couldn't patch " + rec.dst);
+                return ModelError::COULD_NOT_OPEN;
+            }
+        }
+
+        Utility::platformLog("Applied custom model " + modelName + "!");
+        return ModelError::NONE;
+    }
+
     RandoSession::CacheEntry& link = g_session.openGameFile("content/Common/Pack/permanent_3d.pack@SARC@Link.szs@YAZ0@SARC@Link.bfres@BFRES");
     link.addAction([&](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(bfres, FileTypes::resFile, data)
