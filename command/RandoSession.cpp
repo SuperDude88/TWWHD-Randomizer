@@ -583,7 +583,7 @@ bool RandoSession::handleChildren(const fspath filename, std::shared_ptr<CacheEn
     //update progress if this is the root of the chain
     if(current->storedFormat == CacheEntry::Format::ROOT) {
         num_completed_tasks++;
-        UPDATE_DIALOG_VALUE(int(99.0f - ((float((total_num_tasks - num_completed_tasks)/float(total_num_tasks))) * 50.0f))); //also update progress bar
+        UPDATE_DIALOG_VALUE(int(50.0f + 49.0f * (float(num_completed_tasks)/float(total_num_tasks)))); //also update progress bar
     }
 
     return true;
