@@ -2766,6 +2766,8 @@
 
 - Name: ET Poes and Bubbles Room Behind Grating
   Dungeon: Earth Temple
+  Events:
+      Can Light Up ET Poes and Bubbles Room: Skull_Hammer and Power_Bracelets
   Locations:
       Earth Temple - Near Hammer Button Behind Curtain: Fire_Arrows and (Hookshot or Boomerang)
   Exits:
@@ -2781,9 +2783,7 @@
   Dungeon: Earth Temple
   Exits:
       ET Basement Hub Room Upper Ledge: Nothing
-      ET Third Crypt:
-          Skull_Hammer and Power_Bracelets and Can_Play_CM and Can_Aim_Mirror_Shield
-          and can_access(ET Poes and Bubbles Room Behind Grating)
+      ET Third Crypt: Can_Play_CM and Can_Aim_Mirror_Shield and 'Can_Light_Up_ET_Poes_and_Bubbles_Room'
 
 - Name: ET Third Crypt
   Dungeon: Earth Temple
