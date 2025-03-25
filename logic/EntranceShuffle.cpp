@@ -304,11 +304,7 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, const Entrance* ent
 
     for (auto& world : worlds)
     {
-        // Ensure that all race mode bosses are assigned to a single island and that
-        // there aren't any other dungeons on those islands. Since quest markers for
-        // race mode bosses indicate an entire island, we don't want the there to be
-        // multiple bosses on an island, or multiple islands that lead to the same
-        // race mode boss
+        // Ensure that all race mode bosses are assigned to a single island
         auto& settings = world.getSettings();
         if (settings.progression_dungeons != ProgressionDungeons::Disabled && settings.num_required_dungeons > 0)
         {
@@ -327,17 +323,6 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, const Entrance* ent
                         }
                     #endif
                     return EntranceShuffleError::AMBIGUOUS_RACE_MODE_ISLAND;
-                }
-
-                if (bossIslands.size() == 1)
-                {
-                    auto& bossIsland = bossIslands.front();
-                    if (raceModeIslands.contains(bossIsland))
-                    {
-                        LOG_TO_DEBUG("Error: Island " + bossIsland + " has an ambiguous race mode dungeon");
-                        return EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON;
-                    }
-                    raceModeIslands.insert(bossIsland);
                 }
             }
         }

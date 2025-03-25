@@ -2229,6 +2229,221 @@ TweakError prevent_reverse_door_softlocks() {
     return TweakError::NONE;
 }
 
+TweakError add_barren_dungeon_hint_triggers(World& world) {
+
+    if (world.getSettings().progression_dungeons != ProgressionDungeons::RaceMode)
+    {
+        return TweakError::NONE;
+    }
+
+    for (auto& [name, dungeon] : world.dungeons)
+    {
+        if (dungeon.isRequiredDungeon)
+        {
+            continue;
+        }
+
+        else if (name == "Dragon Roost Cavern")
+        {
+            // Add barren hint text to DRC first room
+            RandoSession::CacheEntry& drc_room0 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+
+            drc_room0.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(drc_room0, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_00 = drc_room0.add_entity("SCOB");
+                tagHt_00.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\xC4\x72\x20\xC4\x43\x16\x00\x00\x46\x08\xFF\x59\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+
+            // Add barren hint text in front of DRC boss door
+            RandoSession::CacheEntry& drc_room10 = g_session.openGameFile("content/Common/Stage/M_NewD2_Room10.szs@YAZ0@SARC@Room10.bfres@BFRES@room.dzr@DZX");
+
+            drc_room10.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(drc_room10, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_10 = drc_room10.add_entity("SCOB");
+                tagHt_10.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x43\xCC\x83\x95\x45\xB9\xF0\x00\x41\xA8\x8A\x60\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+        }
+
+        else if (name == "Forbidden Woods")
+        {
+            // Add barren hint text to FW first room
+            RandoSession::CacheEntry& fw_room0 = g_session.openGameFile("content/Common/Stage/kindan_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+
+            fw_room0.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(fw_room0, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_00 = fw_room0.add_entity("SCOB");
+                tagHt_00.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x40\x81\xE1\xC0\x45\x16\x00\x00\x46\x6F\x52\xEF\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+
+            // Add barren hint text to FW room before miniboss
+            RandoSession::CacheEntry& fw_room9 = g_session.openGameFile("content/Common/Stage/kindan_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr@DZX");
+
+            fw_room9.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(fw_room9, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_09 = fw_room9.add_entity("SCOB");
+                tagHt_09.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\xC3\x96\x5D\xF1\x45\xE8\xC2\x41\xC6\x0D\x6D\x3D\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+
+            // Add barren hint text to FW boss door room
+            RandoSession::CacheEntry& fw_room16 = g_session.openGameFile("content/Common/Stage/kindan_Room16.szs@YAZ0@SARC@Room16.bfres@BFRES@room.dzr@DZX");
+
+            fw_room16.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(fw_room16, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_16 = fw_room16.add_entity("SCOB");
+                tagHt_16.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x46\x06\x49\x3E\x45\x8A\x5B\xAA\xC4\xB8\x46\x34\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+        }
+
+        else if (name == "Tower of the Gods")
+        {
+            // Add barren hint texts to TotG Start
+            RandoSession::CacheEntry& totg_room0 = g_session.openGameFile("content/Common/Stage/Siren_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+
+            totg_room0.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(totg_room0, FileTypes::DZXFile, data)
+
+                // Multiple triggers all around the room (one giant trigger doesn't work for some reason)
+                auto datas = {
+                    "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x45\x48\xCB\x26\xC4\xCA\x23\x9A\xC5\x22\xDA\x18\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s,
+                    "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x45\x49\x4A\x6F\xC4\xC2\x73\x68\xC5\x02\xAA\x6C\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s,
+                    "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x45\x49\x4A\x6F\xC4\xC2\x73\x68\xC4\xC4\x43\x35\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s,
+                    "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x45\x32\x0B\x7D\xC4\xC2\x77\x51\xC4\x9E\xE3\x2F\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s,
+                    "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x45\x60\x7B\x07\xC5\x00\x32\x6E\x44\x64\xC2\x9A\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s,
+                    "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\xC5\x4D\xB4\x38\xC4\xBF\x71\x0C\xC4\x81\xD0\x5C\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s,
+                    "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\xC5\x62\x87\xFE\xC4\xFC\xCB\x3B\x44\x38\x0E\x3F\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x28\x0A\x0A\xFF"s,
+                };
+
+                for (auto& tagHtData : datas)
+                {
+                    ChunkEntry& tagHt = totg_room0.add_entity("SCOB");
+                    tagHt.data = tagHtData;
+                }
+
+                return true;
+            });
+
+            // Add barren hint text to TotG Outside Miniboss Room
+            RandoSession::CacheEntry& totg_room14 = g_session.openGameFile("content/Common/Stage/Siren_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
+
+            totg_room14.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(totg_room14, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_14 = totg_room14.add_entity("SCOB");
+                tagHt_14.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\xC5\x5A\xF7\x98\x43\x6B\x6B\xB2\xC5\xE5\x65\xDF\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+
+            // Add barren hint text to TotG Outside Boss Room
+            RandoSession::CacheEntry& totg_room18 = g_session.openGameFile("content/Common/Stage/Siren_Room18.szs@YAZ0@SARC@Room18.bfres@BFRES@room.dzr@DZX");
+
+            totg_room18.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(totg_room18, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_18 = totg_room18.add_entity("SCOB");
+                tagHt_18.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\xC5\x16\x56\x78\x46\x11\x35\xA3\xC6\x18\xCF\xD1\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+        }
+
+        else if (name == "Earth Temple")
+        {
+            // Add barren hint text to ET first room
+            RandoSession::CacheEntry& et_room0 = g_session.openGameFile("content/Common/Stage/M_Dai_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
+
+            et_room0.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(et_room0, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_00 = et_room0.add_entity("SCOB");
+                tagHt_00.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\xC5\xDA\xC0\x00\xC3\x15\xFF\xFF\x45\xB2\x20\x00\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+
+            // Add barren hint text to ET outside miniboss room
+            RandoSession::CacheEntry& et_room7 = g_session.openGameFile("content/Common/Stage/M_Dai_Room7.szs@YAZ0@SARC@Room7.bfres@BFRES@room.dzr@DZX");
+
+            et_room7.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(et_room7, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_00 = et_room7.add_entity("SCOB");
+                tagHt_00.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x45\xC0\x3D\x58\x44\xAF\x00\x00\x45\x17\x10\xD7\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+
+            // Add barren hint text to ET outside boss room
+            RandoSession::CacheEntry& et_room15 = g_session.openGameFile("content/Common/Stage/M_Dai_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr@DZX");
+
+            et_room15.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(et_room15, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_00 = et_room15.add_entity("SCOB");
+                tagHt_00.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\xC5\xB4\xDD\xE4\xC5\x0F\x93\x3D\x46\x14\x8F\x16\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+        }
+
+        else if (name == "Wind Temple")
+        {
+            // Add barren hint text to WT first room
+            RandoSession::CacheEntry& wt_room15 = g_session.openGameFile("content/Common/Stage/kaze_Room15.szs@YAZ0@SARC@Room15.bfres@BFRES@room.dzr@DZX");
+
+            wt_room15.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(wt_room15, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_15 = wt_room15.add_entity("SCOB");
+                tagHt_15.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\xC5\x6F\x04\x20\x44\xC2\xB5\x4F\x46\x51\x6B\xEB\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+
+            // Add barren hint text to WT outside miniboss room
+            RandoSession::CacheEntry& wt_room2 = g_session.openGameFile("content/Common/Stage/kaze_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr@DZX");
+
+            wt_room2.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(wt_room2, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_02 = wt_room2.add_entity("SCOB");
+                tagHt_02.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x3F\x2E\xF5\x80\xC5\x61\x00\x00\xC4\xE2\x0D\x42\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+
+            // Add barren hint text to WT outside boss room
+            RandoSession::CacheEntry& wt_room12 = g_session.openGameFile("content/Common/Stage/kaze_Room12.szs@YAZ0@SARC@Room12.bfres@BFRES@room.dzr@DZX");
+
+            wt_room12.addAction([](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(wt_room12, FileTypes::DZXFile, data)
+
+                ChunkEntry& tagHt_12 = wt_room12.add_entity("SCOB");
+                tagHt_12.data = "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x46\x5A\x4F\xEB\xC5\x9E\x33\xE4\x46\x15\xEB\x03\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s;
+
+                return true;
+            });
+        }
+    }
+
+    return TweakError::NONE;
+}
+
 TweakError update_tingle_statue_item_get_funcs() {
     const uint32_t item_get_func_ptr = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
     const std::unordered_map<int, std::string> symbol_name_by_item_id = { {0xA3, "dragon_tingle_statue_item_get_func"}, {0xA4, "forbidden_tingle_statue_item_get_func"}, {0xA5, "goddess_tingle_statue_item_get_func"}, {0xA6, "earth_tingle_statue_item_get_func"}, {0xA7, "wind_tingle_statue_item_get_func"} };
@@ -2332,7 +2547,7 @@ TweakError implement_key_bag() {
 TweakError show_dungeon_markers_on_chart(World& world) {
     using namespace NintendoWare::Layout;
 
-    std::unordered_set<uint8_t> room_numbers;
+    std::unordered_multiset<uint8_t> room_numbers;
     for(const auto& [name, dungeon] : world.dungeons) {
         if (dungeon.isRequiredDungeon)
         {
@@ -2355,22 +2570,80 @@ TweakError show_dungeon_markers_on_chart(World& world) {
                 144, 145, 146, 147, 148, 149, 150, 151
             };
 
+            std::set<uint8_t> used_room_numbers = {};
+
+            // Index of L_BtnMapBalloon_00. Currently the last element in the vector of children.
+            // Save it now so that we can swap this pane to the back of the vector after we potentially add some more panes.
+            // If this is not done, then any panes we add will be layered over the balloon element when players zoom in on 
+            // an island.
+            auto balloonIndex = map.rootPane.children[0].children.size() - 1;
+
             for(const uint8_t& index : room_numbers) {
+                if (used_room_numbers.contains(index))
+                {
+                    continue;
+                }
+                used_room_numbers.insert(index);
+
                 const uint32_t column = (index - 1) % 7;
                 const uint32_t row = (index - 1) / 7;
-                const float x_pos = (column * 73.0f) - 148.0f;
-                const float y_pos = 175.0f - (row * 73.0f);
+                float x_pos = (column * 73.0f) - 148.0f;
+                float y_pos = 175.0f - (row * 73.0f);
 
                 pan1* marker = dynamic_cast<pan1*>(map.rootPane.children[0].children[quest_marker_indexes.back()].pane.get());
                 quest_marker_indexes.pop_back();
                 marker->translation.X = x_pos;
                 marker->translation.Y = y_pos;
+
+                // Only display the number of required dungeons on the sector if there's more than 1
+                auto number_of_dungeons = room_numbers.count(index);
+                if (number_of_dungeons <= 1)
+                {
+                    continue;
+                }
+                
+                // X and Y for new pane displaying the number of requried dungeons
+                x_pos = (column * 73.0f) - 155.0f;
+                y_pos = 156.0f - (row * 73.0f);
+
+                // Create the new pane element by duplicating the one existing text element
+                Pane& newPane = map.rootPane.children[0].duplicateChildPane(1); // T_Deco_00
+                txt1* text = dynamic_cast<txt1*>(newPane.pane.get());
+                text->name = "Required_Dungeon_Text_" + std::to_string(index);
+                text->translation.X = x_pos;
+                text->translation.Y = y_pos;
+                text->width = 40.0f;
+                text->height = 40.0f;
+                text->text = Utility::Str::toUTF16(std::to_string(number_of_dungeons)) + TEXT_END;
+                text->fontSizeX = 40.0f;
+                text->fontSizeY = 40.0f;
+                text->fontColorTop = RGBA8(255, 255, 255, 255);
+                text->fontColorBottom = RGBA8(255, 255, 255, 255);
+                text->alpha = 200;
+                
+                // Set the material index to be the current size of the vector of materials since we're going to create
+                // a new one for these numbers
+                text->matIndex = map.materials.value().materials.size();
             }
 
-            for(const auto& index : quest_marker_indexes) { //hide any remaining markers
+            // Swap the L_BtnMapBalloon pane to the back of the vector
+            std::swap(map.rootPane.children[0].children[balloonIndex], map.rootPane.children[0].children.back());
+
+            // Hide any remaining markers
+            for(const auto& index : quest_marker_indexes) { 
                 pan1* marker = dynamic_cast<pan1*>(map.rootPane.children[0].children[index].pane.get());
                 marker->alpha = 0;
             }
+            
+            // Create the new material for the number of required dungeons text by copying the material for the markers
+            auto newMat = map.materials.value().materials.back();
+
+            // blackColor is the outline color for our text. whiteColor is currently the blue used for the map markers, so
+            // set this blue as the new outline color.
+            newMat.blackColor = newMat.whiteColor;
+            // set whiteColor to white so that the inside of the text is white.
+            newMat.whiteColor = RGBA8(255, 255, 255, 255);
+            map.materials.value().materials.push_back(newMat);
 
             return true;
         });
@@ -3726,6 +3999,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     TWEAK_ERR_CHECK(add_pirate_ship_to_windfall());
     TWEAK_ERR_CHECK(add_hint_signs());
     TWEAK_ERR_CHECK(prevent_reverse_door_softlocks());
+    TWEAK_ERR_CHECK(add_barren_dungeon_hint_triggers(world));
     TWEAK_ERR_CHECK(add_shortcut_warps_into_dungeons());
     TWEAK_ERR_CHECK(add_boss_door_return_spawns());
     TWEAK_ERR_CHECK(shorten_zephos_event());
