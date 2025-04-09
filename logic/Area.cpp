@@ -27,6 +27,12 @@ std::list<std::string> Area::findIslands()
         alreadyChecked.insert(area);
         areaQueue.pop_back();
 
+        // If we found Hyrule, then add the Tower of the Gods Sector to the islands
+        if (area->hintRegion == "Hyrule" && !elementInPool("Tower of the Gods Sector", islands))
+        {
+            islands.push_back("Tower of the Gods Sector");
+        }
+
         // Block searching through areas that have general hint regions
         if (area->hintRegion != "")
         {

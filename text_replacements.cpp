@@ -214,6 +214,12 @@ TextReplacements generate_text_replacements(World& world)
       {"Spanish", !world.getSettings().remove_swords ? u"" : (u"¡" + CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"¡No huyas! ¡Confía en el\npoder del Martillo!" + TEXT_END)},
       {"French",  !world.getSettings().remove_swords ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u"!Ne t'enfuis pas! Crois en\nla puissance de la Masse!" + TEXT_END)}}},
 
+     // KoRL Barren Dungeon Text
+     {"01509",
+     {{"English", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", this area is unrequired and\nthere are no valuable items in here. You can\nskip it in full confidence." + TEXT_END},
+      {"Spanish", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", this area is unrequired and\nthere are no valuable items in here. You can\nskip it in full confidence." + TEXT_END},
+      {"French",  CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", this area is unrequired and\nthere are no valuable items in here. You can\nskip it in full confidence." + TEXT_END}}},
+
      // Savage Labyrinth Hints
      {"00837",
      {{"English", u"\n" + TEXT_SIZE(150) + TEXT_COLOR_RED + u"The Savage Labyrinth" + TEXT_COLOR_DEFAULT + TEXT_SIZE(100) + u"\n\n\n" +
