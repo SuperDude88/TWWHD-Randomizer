@@ -344,6 +344,15 @@ std::unordered_map<Area*, EntrancePath> Area::findEntrancePaths()
     return paths;
 }
 
+bool Area::operator<(const Area& rhs) const {
+    if (this->world->getWorldId() != rhs.world->getWorldId())
+    {
+        return this->world->getWorldId() < rhs.world->getWorldId();
+    }
+
+    return this->name < rhs.name;
+}
+
 std::string roomNumToIslandName(const uint8_t& startingIslandRoomNum)
 {
     // Island room number corresponds with index in the below array

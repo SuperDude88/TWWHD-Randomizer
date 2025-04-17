@@ -46,6 +46,8 @@ public:
     std::list<std::string> findDungeons();
     std::list<std::list<Entrance*>> findShuffledEntrances(const std::list<Area*>& startingQueue = {});
     std::unordered_map<Area*, EntrancePath> findEntrancePaths();
+
+    bool operator<(const Area& rhs) const;
 };
 
 std::string roomNumToIslandName(const uint8_t& startingIslandRoomNum);

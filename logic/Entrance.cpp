@@ -351,9 +351,7 @@ bool Entrance::operator<(const Entrance& rhs) const
         return this->worldId < rhs.worldId;
     }
 
-    // TODO: should do something like PointerLess<Area>{}(this->parentArea, rhs.parentArea);
-    // not sure how best to sort areas though
-    return this->parentArea < rhs.parentArea;
+    return PointerLess<Area>{}(this->parentArea, rhs.parentArea);
 }
 
 std::string entranceTypeToName(const EntranceType& type)
