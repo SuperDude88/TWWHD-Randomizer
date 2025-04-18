@@ -1,7 +1,5 @@
 #include "charts.hpp"
 
-#include <algorithm>
-
 #include <utility/endian.hpp>
 #include <command/Log.hpp>
 

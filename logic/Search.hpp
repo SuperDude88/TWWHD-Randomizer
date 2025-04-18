@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include <vector>
-
 #include <logic/World.hpp>
 
 enum struct SearchMode

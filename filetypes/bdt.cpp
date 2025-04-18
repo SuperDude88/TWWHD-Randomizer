@@ -1,8 +1,5 @@
 #include "bdt.hpp"
 
-#include <array>
-#include <algorithm>
-
 #include <utility/endian.hpp>
 #include <utility/common.hpp>
 #include <utility/file.hpp>

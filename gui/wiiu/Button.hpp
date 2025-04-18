@@ -1,8 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <unordered_map>
-#include <chrono>
 #include <functional>
 
 #include <platform/input.hpp>

@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <string>
 #include <set>
-#include <list>
 #include <unordered_set>
 
 #include <utility/text.hpp>

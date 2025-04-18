@@ -1,12 +1,9 @@
 #include "randomizer_thread.hpp"
 
-#include <iostream>
-#include <algorithm>
 #include <QDirIterator>
 
 #include <randomizer.hpp>
 #include <command/Log.hpp>
-#include <gui/desktop/update_dialog_header.hpp>
 
 RandomizerThread::RandomizerThread()
 {

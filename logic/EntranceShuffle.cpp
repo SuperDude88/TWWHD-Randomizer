@@ -3,7 +3,6 @@
 
 #include <map>
 #include <utility>
-#include <iostream>
 
 #include <logic/PoolFunctions.hpp>
 #include <logic/Search.hpp>

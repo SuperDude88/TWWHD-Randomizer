@@ -1,8 +1,6 @@
 #pragma once
 
 #include <array>
-#include <initializer_list>
-#include <string>
 
 using Key = std::array<uint8_t, 16>;
 

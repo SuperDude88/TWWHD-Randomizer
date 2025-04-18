@@ -2,8 +2,6 @@
 
 #include <locale>
 #include <string>
-#include <map>
-#include <iostream>
 
 namespace Utility::Str {
     //can't use codecvt on Wii U, deprecated in c++17 and g++ hates it

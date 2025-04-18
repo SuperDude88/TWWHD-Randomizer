@@ -6,7 +6,6 @@
 #include <logic/flatten/simplify_algebraic.hpp>
 
 #include <functional>
-#include <iostream>
 
 class FlattenSearch
 {

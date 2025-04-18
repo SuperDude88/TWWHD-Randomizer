@@ -29,7 +29,4 @@ private slots:
 private:
     Ui::TrackerPreferencesDialog ui;
     MainWindow* main = nullptr;
-
-protected:
-    void closeEvent();
 };

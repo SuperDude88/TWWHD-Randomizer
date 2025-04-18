@@ -1,8 +1,6 @@
 #include "events.hpp"
 
 #include <cstring>
-#include <algorithm>
-#include <functional>
 #include <memory>
 
 #include <utility/endian.hpp>
@@ -228,7 +226,7 @@ EventlistError Actor::save_changes(std::ostream& out) {
 std::shared_ptr<Action> Actor::add_action(const FileTypes::EventList& list, const std::string& name, const std::vector<Prop>& properties) { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
     std::shared_ptr<Action> action = actions.emplace_back(std::make_shared<Action>());
     action->name = name;
-    std::optional<int> flag_id_to_set = list.get_unused_flag_id();
+    std::optional<int32_t> flag_id_to_set = list.get_unused_flag_id();
     if(!flag_id_to_set.has_value()) {
         return nullptr;
     }

@@ -54,7 +54,6 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
     // and seeing if taking away the item at each location can still access the goal locations
     for (auto& world : worlds)
     {
-        auto& settings = world.getSettings();
         for (auto& potentialPathLocation : world.getLocations(true))
         {
             auto itemAtLocation = potentialPathLocation->currentItem;
@@ -435,7 +434,7 @@ static HintError generateBarrenHintLocations(World& world, std::vector<Location*
         // we can't also hint the island the dungeon is on as barren (and vice versa)
         // Basically, there should be no overlapping of the regions that are hinted
         // barren.
-        for (auto j = 0; j < barrenPool.size(); j++)
+        for (size_t j = 0; j < barrenPool.size(); j++)
         {
             auto& pool = world.barrenRegions[barrenPool[j]];
             if (std::ranges::any_of(pool, [](auto loc){return loc->hasBeenHinted;}))

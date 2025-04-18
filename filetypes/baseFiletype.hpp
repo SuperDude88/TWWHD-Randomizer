@@ -1,6 +1,5 @@
 #pragma once
 
-#include <typeinfo>
 #include <sstream>
 
 #include <utility/path.hpp>

@@ -263,16 +263,16 @@ void World::determineChartMappings()
         shufflePool(charts);
     }
     LOG_TO_DEBUG("[");
-    for (auto i = 0; i < charts.size(); i++)
+    for (size_t i = 0; i < charts.size(); i++)
     {
-        auto chart = charts[i];
-        size_t sector = i + 1;
+        const GameItem chart = charts[i];
+        const size_t sector = i + 1;
         chartMappings[sector] = chart;
 
         // Change the macro for this island's chart to the one at this index in the array.
         // "Chart For Island <sector number>" macros are type "HAS_ITEM" and have
         // one argument which is the chart Item.
-        auto chartName = gameItemToName(chart);
+        const std::string chartName = gameItemToName(chart);
         LOG_TO_DEBUG("\tChart for Island " + std::to_string(sector) + " is now " + chartName);
         macros[macroNameMap.at("Chart For Island " + std::to_string(sector))].args[0] = itemTable[chartName];
     }
@@ -622,15 +622,13 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
 
 RequirementError World::parseMacro(const std::string& macroLogicExpression, Requirement& reqOut)
 {
-    RequirementError err = RequirementError::NONE;
     // readd prechecks?
-    if ((err = parseRequirementString(macroLogicExpression, reqOut, this)) != RequirementError::NONE) return err;
+    if (const RequirementError err = parseRequirementString(macroLogicExpression, reqOut, this); err != RequirementError::NONE) return err;
     return RequirementError::NONE;
 }
 
 World::WorldLoadingError World::loadMacros(const YAML::Node& macroListTree)
 {
-    RequirementError err = RequirementError::NONE;
     uint32_t macroCount = 0;
 
     // first pass to get all macro names
@@ -645,7 +643,7 @@ World::WorldLoadingError World::loadMacros(const YAML::Node& macroListTree)
     {
         macros.emplace_back();
 
-        if ((err = parseMacro(macro.second.as<std::string>(), macros.back())) != RequirementError::NONE)
+        if (const RequirementError err = parseMacro(macro.second.as<std::string>(), macros.back()); err != RequirementError::NONE)
         {
             lastError << " | Encountered parsing macro of name " << macro.first.as<std::string>();
             return WorldLoadingError::BAD_REQUIREMENT;
@@ -672,9 +670,6 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
         location->names[language] = locationObject["Names"][language].as<std::string>();
     }
 
-    // failure indicated by INVALID type for category
-    // maybe change to Optional later if thats determined to work
-    // on wii u
     for (const auto& category : locationObject["Category"])
     {
         const std::string& categoryNameStr = category.as<std::string>();
@@ -724,7 +719,7 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
             break;
     }
 
-    if(ModificationError err = location->method->parseArgs(locationObject); err != ModificationError::NONE) {
+    if(const ModificationError err = location->method->parseArgs(locationObject); err != ModificationError::NONE) {
         switch(err) {
             case ModificationError::MISSING_KEY:
                 lastError << "Error processing location " << locationName << " in world " << std::to_string(worldId + 1) << ": ";
@@ -798,8 +793,7 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
 World::WorldLoadingError World::loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess)
 {
     addEvent(eventName);
-    RequirementError err = RequirementError::NONE;
-    if((err = parseRequirementString(logicExpression, eventAccess.requirement, this)) != RequirementError::NONE)
+    if(const RequirementError err = parseRequirementString(logicExpression, eventAccess.requirement, this); err != RequirementError::NONE)
     {
         lastError << "| Encountered parsing event " << eventName;
         return WorldLoadingError::BAD_REQUIREMENT;
@@ -811,13 +805,9 @@ World::WorldLoadingError World::loadEventRequirement(const std::string& eventNam
 
 World::WorldLoadingError World::loadLocationRequirement(const std::string& locationName, const std::string& logicExpression, LocationAccess& locAccess)
 {
-    // failure indicated by INVALID type for category
-    // maybe change to Optional later if thats determined to work
-    // on wii u
     LOCATION_VALID_CHECK(locationName, "Location of name \"" << locationName << "\" is not defined!");
     locAccess.location = locationTable[locationName].get();
-    RequirementError err = RequirementError::NONE;
-    if((err = parseRequirementString(logicExpression, locAccess.requirement, this)) != RequirementError::NONE)
+    if(const RequirementError err = parseRequirementString(logicExpression, locAccess.requirement, this); err != RequirementError::NONE)
     {
         lastError << "| Encountered parsing location " << locationName;
         return WorldLoadingError::BAD_REQUIREMENT;
@@ -827,17 +817,13 @@ World::WorldLoadingError World::loadLocationRequirement(const std::string& locat
 
 World::WorldLoadingError World::loadExit(const std::string& connectedArea, const std::string& logicExpression, Entrance& loadedExit, const std::string& parentArea)
 {
-    // failure indicated by INVALID type for category
-    // maybe change to Optional later if thats determined to work
-    // on wii u
     AREA_VALID_CHECK(connectedArea, "Connected area of name \"" << connectedArea << "\" does not exist!");
     loadedExit.setParentArea(getArea(parentArea));
     loadedExit.setConnectedArea(getArea(connectedArea));
     loadedExit.setWorldId(worldId);
     loadedExit.setWorld(this);
-    RequirementError err = RequirementError::NONE;
     // load exit requirements
-    if((err = parseRequirementString(logicExpression, loadedExit.getRequirement(), this)) != RequirementError::NONE)
+    if(const RequirementError err = parseRequirementString(logicExpression, loadedExit.getRequirement(), this); err != RequirementError::NONE)
     {
         lastError << "| Encountered parsing exit \"" << parentArea << " -> " << connectedArea << "\"" << std::endl;
         return WorldLoadingError::BAD_REQUIREMENT;
@@ -847,9 +833,6 @@ World::WorldLoadingError World::loadExit(const std::string& connectedArea, const
 
 World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
 {
-    // failure indicated by INVALID type for category
-    // maybe change to Optional later if thats determined to work
-    // on wii u
     auto loadedArea = areaObject["Name"].as<std::string>();
     LOG_TO_DEBUG("Now Loading Area " + loadedArea);
     AREA_VALID_CHECK(loadedArea, "Area of name \"" << loadedArea << "\" is not defined!");
@@ -857,7 +840,6 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
     auto area = getArea(loadedArea);
     area->name = loadedArea;
     area->world = this;
-    WorldLoadingError err = WorldLoadingError::NONE;
 
     // Check to see if this area is assigned to an island
     if (areaObject["Island"])
@@ -890,8 +872,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
     {
         auto startingArea = this->getDungeon(area->dungeon).startingArea;
         Entrance exitOut;
-        err = loadExit(startingArea->name, "Nothing", exitOut, loadedArea);
-        if (err != WorldLoadingError::NONE)
+        if (const WorldLoadingError err = loadExit(startingArea->name, "Nothing", exitOut, loadedArea); err != WorldLoadingError::NONE)
         {
             ErrorLog::getInstance().log("Got error loading exit: " + errorToName(err));
             return err;
@@ -915,8 +896,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
             EventAccess eventOut;
             const auto eventName = event.first.as<std::string>();
             const auto logicExpression = event.second.as<std::string>();
-            err = loadEventRequirement(eventName, logicExpression, eventOut);
-            if (err != WorldLoadingError::NONE)
+            if (const WorldLoadingError err = loadEventRequirement(eventName, logicExpression, eventOut); err != WorldLoadingError::NONE)
             {
                 ErrorLog::getInstance().log("Got error loading event " + eventName + ": " + errorToName(err));
                 return err;
@@ -935,8 +915,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
             locOut.area = area;
             const auto locationName = locationNode.first.as<std::string>();
             LOCATION_VALID_CHECK(locationName, "Unknown location name \"" + locationName + "\" when parsing area \"" + loadedArea + "\"");
-            err = loadLocationRequirement(locationName, locationNode.second.as<std::string>(), locOut);
-            if (err != WorldLoadingError::NONE)
+            if (const WorldLoadingError err = loadLocationRequirement(locationName, locationNode.second.as<std::string>(), locOut); err != WorldLoadingError::NONE)
             {
                 ErrorLog::getInstance().log("Got error loading location " + locationName + ": " + errorToName(err));
                 return err;
@@ -971,8 +950,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
     {
         for (const auto& exit : areaObject["Exits"]) {
             Entrance exitOut;
-            err = loadExit(exit.first.as<std::string>(), exit.second.as<std::string>(), exitOut, loadedArea);
-            if (err != WorldLoadingError::NONE)
+            if (const WorldLoadingError err = loadExit(exit.first.as<std::string>(), exit.second.as<std::string>(), exitOut, loadedArea); err != WorldLoadingError::NONE)
             {
                 ErrorLog::getInstance().log("Got error loading exit: " + errorToName(err));
                 return err;
@@ -1189,8 +1167,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     YAML::Node itemDataTree = YAML::Load(itemData);
     for (const auto& item : itemDataTree)
     {
-        auto err = loadItem(item);
-        if (err != World::WorldLoadingError::NONE)
+        if (const WorldLoadingError err = loadItem(item); err != WorldLoadingError::NONE)
         {
             ErrorLog::getInstance().log("Got error loading item: " + errorToName(err));
             ErrorLog::getInstance().log(getLastErrorDetails());
@@ -1215,8 +1192,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     std::string macroListData;
     Utility::getFileContents(macrosFilePath, macroListData, true);
     YAML::Node macroListTree = YAML::Load(macroListData);
-    auto err = loadMacros(macroListTree);
-    if (err != World::WorldLoadingError::NONE)
+    if (const WorldLoadingError err = loadMacros(macroListTree); err != WorldLoadingError::NONE)
     {
         ErrorLog::getInstance().log("Got error loading macros for world " + std::to_string(worldId) + ": " + errorToName(err));
         ErrorLog::getInstance().log(getLastErrorDetails());
@@ -1229,8 +1205,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     YAML::Node locationDataTree = YAML::Load(locationData);
     for (const auto& locationObject : locationDataTree)
     {
-        err = loadLocation(locationObject);
-        if (err != World::WorldLoadingError::NONE)
+        if (const WorldLoadingError err = loadLocation(locationObject); err != WorldLoadingError::NONE)
         {
             ErrorLog::getInstance().log("Got error loading location: " + errorToName(err));
             ErrorLog::getInstance().log(getLastErrorDetails());
@@ -1241,8 +1216,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     // Second pass of world graph to load each area's data
     for (const auto& area : worldDataTree)
     {
-        err = loadArea(area);
-        if (err != World::WorldLoadingError::NONE)
+        if (const WorldLoadingError err = loadArea(area); err != WorldLoadingError::NONE)
         {
             ErrorLog::getInstance().log("Got error loading area for world " + std::to_string(worldId) + ": " + errorToName(err));
             ErrorLog::getInstance().log(getLastErrorDetails());
@@ -1256,8 +1230,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     YAML::Node areaDataTree = YAML::Load(areaData);
     for (const auto& areaObject : areaDataTree)
     {
-        err = loadAreaTranslations(areaObject);
-        if (err != World::WorldLoadingError::NONE)
+        if (const WorldLoadingError err = loadAreaTranslations(areaObject); err != WorldLoadingError::NONE)
         {
             ErrorLog::getInstance().log("Got error loading area translations: " + errorToName(err));
             ErrorLog::getInstance().log(getLastErrorDetails());
@@ -1289,8 +1262,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     }
 
     // Load dungeon wind warp exit info
-    err = loadDungeonExitInfo();
-    if (err != World::WorldLoadingError::NONE)
+    if (const WorldLoadingError err = loadDungeonExitInfo(); err != WorldLoadingError::NONE)
     {
         ErrorLog::getInstance().log("Got error loading dungeon exit info: " + errorToName(err));
         ErrorLog::getInstance().log(getLastErrorDetails());

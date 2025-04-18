@@ -2,7 +2,6 @@
 
 #include <string>
 #include <iostream>
-#include <limits>
 #include <type_traits>
 
 #include <utility/endian.hpp>

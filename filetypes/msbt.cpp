@@ -1,7 +1,6 @@
 #include "msbt.hpp"
 
 #include <cstring>
-#include <algorithm>
 
 #include <utility/endian.hpp>
 #include <utility/common.hpp>

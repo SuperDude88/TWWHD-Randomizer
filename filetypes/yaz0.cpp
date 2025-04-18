@@ -2,7 +2,6 @@
 
 #include <string>
 #include <cstring>
-#include <bitset>
 #include <sstream>
 
 #include <utility/endian.hpp>
