@@ -354,6 +354,38 @@ static const std::set<GameItem> junkItems = {
     GameItem::TinglesChart
 };
 
+static const std::set<GameItem> junkConsumables = {
+    GameItem::HeartDrop,
+    GameItem::GreenRupee,
+    GameItem::BlueRupee,
+    GameItem::YellowRupee,
+    GameItem::RedRupee,
+    GameItem::PurpleRupee,
+    GameItem::OrangeRupee,
+    GameItem::SmallMagicDrop,
+    GameItem::LargeMagicDrop,
+    GameItem::FiveBombs,
+    GameItem::TenBombs,
+    GameItem::TwentyBombs,
+    GameItem::ThirtyBombs,
+    GameItem::SilverRupee,
+    GameItem::TenArrows,
+    GameItem::TwentyArrows,
+    GameItem::ThirtyArrows,
+    GameItem::Fairy,
+    GameItem::YellowRupee2, //joke message
+    GameItem::ThreeHearts,
+    GameItem::JoyPendant,
+    GameItem::SkullNecklace,
+    GameItem::BokoBabaSeed,
+    GameItem::GoldenFeather,
+    GameItem::KnightsCrest,
+    GameItem::RedChuJelly,
+    GameItem::GreenChuJelly,
+    GameItem::AllPurposeBait,
+    GameItem::HyoiPear,
+};
+
 static const std::set<GameItem> dungeonItems = {
     GameItem::DRCSmallKey,
     GameItem::DRCBigKey,
@@ -405,6 +437,7 @@ public:
     void setName(const std::string& language, const Text::Type& type, const std::string& name_);
     void setAsJunkItem();
     bool isJunkItem() const;
+    bool isConsumableJunkItem() const;
     bool wasAlwaysJunkItem() const;
     bool isDungeonItem() const;
     bool isMap() const;
@@ -424,6 +457,7 @@ private:
     std::unordered_set<Location*> chainLocations = {};
     bool dungeonItem = false;
     bool junkItem = false;
+    bool junkConsumable = false;
     bool originallyJunk = false;
     World* world = nullptr; // The world that this item is *FOR*
 };

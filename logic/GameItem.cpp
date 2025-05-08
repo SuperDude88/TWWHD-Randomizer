@@ -770,6 +770,11 @@ Item::Item(GameItem gameItemId_, World* world_) :
     gameItemId(gameItemId_),
     world(world_)
 {
+    if (junkConsumables.contains(gameItemId))
+    {
+        junkConsumable = true;
+    }
+
     if (junkItems.contains(gameItemId) || (isAnyOf(gameItemId, GameItem::HeartContainer, GameItem::PieceOfHeart) && world && world->getStartingHeartCount() >= 3))
     {
         originallyJunk = true;
@@ -889,6 +894,11 @@ void Item::setAsJunkItem()
 bool Item::isJunkItem() const
 {
     return junkItem;
+}
+
+bool Item::isConsumableJunkItem() const
+{
+    return junkConsumable;
 }
 
 bool Item::wasAlwaysJunkItem() const

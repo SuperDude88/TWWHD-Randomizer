@@ -54,17 +54,28 @@ static FillError fastFill(ItemPool& items, LocationPool& locations)
 static FillError fillTheRest(WorldPool& worlds, ItemPool& items, LocationPool& locations)
 {
     FillError err;
-    // First place the junk already in the pool
+    // First place the non consumable junk already in the pool
+    // Filter out the consumable junk to place afterwards
+    auto consumableJunk = filterAndEraseFromPool(items, [](const Item& i){return i.isConsumableJunkItem();});
     FILL_ERROR_CHECK(fastFill(items, locations));
 
-    // When the item pool is empty, get random junk for the remaining locations
+    // For the remaining locations, get items from the consumable junk. If the consumable junk runs out, just get more random
+    // consumable junk
     for (auto location : locations)
     {
         if (location->currentItem.getGameItemId() == GameItem::INVALID)
         {
-            auto item = getRandomJunk();
-            location->currentItem = location->world->getItem(item);
-            LOG_TO_DEBUG("Placed " + item + " at " + location->getName() + " in world " + std::to_string(location->world->getWorldId() + 1));
+            Item item;
+            if (!consumableJunk.empty())
+            {
+                item = popRandomElement(consumableJunk);
+            }
+            else
+            {
+                item = location->world->getItem(getRandomJunk());
+            }
+            location->currentItem = item;
+            LOG_TO_DEBUG("Placed " + item.getName() + " at " + location->getName() + " in world " + std::to_string(location->world->getWorldId() + 1));
         }
     }
     return FillError::NONE;
