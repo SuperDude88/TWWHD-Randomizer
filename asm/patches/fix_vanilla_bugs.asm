@@ -539,3 +539,13 @@ dpad_store_bombs_anim:
 
 dpad_play_item_animations:
   b 0x026DD938
+
+
+
+; In vanilla, using the hookshot on a Blue ChuChu stops it shocking Link until he attacks it with something else
+; It also disables the shock from Yellow ChuChus, but it is restored when they do almost any action (like jumping) so it isn't as obvious
+; Using the hookshot doesn't get rid of the electric particles so I assume the shock effect is meant to stay
+; This has the slightly unfortunate effect that sometimes a Yellow ChuChu will shock you immediately after it is pulled to you, but this matches
+; visually and makes Blue ChuChus work more intuitively (IMPROVEMENT: do a more complete fix for the hookshot stuff that avoids that side effect)
+.org 0x0210D8C8 ; when being hit by the hookshot
+  nop ; don't disable the At collision check
