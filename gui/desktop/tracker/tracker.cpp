@@ -328,9 +328,11 @@ bool MainWindow::autosave_current_tracker_config()
     }
 
     // Read it back and add extra tracker data
-    std::string autosave;
-    Utility::getFileContents(trackerPreferences.autosaveFilePath, autosave);
-    YAML::Node root = YAML::Load(autosave);
+    YAML::Node root;
+    if(!LoadYAML(root, trackerPreferences.autosaveFilePath)) {
+        show_error_dialog("Could not load tracker autosave");
+        return false;
+    }
 
     // Save which locations have been marked
     for (auto loc : trackerWorld.getLocations())
@@ -397,9 +399,11 @@ bool MainWindow::autosave_current_tracker_preferences()
     }
 
     // Save preferences back to tracker_preferences
-    std::string preferences;
-    Utility::getFileContents(Utility::get_app_save_path() / "tracker_preferences.yaml", preferences);
-    YAML::Node pref = YAML::Load(preferences);
+    YAML::Node pref;
+    if(!LoadYAML(pref, Utility::get_app_save_path() / "tracker_preferences.yaml")) {
+        show_error_dialog("Could not load tracker preferences");
+        return false;
+    }
 
     pref["show_location_logic"] = trackerPreferences.showLocationLogic;
     pref["show_nonprogress_locations"] = trackerPreferences.showNonProgressLocations;
@@ -428,13 +432,10 @@ bool MainWindow::autosave_current_tracker_preferences()
 
 void MainWindow::load_tracker_autosave()
 {
-    // Load tracker preferences
-    std::string preferences;
-    if(Utility::getFileContents(Utility::get_app_save_path() / "tracker_preferences.yaml", preferences) != 0) {
-        // No autosave file, don't try to do anything
-        return;
+    YAML::Node pref;
+    if(!LoadYAML(pref, Utility::get_app_save_path() / "tracker_preferences.yaml")) {
+        return; // No valid autosave file, don't try to do anything
     }
-    YAML::Node pref = YAML::Load(preferences);
 
     // Last saved tracker location
     if(pref["autosave_file_override"]) {
@@ -513,9 +514,11 @@ void MainWindow::load_tracker_autosave()
         return;
     }
 
-    std::string autosave;
-    Utility::getFileContents(trackerPreferences.autosaveFilePath, autosave);
-    YAML::Node root = YAML::Load(autosave);
+    YAML::Node root;
+    if(!LoadYAML(root, trackerPreferences.autosaveFilePath)) {
+        show_warning_dialog("Could not load tracker autosave config");
+        return;
+    }
 
     // Load marked locations
     std::vector<std::string> markedLocations = {};

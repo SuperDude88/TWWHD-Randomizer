@@ -58,6 +58,7 @@ public:
         PLANDOMIZER_ERROR,
         DUNGEON_HAS_NO_RACE_MODE_LOCATION,
         INVALID_DUNGEON_NAME,
+        DATA_FILE_ERROR,
         UNKNOWN,
         COUNT
     };

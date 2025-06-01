@@ -9,9 +9,8 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
 {
     LOG_TO_DEBUG("Loading plandomizer file");
 
-    std::string plandoStr;
-    if (Utility::getFileContents(plandoFilepath, plandoStr) != 0)
-    {
+    YAML::Node originalPlandoTree;
+    if(!LoadYAML(originalPlandoTree, plandoFilepath)) {
         Utility::platformLog("Will skip using plando file");
         return PlandomizerError::NONE;
     }
@@ -22,7 +21,7 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
         LOG_TO_DEBUG("Loading Plando data for world " + std::to_string(i + 1))
         plandos[i] = Plandomizer();
         auto& plandomizer = plandos[i];
-        YAML::Node plandoTree = YAML::Load(plandoStr);
+        YAML::Node plandoTree = originalPlandoTree;
         YAML::Node plandoLocations;
         YAML::Node plandoEntrances;
         YAML::Node randomStartingItemPool;

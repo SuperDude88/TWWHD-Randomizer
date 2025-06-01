@@ -1072,13 +1072,13 @@ const std::set<std::string>& getAllLocationsNames()
     // Only parse the locations file on the first call
     // The data folder is read-only for most builds, and it shouldn't be changing anyways
     if(locNames.empty()) {
-        std::string locationDataStr;
-        if(Utility::getFileContents(Utility::get_data_path() / "logic/location_data.yaml", locationDataStr, true) != 0) {
-            ErrorLog::getInstance().log("Failed to open location_data.yaml to load location names");
+        YAML::Node locationDataTree;
+        if(!LoadYAML(locationDataTree, Utility::get_data_path() / "logic/location_data.yaml", true)) {
+            ErrorLog::getInstance().log("Unable to load location_data.yaml");
+            locNames.clear();
             return locNames;
         }
 
-        YAML::Node locationDataTree = YAML::Load(locationDataStr);
         for (const auto& locationObject : locationDataTree)
         {
             if (locationObject["Names"] && locationObject["Names"]["English"])

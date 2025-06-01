@@ -15,6 +15,7 @@
 #include <utility/color.hpp>
 #include <utility/platform.hpp>
 #include <utility/string.hpp>
+#include <utility/file.hpp>
 #include <command/Log.hpp>
 
 
@@ -74,8 +75,10 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     file.close();
     preferences.close();
     
-    YAML::Node root = LoadYAML(filePath);
-    YAML::Node preferencesRoot = LoadYAML(preferencesPath);
+    YAML::Node root, preferencesRoot;
+    if(!LoadYAML(root, filePath) || !LoadYAML(preferencesRoot, preferencesPath)) {
+        LOG_ERR_AND_RETURN(ConfigError::COULD_NOT_OPEN);
+    }
 
     std::string rando_version, file_version;
     GET_FIELD(root, "program_version", rando_version)

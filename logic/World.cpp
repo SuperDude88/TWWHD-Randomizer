@@ -1084,9 +1084,11 @@ World::WorldLoadingError World::loadAreaTranslations(const YAML::Node& areaObjec
 
 World::WorldLoadingError World::loadDungeonExitInfo()
 {
-    std::string dungeonExitData;
-    Utility::getFileContents(Utility::get_data_path() / "logic/dungeon_entrance_info.yaml", dungeonExitData, true);
-    YAML::Node dungeonExitTree = YAML::Load(dungeonExitData);
+    YAML::Node dungeonExitTree;
+    if(!LoadYAML(dungeonExitTree, Utility::get_data_path() / "logic/dungeon_entrance_info.yaml", true)) {
+        ErrorLog::getInstance().log("Could not load dungeon_entrance_info.yaml");
+        return WorldLoadingError::DATA_FILE_ERROR;
+    }
 
     for (const auto& dungeonExitData : dungeonExitTree)
     {
@@ -1162,9 +1164,11 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
 {
     LOG_TO_DEBUG("Loading world");
     // load and parse items
-    std::string itemData;
-    Utility::getFileContents(itemDataPath, itemData, true);
-    YAML::Node itemDataTree = YAML::Load(itemData);
+    YAML::Node itemDataTree;
+    if(!LoadYAML(itemDataTree, itemDataPath, true)) {
+        ErrorLog::getInstance().log("Could not load " + Utility::toUtf8String(itemDataPath));
+        return 1;
+    }
     for (const auto& item : itemDataTree)
     {
         if (const WorldLoadingError err = loadItem(item); err != WorldLoadingError::NONE)
@@ -1176,9 +1180,11 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     }
 
     // load world graph
-    std::string worldData;
-    Utility::getFileContents(worldFilePath, worldData, true);
-    YAML::Node worldDataTree = YAML::Load(worldData);
+    YAML::Node worldDataTree;
+    if(!LoadYAML(worldDataTree, worldFilePath, true)) {
+        ErrorLog::getInstance().log("Could not load " + Utility::toUtf8String(worldFilePath));
+        return 1;
+    }
     // First pass to get area names
     for (const auto& area : worldDataTree)
     {
@@ -1189,9 +1195,11 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     }
 
     // Read and parse macros
-    std::string macroListData;
-    Utility::getFileContents(macrosFilePath, macroListData, true);
-    YAML::Node macroListTree = YAML::Load(macroListData);
+    YAML::Node macroListTree;
+    if(!LoadYAML(macroListTree, macrosFilePath, true)) {
+        ErrorLog::getInstance().log("Could not load " + Utility::toUtf8String(macrosFilePath));
+        return 1;
+    }
     if (const WorldLoadingError err = loadMacros(macroListTree); err != WorldLoadingError::NONE)
     {
         ErrorLog::getInstance().log("Got error loading macros for world " + std::to_string(worldId) + ": " + errorToName(err));
@@ -1200,9 +1208,11 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     }
 
     // Read and parse location data
-    std::string locationData;
-    Utility::getFileContents(locationDataPath, locationData, true);
-    YAML::Node locationDataTree = YAML::Load(locationData);
+    YAML::Node locationDataTree;
+    if(!LoadYAML(locationDataTree, locationDataPath, true)) {
+        ErrorLog::getInstance().log("Could not load " + Utility::toUtf8String(locationDataPath));
+        return 1;
+    }
     for (const auto& locationObject : locationDataTree)
     {
         if (const WorldLoadingError err = loadLocation(locationObject); err != WorldLoadingError::NONE)
@@ -1225,9 +1235,11 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     }
 
     // Read and parse area translations for hints/spoiler logs in other languages
-    std::string areaData;
-    Utility::getFileContents(areaDataPath, areaData, true);
-    YAML::Node areaDataTree = YAML::Load(areaData);
+    YAML::Node areaDataTree;
+    if(!LoadYAML(areaDataTree, areaDataPath, true)) {
+        ErrorLog::getInstance().log("Could not load " + Utility::toUtf8String(areaDataPath));
+        return 1;
+    }
     for (const auto& areaObject : areaDataTree)
     {
         if (const WorldLoadingError err = loadAreaTranslations(areaObject); err != WorldLoadingError::NONE)
@@ -1528,6 +1540,8 @@ std::string World::errorToName(WorldLoadingError err)
         return "DUNGEON_HAS_NO_RACE_MODE_LOCATION";
     case WorldLoadingError::INVALID_DUNGEON_NAME:
         return "INVALID_DUNGEON_NAME";
+    case WorldLoadingError::DATA_FILE_ERROR:
+        return "DATA_FILE_ERROR";
     default:
         return "UNKNOWN";
     }

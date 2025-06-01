@@ -40,4 +40,5 @@ add_subdirectory("AES")
 
 add_subdirectory("base64pp")
 
+target_sources(wwhd_rando PRIVATE yaml.cpp)
 target_link_libraries(wwhd_rando PRIVATE zlib yaml-cpp tinyxml2 AES base64pp)

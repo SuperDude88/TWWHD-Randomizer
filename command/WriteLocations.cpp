@@ -59,14 +59,12 @@ namespace {
     static std::unordered_map<std::string, uint32_t> custom_symbols;
 
     void Load_Custom_Symbols(const fspath& file_path) {
-        std::string file_data;
-        if(Utility::getFileContents(file_path, file_data, true))
-        {
+        YAML::Node symbols;
+        if(!LoadYAML(symbols, file_path, true)) {
             ErrorLog::getInstance().log("ERROR: Failed to load custom symbols when saving items");
             return;
         }
 
-        YAML::Node symbols = YAML::Load(file_data);
         for (const auto& symbol : symbols) {
             custom_symbols[symbol.first.as<std::string>()] = symbol.second.as<uint32_t>();
         }

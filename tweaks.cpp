@@ -56,10 +56,11 @@ using eType = Utility::Endian::Type;
 static std::unordered_map<std::string, uint32_t> custom_symbols;
 
 static TweakError Load_Custom_Symbols(const fspath& file_path) {
-    std::string file_data;
-    if(Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+    YAML::Node symbols;
+    if(!LoadYAML(symbols, file_path, true)) {
+        LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+    }
 
-    YAML::Node symbols = YAML::Load(file_data);
     for (const auto& symbol : symbols) {
         custom_symbols[symbol.first.as<std::string>()] = symbol.second.as<uint32_t>();
     }
@@ -68,10 +69,11 @@ static TweakError Load_Custom_Symbols(const fspath& file_path) {
 }
 
 static TweakError Apply_Patch(const fspath& file_path) {
-    std::string file_data;
-    if (Utility::getFileContents(file_path, file_data, true)) LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+    YAML::Node patches;
+    if(!LoadYAML(patches, file_path, true)) {
+        LOG_ERR_AND_RETURN(TweakError::DATA_FILE_MISSING);
+    }
 
-    const YAML::Node patches = YAML::Load(file_data);
     RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
     if(!patches["Data"] && !patches["Relocations"]) return TweakError::PATCH_MISSING_KEY;

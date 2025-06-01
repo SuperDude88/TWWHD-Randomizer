@@ -1026,9 +1026,12 @@ void ItemsPage::drawDRC() const {
 LocationsPage::LocationsPage() {
     // Read location_data.yaml and map each location to the categories
     // it has
-    std::string locationDataStr;
-    Utility::getFileContents(Utility::get_data_path() / "logic/location_data.yaml", locationDataStr, true);
-    YAML::Node locationDataTree = YAML::Load(locationDataStr);
+    YAML::Node locationDataTree;
+    if(!LoadYAML(locationDataTree, Utility::get_data_path() / "logic/location_data.yaml", true)) {
+        ErrorLog::getInstance().log("Failed to load location_data.yaml");
+        return;
+    }
+
     for (const auto& locationObject : locationDataTree)
     {
         auto locName = locationObject["Names"]["English"].as<std::string>();

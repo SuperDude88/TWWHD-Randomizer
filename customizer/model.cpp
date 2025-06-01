@@ -9,6 +9,7 @@
 #include <utility/file.hpp>
 #include <utility/platform.hpp>
 #include <filetypes/bfres.hpp>
+#include <command/Log.hpp>
 #include <command/RandoSession.hpp>
 
 using eType = Utility::Endian::Type;
@@ -25,15 +26,13 @@ ModelError CustomModel::loadFromFolder() {
     heroOrdering.clear();
     casualOrdering.clear();
 
-    std::string metaStr;
-    if(Utility::getFileContents(folder / "metadata.yaml", metaStr, true) != 0) {
-        return ModelError::COULD_NOT_OPEN;
+    YAML::Node metaTree;
+    if(!LoadYAML(metaTree, folder / "metadata.yaml", true)) {
+        LOG_ERR_AND_RETURN(ModelError::COULD_NOT_OPEN);
     }
 
-    YAML::Node metaTree = YAML::Load(metaStr);
-
     if(!metaTree["default_hero_colors"] || !metaTree["default_casual_colors"]) {
-        return ModelError::MISSING_KEY;
+        LOG_ERR_AND_RETURN(ModelError::MISSING_KEY);
     }
 
     ColorPreset& defaultPreset = presets.emplace_back();
@@ -58,37 +57,38 @@ ModelError CustomModel::loadFromFolder() {
 
     casual = metaTree["default_casual"].as<bool>();
 
-    if(std::string presetStr; Utility::getFileContents(folder / "color_presets.yaml", presetStr, true) == 0) {
-        YAML::Node presetTree = YAML::Load(presetStr);
+    YAML::Node presetTree;
+    if(!LoadYAML(presetTree, folder / "color_presets.yaml", true)) {
+        return ModelError::NONE;
+    }
 
-        // Loop through and add each preset
-        for (const auto& presetObject : presetTree) {
-            const std::string presetName = presetObject["Name"].as<std::string>();
-            ColorPreset& preset = presets.emplace_back(presetName);
+    // Loop through and add each preset
+    for (const auto& presetObject : presetTree) {
+        const std::string presetName = presetObject["Name"].as<std::string>();
+        ColorPreset& preset = presets.emplace_back(presetName);
 
-            for (const auto& presetColor : presetObject["Colors"]["hero"]) {
-                const std::string colorName = presetColor.first.as<std::string>();
-                const std::string color = presetColor.second.as<std::string>();
+        for (const auto& presetColor : presetObject["Colors"]["hero"]) {
+            const std::string colorName = presetColor.first.as<std::string>();
+            const std::string color = presetColor.second.as<std::string>();
 
+            preset.heroColors[colorName] = color;
+        }
+        for (const auto& presetColor : presetObject["Colors"]["casual"]) {
+            const std::string colorName = presetColor.first.as<std::string>();
+            const std::string color = presetColor.second.as<std::string>();
+
+            preset.casualColors[colorName] = color;
+        }
+
+        // Add in defaults for unspecified colors
+        for (auto& [colorName, color] : getDefaultPreset().heroColors) {
+            if (!preset.heroColors.contains(colorName)) {
                 preset.heroColors[colorName] = color;
             }
-            for (const auto& presetColor : presetObject["Colors"]["casual"]) {
-                const std::string colorName = presetColor.first.as<std::string>();
-                const std::string color = presetColor.second.as<std::string>();
-
+        }
+        for (auto& [colorName, color] : getDefaultPreset().casualColors) {
+            if (!preset.casualColors.contains(colorName)) {
                 preset.casualColors[colorName] = color;
-            }
-
-            // Add in defaults for unspecified colors
-            for (auto& [colorName, color] : getDefaultPreset().heroColors) {
-                if (!preset.heroColors.contains(colorName)) {
-                    preset.heroColors[colorName] = color;
-                }
-            }
-            for (auto& [colorName, color] : getDefaultPreset().casualColors) {
-                if (!preset.casualColors.contains(colorName)) {
-                    preset.casualColors[colorName] = color;
-                }
             }
         }
     }
