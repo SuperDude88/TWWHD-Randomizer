@@ -319,20 +319,7 @@ bool MainWindow::autosave_current_tracker_config()
 
     Config trackerConfig;
     trackerConfig.settings = trackerSettings;
-    // Save current config
-    auto configErr = trackerConfig.writeSettings(trackerPreferences.autosaveFilePath);
-    if (configErr != ConfigError::NONE)
-    {
-        show_error_dialog("Could not save tracker config to file\n Error: " + ConfigErrorGetName(configErr));
-        return false;
-    }
-
-    // Read it back and add extra tracker data
-    YAML::Node root;
-    if(!LoadYAML(root, trackerPreferences.autosaveFilePath)) {
-        show_error_dialog("Could not load tracker autosave");
-        return false;
-    }
+    YAML::Node root = trackerConfig.settingsToYaml();
 
     // Save which locations have been marked
     for (auto loc : trackerWorld.getLocations())
@@ -390,20 +377,7 @@ bool MainWindow::autosave_current_tracker_preferences()
 {
     Config trackerConfig;
     trackerConfig.settings = trackerSettings;
-    // Save current config
-    auto configErr = trackerConfig.writePreferences(Utility::get_app_save_path() / "tracker_preferences.yaml");
-    if (configErr != ConfigError::NONE)
-    {
-        show_error_dialog("Could not save tracker preferences to file\n Error: " + ConfigErrorGetName(configErr));
-        return false;
-    }
-
-    // Save preferences back to tracker_preferences
-    YAML::Node pref;
-    if(!LoadYAML(pref, Utility::get_app_save_path() / "tracker_preferences.yaml")) {
-        show_error_dialog("Could not load tracker preferences");
-        return false;
-    }
+    YAML::Node pref = trackerConfig.preferencesToYaml();
 
     pref["show_location_logic"] = trackerPreferences.showLocationLogic;
     pref["show_nonprogress_locations"] = trackerPreferences.showNonProgressLocations;
