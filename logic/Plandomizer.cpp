@@ -9,8 +9,8 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
 {
     LOG_TO_DEBUG("Loading plandomizer file");
 
-    YAML::Node originalPlandoTree;
-    if(!LoadYAML(originalPlandoTree, plandoFilepath)) {
+    YAML::Node plandoTree;
+    if(!LoadYAML(plandoTree, plandoFilepath)) {
         Utility::platformLog("Will skip using plando file");
         return PlandomizerError::NONE;
     }
@@ -18,76 +18,23 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
     // Go through and make plandomizer objects for each world
     for (size_t i = 0; i < numWorlds; i++)
     {
-        LOG_TO_DEBUG("Loading Plando data for world " + std::to_string(i + 1))
+        const std::string& worldName = "World " + std::to_string(i + 1);
+        LOG_TO_DEBUG("Loading Plando data for " + worldName);
+
         plandos[i] = Plandomizer();
         auto& plandomizer = plandos[i];
-        YAML::Node plandoTree = originalPlandoTree;
-        YAML::Node plandoLocations;
-        YAML::Node plandoEntrances;
-        YAML::Node randomStartingItemPool;
-        std::string plandoStartingIsland = "";
-        std::string worldName = "World " + std::to_string(i + 1);
+
         // Grab the YAML object which holds the plando info for this world.
-        if (plandoTree[worldName] && plandoTree[worldName].IsMap())
-        {
-            if (plandoTree[worldName]["locations"] && plandoTree[worldName]["locations"].IsMap())
-            {
-                plandoLocations = plandoTree[worldName]["locations"];
-            }
-
-            if (plandoTree[worldName]["entrances"] && plandoTree[worldName]["entrances"].IsMap())
-            {
-                plandoEntrances = plandoTree[worldName]["entrances"];
-            }
-            if (plandoTree[worldName]["starting island"] && plandoTree[worldName]["starting island"].IsScalar())
-            {
-                plandoStartingIsland = plandoTree[worldName]["starting island"].as<std::string>();
-            }
-            if (plandoTree[worldName]["random starting item pool"] && plandoTree[worldName]["random starting item pool"].IsSequence())
-            {
-                randomStartingItemPool = plandoTree[worldName]["random starting item pool"];
-            }
+        if (!plandoTree[worldName] || !plandoTree[worldName].IsMap()) {
+            continue;
         }
 
-        // Process starting island
-        if (!plandoStartingIsland.empty())
-        {
-            plandomizer.startingIslandRoomNum = islandNameToRoomNum(plandoStartingIsland);
-            if (plandomizer.startingIslandRoomNum == 0)
-            {
-                ErrorLog::getInstance().log("Plandomizer Error: Starting island name \"" + plandoStartingIsland + "\" is not recognized");
-                return PlandomizerError::BAD_STARTING_ISLAND;
-            }
-            LOG_TO_DEBUG("  Setting starting island to " + plandoStartingIsland);
-        }
+        const YAML::Node& world = plandoTree[worldName];
 
-        // Process random starting item pool
-        if (randomStartingItemPool)
+        // Process locations
+        if (world["locations"] && world["locations"].IsMap())
         {
-            LOG_TO_DEBUG("  Starting Item Pool: ")
-            for (const auto& item : randomStartingItemPool)
-            {
-                const std::string itemName = item.as<std::string>();
-                const GameItem gameItem = nameToGameItem(itemName);
-                if (gameItem == GameItem::INVALID)
-                {
-                    ErrorLog::getInstance().log("Plandomizer Error: Unknown item name \"" + itemName + "\" in random starting item pool");
-                    return PlandomizerError::UNKNOWN_ITEM_NAME;
-                }
-                else if (!getSupportedStartingItems().contains(gameItem))
-                {
-                    ErrorLog::getInstance().log("Plandomizer Error: The item \"" + itemName + "\" is currently not supported as a starting item");
-                    return PlandomizerError::BAD_STARTING_ITEM;
-                }
-                plandomizer.randomStartingItemPool.push_back(gameItem);
-                LOG_TO_DEBUG(std::string("    ") + itemName);
-            }
-        }
-
-        // Process Locations
-        if (plandoLocations)
-        {
-            for (const auto& locationObject : plandoLocations)
+            for (const auto& locationObject : world["locations"])
             {
                 if (locationObject.first.IsNull())
                 {
@@ -148,10 +95,10 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
             }
         }
 
-        // Process Entrances
-        if (plandoEntrances)
+        // Process entrances
+        if (world["entrances"] && world["entrances"].IsMap())
         {
-            for (const auto entrance : plandoEntrances)
+            for (const auto entrance : world["entrances"])
             {
                 if (entrance.first.IsNull())
                 {
@@ -160,6 +107,42 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
                 }
                 // Process strings of each plando's entrance into their respective entrance pointers
                 plandomizer.entrancesStr.insert({entrance.first.as<std::string>(), entrance.second.as<std::string>()});
+            }
+        }
+
+        // Process starting island
+        if (world["starting island"] && world["starting island"].IsScalar())
+        {
+            const std::string& island = world["starting island"].as<std::string>("");
+            plandomizer.startingIslandRoomNum = islandNameToRoomNum(island);
+            if (plandomizer.startingIslandRoomNum == 0)
+            {
+                ErrorLog::getInstance().log("Plandomizer Error: Starting island name \"" + island + "\" is not recognized");
+                return PlandomizerError::BAD_STARTING_ISLAND;
+            }
+            LOG_TO_DEBUG("  Setting starting island to " + island);
+        }
+
+        // Process random starting item pool
+        if (world["random starting item pool"] && world["random starting item pool"].IsSequence())
+        {
+            LOG_TO_DEBUG("  Starting Item Pool: ")
+            for (const auto& item : world["random starting item pool"])
+            {
+                const std::string itemName = item.as<std::string>();
+                const GameItem gameItem = nameToGameItem(itemName);
+                if (gameItem == GameItem::INVALID)
+                {
+                    ErrorLog::getInstance().log("Plandomizer Error: Unknown item name \"" + itemName + "\" in random starting item pool");
+                    return PlandomizerError::UNKNOWN_ITEM_NAME;
+                }
+                else if (!getSupportedStartingItems().contains(gameItem))
+                {
+                    ErrorLog::getInstance().log("Plandomizer Error: The item \"" + itemName + "\" is currently not supported as a starting item");
+                    return PlandomizerError::BAD_STARTING_ITEM;
+                }
+                plandomizer.randomStartingItemPool.push_back(gameItem);
+                LOG_TO_DEBUG(std::string("    ") + itemName);
             }
         }
     }
@@ -190,5 +173,6 @@ std::string errorToName(PlandomizerError err)
         case PlandomizerError::UNKNOWN_ITEM_NAME:
             return "UNKNOWN_ITEM_NAME";
     }
+
     return "UNKNOWN";
 }
