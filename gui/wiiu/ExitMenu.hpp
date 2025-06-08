@@ -1,6 +1,6 @@
 #pragma once
 
-enum class ExitMode {
+enum struct ExitMode {
     IMMEDIATE,
     PLATFORM_ERROR,
     GUI_ERROR,

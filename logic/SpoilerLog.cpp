@@ -77,14 +77,14 @@ struct chartComparator {
     }
 };
 
-static void printBasicInfo(std::ofstream& log, const WorldPool& worlds)
+static void printBasicInfo(std::ofstream& log)
 {
     log << "# Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
     log << "# Program opened " << ProgramTime::getDateStr(); //time string ends with \n
     log << std::endl;
 
     log << "# Settings" << std::endl;
-    Config config = LogInfo::getConfig();
+    const Config& config = LogInfo::getConfig();
     log << "Permalink: " << config.getPermalink() << std::endl;
     log << config.settingsToYaml();
     log << std::endl << std::endl;
@@ -95,7 +95,7 @@ void generateSpoilerLog(WorldPool& worlds)
     std::ofstream spoilerLog(Utility::get_logs_path() / (LogInfo::getSeedHash() + " Spoiler Log.txt"));
 
     Utility::platformLog("Generating spoiler log...");
-    printBasicInfo(spoilerLog, worlds);
+    printBasicInfo(spoilerLog);
 
     // Playthroughs are stored in world 1 for the time being, regardless of how
     // many worlds there are.
@@ -332,7 +332,7 @@ void generateNonSpoilerLog(WorldPool& worlds)
     std::ofstream nonSpoilerLog(Utility::get_logs_path() / (LogInfo::getSeedHash() + " Non-Spoiler Log.txt"));
 
     Utility::platformLog("Generating non-spoiler log...");
-    printBasicInfo(nonSpoilerLog, worlds);
+    printBasicInfo(nonSpoilerLog);
 
     nonSpoilerLog << "### Locations that may or may not have progress items in them on this run:" << std::endl;
     for (auto& world : worlds)
