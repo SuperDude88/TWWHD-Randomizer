@@ -1437,7 +1437,11 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QListView" name="progression_locations"/>
+                 <widget class="QListView" name="progression_locations">
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -1519,7 +1523,11 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QListView" name="excluded_locations"/>
+                 <widget class="QListView" name="excluded_locations">
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
