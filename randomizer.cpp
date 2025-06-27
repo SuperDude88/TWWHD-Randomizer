@@ -5,7 +5,6 @@
 #include <filesystem>
 
 #include <libs/tinyxml2.hpp>
-#include <libs/zlib-ng.hpp>
 
 #include <tweaks.hpp>
 #include <seedgen/config.hpp>
@@ -188,7 +187,7 @@ public:
             ErrorLog::getInstance().log("Could not generate permalink for RNG seeding.");
             return 1;
         }
-        const size_t integer_seed = zng_crc32(0L, reinterpret_cast<const uint8_t*>(permalink.data()), permalink.length());
+        const Seed_t integer_seed = seedFromString(permalink);
         Random_Init(integer_seed);
 
         LogInfo::setSeedHash(generate_seed_hash());

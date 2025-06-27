@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-#include <libs/zlib-ng.hpp>
-
 #include <command/Log.hpp>
 #include <seedgen/random.hpp>
 #include <seedgen/config.hpp>
@@ -2503,7 +2501,7 @@ std::string hash_for_config(const Config& config) {
     }
 
     // Seed RNG
-    const size_t integer_seed = zng_crc32(0L, reinterpret_cast<const uint8_t*>(permalink.data()), permalink.length());
+    const Seed_t integer_seed = seedFromString(permalink);
     Random_Init(integer_seed);
 
     return generate_seed_hash();

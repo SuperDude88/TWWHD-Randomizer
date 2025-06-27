@@ -7,10 +7,14 @@
 #include <array>
 #include <random>
 
-void Random_Init(size_t seed);
+using Generator_t = std::mt19937_64;
+using Seed_t = Generator_t::result_type;
+
+Seed_t seedFromString(const std::string& str);
+void Random_Init(Seed_t seed);
 uint32_t Random(int min, int max);
 double RandomDouble();
-std::mt19937_64& GetGenerator();
+Generator_t& GetGenerator();
 
 template <typename T>
 T popRandomElement(std::vector<T>& vector)

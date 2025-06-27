@@ -30,7 +30,7 @@ static int testSettings(const Settings& settings, bool& settingToChange, const s
         config.settings = settings;
 
         const std::string permalink = config.getPermalink();
-        const size_t integer_seed = zng_crc32(0L, reinterpret_cast<const uint8_t *>(permalink.data()), permalink.length());
+        const Seed_t integer_seed = seedFromString(permalink);
         Random_Init(integer_seed);
 
         int worldCount = 1;
@@ -80,7 +80,7 @@ static int multiWorldTest(const Settings& settings)
     localConf.seed = "LOGIC_TESTING_SEED";
     localConf.settings = settings;
     const std::string permalink = localConf.getPermalink();
-    const size_t integer_seed = zng_crc32(0L, reinterpret_cast<const uint8_t*>(permalink.data()), permalink.length());
+    const Seed_t integer_seed = seedFromString(permalink);
 
     Random_Init(integer_seed);
 
@@ -304,7 +304,7 @@ void testSettings(Config& newConfig, int testCount /*= 1*/)
     {
         config.seed = std::to_string(Random(0, 10000000));
         const std::string permalink = config.getPermalink();
-        const size_t integer_seed = zng_crc32(0L, reinterpret_cast<const uint8_t*>(permalink.data()), permalink.length());
+        const Seed_t integer_seed = seedFromString(permalink);
 
         std::cout << "Testing with seed \"" << config.seed << "\"..." << std::flush;
 
