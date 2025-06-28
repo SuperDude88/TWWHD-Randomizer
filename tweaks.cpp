@@ -3332,13 +3332,24 @@ TweakError add_ff_warp_button() {
 }
 
 TweakError fix_vanilla_text() {
-    //The spanish text for the 99 quiver says that you can hold up to 99 bombs
-    RandoSession::CacheEntry& text = g_session.openGameFile("content/Common/Pack/permanent_2d_UsSpanish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
-    text.addAction([](RandoSession* session, FileType* data) -> int {
+    // The spanish text for the 99 quiver says that you can hold up to 99 bombs
+    RandoSession::CacheEntry& spanish1 = g_session.openGameFile("content/Common/Pack/permanent_2d_UsSpanish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+    spanish1.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
         std::u16string& message = msbt.messages_by_label["00277"].text.message;
         message.replace(message.find(u"bombas"), 6, u"flechas", 7);
+
+        return true;
+    });
+
+    // The English text when you play Song of Passing indoors incorrectly copies the endless night text ("An evil power seems to have blocked the effects of the music you conducted!")
+    // In SD (and other HD languages) it has the different (correct) message
+    RandoSession::CacheEntry& english2 = g_session.openGameFile("content/Common/Pack/permanent_2d_UsEnglish.pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
+    english2.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+
+        msbt.messages_by_label["05290"].text.message = u"The effects of the tune you conducted can\nonly be seen in places where the " TEXT_COLOR_RED u"sun " TEXT_COLOR_DEFAULT u"and\n" TEXT_COLOR_RED u"moon" TEXT_COLOR_DEFAULT u" are visible.\0"s;
 
         return true;
     });
