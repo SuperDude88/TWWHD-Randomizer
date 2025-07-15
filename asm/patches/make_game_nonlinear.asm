@@ -500,3 +500,25 @@ set_item_obtained_from_totg_tablet_event_bit:
 ; Change it to always play until you heal her
 .org 0x02026D3C ; branch normally taken if you have a shield
   b 0x02026D60 ; make it unconditional
+
+
+
+; The framed pictographs in Lenzo's house set an event bit which can cause some odd behavior from him
+; In entrance rando this can permanently lock Lenzo's exterior upper ledge door without glitches
+; Without entrance rando it technically requires glitches, but the lockout is so cryptic I think it's worth patching anyways
+; So we add an extra check to make sure things happen in order
+.org 0x024B22F4 ; In daTagPhoto_c::eventMove
+  b tag_photo_check_lenzo_flag_order
+.org @NextFreeSpace
+.global tag_photo_check_lenzo_flag_order
+tag_photo_check_lenzo_flag_order:
+  li r3, 0x1701 ; Event bit for talking to Lenzo with the picto box
+	bl isEventBit_wrapper
+  cmpwi r3, 0
+  beq skip_setting_pictograph_gallery_flag ; Haven't triggered the prerequisite flag yet
+  lis r12,gameInfo_ptr@ha
+  lwz r12,gameInfo_ptr@l(r12)
+  li r4, 0x1601 ; Talked to Lenzo about his pictograph gallery (replace the line we overwrote to jump here)
+  b 0x024B22F8
+skip_setting_pictograph_gallery_flag:
+  b 0x024B2300 ; Return without setting the next flag
