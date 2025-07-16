@@ -398,6 +398,7 @@ World::WorldLoadingError World::setDungeonLocations(WorldPool& worlds)
     // but don't list them in the dungeon's locations
     for (auto& [dungeonName, dungeon] : dungeons)
     {
+        dungeon.name = dungeonName; // Also make sure the name is set
 
         if (dungeon.raceModeLocation == nullptr)
         {
@@ -464,8 +465,6 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
         std::vector<Dungeon> dungeonPool = {};
         for (auto& [name, dungeon] : dungeons)
         {
-            // Set names now (should probably do this somewhere else, but fine for now)
-            dungeon.name = name;
             // Verify that each dungeon has a race mode location
             if (dungeon.raceModeLocation == nullptr)
             {
