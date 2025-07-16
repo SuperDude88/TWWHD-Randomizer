@@ -471,12 +471,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                 ErrorLog::getInstance().log("Dungeon \"" + dungeon.name + "\" has no set race mode location");
                 LOG_ERR_AND_RETURN(WorldLoadingError::DUNGEON_HAS_NO_RACE_MODE_LOCATION);
             }
-            // If the race mode location is excluded, then don't choose this dungeon
-            if (!dungeon.raceModeLocation->progression)
-            {
-                LOG_TO_DEBUG("Dungeon \"" + dungeon.name + "\" won't be chosen as a required dungeon due to a non-progression race mode location");
-                continue;
-            }
+
             dungeonPool.push_back(dungeon);
         }
 
@@ -503,10 +498,10 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                     {
                         if (plandomizer.locations.contains(dungeonLocation) && !plandomizer.locations[dungeonLocation].isJunkItem())
                         {
-                            // However, if the dungeon's naturally assigned race mode location is junk then
+                            // However, if the dungeon's naturally assigned race mode location is junk or excluded then
                             // that's an error on the user's part.
                             Location* raceModeLocation = dungeon.raceModeLocation;
-                            bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) || !plandomizer.locations[dungeonLocation].isJunkItem();
+                            bool raceModeLocationIsAcceptable = raceModeLocation->progression && (!plandomizer.locations.contains(raceModeLocation) || !plandomizer.locations[raceModeLocation].isJunkItem());
                             if (dungeon.hasNaturalRaceModeLocation && !raceModeLocationIsAcceptable)
                             {
                                 ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
@@ -540,10 +535,10 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                     continue;
                 }
                 // If this dungeon has a junk item placed as its race mode
-                // location, then skip it
+                // location or the race mode location is excluded, then skip it
                 auto raceModeLocation = dungeon.raceModeLocation;
-                bool raceModeLocationIsAcceptable = !plandomizer.locations.contains(raceModeLocation) ? false : plandomizer.locations[raceModeLocation].isJunkItem() || dungeon.hasNaturalRaceModeLocation;
-                if (!raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_required_dungeons)
+                bool raceModeLocationIsAcceptable = raceModeLocation->progression && (!plandomizer.locations.contains(raceModeLocation) || !plandomizer.locations[raceModeLocation].isJunkItem());
+                if (dungeon.hasNaturalRaceModeLocation && raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_required_dungeons)
                 {
                     LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
                     dungeons[dungeon.name].isRequiredDungeon = true;
@@ -593,10 +588,10 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
 
                 if (setRaceModeDungeons < settings.num_required_dungeons)
                 {
-                    ErrorLog::getInstance().log("Plandomizer Error: Not enough race mode locations for set number of race mode dungeons");
+                    ErrorLog::getInstance().log("Not enough race mode locations for set number of race mode dungeons");
                     ErrorLog::getInstance().log("Possible race mode locations: " + std::to_string(setRaceModeDungeons));
                     ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(settings.num_required_dungeons));
-                    LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
+                    LOG_ERR_AND_RETURN(WorldLoadingError::NOT_ENOUGH_RACE_MODE_LOCATIONS);
                 }
             }
             // Otherwise, set all dungeon locations as progression and try again
@@ -616,6 +611,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
             }
         } while (!successfullyChoseRaceModeDungeons);
     }
+
     return WorldLoadingError::NONE;
 }
 
@@ -1537,6 +1533,8 @@ std::string World::errorToName(WorldLoadingError err)
         return "PLANDOMIZER_ERROR";
     case WorldLoadingError::DUNGEON_HAS_NO_RACE_MODE_LOCATION:
         return "DUNGEON_HAS_NO_RACE_MODE_LOCATION";
+    case WorldLoadingError::NOT_ENOUGH_RACE_MODE_LOCATIONS:
+        return "NOT_ENOUGH_RACE_MODE_LOCATIONS";
     case WorldLoadingError::INVALID_DUNGEON_NAME:
         return "INVALID_DUNGEON_NAME";
     case WorldLoadingError::DATA_FILE_ERROR:
