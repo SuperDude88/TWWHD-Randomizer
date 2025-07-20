@@ -134,6 +134,11 @@ std::string Location::getName() const
 // Calculates whether the current item can be barren given it's placement at this specific location in mind
 bool Location::currentItemCanBeBarren() const
 {
+    if (currentItem.getGameItemId() == GameItem::GameBeatable)
+    {
+        return false;
+    }
+
     if (currentItem.canBeInBarrenRegion())
     {
         return true;
