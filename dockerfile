@@ -1,4 +1,4 @@
-FROM devkitpro/devkitppc:20250527
+FROM devkitpro/devkitppc:20250727
 
 ENV PATH=$DEVKITPPC/bin:$PATH
 ENV BUILD_TYPE=randomizer
@@ -8,7 +8,13 @@ WORKDIR /
 
 # Install python for ASM patches
 COPY ./asm/requirements.txt /scripts/requirements.txt
-RUN apt-get update && apt-get install python3 python3-pip -y && pip3 install -r /scripts/requirements.txt
+RUN apt-get update && apt-get install python3 python3-pip python3-venv -y
+
+# Set up a python virtualenv
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH=$VIRTUAL_ENV/bin:$PATH
+RUN pip3 install -r /scripts/requirements.txt
 
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
