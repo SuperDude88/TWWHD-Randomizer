@@ -36,9 +36,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
+          fetch-tags: true
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
