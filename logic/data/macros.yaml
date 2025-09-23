@@ -123,6 +123,8 @@ Can Cut Grass: Heros_Sword or Skull_Hammer or Bombs or Boomerang
 Can Sword Fight With Orca: Heros_Sword or In_Swordless_Mode
 In Swordless Mode: Remove_Swords == true
 Outside Swordless Mode: Remove_Swords == false
+
+# Note: Chart macros are finalized in World.cpp determineChartMappings()
 Chart For Island 1: Treasure_Chart_25
 Chart For Island 2: Treasure_Chart_7
 Chart For Island 3: Treasure_Chart_24
@@ -145,7 +147,7 @@ Chart For Island 19: Treasure_Chart_3
 Chart For Island 20: Treasure_Chart_37
 Chart For Island 21: Treasure_Chart_27
 Chart For Island 22: Treasure_Chart_38
-Chart For Island 23: Triforce_Chart_1
+Chart For Island 23: Triforce_Chart_1 and 'Rescued_Tingle' and 'Can_Farm_Lots_Of_Rupees'
 Chart For Island 24: Treasure_Chart_21
 Chart For Island 25: Treasure_Chart_6
 Chart For Island 26: Treasure_Chart_14
@@ -153,7 +155,7 @@ Chart For Island 27: Treasure_Chart_34
 Chart For Island 28: Treasure_Chart_5
 Chart For Island 29: Treasure_Chart_28
 Chart For Island 30: Treasure_Chart_35
-Chart For Island 31: Triforce_Chart_2
+Chart For Island 31: Triforce_Chart_2 and 'Rescued_Tingle' and 'Can_Farm_Lots_Of_Rupees'
 Chart For Island 32: Treasure_Chart_44
 Chart For Island 33: Treasure_Chart_1
 Chart For Island 34: Treasure_Chart_20
@@ -164,7 +166,7 @@ Chart For Island 38: Treasure_Chart_16
 Chart For Island 39: Treasure_Chart_4
 Chart For Island 40: Treasure_Chart_17
 Chart For Island 41: Treasure_Chart_31
-Chart For Island 42: Triforce_Chart_3
+Chart For Island 42: Triforce_Chart_3 and 'Rescued_Tingle' and 'Can_Farm_Lots_Of_Rupees'
 Chart For Island 43: Treasure_Chart_9
 Chart For Island 44: Treasure_Chart_43
 Chart For Island 45: Treasure_Chart_40

@@ -270,11 +270,26 @@ void World::determineChartMappings()
         chartMappings[sector] = chart;
 
         // Change the macro for this island's chart to the one at this index in the array.
-        // "Chart For Island <sector number>" macros are type "HAS_ITEM" and have
-        // one argument which is the chart Item.
         const std::string chartName = gameItemToName(chart);
         LOG_TO_DEBUG("\tChart for Island " + std::to_string(sector) + " is now " + chartName);
-        macros[macroNameMap.at("Chart For Island " + std::to_string(sector))].args[0] = itemTable[chartName];
+        std::string reqStr = chartName;
+        std::replace(reqStr.begin(), reqStr.end(), ' ', '_');
+
+        // If this is a triforce chart, add the check for rescuing tingle and being able to farm rupees
+        if (chartName.find("Triforce Chart") != std::string::npos)
+        {
+            reqStr += " and 'Rescued_Tingle' and 'Can_Farm_Lots_Of_Rupees'";
+        }
+
+        // Clear the original macro
+        auto& chartMacro = macros[macroNameMap.at("Chart For Island " + std::to_string(sector))];
+        chartMacro.args.clear();
+        chartMacro.type = RequirementType::NONE;
+
+        // And then set it again
+        parseRequirementString(reqStr, chartMacro, this);
+        std::cout << printRequirement(chartMacro, this) << std::endl;
+        
     }
     LOG_TO_DEBUG("]");
 }

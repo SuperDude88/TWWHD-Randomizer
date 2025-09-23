@@ -8,7 +8,7 @@
 
 #include <unordered_map>
 #include <algorithm>
-
+#include <iostream>
 
 static std::unordered_map<std::string, RequirementType> nameToTypeMap = {
     {"or", RequirementType::OR},
@@ -55,6 +55,7 @@ bool evaluateRequirement(World* world, const Requirement& req, const ItemMultiSe
         );
 
     case RequirementType::AND:
+        // std::cout << "h " << req.args.size() << std::endl;
         return std::ranges::all_of(req.args
                                    ,
                                    [&](const Requirement::Argument& arg){
