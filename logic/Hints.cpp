@@ -42,7 +42,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
 
         for (auto& [name, location] : world.locationTable)
         {
-            if (!location->progression)
+            if (!location->progression && !location->categories.contains(LocationCategory::BlueChuChu))
             {
                 nonRequiredLocations.insert({location.get(), location->currentItem});
                 location->currentItem = {GameItem::INVALID, location->world};
