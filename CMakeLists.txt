@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -114,7 +114,6 @@ add_subdirectory("command")
 add_subdirectory("filetypes")
 add_subdirectory("seedgen")
 add_subdirectory("logic")
-add_subdirectory("nuspack")
 add_subdirectory("customizer")
 
 target_include_directories(wwhd_rando PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
@@ -122,6 +121,7 @@ target_include_directories(wwhd_rando PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY
 if(DEFINED DEVKITPRO)
   # Some code specific to Wii U
   add_subdirectory("platform")
+  add_subdirectory("nuspack")
   add_subdirectory("gui/wiiu")
 
   # Use libmocha for filesystem access
