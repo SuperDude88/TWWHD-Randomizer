@@ -8,7 +8,7 @@
 
 #include <unordered_map>
 #include <algorithm>
-#include <iostream>
+
 
 static std::unordered_map<std::string, RequirementType> nameToTypeMap = {
     {"or", RequirementType::OR},
@@ -199,6 +199,7 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
 {
     RequirementError err;
     std::string logicStr (str);
+
     // First, we make sure that the expression has no missing or extra parenthesis
     // and that the nesting level at the beginning is the same at the end.
     //
