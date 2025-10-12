@@ -55,7 +55,6 @@ bool evaluateRequirement(World* world, const Requirement& req, const ItemMultiSe
         );
 
     case RequirementType::AND:
-        // std::cout << "h " << req.args.size() << std::endl;
         return std::ranges::all_of(req.args
                                    ,
                                    [&](const Requirement::Argument& arg){
@@ -200,7 +199,6 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
 {
     RequirementError err;
     std::string logicStr (str);
-
     // First, we make sure that the expression has no missing or extra parenthesis
     // and that the nesting level at the beginning is the same at the end.
     //
