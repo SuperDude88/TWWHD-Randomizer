@@ -5,6 +5,7 @@
 
 #include <utility/endian.hpp>
 #include <utility/string.hpp>
+#include <utility/math.hpp>
 #include <utility/file.hpp>
 #include <command/Log.hpp>
 
@@ -60,7 +61,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
             LOG_ERR_AND_RETURN(FLYTError::UNEXPECTED_VALUE)
         }
 
-        if (std::string name = readNullTerminatedStr(bflyt, bflyt.tellg()); name.empty()) {
+        if (std::string name = Utility::Str::readNullTerminatedStr<std::string>(bflyt, bflyt.tellg()); name.empty()) {
             LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
         }
         else {
@@ -78,10 +79,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
     }
 
     FLYTError lyt1::save_changes(std::ostream& out) {
-        sectionSize = 0x1C + layoutName.size();
-        unsigned int padLen = 4 - ((static_cast<uint32_t>(out.tellp()) + sectionSize) % 4); //dont use padToLen function so we can calculate the length ahead of time (removes a seek later)
-        if (padLen == 4) padLen = 0;
-        sectionSize += padLen;
+        sectionSize = roundUp<uint32_t>(0x1C + layoutName.size(), 4);
 
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
         Utility::Endian::toPlatform_inplace(eType::Big, width);
@@ -137,7 +135,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
         texNames.reserve(numTextures);
         for (uint32_t strOffset : texStrOffsets) {
-            if (std::string name = readNullTerminatedStr(bflyt, sectionStart + 0xC + strOffset); name.empty()) {
+            if (std::string name = Utility::Str::readNullTerminatedStr<std::string>(bflyt, sectionStart + 0xC + strOffset); name.empty()) {
                 LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
             }
             else {
@@ -224,7 +222,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
         fontNames.reserve(numFonts);
         for (uint32_t strOffset : fontStrOffsets) {
-            if (std::string name = readNullTerminatedStr(bflyt, sectionStart + 0xC + strOffset); name.empty()) {
+            if (std::string name = Utility::Str::readNullTerminatedStr<std::string>(bflyt, sectionStart + 0xC + strOffset); name.empty()) {
                 LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
             }
             else {
@@ -690,7 +688,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
             Utility::Endian::toPlatform_inplace(eType::Big, entry.dataLen);
 
             if (entry.nameOffset != 0) {
-                if (std::string name = readNullTerminatedStr(bflyt, entryStart + entry.nameOffset); name.empty()) {
+                if (std::string name = Utility::Str::readNullTerminatedStr<std::string>(bflyt, entryStart + entry.nameOffset); name.empty()) {
                     LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
                 }
                 else {
@@ -711,7 +709,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
                         entry.data = data;
                     }
                     else {
-                        if (std::string data = readNullTerminatedStr(bflyt, sectionStart + entry.dataOffset); data.empty()) {
+                        if (std::string data = Utility::Str::readNullTerminatedStr<std::string>(bflyt, sectionStart + entry.dataOffset); data.empty()) {
                             LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
                         }
                         else {
@@ -850,7 +848,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         Utility::Endian::toPlatform_inplace(eType::Big, paneCount);
         Utility::Endian::toPlatform_inplace(eType::Big, animCount);
 
-        if (std::string name = readNullTerminatedStr(bflyt, bflyt.tellg()); name.empty()) {
+        if (std::string name = Utility::Str::readNullTerminatedStr<std::string>(bflyt, bflyt.tellg()); name.empty()) {
             LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
         }
         else {
@@ -869,11 +867,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
             paneNames.push_back(paneName);
         }
 
-        unsigned int numPaddingBytes = 4 - (bflyt.tellg() % 4);
-        if (numPaddingBytes == 4) {
-            numPaddingBytes = 0;
-        }
-        bflyt.seekg(numPaddingBytes, std::ios::cur);
+        LOG_AND_RETURN_IF_ERR(readPadding<FLYTError>(bflyt, 4));
         animNameTableOffset = bflyt.tellg() - sectionStart;
 
         animNameOffsets.reserve(animCount);
@@ -889,7 +883,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
 
         animNames.reserve(animCount);
         for (const uint32_t nameOffset : animNameOffsets) {
-            if (std::string name = readNullTerminatedStr(bflyt, sectionStart + animNameTableOffset + nameOffset); name.empty()) {
+            if (std::string name = Utility::Str::readNullTerminatedStr<std::string>(bflyt, sectionStart + animNameTableOffset + nameOffset); name.empty()) {
                 LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
             }
             else {
@@ -1555,7 +1549,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         Utility::Endian::toPlatform_inplace(eType::Big, shadowItalicTilt);
 
         if (textOffset != 0) {
-            if (std::u16string name = readNullTerminatedWStr(bflyt, sectionStart + textOffset); name.empty()) {
+            if (std::u16string name = Utility::Str::readNullTerminatedStr<std::u16string>(bflyt, sectionStart + textOffset); name.empty()) {
                 LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
             }
             else {
@@ -1568,7 +1562,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
         }
 
         if (nameOffset != 0) {
-            if (std::string name = readNullTerminatedStr(bflyt, sectionStart + nameOffset); name.empty()) {
+            if (std::string name = Utility::Str::readNullTerminatedStr<std::string>(bflyt, sectionStart + nameOffset); name.empty()) {
                 LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
             }
             else {
@@ -1968,7 +1962,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
             }
         }
 
-        if (std::string name = readNullTerminatedStr(bflyt, bflyt.tellg()); name.empty()) {
+        if (std::string name = Utility::Str::readNullTerminatedStr<std::string>(bflyt, bflyt.tellg()); name.empty()) {
             LOG_ERR_AND_RETURN(FLYTError::REACHED_EOF) //empty string means it could not read a character from file
         }
         else {

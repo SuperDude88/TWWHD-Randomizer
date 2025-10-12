@@ -512,7 +512,7 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath, c
     entry.addAction([source, resourceFile](RandoSession* session, FileType* data) -> int {
         RawFile* dst = dynamic_cast<RawFile*>(data);
         if(dst == nullptr) return false;
-        dst->data.str(std::string()); //clear data so we overwrite it
+
         std::string fileData = "";
         if(Utility::getFileContents(source, fileData, resourceFile) != 0) return false; //TODO: proper time against rdbuf
         dst->data.str(fileData); 

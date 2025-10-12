@@ -1,6 +1,7 @@
 #include "text.hpp"
 
 #include <utility/string.hpp>
+#include <utility/math.hpp>
 #include <filetypes/util/msbtMacros.hpp>
 #include <command/Log.hpp>
 
@@ -134,11 +135,7 @@ namespace Text {
     {
         std::vector<std::string> lines = Utility::Str::split(string, '\n');
 
-        unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
-        for (unsigned int i = 0; i < padding_lines_needed; i++)
-        {
-            lines.push_back("");
-        }
+        lines.resize(roundUp<size_t>(lines.size(), 4), "");
 
         return Utility::Str::merge(lines, '\n');
     }
@@ -147,11 +144,7 @@ namespace Text {
     {
         std::vector<std::u16string> lines = Utility::Str::split(string, u'\n');
 
-        unsigned int padding_lines_needed = (4 - lines.size() % 4) % 4;
-        for (unsigned int i = 0; i < padding_lines_needed; i++)
-        {
-            lines.push_back(u"");
-        }
+        lines.resize(roundUp<size_t>(lines.size(), 4), u"");
 
         return Utility::Str::merge(lines, u'\n');
     }

@@ -5,6 +5,7 @@
 
 #include <utility/endian.hpp>
 #include <utility/common.hpp>
+#include <utility/string.hpp>
 #include <utility/math.hpp>
 #include <filetypes/texture/addrlib.hpp>
 #include <command/Log.hpp>
@@ -239,12 +240,12 @@ namespace FileTypes::Subfiles {
 
         nameOffset.read(ftex);
         std::istream::pos_type curPos = ftex.tellg();
-        name = readNullTerminatedStr(ftex, nameOffset.offset);
+        name = Utility::Str::readNullTerminatedStr<std::string>(ftex, nameOffset.offset);
         ftex.seekg(curPos, std::ios::beg);
         
         pathOffset.read(ftex);
         curPos = ftex.tellg();
-        path = readNullTerminatedStr(ftex, pathOffset.offset);
+        path = Utility::Str::readNullTerminatedStr<std::string>(ftex, pathOffset.offset);
         ftex.seekg(curPos, std::ios::beg);
         
         dataOffset.read(ftex);

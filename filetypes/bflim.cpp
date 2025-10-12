@@ -618,8 +618,7 @@ namespace FileTypes {
         auto surfOut = getSurfaceInfo(static_cast<GX2SurfaceFormat>(dds.format_), dds.header.width, dds.header.height, 1, GX2_SURFACE_DIM_TEXTURE_2D, tileMode, GX2_AA_MODE1X, 0);
         uint32_t alignment = surfOut.baseAlign;
 
-        uint32_t padSize = surfOut.surfSize - dds.size;
-        dds.data += std::string(padSize, '\0');
+        dds.data.resize(surfOut.surfSize, '\0');
 
         uint32_t tilingDepth = surfOut.depth;
         if (surfOut.tileMode == 3) tilingDepth = tilingDepth / 4;

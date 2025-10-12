@@ -168,10 +168,6 @@ void writeVec4(std::ostream& out, const vec4<T>& vec) {
     }
 }
 
-std::string readNullTerminatedStr(std::istream& in, const unsigned int& offset);
-
-std::u16string readNullTerminatedWStr(std::istream& in, const unsigned int offset);
-
 template<typename error_enum> requires requires {
     requires std::is_enum_v<error_enum>;
     error_enum::NONE;

@@ -4,6 +4,8 @@
 #include <memory>
 
 #include <utility/endian.hpp>
+#include <utility/string.hpp>
+#include <utility/math.hpp>
 #include <utility/file.hpp>
 #include <command/Log.hpp>
 
@@ -558,7 +560,7 @@ namespace FileTypes
 
         uint32_t offset = string_list_offset;
         while (offset < string_list_offset + string_list_total_size) {
-            std::string string = readNullTerminatedStr(in, offset);
+            std::string string = Utility::Str::readNullTerminatedStr<std::string>(in, offset);
             if (string.empty()) {
                 LOG_ERR_AND_RETURN(EventlistError::REACHED_EOF); //only error that can happen in read_str
             }
@@ -817,12 +819,9 @@ namespace FileTypes
                 uint32_t new_relative_string_offset = offset - string_list_offset;
 
                 std::string string = std::get<std::string>(property->value);
-                if (string.length() % 8 != 0) {
-                    unsigned int padding_bytes_needed = (8 - (string.length() % 8));
-                    string.resize(string.length() + padding_bytes_needed, '\0');
-                }
+                string.resize(roundUp<size_t>(string.length(), 8), '\0');
 
-                out.write(&string[0], string.length()); //Write string
+                out.write(string.data(), string.length()); //Write string
                 offset += string.length();
 
                 property->data_index = new_relative_string_offset;

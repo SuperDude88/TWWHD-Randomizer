@@ -7,6 +7,7 @@
 
 #include <utility/endian.hpp>
 #include <utility/common.hpp>
+#include <utility/string.hpp>
 #include <utility/file.hpp>
 #include <command/Log.hpp>
 
@@ -190,7 +191,7 @@ namespace FileTypes{
         for (const SFATNode& node : fileTable.nodes) {
             if ((node.attributes & 0xFF000000) >> 24 != 0x01) LOG_ERR_AND_RETURN(SARCError::BAD_NODE_ATTR);
             const uint32_t nameOffset = (node.attributes & 0x00FFFFFF) * 4;
-            const std::string& name = nameTable.filenames.emplace_back(readNullTerminatedStr(sarc, SFNTOffset + 0x8 + nameOffset));
+            const std::string& name = nameTable.filenames.emplace_back(Utility::Str::readNullTerminatedStr<std::string>(sarc, SFNTOffset + 0x8 + nameOffset));
             if (name.empty()) LOG_ERR_AND_RETURN(SARCError::REACHED_EOF);
 
             const uint32_t hash = calculateHash(name, fileTable.hashKey_0x65);
