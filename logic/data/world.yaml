@@ -49,7 +49,7 @@
       Mailbox - Letter from Orca: Can_Defeat_Kalle_Demos and can_access(Kalle Demos Battle Arena)
       Mailbox - Letter from Grandma: Can_Play_SoP and can_access(Outset Link's House) and Empty_Bottle and 'Can_Get_Fairies'
       Mailbox - Letter from Aryll: can_access(Helmaroc King Battle Arena) and Can_Defeat_Helmaroc_King and Can_Play_SoP
-      Mailbox - Letter from Tingle: can_access(Helmaroc King Battle Arena) and Can_Defeat_Helmaroc_King and Can_Play_SoP and 'RescuedTingle'
+      Mailbox - Letter from Tingle: can_access(Helmaroc King Battle Arena) and Can_Defeat_Helmaroc_King and Can_Play_SoP and 'Rescued_Tingle'
 
 - Name: The Great Sea
   Hint Region: The Great Sea
@@ -608,7 +608,7 @@
 
 - Name: Windfall Jail
   Events:
-      RescuedTingle: Nothing
+      Rescued Tingle: Nothing
   Locations:
       Windfall Island - Tingle First Gift: Nothing
       Windfall Island - Tingle Second Gift: Nothing
@@ -949,7 +949,7 @@
 - Name: Tingle Island
   Island: Tingle Island
   Locations:
-      Tingle Island - Ankle All Statues Reward: Dragon_Tingle_Statue and Forbidden_Tingle_Statue and Goddess_Tingle_Statue and Earth_Tingle_Statue and Wind_Tingle_Statue and 'RescuedTingle'
+      Tingle Island - Ankle All Statues Reward: Dragon_Tingle_Statue and Forbidden_Tingle_Statue and Goddess_Tingle_Statue and Earth_Tingle_Statue and Wind_Tingle_Statue and 'Rescued_Tingle'
       Tingle Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Tingle Island - Big Octo: Can_Defeat_12_Eye_Big_Octos and Grappling_Hook
       Tingle Island - Sunken Treasure: Chart_For_Island_17 and Grappling_Hook

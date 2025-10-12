@@ -87,6 +87,7 @@ public:
 
     void resolveRandomSettings();
     void addSpoilsToStartingGear();
+    void remapChart(GameItem chart, uint8_t island);
     void determineChartMappings();
     WorldLoadingError determineProgressionLocations();
     WorldLoadingError setDungeonLocations(WorldPool& worlds);

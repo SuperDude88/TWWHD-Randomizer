@@ -1126,13 +1126,25 @@ bool MainWindow::isChartMapped(GameItem chart) {
 }
 
 void MainWindow::mapChart(GameItem chart, uint8_t islandNum) {
-    if(isIslandMappedToChart(islandNum)) {
-        std::erase_if(mappedCharts, [islandNum](const auto& mapping) { return mapping.second == islandNum; });
-        trackerWorlds[0].macros[trackerWorlds[0].macroNameMap.at("Chart For Island " + std::to_string(islandNum))].args[0] = Item(trackerWorlds[0].chartMappings[islandNum], &trackerWorlds[0]);
+    // Clear any notes on the previous sunken treasure location (incase it was previously mapped to a triforce chart)
+    auto previousIslandNum = islandForChart(chart);
+    if (previousIslandNum != 0) {
+        auto prevTreasureLocation = trackerWorlds[0].locationTable.at(roomNumToIslandName(previousIslandNum) + " - Sunken Treasure").get();
+        prevTreasureLocation->trackerNote.clear();
+        prevTreasureLocation->trackerNoteAreas.clear();
     }
 
+    // Remove any other mapping to the current island
+    if(isIslandMappedToChart(islandNum)) {
+        std::erase_if(mappedCharts, [islandNum](const auto& mapping) { return mapping.second == islandNum; });
+        auto prevTreasureLocation = trackerWorlds[0].locationTable.at(roomNumToIslandName(islandNum) + " - Sunken Treasure").get();
+        prevTreasureLocation->trackerNote.clear();
+        prevTreasureLocation->trackerNoteAreas.clear();
+    }
+
+    // Then map the chart
     mappedCharts[chart] = islandNum;
-    trackerWorlds[0].macros[trackerWorlds[0].macroNameMap.at("Chart For Island " + std::to_string(islandNum))].args[0] = Item(chart, &trackerWorlds[0]);
+    trackerWorlds[0].remapChart(chart, islandNum);
 }
 
 bool MainWindow::isIslandMappedToChart(uint8_t island) {
@@ -1269,10 +1281,6 @@ void MainWindow::tracker_give_and_map_chart(TrackerLabel* label, GameItem chart)
             addElementToPool(trackerInventory, Item(chart, &trackerWorlds[0]));
         }
 
-        if(isIslandMappedToChart(selectedChartIsland)) {
-            std::erase_if(mappedCharts, [selectedChartIsland = this->selectedChartIsland](const auto& mapping) { return mapping.second == selectedChartIsland; });
-        }
-
         mapChart(chart, selectedChartIsland);
         on_chart_list_back_button_released();
     }
@@ -1286,7 +1294,7 @@ void MainWindow::tracker_give_and_map_chart(TrackerLabel* label, GameItem chart)
             if(trackerSettings.randomize_charts && mappedCharts.contains(chart)) {
                 const uint8_t oldIsland = mappedCharts.at(chart);
                 mappedCharts.erase(chart);
-                trackerWorlds[0].macros[trackerWorlds[0].macroNameMap.at("Chart For Island " + std::to_string(oldIsland))].args[0] = Item(trackerWorlds[0].chartMappings[oldIsland], &trackerWorlds[0]);
+                trackerWorlds[0].remapChart(trackerWorlds[0].chartMappings[oldIsland], oldIsland);
             }
         }
     }
