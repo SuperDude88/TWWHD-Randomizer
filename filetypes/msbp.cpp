@@ -4,6 +4,7 @@
 
 #include <utility/endian.hpp>
 #include <utility/common.hpp>
+#include <utility/string.hpp>
 #include <command/Log.hpp>
 
 using eType = Utility::Endian::Type;
@@ -206,7 +207,7 @@ LMSError ALI2::read(std::istream &in) {
 
         for (uint32_t x = 0; x < list.numItems; x++) {
             std::string& name = list.itemNames.emplace_back();
-            name = readNullTerminatedStr(in, in.tellg());
+            name = Utility::Str::readNullTerminatedStr<std::string>(in, in.tellg());
             if(name.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
         }
         
@@ -301,7 +302,7 @@ LMSError TGG2::read(std::istream &in) {
             Utility::Endian::toPlatform_inplace(eType::Big, index);
         }
 
-        group.groupName = readNullTerminatedStr(in, in.tellg());
+        group.groupName = Utility::Str::readNullTerminatedStr<std::string>(in, in.tellg());
         if(group.groupName.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
         
         LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 4, "\x00"));
@@ -395,7 +396,7 @@ LMSError TAG2::read(std::istream &in) {
             Utility::Endian::toPlatform_inplace(eType::Big, index);
         }
 
-        tag.tagName = readNullTerminatedStr(in, in.tellg());
+        tag.tagName = Utility::Str::readNullTerminatedStr<std::string>(in, in.tellg());
         if(tag.tagName.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
         
         LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 4, "\x00"));
@@ -502,7 +503,7 @@ LMSError TGP2::read(std::istream &in) {
             }
         }
 
-        param.paramName = readNullTerminatedStr(in, in.tellg());
+        param.paramName = Utility::Str::readNullTerminatedStr<std::string>(in, in.tellg());
         if(param.paramName.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
         
         LOG_AND_RETURN_IF_ERR(readPadding<LMSError>(in, 4, "\x00"));
@@ -585,7 +586,7 @@ LMSError TGL2::read(std::istream &in) {
     for (uint16_t i = 0; i < numItems; i++) {
         std::string& name = names.emplace_back();
         
-        name = readNullTerminatedStr(in, in.tellg());
+        name = Utility::Str::readNullTerminatedStr<std::string>(in, in.tellg());
         if(name.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
     }
 
@@ -727,7 +728,7 @@ LMSError CTI1::read(std::istream &in) {
     for (uint32_t i = 0; i < entryCount; i++) {
         std::string& name = filenames.emplace_back();
         
-        name = readNullTerminatedStr(in, in.tellg());
+        name = Utility::Str::readNullTerminatedStr<std::string>(in, in.tellg());
         if(name.empty()) LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
     }
 

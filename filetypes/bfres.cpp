@@ -6,6 +6,7 @@
 
 #include <utility/endian.hpp>
 #include <utility/common.hpp>
+#include <utility/string.hpp>
 #include <command/Log.hpp>
 
 #include <utility/platform.hpp>
@@ -33,10 +34,9 @@ namespace {
         }
         Utility::Endian::toPlatform_inplace(eType::Big, len);
         // Check out std::getline(bfres, out, '\0')
-        if (out = readNullTerminatedStr(bfres, offset); out.empty()) {
+        if (out = Utility::Str::readNullTerminatedStr<std::string>(bfres, offset, true); out.empty()) {
     		LOG_ERR_AND_RETURN(FRESError::REACHED_EOF); //empty string means it could not read a character from file
     	}
-        out.pop_back(); //remove null terminator because it breaks length
         if (len != out.length()) LOG_ERR_AND_RETURN(FRESError::STRING_LEN_MISMATCH);
         return FRESError::NONE;
     }

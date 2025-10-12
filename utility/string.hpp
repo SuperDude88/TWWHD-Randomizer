@@ -10,12 +10,12 @@
 #include <algorithm>
 
 namespace Utility::Str {
+    template<typename T> 
+    concept StringType = std::derived_from<T, std::basic_string<typename T::value_type>>;
+
     std::string toUTF8(const std::u16string& str);
 
     std::u16string toUTF16(const std::string& str);
-
-    template<typename T> 
-    concept StringType = std::derived_from<T, std::basic_string<typename T::value_type>>;
 
     template<typename T> requires StringType<T>
     std::vector<T> split(const T& string, const typename T::value_type delim) {
@@ -38,6 +38,29 @@ namespace Utility::Str {
         T ret;
         for (const T& segment : lines) {
             ret += segment + separator;
+        }
+
+        return ret;
+    }
+
+    template<typename T> requires StringType<T>
+    T readNullTerminatedStr(std::istream& in, const std::streamoff& offset, bool popNull = false) {
+        static constexpr typename T::value_type terminator(0);
+        in.seekg(offset, std::ios::beg);
+
+        T ret;
+        typename T::value_type character = terminator;
+        do {
+            if (!in.read(reinterpret_cast<char*>(&character), sizeof(typename T::value_type))) {
+                ret.clear();
+                return ret;
+            }
+
+            ret += character;
+        } while (character != terminator);
+
+        if(popNull && ret.back() == terminator) {
+            ret.pop_back();
         }
 
         return ret;
