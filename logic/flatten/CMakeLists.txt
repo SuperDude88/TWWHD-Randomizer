@@ -1,10 +1,3 @@
-cmake_minimum_required(VERSION 3.7)
-if(CMAKE_VERSION VERSION_LESS "3.13")
-  if (POLICY CMP0076)
-    cmake_policy(SET CMP0076 OLD)
-  endif()
-  target_sources(wwhd_rando PRIVATE "logic/flatten/bits.cpp" "logic/flatten/simplify_algebraic.cpp" "logic/flatten/flatten.cpp")
-else()
-  cmake_policy(SET CMP0076 NEW)
-  target_sources(wwhd_rando PRIVATE bits.cpp simplify_algebraic.cpp flatten.cpp)
-endif()
+cmake_minimum_required(VERSION 3.13)
+
+target_sources(wwhd_rando PRIVATE bits.cpp simplify_algebraic.cpp flatten.cpp)

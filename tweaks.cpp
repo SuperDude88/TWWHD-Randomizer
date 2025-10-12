@@ -2319,8 +2319,9 @@ TweakError add_barren_dungeon_hint_triggers(World& world) {
             totg_room0.addAction([](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(totg_room0, FileTypes::DZXFile, data)
 
-                // Multiple triggers all around the room (one giant trigger doesn't work for some reason)
-                auto datas = {
+                // The max radius for the trigger object is 2550 but we need it to be ~7000 for this room
+                // So we use multiple triggers all around the room instead
+                const std::vector<std::string> datas = {
                     "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x45\x48\xCB\x26\xC4\xCA\x23\x9A\xC5\x22\xDA\x18\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s,
                     "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x45\x49\x4A\x6F\xC4\xC2\x73\x68\xC5\x02\xAA\x6C\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s,
                     "TagHt\x00\x00\x00\xFF\xFF\xFF\x3F\x45\x49\x4A\x6F\xC4\xC2\x73\x68\xC4\xC4\x43\x35\x05\xE5\x00\x00\xFF\xFF\xFF\xFF\x1E\x0A\x0A\xFF"s,
