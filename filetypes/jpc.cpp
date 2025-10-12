@@ -3,6 +3,7 @@
 #include <cstring>
 
 #include <utility/endian.hpp>
+#include <utility/math.hpp>
 #include <utility/file.hpp>
 #include <command/Log.hpp>
 
@@ -330,22 +331,8 @@ namespace JParticle {
         uint16_t colorPrmAnimDataOff = 0;
         uint16_t colorEnvAnimDataOff = 0;
 
-        colorPrmAnimDataOff = 0x60 + texIdxAnimData.size();
-        unsigned int numPaddingBytes = 4 - (colorPrmAnimDataOff % 4);
-        if (numPaddingBytes == 4) {
-            numPaddingBytes = 0;
-        }
-        colorPrmAnimDataOff += numPaddingBytes;
-
-        if (!colorEnvAnimData.empty()) colorEnvAnimDataOff = colorPrmAnimDataOff + colorPrmAnimData.size() * 0x6;
-        numPaddingBytes = 4 - (colorEnvAnimDataOff % 4);
-        if (numPaddingBytes == 4) {
-            numPaddingBytes = 0;
-        }
-        colorEnvAnimDataOff += numPaddingBytes;
-
-        if (colorPrmAnimData.empty()) colorPrmAnimDataOff = 0;
-        if (colorEnvAnimData.empty()) colorEnvAnimDataOff = 0;
+        if (!colorPrmAnimData.empty()) colorPrmAnimDataOff = roundUp<uint16_t>(0x60 + texIdxAnimData.size(), 4);
+        if (!colorEnvAnimData.empty()) colorEnvAnimDataOff = roundUp<uint16_t>(colorPrmAnimDataOff + colorPrmAnimData.size() * 0x6, 4);
 
         Utility::Endian::toPlatform_inplace(eType::Big, colorPrmAnimDataOff);
         Utility::Endian::toPlatform_inplace(eType::Big, colorEnvAnimDataOff);
@@ -1087,11 +1074,8 @@ JPCError Particle::read(std::istream& jpc) {
 
     for (uint32_t i = 0; i < num_chunks; i++) {
 	    char magic[4];
-	    unsigned int numPaddingBytes = 0x20 - (jpc.tellg() % 0x20);
-        if (numPaddingBytes == 0x20) {
-            numPaddingBytes = 0;
-        }
-        jpc.seekg(numPaddingBytes, std::ios::cur);
+	    
+        LOG_AND_RETURN_IF_ERR(readPadding<JPCError>(jpc, 0x20));
 
         if (!jpc.read(magic, 4)) {
             LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);

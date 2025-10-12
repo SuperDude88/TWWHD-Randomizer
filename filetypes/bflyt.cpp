@@ -5,6 +5,7 @@
 
 #include <utility/endian.hpp>
 #include <utility/string.hpp>
+#include <utility/math.hpp>
 #include <utility/file.hpp>
 #include <command/Log.hpp>
 
@@ -78,10 +79,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
     }
 
     FLYTError lyt1::save_changes(std::ostream& out) {
-        sectionSize = 0x1C + layoutName.size();
-        unsigned int padLen = 4 - ((static_cast<uint32_t>(out.tellp()) + sectionSize) % 4); //dont use padToLen function so we can calculate the length ahead of time (removes a seek later)
-        if (padLen == 4) padLen = 0;
-        sectionSize += padLen;
+        sectionSize = roundUp<uint32_t>(0x1C + layoutName.size(), 4);
 
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
         Utility::Endian::toPlatform_inplace(eType::Big, width);
@@ -869,11 +867,7 @@ namespace NintendoWare::Layout { //"official" name was nw::lyt
             paneNames.push_back(paneName);
         }
 
-        unsigned int numPaddingBytes = 4 - (bflyt.tellg() % 4);
-        if (numPaddingBytes == 4) {
-            numPaddingBytes = 0;
-        }
-        bflyt.seekg(numPaddingBytes, std::ios::cur);
+        LOG_AND_RETURN_IF_ERR(readPadding<FLYTError>(bflyt, 4));
         animNameTableOffset = bflyt.tellg() - sectionStart;
 
         animNameOffsets.reserve(animCount);

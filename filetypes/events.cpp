@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <utility/endian.hpp>
+#include <utility/math.hpp>
 #include <utility/file.hpp>
 #include <command/Log.hpp>
 
@@ -817,10 +818,7 @@ namespace FileTypes
                 uint32_t new_relative_string_offset = offset - string_list_offset;
 
                 std::string string = std::get<std::string>(property->value);
-                if (string.length() % 8 != 0) {
-                    unsigned int padding_bytes_needed = (8 - (string.length() % 8));
-                    string.resize(string.length() + padding_bytes_needed, '\0');
-                }
+                string.resize(roundUp<size_t>(string.length(), 8), '\0');
 
                 out.write(&string[0], string.length()); //Write string
                 offset += string.length();

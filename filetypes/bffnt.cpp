@@ -39,6 +39,7 @@ BFFNTError BFFNTSection::write(std::ostream& out) {
 BFFNTError FontInfo::read(std::istream& in) {
     LOG_AND_RETURN_IF_ERR(BFFNTSection::read(in));
 
+    if(std::strncmp(magic, "FINF", 4) != 0) LOG_ERR_AND_RETURN(BFFNTError::UNEXPECTED_VALUE);
     if(sectionSize != 0x20) LOG_ERR_AND_RETURN(BFFNTError::UNEXPECTED_VALUE);
 
     if(!in.read(reinterpret_cast<char*>(&type), sizeof(type))) {
@@ -144,6 +145,8 @@ BFFNTError FontInfo::write(std::ostream& out) {
 
 BFFNTError BFFNTTexture::read(std::istream& in) {
     LOG_AND_RETURN_IF_ERR(BFFNTSection::read(in));
+
+    if(std::strncmp(magic, "TGLP", 4) != 0) LOG_ERR_AND_RETURN(BFFNTError::UNEXPECTED_VALUE);
 
     if(!in.read(reinterpret_cast<char*>(&cellWidth), sizeof(cellWidth))) {
         LOG_ERR_AND_RETURN(BFFNTError::REACHED_EOF);
@@ -265,6 +268,8 @@ BFFNTError BFFNTTexture::write(std::ostream& out) {
 BFFNTError BFFNTWidth::read(std::istream& in) {
     LOG_AND_RETURN_IF_ERR(BFFNTSection::read(in));
 
+    if(std::strncmp(magic, "CWDH", 4) != 0) LOG_ERR_AND_RETURN(BFFNTError::UNEXPECTED_VALUE);
+
     if(!in.read(reinterpret_cast<char*>(&firstGlyphIndex), sizeof(firstGlyphIndex))) {
         LOG_ERR_AND_RETURN(BFFNTError::REACHED_EOF);
     }
@@ -330,6 +335,8 @@ BFFNTError BFFNTWidth::write(std::ostream& out) {
 
 BFFNTError BFFNTCodeMap::read(std::istream& in) {
     LOG_AND_RETURN_IF_ERR(BFFNTSection::read(in));
+
+    if(std::strncmp(magic, "CMAP", 4) != 0) LOG_ERR_AND_RETURN(BFFNTError::UNEXPECTED_VALUE);
 
     if(!in.read(reinterpret_cast<char*>(&firstCode), sizeof(firstCode))) {
         LOG_ERR_AND_RETURN(BFFNTError::REACHED_EOF);
@@ -483,6 +490,10 @@ BFFNTError BFFNTCodeMap::write(std::ostream& out) {
 }
 
 BFFNTError BFFNTKerning::read(std::istream& in) {
+    LOG_AND_RETURN_IF_ERR(BFFNTSection::read(in));
+
+    if(std::strncmp(magic, "KRNG", 4) != 0) LOG_ERR_AND_RETURN(BFFNTError::UNEXPECTED_VALUE);
+
     return BFFNTError::UNKNOWN;
 }
 
@@ -555,10 +566,6 @@ namespace FileTypes {
 
         //TODO: generalize this to be less particular about section order
         LOG_AND_RETURN_IF_ERR(info.read(in));
-        const std::streamoff padLen = 4 - (in.tellg() % 4);
-        if (padLen != 4) {
-            in.seekg(padLen, std::ios::cur);
-        }
 
         if(info.texSectionOffset == 0) LOG_ERR_AND_RETURN(BFFNTError::UNEXPECTED_VALUE);
         if(info.widthSectionOffset == 0) LOG_ERR_AND_RETURN(BFFNTError::UNEXPECTED_VALUE);
@@ -567,20 +574,14 @@ namespace FileTypes {
         in.seekg(info.texSectionOffset - 8, std::ios::beg);
         LOG_AND_RETURN_IF_ERR(texture.read(in));
 
-        uint32_t nextPtr = info.widthSectionOffset;
-        while(nextPtr != 0) {
+        for(uint32_t nextPtr = info.widthSectionOffset; nextPtr != 0; nextPtr = widths.back().nextPtr) {
             in.seekg(nextPtr - 8, std::ios::beg);
             LOG_AND_RETURN_IF_ERR(widths.emplace_back().read(in));
-
-            nextPtr = widths.back().nextPtr;
         }
 
-        nextPtr = info.codeMapSectionOffset;
-        while(nextPtr != 0) {
+        for(uint32_t nextPtr = info.codeMapSectionOffset; nextPtr != 0; nextPtr = mappings.back().nextPtr) {
             in.seekg(nextPtr - 8, std::ios::beg);
             LOG_AND_RETURN_IF_ERR(mappings.emplace_back().read(in));
-
-            nextPtr = mappings.back().nextPtr;
         }
 
         //TODO: implement kerning
