@@ -110,13 +110,34 @@ void MainWindow::initialize_tracker_world(Settings& settings,
         Item(GameItem::WindTingleStatue, &trackerWorld),
     };
 
-    auto startingTingleStatues = std::count_if(startingInventory.begin(), startingInventory.end(), [&](Item& item){
+    const size_t startingTingleStatues = std::count_if(startingInventory.begin(), startingInventory.end(), [&](Item& item){
         return elementInPool(item, tingleStatues);
     });
     removeElementsFromPool(startingInventory, tingleStatues);
-    for (int i = 0; i < startingTingleStatues; i++)
+    for (size_t i = 0; i < startingTingleStatues; i++)
     {
         addElementToPool(startingInventory, tingleStatues[i]);
+    }
+
+    // Same applies for triforce shards
+    std::vector<Item> shards = {
+        Item(GameItem::TriforceShard1, &trackerWorld),
+        Item(GameItem::TriforceShard2, &trackerWorld),
+        Item(GameItem::TriforceShard3, &trackerWorld),
+        Item(GameItem::TriforceShard4, &trackerWorld),
+        Item(GameItem::TriforceShard5, &trackerWorld),
+        Item(GameItem::TriforceShard6, &trackerWorld),
+        Item(GameItem::TriforceShard7, &trackerWorld),
+        Item(GameItem::TriforceShard8, &trackerWorld),
+    };
+
+    const size_t startingShards = std::count_if(startingInventory.begin(), startingInventory.end(), [&](Item& item){
+        return elementInPool(item, shards);
+    });
+    removeElementsFromPool(startingInventory, shards);
+    for (size_t i = 0; i < startingShards; i++)
+    {
+        addElementToPool(startingInventory, shards[i]);
     }
 
     placeVanillaItems(trackerWorlds);
