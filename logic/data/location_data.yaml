@@ -5,7 +5,7 @@
   Original Item: Piece of Heart 2
   Category:
     - Mail
-    - Spoils Trading
+    - Spoils Trading # Requires giving golden feathers to Hoskit
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -335,6 +335,9 @@
     French: Roi Cuirasse
   Category:
     - Dungeon
+  Outside Dependent Locations:
+    - Mailbox - Letter from Aryll
+    - Mailbox - Letter from Tingle
   Paths:
     code/cking.rpx@RPX@ELF: 0x0206C096
     content/Common/Stage/M2tower_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x000018AC
@@ -842,6 +845,11 @@
   Original Item: Piece of Heart
   Category:
     - Short Side Quest
+  Outside Dependent Locations:
+    - Windfall Island - Mrs. Marie Catch Killer Bees
+    - Windfall Island - Mrs. Marie 1 Joy Pendant
+    - Windfall Island - Mrs. Marie 21 Joy Pendant
+    - Windfall Island - Mrs. Marie 40 Joy Pendant
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
@@ -862,6 +870,8 @@
   Type: RPX
   Offsets:
     - 0x0223FC7F
+  Tracker Data:
+    Note: This location requires playing hide and seek with the Killer Bees on Windfall Island.<hr>
 
 - Names:
     English: Windfall Island - Mrs. Marie 1 Joy Pendant
@@ -870,10 +880,13 @@
   Original Item: Red Rupee
   Category:
     - Spoils Trading
+    - Short Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0223FD93
+  Tracker Data:
+    Note: This location requires playing hide and seek with the Killer Bees on Windfall Island.<hr>
 
 - Names:
     English: Windfall Island - Mrs. Marie 21 Joy Pendant
@@ -882,10 +895,13 @@
   Original Item: Cabana Deed
   Category:
     - Spoils Trading
+    - Short Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0223FDC3
+  Tracker Data:
+    Note: This location requires playing hide and seek with the Killer Bees on Windfall Island.<hr>
 
 - Names:
     English: Windfall Island - Mrs. Marie 40 Joy Pendant
@@ -894,10 +910,13 @@
   Original Item: Treasure Chart 45
   Category:
     - Spoils Trading
+    - Short Side Quest
   Hint Priority: Sometimes
   Type: RPX
   Offsets:
     - 0x0223FEBB
+  Tracker Data:
+    Note: This location requires playing hide and seek with the Killer Bees on Windfall Island.<hr>
 
 - Names:
     English: Windfall Island - Lenzo House Left Chest
@@ -1494,6 +1513,8 @@
   Original Item: Orange Rupee
   Category:
     - Spoils Trading
+  Outside Dependent Locations:
+    - Mailbox - Letter from Hoskit's Girlfriend
   Path: content/Common/Stage/Atorizk_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat
   Hint Priority: Sometimes
   Type: Event
@@ -3964,6 +3985,8 @@
     French: Karle Demos
   Category:
     - Dungeon
+  Outside Dependent Locations:
+    - Mailbox - Letter from Orca
   Paths:
     code/cking.rpx@RPX@ELF: 0x020AF916
     content/Common/Stage/kinBOSS_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x00000114
@@ -4422,6 +4445,8 @@
     French: Jay Harla
   Category:
     - Dungeon
+  Outside Dependent Locations:
+    - Mailbox - Letter from Baito
   Paths:
     code/cking.rpx@RPX@ELF: 0x020DADDE
     content/Common/Stage/M_DaiB_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr: 0x000000C0

@@ -193,9 +193,8 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
         // count as being part of the island.
         for (auto& [name, location] : world.locationTable)
         {
-            // Locations which have known items should not block a region from being barren
-            if (location->progression && !location->hasKnownVanillaItem &&
-              !(location->isRaceModeLocation && world.getSettings().progression_dungeons != ProgressionDungeons::Disabled))
+            // Locations which have known vanilla/expected items should not block a region from being barren
+            if (location->progression && !location->hasKnownVanillaItem && !location->hasExpectedItem)
             {
                 for (auto& locAccess : location->accessPoints)
                 {
@@ -216,33 +215,20 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                                 {
                                     LOG_TO_DEBUG("Removed " + hintRegion + " from barren pool due to item " + location->currentItem.getName() + " at location " + location->getName());
                                     world.barrenRegions.erase(hintRegion);
+                                    continue;
                                 }
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
-        // If a dungeon is barren, but has a non-junk item at any of it's
-        // outside dependent locations, then it shouldn't be considered barren
-        for (auto& [dungeonName, dungeon] : world.dungeons)
-        {
-            if (world.barrenRegions.contains(dungeonName))
-            {
-                for (auto loc : dungeon.outsideDependentLocations)
-                {
-                    if (!loc->currentItem.canBeInBarrenRegion())
-                    {
-                        LOG_TO_DEBUG(dungeonName + " removed from barren pool due to " + loc->currentItem.getName() + " at outside location " + loc->getName());
-                        world.barrenRegions.erase(dungeonName);
-                        // Also remove any islands this dungeon is on from the barren pool
-                        for (const auto& island : dungeon.islands)
-                        {
-                            if (world.barrenRegions.contains(island))
-                            {
-                                LOG_TO_DEBUG(island + " removed from barren pool due to " + loc->currentItem.getName() + " at outside location " + loc->getName());
-                                world.barrenRegions.erase(island);
+                                // Also make sure the outside dependent locations are barren a well
+                                for (auto outsideLoc : location->outsideDependentLocations)
+                                {
+                                    // If an outside dependent location is not barren, remove the region from being barren
+                                    if (!outsideLoc->currentItemCanBeBarren())
+                                    {
+                                        LOG_TO_DEBUG("Removed " + hintRegion + " from barren pool due to item " + outsideLoc->currentItem.getName() + " at location " + outsideLoc->getName() + " which is dependent on " + location->getName());
+                                        world.barrenRegions.erase(hintRegion);
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -359,14 +345,10 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
 
         auto possiblePathLocations = goalLocation->pathLocations;
 
-        // Filter out race mode locations, known vanilla items, and known
-        // keys in dungeons from possible path locations
+        // Filter out known vanilla items, and expected items
         filterAndEraseFromPool(possiblePathLocations, [settings = world.getSettings()](auto location){
             auto& item = location->currentItem;
-            return (location->hasKnownVanillaItem ||
-                   (item.isSmallKey()  && settings.dungeon_small_keys == PlacementOption::OwnDungeon) ||
-                   (item.isBigKey()    && settings.dungeon_big_keys   == PlacementOption::OwnDungeon) ||
-                   (location->isRaceModeLocation));
+            return (location->hasKnownVanillaItem || location->hasExpectedItem);
         });
 
         auto hintLocation = getHintableLocation(possiblePathLocations);
@@ -535,11 +517,9 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
         if (location->progression              &&  // if the location is a progression location...
            !location->currentItem.isJunkItem() &&  // and does not have a junk item...
            !location->hasKnownVanillaItem      &&  // and does not have a known vanilla item...
+           !location->hasExpectedItem          &&  // and does not have an expected item
            !location->hasBeenHinted            &&  // and has not been hinted at yet...
-          (!location->currentItem.isSmallKey() || settings.dungeon_small_keys != PlacementOption::OwnDungeon) && // and isn't a small key when small keys are in their own dungeon
-          (!location->currentItem.isBigKey()   || settings.dungeon_big_keys   != PlacementOption::OwnDungeon) && // and isn't a big key when big keys are in their own dungeon
-          (!location->isRaceModeLocation || settings.progression_dungeons == ProgressionDungeons::Disabled)   && // and isn't a race mode location when race mode/require bosses is enabled...
-          ( location->hintPriority != "Always" || !world.getSettings().use_always_hints))                        // and the hint priority is not "Always" when we're using always hints...
+           (location->hintPriority != "Always" || !world.getSettings().use_always_hints)) // and the hint priority is not "Always" when we're using always hints...
            {
               // Then the item is a possible item hint location
               possibleItemHintLocations.push_back(location.get());
