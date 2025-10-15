@@ -1,5 +1,7 @@
 
 #include "Dungeon.hpp"
+#include "Location.hpp"
+
 #include <unordered_set>
 
 // Helper function to make sure there are no dungeon name typos
@@ -18,4 +20,18 @@ bool isValidDungeon(const std::string& dungeonName)
     };
 
     return dungeonNames.contains(dungeonName);
+}
+
+// Gather any outside dependent locations for any locations within the dungeon
+std::list<Location*> Dungeon::getOutsideDependentLocations() const
+{
+    std::list<Location*> outsideLocs = {};
+    for (auto loc : locations) 
+    {
+        for (auto outsideLoc : loc->outsideDependentLocations)
+        {
+            outsideLocs.push_back(outsideLoc);
+        }
+    }
+    return outsideLocs;
 }

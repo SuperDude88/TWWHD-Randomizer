@@ -9,7 +9,7 @@ struct TrackerPreferences {
     bool showLocationLogic = true;
     bool showNonProgressLocations = false;
     bool rightClickClearAll = true;
-    bool clearAllIncludesDungeonMail = true;
+    bool clearAllIncludesDependentLocations = true;
     bool overrideItemsColor = false;
     bool overrideLocationsColor = false;
     bool overrideStatsColor = false;

@@ -11,7 +11,7 @@ TrackerPreferencesDialog::TrackerPreferencesDialog(MainWindow* main_) : main(mai
     ui.show_location_logic->setChecked(main->trackerPreferences.showLocationLogic);
     ui.show_nonprogress_locations->setChecked(main->trackerPreferences.showNonProgressLocations);
     ui.right_click_to_clear_all->setChecked(main->trackerPreferences.rightClickClearAll);
-    ui.clear_all_includes_dungeon_mail->setChecked(main->trackerPreferences.clearAllIncludesDungeonMail);
+    ui.clear_all_includes_dependent_locations->setChecked(main->trackerPreferences.clearAllIncludesDependentLocations);
     ui.override_items_background_color->setChecked(main->trackerPreferences.overrideItemsColor);
     ui.override_locations_background_color->setChecked(main->trackerPreferences.overrideLocationsColor);
     ui.override_statistics_background_color->setChecked(main->trackerPreferences.overrideStatsColor);
@@ -58,9 +58,9 @@ void TrackerPreferencesDialog::on_right_click_to_clear_all_stateChanged(int arg1
 }
 
 
-void TrackerPreferencesDialog::on_clear_all_includes_dungeon_mail_stateChanged(int arg1)
+void TrackerPreferencesDialog::on_clear_all_includes_dependent_locations_stateChanged(int arg1)
 {
-    main->trackerPreferences.clearAllIncludesDungeonMail = arg1;
+    main->trackerPreferences.clearAllIncludesDependentLocations = arg1;
 }
 
 
