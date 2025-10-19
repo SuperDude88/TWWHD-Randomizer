@@ -261,13 +261,13 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
         case Fmt::STREAM:
         {
             if (current->parent->storedFormat == Fmt::SARC) {
-                FileTypes::SARCFile::File* file = dynamic_cast<FileTypes::SARCFile*>(current->parent->data.get())->getFile(current->element.string() + '\0');
+                const std::string* file = dynamic_cast<FileTypes::SARCFile*>(current->parent->data.get())->getFile(current->element.string());
                 if(file == nullptr) {
                     ErrorLog::getInstance().log("Could not find " + current->element.string() + " in SARC");
                     return false;
                 }
 
-                current->data = std::make_unique<RawFile>(file->data);
+                current->data = std::make_unique<RawFile>(*file);
             }
             else if (current->parent->storedFormat == Fmt::BFRES) {
                 const auto& files = dynamic_cast<FileTypes::resFile*>(current->parent->data.get())->files;
@@ -401,13 +401,13 @@ bool RandoSession::repackFile(std::shared_ptr<CacheEntry> current)
         case Fmt::STREAM:
         {
             if (current->parent->storedFormat == Fmt::SARC) {
-                FileTypes::SARCFile* file = dynamic_cast<FileTypes::SARCFile*>(current->parent->data.get());
-                if(file == nullptr) {
+                FileTypes::SARCFile* arc = dynamic_cast<FileTypes::SARCFile*>(current->parent->data.get());
+                if(arc == nullptr) {
                     ErrorLog::getInstance().log("Could not get parent SARC of " + current->element.string());
                     return false;
                 }
 
-                file->replaceFile(current->element.string() + '\0', dynamic_cast<RawFile*>(current->data.get())->data);
+                arc->files[current->element.string()] = dynamic_cast<RawFile*>(current->data.get())->data.str();
             }
             else if (current->parent->storedFormat == Fmt::BFRES) {
                 FileTypes::resFile* file = dynamic_cast<FileTypes::resFile*>(current->parent->data.get());
