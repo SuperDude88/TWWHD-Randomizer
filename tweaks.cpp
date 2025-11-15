@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <sstream>
 #include <numbers>
+#include <iostream>
 
 #include <version.hpp>
 #include <text_replacements.hpp>
@@ -3068,7 +3069,7 @@ TweakError show_tingle_statues_on_quest_screen() {
     return TweakError::NONE;
 }
 
-TweakError add_shortcut_warps_into_dungeons() {
+TweakError add_shortcut_warps_into_dungeons(World& world) {
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr@DZX");
     entry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
@@ -3081,6 +3082,80 @@ TweakError add_shortcut_warps_into_dungeons() {
 
         return true;
     });
+
+
+    // Only add the DRC light warp if misc entrsnces aren't randomized
+    if (!world.getSettings().randomize_misc_entrances)
+    {
+        auto drcEntrance = world.getEntrance("Dragon Roost Pond Past Statues", "DRC First Room")->getReplaces();
+        std::string dest_stage = drcEntrance->getStageName();
+        dest_stage.resize(8, '\0');
+        uint8_t dest_room = drcEntrance->getRoomNum();
+        uint8_t dest_spawn = drcEntrance->getSpawnId();
+
+        // Add light warp to dri island
+        RandoSession::CacheEntry& dri_island = g_session.openGameFile(getRoomDzrPath("sea", 13));
+        dri_island.addAction([=](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+            // Add scls exit which mimics wherever DRC entrance goes
+            ChunkEntry& scls_exit = dzr.add_entity("SCLS");
+            scls_exit.data.resize(0xC);
+            scls_exit.data.replace(0, 8, dest_stage);
+            scls_exit.data[8] = dest_spawn;
+            scls_exit.data[9] = dest_room;
+
+            ChunkEntry& warp = dzr.add_entity("SCOB");
+            warp.data = "Ysdls00\x00\x10\xFF\x03\x7E\x48\x3F\xC7\xC6\x42\x89\xCA\xC4\xC8\x44\xBD\xDA\x00\x00\x00\x00\x00\x00\xFF\xFF\x0A\x0A\x0A\xFF"s;
+
+            return true;
+        });
+
+        // Add switch to dri pond
+        RandoSession::CacheEntry& dri_pond = g_session.openGameFile(getRoomDzrPath("Adanmae", 13));
+        dri_pond.addAction([](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+            ChunkEntry& sw_c00 = dzr.add_entity("SCOB");
+            sw_c00.data = "SW_C00\x00\x00\x00\x03\xFF\x7F\x48\x40\x24\xED\x45\x44\x99\xB1\x48\x41\x7B\x63\x00\x00\x00\x00\x00\x00\xFF\xFF\x96\x14\x28\xFF"s;
+
+            return true;
+        });
+
+        // Copy over necessary particles
+        RandoSession::CacheEntry& dri_jpc = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene023.jpc@JPC");
+        RandoSession::CacheEntry& fh_jpc = g_session.openGameFile("content/Common/Particle/Particle.szs@YAZ0@SARC@Particle.bfres@BFRES@Pscene022.jpc@JPC");
+
+        fh_jpc.addAction([&dri_jpc](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(fh, FileTypes::JPC, data)
+
+            const Particle& particle = fh.particles[fh.particle_index_by_id[0x8225]];
+
+            dri_jpc.addAction([particle](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(dri, FileTypes::JPC, data)
+
+                FILETYPE_ERROR_CHECK(dri.addParticle(particle));
+
+                return true;
+            });
+
+            for (const std::string& textureFilename : particle.texDatabase.value().texFilenames) {
+                dri_jpc.addAction([textureFilename](RandoSession* session, FileType* data) -> int {
+                    CAST_ENTRY_TO_FILETYPE(dri, FileTypes::JPC, data)
+
+                    if (dri.textures.find(textureFilename) == dri.textures.end()) {
+                        FILETYPE_ERROR_CHECK(dri.addTexture(textureFilename));
+                    }
+
+                    return true;
+                });
+            }
+
+            return true;
+        });
+
+        fh_jpc.addDependent(dri_jpc.getParent());
+    }
 
     return TweakError::NONE;
 }
@@ -4014,7 +4089,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     TWEAK_ERR_CHECK(add_hint_signs());
     TWEAK_ERR_CHECK(prevent_reverse_door_softlocks());
     TWEAK_ERR_CHECK(add_barren_dungeon_hint_triggers(world));
-    TWEAK_ERR_CHECK(add_shortcut_warps_into_dungeons());
+    TWEAK_ERR_CHECK(add_shortcut_warps_into_dungeons(world));
     TWEAK_ERR_CHECK(add_boss_door_return_spawns());
     TWEAK_ERR_CHECK(shorten_zephos_event());
     TWEAK_ERR_CHECK(shorten_auction_intro_event());
