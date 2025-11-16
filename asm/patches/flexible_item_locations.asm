@@ -1000,3 +1000,10 @@ create_stone_head_item_use_custom_id:
 create_stone_head_use_original_id:
   bl fopAcM_createItemFromTable ; Continue as normal
   b 0x02358A90
+
+
+; The large hanging blue flower in Forbidden Woods checks if the boomerang is in your inventory before it can be cut down
+; You can cut the vines the bow instead, but it won't fall until you have the boomerang (even if you aren't using it)
+; Remove this check so that you can always cut it down with other items
+.org 0x021A5940
+  nop ; Always take the branch for having the boomerang
