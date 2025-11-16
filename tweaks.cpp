@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <sstream>
 #include <numbers>
-#include <iostream>
 
 #include <version.hpp>
 #include <text_replacements.hpp>
