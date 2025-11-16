@@ -16,7 +16,7 @@ private slots:
     void on_show_location_logic_stateChanged(int arg1);
     void on_show_nonprogress_locations_stateChanged(int arg1);
     void on_right_click_to_clear_all_stateChanged(int arg1);
-    void on_clear_all_includes_dungeon_mail_stateChanged(int arg1);
+    void on_clear_all_includes_dependent_locations_stateChanged(int arg1);
     void on_override_items_background_color_stateChanged(int arg1);
     void on_override_locations_background_color_stateChanged(int arg1);
     void on_override_statistics_background_color_stateChanged(int arg1);

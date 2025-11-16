@@ -82,9 +82,9 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="clear_all_includes_dungeon_mail">
+    <widget class="QCheckBox" name="clear_all_includes_dependent_locations">
      <property name="text">
-      <string>Clear All Includes Dungeon Mail</string>
+      <string>Clear All Includes Dependent Locations</string>
      </property>
     </widget>
    </item>

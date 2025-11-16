@@ -75,6 +75,7 @@ public:
     bool plandomized;
     bool hasBeenHinted;
     bool hasKnownVanillaItem;
+    bool hasExpectedItem;
     bool hasDungeonDependency;
     Item originalItem;
     Item currentItem;
@@ -87,6 +88,9 @@ public:
     Requirement computedRequirement = Requirement{RequirementType::IMPOSSIBLE, {}};
     std::unordered_set<GameItem> itemsInComputedRequirement = {};
     std::vector<Location*> pathLocations = {};
+
+    // Locations which always require completing this one first regardless of what item it has
+    std::list<Location*> outsideDependentLocations = {};
 
     // Variables used for the searching algorithm
     bool hasBeenFound = false;
@@ -113,6 +117,7 @@ public:
         plandomized(false),
         hasBeenHinted(false),
         hasKnownVanillaItem(false),
+        hasExpectedItem(false),
         hasDungeonDependency(false),
         originalItem(GameItem::INVALID, nullptr),
         currentItem(GameItem::INVALID, nullptr),

@@ -437,6 +437,16 @@ static FillError randomizeOwnDungeon(WorldPool& worlds, ItemPool& itemPool)
             // Place small keys and big keys first since they're progression items
             FILL_ERROR_CHECK(assumedFill(worlds, dungeonPool, itemPool, dungeonLocations, worldId));
 
+            // Set any locations which got the keys as having expected items
+            for (auto loc : dungeonLocations)
+            {
+                if ((dungeon.smallKey.isValidItem() && loc->currentItem == dungeon.smallKey && settings.dungeon_small_keys == PlacementOption::OwnDungeon) || 
+                    (dungeon.bigKey.isValidItem() && loc->currentItem == dungeon.bigKey && settings.dungeon_big_keys == PlacementOption::OwnDungeon)) 
+                {
+                    loc->hasExpectedItem = true;
+                }
+            }
+
             // Place maps and compasses after since they aren't progressive items
             dungeonPool.clear();
             if (settings.dungeon_maps_compasses == PlacementOption::OwnDungeon)
@@ -636,6 +646,13 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
     // Then place the items in the race mode locations
     FillError err;
     FILL_ERROR_CHECK(assumedFill(worlds, raceModeItems, itemPool, raceModeLocations));
+
+    // Set race mode locations which had items placed at them as having expected items
+    for (auto raceModeLoc : raceModeLocations)
+    {
+        raceModeLoc->hasExpectedItem = true;
+    }
+
     // Recalculate major items since new items may now be required depending on
     // what items were placed at race mode locations
     determineMajorItems(worlds, itemPool, allLocations);
@@ -775,6 +792,7 @@ void clearWorlds(WorldPool& worlds)
             if (!location->plandomized && !location->hasKnownVanillaItem)
             {
                 location->currentItem = {GameItem::INVALID, nullptr};
+                location->hasExpectedItem = false;
             }
         }
     }

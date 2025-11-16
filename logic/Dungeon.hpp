@@ -16,7 +16,6 @@ struct Dungeon {
     Item map = Item();
     Item compass = Item();
     std::list<Location*> locations = {};
-    std::list<Location*> outsideDependentLocations = {}; // Locations which depend on beating the dungeon
     Location* raceModeLocation = nullptr;
     Area* startingArea = nullptr;
     Entrance* startingEntrance = nullptr;
@@ -30,6 +29,8 @@ struct Dungeon {
     std::string savewarpStage = "";
     uint8_t savewarpRoom = 0;
     uint8_t savewarpSpawn = 0;
+
+    std::list<Location*> getOutsideDependentLocations() const;
 };
 
 bool isValidDungeon(const std::string& dungeonName);

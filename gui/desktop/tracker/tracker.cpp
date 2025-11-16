@@ -403,7 +403,7 @@ bool MainWindow::autosave_current_tracker_preferences()
     pref["show_location_logic"] = trackerPreferences.showLocationLogic;
     pref["show_nonprogress_locations"] = trackerPreferences.showNonProgressLocations;
     pref["right_click_clear_all"] = trackerPreferences.rightClickClearAll;
-    pref["clear_all_includes_dungeon_mail"] = trackerPreferences.clearAllIncludesDungeonMail;
+    pref["clear_all_includes_dependent_locations"] = trackerPreferences.clearAllIncludesDependentLocations;
     pref["override_items_color"] = trackerPreferences.overrideItemsColor;
     pref["override_locations_color"] = trackerPreferences.overrideLocationsColor;
     pref["override_stats_color"] = trackerPreferences.overrideStatsColor;
@@ -490,9 +490,14 @@ void MainWindow::load_tracker_autosave()
         trackerPreferences.rightClickClearAll = pref["right_click_clear_all"].as<bool>();
     }
 
-    if (pref["clear_all_includes_dungeon_mail"])
+    if (pref["clear_all_includes_dependent_locations"])
     {
-        trackerPreferences.clearAllIncludesDungeonMail = pref["clear_all_includes_dungeon_mail"].as<bool>();
+        trackerPreferences.clearAllIncludesDependentLocations = pref["clear_all_includes_dependent_locations"].as<bool>();
+    }
+    // Old name for above setting
+    else if (pref["clear_all_includes_dungeon_mail"])
+    {
+        trackerPreferences.clearAllIncludesDependentLocations = pref["clear_all_includes_dungeon_mail"].as<bool>();
     }
 
     if (!std::filesystem::exists(trackerPreferences.autosaveFilePath) || !std::filesystem::exists(Utility::get_app_save_path() / "tracker_preferences.yaml"))
@@ -1352,21 +1357,12 @@ void MainWindow::tracker_clear_specific_area(const std::string& areaPrefix)
     for (auto loc : areaLocations[areaPrefix])
     {
         loc->marked = true;
-        // Clear certain mail locations associated with bosses
-        if (trackerPreferences.clearAllIncludesDungeonMail)
+        // Clear any outside dependent locations of this area
+        if (trackerPreferences.clearAllIncludesDependentLocations)
         {
-            if (loc->getName() == "Forsaken Fortress - Helmaroc King Heart Container")
+            for (auto outsideLoc : loc->outsideDependentLocations)
             {
-                trackerWorld.locationTable["Mailbox - Letter from Aryll"]->marked = true;
-                trackerWorld.locationTable["Mailbox - Letter from Tingle"]->marked = true;
-            }
-            else if (loc->getName() == "Forbidden Woods - Kalle Demos Heart Container")
-            {
-                trackerWorld.locationTable["Mailbox - Letter from Orca"]->marked = true;
-            }
-            else if (loc->getName() == "Earth Temple - Jalhalla Heart Container")
-            {
-                trackerWorld.locationTable["Mailbox - Letter from Baito"]->marked = true;
+                outsideLoc->marked = true;
             }
         }
     }

@@ -431,54 +431,6 @@ World::WorldLoadingError World::setDungeonLocations(WorldPool& worlds)
         }
     }
 
-    // Also set each dungeon's outsideDependentLocations.
-    // To do this, we'll disconnect all entrances into
-    // each dungeon and test to see which locations are
-    // not available without entering the dungeon
-    for (auto& [dungeonName, dungeon] : dungeons)
-    {
-        // Disconnect any entrances into this dungeon
-        std::unordered_map<Entrance*, Area*> disconnectedEntrances = {};
-        for (auto& [name, area] : areaTable)
-        {
-            for (auto& entrance : area->exits)
-            {
-                if (entrance.getConnectedArea() && entrance.getConnectedArea()->dungeon == dungeonName)
-                {
-                    disconnectedEntrances[&entrance] = entrance.disconnect();
-                }
-            }
-        }
-
-        // Get locations which are now accessible
-        ItemPool itemPool;
-        GET_COMPLETE_ITEM_POOL(itemPool, worlds)
-
-        // If the race mode location already has an item at it because of plandomizer, collect the item
-        if (dungeon.raceModeLocation->currentItem.getGameItemId() != GameItem::INVALID)
-        {
-            itemPool.push_back(dungeon.raceModeLocation->currentItem);
-        }
-
-        auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, itemPool);
-
-        // Set unaccessible progression locations as outside dependent
-        for (auto& [locName, location] : locationTable)
-        {
-            if (!elementInPool(location.get(), accessibleLocations) && !elementInPool(location.get(), dungeon.locations) && location->progression)
-            {
-                LOG_TO_DEBUG(locName + " is now an outside dependent location of dungeon " + dungeonName);
-                dungeon.outsideDependentLocations.push_back(location.get());
-            }
-        }
-
-        // Reconnect disconnected entrances
-        for (auto& [entrance, area] : disconnectedEntrances)
-        {
-            entrance->connect(area);
-        }
-    }
-
     return WorldLoadingError::NONE;
 }
 
@@ -517,7 +469,9 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                 for (const auto& dungeon : dungeonPool)
                 {
                     auto allDungeonLocations = dungeon.locations;
-                    addElementsToPool(allDungeonLocations, dungeon.outsideDependentLocations);
+                    // Add any outside dependent locations from this dungeon's locations
+                    auto outsideLocs = dungeon.getOutsideDependentLocations();
+                    allDungeonLocations.insert(allDungeonLocations.end(), outsideLocs.begin(), outsideLocs.end());
                     for (auto dungeonLocation : allDungeonLocations)
                     {
                         if (plandomizer.locations.contains(dungeonLocation) && !plandomizer.locations[dungeonLocation].isJunkItem())
@@ -591,7 +545,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
 
                     // Also set any progress locations outside the dungeon which
                     // are dependent on accessing it as non-progression locations
-                    for (auto location : dungeon.outsideDependentLocations)
+                    for (auto location : dungeon.getOutsideDependentLocations())
                     {
                         if (location->progression)
                         {
@@ -780,6 +734,20 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
         for (const auto& language : Text::supported_languages)
         {
             location->goalNames[language] = locationObject["Goal Names"][language].as<std::string>();
+        }
+    }
+
+    if (locationObject["Outside Dependent Locations"])
+    {
+        for (const auto& outsideLocNode : locationObject["Outside Dependent Locations"])
+        {
+            auto locStr = outsideLocNode.as<std::string>();
+
+            // If the location hasn't been processed yet, add it
+            addLocation(locStr);
+
+            auto outsideLoc = locationTable[locStr].get();
+            location->outsideDependentLocations.push_back(outsideLoc);
         }
     }
 
