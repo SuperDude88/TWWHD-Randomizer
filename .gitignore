@@ -11,3 +11,4 @@ logic/out/*
 *data.qrc
 CMakeLists.txt.user
 build-*
+.venv
