@@ -844,3 +844,31 @@ has_actor_with_same_proc_name:
   b 0x025C1144
 read_custom_l_objectName_loop_for_dStage_getName_end_loop:
   b 0x025C1148 ; Return to after the end of the loop
+
+
+; Check whether the shortcut light beam warp on DRI should spawn
+; This is inserted into Komali's actor code
+.org 0x021e3210
+  b spawn_drc_shortcut_warp
+
+.org @NextFreeSpace
+.global spawn_drc_shortcut_warp
+spawn_drc_shortcut_warp:
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
+  addi r3, r3, 0x52C ; Adanmae stage info. mCurInfo (0x20) + mSave (0x0) + mMemory[11] (0x380) + [0x24 * 11] + mBits (0x0)
+  lbz r4, 0x10 (r3)
+  
+  andi. r4, r4, 0x80
+  beq spawn_drc_shortcut_warp_return
+  
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
+  addi r3, r3, 0x798 ; Currently loaded stage info. mCurInfo (0x20) + mMemory (0x778) + mBits (0x0)
+  lbz r4, 0x10 (r3)
+  ori r4, r4, 0x40
+  stb r4, 0x10 (r3)
+
+spawn_drc_shortcut_warp_return:
+  mr r3, r31 ; Replace the line we overwrote to jump here
+  b 0x021e3214 ; Return

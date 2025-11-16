@@ -3070,21 +3070,24 @@ TweakError show_tingle_statues_on_quest_screen() {
 }
 
 TweakError add_shortcut_warps_into_dungeons(World& world) {
+
+    // Add light warp to Forest Haven
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr@DZX");
     entry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
+        // Switch trigger to activate the light warp
         ChunkEntry& sw_c00 = dzr.add_entity("SCOB");
         sw_c00.data = "SW_C00\x00\x00\x00\x03\xFF\x7F\x48\x40\x24\xED\x45\x44\x99\xB1\x48\x41\x7B\x63\x00\x00\x00\x00\x00\x00\xFF\xFF\x96\x14\x28\xFF"s;
 
+        // Light warp
         ChunkEntry& warp = dzr.add_entity("SCOB");
         warp.data = "Ysdls00\x00\x10\xFF\x06\x7F\x48\x54\x16\x86\x42\x0B\xFF\xF8\x48\x3E\xD3\xED\x00\x00\x00\x00\x00\x00\xFF\xFF\x0A\x0A\x0A\xFF"s;
 
         return true;
     });
 
-
-    // Only add the DRC light warp if misc entrsnces aren't randomized
+    // Only add the DRC light warp if misc entrsnces aren't randomized. This way we know that the DRC entrance is actually on DRI
     if (!world.getSettings().randomize_misc_entrances)
     {
         auto drcEntrance = world.getEntrance("Dragon Roost Pond Past Statues", "DRC First Room")->getReplaces();
@@ -3112,12 +3115,12 @@ TweakError add_shortcut_warps_into_dungeons(World& world) {
         });
 
         // Add switch to dri pond
-        RandoSession::CacheEntry& dri_pond = g_session.openGameFile(getRoomDzrPath("Adanmae", 13));
+        RandoSession::CacheEntry& dri_pond = g_session.openGameFile(getRoomDzrPath("Adanmae", 0));
         dri_pond.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
             ChunkEntry& sw_c00 = dzr.add_entity("SCOB");
-            sw_c00.data = "SW_C00\x00\x00\x00\x03\xFF\x7F\x48\x40\x24\xED\x45\x44\x99\xB1\x48\x41\x7B\x63\x00\x00\x00\x00\x00\x00\xFF\xFF\x96\x14\x28\xFF"s;
+            sw_c00.data = "SW_C00\x00\x00\x00\x03\xFF\x7F\xC3\x95\x7D\x53\x44\x95\x94\x9C\xC5\x92\x14\x5A\x00\x00\x00\x00\x00\x00\xFF\xFF\x0A\x0A\x0A\xFF"s;
 
             return true;
         });
