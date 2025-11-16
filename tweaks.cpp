@@ -3086,7 +3086,7 @@ TweakError add_shortcut_warps_into_dungeons(World& world) {
         return true;
     });
 
-    // Only add the DRC light warp if misc entrsnces aren't randomized. This way we know that the DRC entrance is actually on DRI
+    // Only add the DRC light warp if misc entrances aren't randomized. This way we know that the DRC entrance is actually on DRI
     if (!world.getSettings().randomize_misc_entrances)
     {
         auto drcEntrance = world.getEntrance("Dragon Roost Pond Past Statues", "DRC First Room")->getReplaces();
