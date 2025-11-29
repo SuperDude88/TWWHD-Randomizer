@@ -237,6 +237,7 @@ private slots:
 
     // Hints
     void on_ho_ho_hints_stateChanged(int arg1);
+    void on_ho_ho_triforce_hints_stateChanged(int arg1);
     void on_korl_hints_stateChanged(int arg1);
     void on_use_always_hints_stateChanged(int arg1);
     void on_path_hints_valueChanged(int path_hints);

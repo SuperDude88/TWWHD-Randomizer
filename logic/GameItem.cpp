@@ -931,6 +931,11 @@ bool Item::isBigKey() const
     return bigKeys.contains(gameItemId);
 }
 
+bool Item::isTriforceShard() const
+{
+    return gameItemId >= GameItem::TriforceShard1 && gameItemId <= GameItem::TriforceShard8;
+}
+
 bool Item::isValidItem() const
 {
     return isNoneOf(gameItemId, GameItem::INVALID, GameItem::NOTHING);

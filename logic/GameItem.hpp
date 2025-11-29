@@ -444,6 +444,7 @@ public:
     bool isCompass() const;
     bool isSmallKey() const;
     bool isBigKey() const;
+    bool isTriforceShard() const;
     bool isValidItem() const;
     bool canBeInBarrenRegion() const;
     bool operator==(const Item& rhs) const;
