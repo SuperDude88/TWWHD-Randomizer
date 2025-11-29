@@ -62,6 +62,7 @@ void Settings::resetDefaultSettings() {
 
     korl_hints = false;
     ho_ho_hints = false;
+    ho_ho_triforce_hints = false;
     path_hints = false;
     barren_hints = false;
     item_hints = false;
@@ -230,6 +231,8 @@ uint8_t Settings::getSetting(const Option& option) const {
             return decouple_entrances;
         case Option::HoHoHints:
             return ho_ho_hints;
+        case Option::HoHoTriforceHints:
+            return ho_ho_triforce_hints;
         case Option::KorlHints:
             return korl_hints;
         case Option::ClearerHints:
@@ -415,6 +418,8 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             decouple_entrances = value; return;
         case Option::HoHoHints:
             ho_ho_hints = value; return;
+        case Option::HoHoTriforceHints:
+            ho_ho_triforce_hints = value; return;
         case Option::KorlHints:
             korl_hints = value; return;
         case Option::ClearerHints:
@@ -901,6 +906,7 @@ Option nameToSetting(const std::string& name) {
         {"Mix Misc", Option::MixMisc},
         {"Decouple Entrances", Option::DecoupleEntrances},
         {"Ho Ho Hints", Option::HoHoHints},
+        {"Ho Ho Triforce Hints", Option::HoHoTriforceHints},
         {"Korl Hints", Option::KorlHints},
         {"Clearer Hints", Option::ClearerHints},
         {"Use Always Hints", Option::UseAlwaysHints},
@@ -1001,6 +1007,7 @@ std::string settingToName(const Option& setting) {
         {Option::MixMisc, "Mix Misc"},
         {Option::DecoupleEntrances, "Decouple Entrances"},
         {Option::HoHoHints, "Ho Ho Hints"},
+        {Option::HoHoTriforceHints, "Ho Ho Triforce Hints"},
         {Option::KorlHints, "Korl Hints"},
         {Option::ClearerHints, "Clearer Hints"},
         {Option::UseAlwaysHints, "Use Always Hints"},

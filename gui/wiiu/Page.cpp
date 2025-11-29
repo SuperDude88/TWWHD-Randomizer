@@ -268,6 +268,7 @@ HintsPage::HintsPage() {
 
     // we can't use an initializer list for a vector<unique_ptr> because of copy/move issues
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::HoHoHints));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::HoHoTriforceHints));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::KorlHints));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::ClearerHints));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::UseAlwaysHints));

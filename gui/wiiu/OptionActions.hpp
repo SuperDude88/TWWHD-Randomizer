@@ -57,6 +57,7 @@ namespace OptionCB {
     std::string toggleDecoupleEntrances();
 
     std::string toggleHoHoHints();
+    std::string toggleHoHoTriforceHints();
     std::string toggleKorlHints();
     std::string toggleClearHints();
     std::string toggleAlwaysHints();

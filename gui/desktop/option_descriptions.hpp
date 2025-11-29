@@ -293,6 +293,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Places hints on Old Man Ho Ho. Old Man Ho Ho appears at 10 different islands in the game. Simply talk to Old Man Ho Ho to get hints.",
     },
     {
+      "ho_ho_triforce_hints",
+      "When this option is selected, each Old Man Ho Ho will give an item hint for a Triforce Shard. Hints are not repeated until each shard is hinted once. This setting will override placing other hints on Old Man Ho Ho.",
+    },
+    {
       "korl_hints",
       "Places hints on the King of Red Lions. Talk to the King of Red Lions to get hints.",
     },

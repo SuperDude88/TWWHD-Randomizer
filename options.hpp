@@ -173,6 +173,7 @@ enum struct Option {
 
     // Hints
     HoHoHints,
+    HoHoTriforceHints,
     KorlHints,
     ClearerHints,
     UseAlwaysHints,
@@ -263,6 +264,7 @@ public:
     bool decouple_entrances;
 
     bool ho_ho_hints;
+    bool ho_ho_triforce_hints;
     bool korl_hints;
     bool clearer_hints;
     bool use_always_hints;

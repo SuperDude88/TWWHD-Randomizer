@@ -342,6 +342,11 @@ namespace OptionCB {
         return fromBool(conf.settings.ho_ho_hints);
     }
 
+    std::string toggleHoHoTriforceHints() {
+        conf.settings.ho_ho_triforce_hints = !conf.settings.ho_ho_triforce_hints;
+        return fromBool(conf.settings.ho_ho_hints);
+    }
+
     std::string toggleKorlHints() {
         conf.settings.korl_hints = !conf.settings.korl_hints;
         return fromBool(conf.settings.korl_hints);
@@ -969,6 +974,8 @@ std::string getValue(const Option& option) {
             return fromBool(conf.settings.decouple_entrances);
         case Option::HoHoHints:
             return fromBool(conf.settings.ho_ho_hints);
+        case Option::HoHoTriforceHints:
+            return fromBool(conf.settings.ho_ho_triforce_hints);
         case Option::KorlHints:
             return fromBool(conf.settings.korl_hints);
         case Option::ClearerHints:
@@ -1177,6 +1184,8 @@ TriggerCallback getCallback(const Option& option) {
             return &toggleDecoupleEntrances;
         case Option::HoHoHints:
             return &toggleHoHoHints;
+        case Option::HoHoTriforceHints:
+            return &toggleHoHoTriforceHints;
         case Option::KorlHints:
             return &toggleKorlHints;
         case Option::ClearerHints:
@@ -1341,6 +1350,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {Plandomizer,                {"Plandomizer",                         "Allows you to provide a file which manually sets item locations and/or entrances."}},
 
         {HoHoHints,                  {"Place Hints on Old Man Ho Ho",        "Places hints on Old Man Ho Ho. Old Man Ho Ho appears at 10 different islands. Simply talk to Old Man Ho Ho to get hints."}},
+        {HoHoTriforceHints,          {"Old Man Ho Ho Hints Shards",          "When this option is selected, each Old Man Ho Ho will give an item hint for a Triforce Shard. Hints are not repeated until each shard is hinted once. This setting will override placing other hints on Old Man Ho Ho."}},
         {KorlHints,                  {"Place Hints on King of Red Lions",    "Places hints on the King of Red Lions. Talk to the King of Red Lions to get hints."}},
         {ClearerHints,               {"Clearer Hints",                       "When this option is selected, location and item hints will use the standard check or item name, instead of using cryptic hints."}},
         {UseAlwaysHints,             {"Use Always Hints",                    "When the number of location hints is nonzero, certain locations that will always be hinted will take precedence over normal location hints."}},

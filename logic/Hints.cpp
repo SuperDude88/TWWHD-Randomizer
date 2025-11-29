@@ -345,10 +345,10 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
 
         auto possiblePathLocations = goalLocation->pathLocations;
 
-        // Filter out known vanilla items, and expected items
+        // Filter out known vanilla items, and expected items, and triforce shards if Ho Ho is hinting them
         filterAndEraseFromPool(possiblePathLocations, [settings = world.getSettings()](auto location){
             auto& item = location->currentItem;
-            return (location->hasKnownVanillaItem || location->hasExpectedItem);
+            return (location->hasKnownVanillaItem || location->hasExpectedItem || (settings.ho_ho_triforce_hints && item.isTriforceShard()));
         });
 
         auto hintLocation = getHintableLocation(possiblePathLocations);
@@ -517,9 +517,11 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
         if (location->progression              &&  // if the location is a progression location...
            !location->currentItem.isJunkItem() &&  // and does not have a junk item...
            !location->hasKnownVanillaItem      &&  // and does not have a known vanilla item...
-           !location->hasExpectedItem          &&  // and does not have an expected item
+           !location->hasExpectedItem          &&  // and does not have an expected item...
            !location->hasBeenHinted            &&  // and has not been hinted at yet...
+           !(settings.ho_ho_triforce_hints && location->currentItem.isTriforceShard()) && // and isn't a shard when ho ho will hint shards...
            (location->hintPriority != "Always" || !world.getSettings().use_always_hints)) // and the hint priority is not "Always" when we're using always hints...
+           
            {
               // Then the item is a possible item hint location
               possibleItemHintLocations.push_back(location.get());
@@ -602,7 +604,7 @@ static HintError generateLocationHintLocations(World& world, std::vector<Locatio
             {
                 alwaysLocations.push_back(location.get());
             }
-            else if (location->hintPriority == "Sometimes")
+            else if (location->hintPriority == "Sometimes" && !(world.getSettings().ho_ho_triforce_hints && location->currentItem.isTriforceShard()))
             {
                 sometimesLocations.push_back(location.get());
             }
@@ -642,6 +644,19 @@ static HintError generateLocationHintLocations(World& world, std::vector<Locatio
 
 static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Location*>& locations)
 {
+    // If ho ho is hinting triforces, make those hints now
+    if (world.getSettings().ho_ho_triforce_hints)
+    {
+        for (auto location : world.getLocations(/*onlyProgression =*/ true))
+        {
+            if (location->currentItem.isTriforceShard() && !location->isRaceModeLocation)
+            {
+                locations.push_back(location);
+                LOG_AND_RETURN_IF_ERR(generateItemHintMessage(location));
+            }
+        }
+    }
+
     // Shuffle the hints
     std::vector<Location*> locationsVector (locations.begin(), locations.end());
     shufflePool(locationsVector);
@@ -739,7 +754,8 @@ HintError generateHints(WorldPool& worlds)
         // Distribute hints evenly among the possible hint placement options
         std::vector<std::string> hintPlacementOptions = {};
         std::unordered_map<std::string, std::list<Location*>> hintsForCategory = {};
-        if (settings.ho_ho_hints)
+        // Only include ho ho if he's not hinting triforces
+        if (settings.ho_ho_hints && !settings.ho_ho_triforce_hints)
         {
             hintPlacementOptions.emplace_back("ho ho");
         }
@@ -749,7 +765,7 @@ HintError generateHints(WorldPool& worlds)
         }
 
         // No placement options selected, don't use hints
-        if (hintPlacementOptions.empty())
+        if (hintPlacementOptions.empty() && !settings.ho_ho_triforce_hints)
         {
             return HintError::NONE;
         }
