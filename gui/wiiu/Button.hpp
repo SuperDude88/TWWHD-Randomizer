@@ -41,6 +41,24 @@ public:
     virtual void drawDRC() const;
 };
 
+
+class ModelButton final : public BasicButton {
+protected:
+    std::string modelName;
+    bool enabled = false;
+public:
+    ModelButton(const std::string& modelName_) :
+        BasicButton(Option::INVALID, modelName_, modelName_, OptionCB::invalidCB, Duration_t(-1), Duration_t(-1)),
+        modelName(modelName_)
+    {}
+    ~ModelButton() = default;
+    bool update();
+    void drawTV(const size_t row, const size_t nameCol, const size_t valCol) const override;
+    void drawDRC() const override;
+    void setEnabled(bool value);
+};
+
+
 class ItemButton final : public BasicButton {
 protected:
     const GameItem item;
