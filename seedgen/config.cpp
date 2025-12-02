@@ -410,6 +410,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     GET_FIELD(preferencesRoot, "quiet_swift_sail", settings.quiet_swift_sail)
 
     GET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
+    GET_FIELD(preferencesRoot, "model_user_provided", settings.selectedModel.user_provided)
     if(settings.selectedModel.loadFromFolder() != ModelError::NONE) {
         if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MODEL_ERROR);
     }
@@ -603,6 +604,7 @@ YAML::Node Config::preferencesToYaml() const {
     SET_FIELD(preferencesRoot, "quiet_swift_sail", settings.quiet_swift_sail)
 
     SET_FIELD(preferencesRoot, "player_in_casual_clothes", settings.selectedModel.casual)
+    SET_FIELD(preferencesRoot, "model_user_provided", settings.selectedModel.user_provided)
     SET_FIELD(preferencesRoot, "custom_player_model", settings.selectedModel.modelName)
     for (const auto& [texture, color] : settings.selectedModel.getSetColorsMap()) {
         preferencesRoot["custom_colors"][texture] = color;
