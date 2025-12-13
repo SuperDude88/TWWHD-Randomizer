@@ -5,7 +5,6 @@
 #include <chrono>
 #include <filesystem>
 
-#include <coreinit/memory.h>
 #include <coreinit/ios.h>
 #include <coreinit/filesystem_fsa.h>
 
@@ -21,7 +20,6 @@
 
 
 #define MCP_COMMAND_INSTALL_ASYNC   0x81
-#define MAX_INSTALL_PATH_LENGTH     0x27F
 
 
 extern "C" MCPError MCP_GetLastRawError(void);
@@ -35,13 +33,24 @@ static const fspath CHANNEL_OUTPUT_PATH = "temp/install";
 MCPError getTitlePath(const uint64_t& titleID, fspath& outPath) {
     const int32_t handle = MCP_Open();
 
-    MCPTitleListType info;
+    if(handle < 0) {
+        ErrorLog::getInstance().log("MCP_Open encountered error " + Utility::Str::intToHex(handle, 8));
+        return handle;
+    }
+
+    alignas(0x40) MCPTitleListType info;
     if(const MCPError err = MCP_GetTitleInfo(handle, titleID, &info); err < 0) {
-        ErrorLog::getInstance().log("MCP_GetTitleInfo encountered error " + Utility::Str::intToHex(err, 8, true) + " with title ID " + Utility::Str::intToHex(titleID, 16, true));
+        ErrorLog::getInstance().log("MCP_GetTitleInfo encountered error " + Utility::Str::intToHex(err, 8) + " with title ID " + Utility::Str::intToHex(titleID, 16));
         return err;
     }
-    
+
+    if(const MCPError err = MCP_Close(handle); err < 0) {
+        ErrorLog::getInstance().log("MCP_Close encountered error " + Utility::Str::intToHex(err, 8));
+        return err;
+    }
+
     outPath = info.path;
+
     return 0;
 }
 
@@ -55,24 +64,22 @@ bool checkEnoughFreeSpace(const MCPInstallTarget& device, const uint64_t& minSpa
 
     const FSAClientHandle handle = FSAAddClient(NULL);
     if(handle < 0) {
-        ErrorLog::getInstance().log("Failed to add FSA client!");
+        ErrorLog::getInstance().log("Failed to add FSA client, error " + Utility::Str::intToHex(handle, 8));
         return false;
     }
 
     uint64_t freeSize = 0;
-    FSError ret = FSAGetFreeSpaceSize(handle, path.c_str(), &freeSize);
-    if(ret == FS_ERROR_STORAGE_FULL) {
+    if(const FSError err = FSAGetFreeSpaceSize(handle, path.c_str(), &freeSize); err == FS_ERROR_STORAGE_FULL) {
         ErrorLog::getInstance().log("Storage device " + path + " is full!");
         return false;
     }
-    else if(ret != FS_ERROR_OK) {
-        ErrorLog::getInstance().log("Failed to get free space size, error " + std::to_string(ret));
+    else if(err != FS_ERROR_OK) {
+        ErrorLog::getInstance().log("Failed to get free space size, error " + Utility::Str::intToHex(static_cast<int32_t>(err), 8));
         return false;
     }
 
-    ret = FSADelClient(handle);
-    if(ret != FS_ERROR_OK) {
-        ErrorLog::getInstance().log("Failed to delete FSA client, error " + std::to_string(ret));
+    if(const FSError err = FSADelClient(handle); err != FS_ERROR_OK) {
+        ErrorLog::getInstance().log("Failed to delete FSA client, error " + Utility::Str::intToHex(static_cast<int32_t>(err), 8));
         return false;
     }
 
@@ -86,17 +93,16 @@ bool checkEnoughFreeSpace(const MCPInstallTarget& device, const uint64_t& minSpa
     return true;
 }
 
-static int installCompleted = 0;
-static uint32_t installError = 0;
+static bool installCompleted = false;
+static std::underlying_type_t<IOSError> installStatus = IOS_ERROR_OK;
 
-static int IosInstallCallback(unsigned int errorCode, unsigned int * priv_data)
+static void IosInstallCB(IOSError status, void* context)
 {
-    installError = errorCode;
-    installCompleted = 1;
-    return 0;
+    installStatus = status;
+    installCompleted = true;
 }
 
-//based on https://github.com/Fangal-Airbag/wup-installer-gx2/blob/Wuhb/src/menu/InstallWindow.cpp#L169
+// adapted from https://github.com/Fangal-Airbag/wup-installer-gx2/blob/aecb01d573d904e37dc067fbe450180938e41b0f/src/menu/InstallWindow.cpp#L169
 static bool installFreeChannel(const fspath& relPath, const MCPInstallTarget& loc) {
     using namespace std::literals::chrono_literals;
 
@@ -107,157 +113,162 @@ static bool installFreeChannel(const fspath& relPath, const MCPInstallTarget& lo
 
     Utility::platformLog("Installing channel...");
 
-    const fspath path = SD_ROOT_PATH_MCP / relPath;
-    
-    int result = 0;
-    installCompleted = 0;
-    installError = 0;
+    const fspath& path = SD_ROOT_PATH_MCP / relPath;
+
+    installCompleted = false;
+    installStatus = IOS_ERROR_OK;
 
     const int32_t mcpHandle = MCP_Open();
-    if(mcpHandle == 0)
-    {
-        ErrorLog::getInstance().log("Failed to open MCP for install");
-        
-        result = -1;
-    }
-    else
-    {
-        char installPath[256];
-        unsigned int* mcpInstallInfo = (unsigned int *)OSAllocFromSystem(0x24, 0x40);
-        char* mcpInstallPath = (char *)OSAllocFromSystem(MAX_INSTALL_PATH_LENGTH, 0x40);
-        IOSVec* mcpPathInfoVector = (IOSVec *)OSAllocFromSystem(0x0C, 0x40);
-        
-        do
-        {
-            if(!mcpInstallInfo || !mcpInstallPath || !mcpPathInfoVector)
-            {
-                ErrorLog::getInstance().log("Could not allocate memory for install");
-                
-                result = -2;
-                break;
-            }
-            
-            snprintf(installPath, sizeof(installPath), "%s", path.string().c_str());
-            
-            int res = MCP_InstallGetInfo(mcpHandle, installPath, (MCPInstallInfo*)mcpInstallInfo);
-            if(res != 0)
-            {
-                ErrorLog::getInstance().log("Could not find complete WUP files in the folder.");
-                
-                result = -3;
-                break;
-            }
-
-            const uint32_t titleIdHigh = mcpInstallInfo[0];
-
-            if (  (titleIdHigh == 0x0005000E)     // game update
-               || (titleIdHigh == 0x00050000)     // game
-               || (titleIdHigh == 0x0005000C)     // DLC
-               || (titleIdHigh == 0x00050002))    // Demo
-            {
-                res = MCP_InstallSetTargetDevice(mcpHandle, loc);
-                if(res != 0)
-                {
-                    ErrorLog::getInstance().log("MCP_InstallSetTargetDevice " + Utility::Str::intToHex(MCP_GetLastRawError(), 8, true));
-                    
-                    result = -5;
-                    break;
-                }
-                res = MCP_InstallSetTargetUsb(mcpHandle, loc);
-                if(res != 0)
-                {
-                    ErrorLog::getInstance().log("MCP_InstallSetTargetUsb " + Utility::Str::intToHex(MCP_GetLastRawError(), 8, true));
-                    
-                    result = -6;
-                    break;
-                }
-                
-                mcpInstallInfo[2] = (unsigned int)MCP_COMMAND_INSTALL_ASYNC;
-                mcpInstallInfo[3] = (unsigned int)mcpPathInfoVector;
-                mcpInstallInfo[4] = (unsigned int)1;
-                mcpInstallInfo[5] = (unsigned int)0;
-                
-                memset(mcpInstallPath, 0, MAX_INSTALL_PATH_LENGTH);
-                snprintf(mcpInstallPath, MAX_INSTALL_PATH_LENGTH, path.string().c_str());
-                memset(mcpPathInfoVector, 0, 0x0C);
-                
-                mcpPathInfoVector->vaddr = mcpInstallPath;
-                mcpPathInfoVector->len = (unsigned int)MAX_INSTALL_PATH_LENGTH;
-                
-                res = IOS_IoctlvAsync(mcpHandle, MCP_COMMAND_INSTALL_ASYNC, 1, 0, mcpPathInfoVector, (IOSAsyncCallbackFn)IosInstallCallback, mcpInstallInfo);
-                if(res != 0)
-                {
-                    ErrorLog::getInstance().log("MCP_InstallTitleAsync " + Utility::Str::intToHex(MCP_GetLastRawError(), 8, true));
-                    result = -7;
-                    break;
-                }
-                
-                while(!installCompleted)
-                {
-                    memset(mcpInstallInfo, 0, 0x24);
-                    
-                    MCP_InstallGetProgress(mcpHandle, (MCPInstallProgress*)mcpInstallInfo);
-                    
-                    if(mcpInstallInfo[0] == 1)
-                    {
-                        uint64_t totalSize = ((uint64_t)mcpInstallInfo[3] << 32ULL) | mcpInstallInfo[4];
-                        uint64_t installedSize = ((uint64_t)mcpInstallInfo[5] << 32ULL) | mcpInstallInfo[6];
-                        int percent = (totalSize != 0) ? ((installedSize * 100.0f) / totalSize) : 0;
-                        
-                        //std::string message = fmt("%0.1f / %0.1f MB (%i", installedSize / (1024.0f * 1024.0f), totalSize / (1024.0f * 1024.0f), percent);
-                        //message += "%)";
-                        //
-                        //messageBox->setProgress(percent);
-                        //messageBox->setProgressBarInfo(message);
-                        Utility::platformLog("Channel " + std::to_string(percent) + "% installed");
-                    }
-                    
-                    std::this_thread::sleep_for(500ms);
-                }
-                
-                if(installError != 0)
-                {
-                    if((installError == 0xFFFCFFE9) && (loc == MCPInstallTarget::MCP_INSTALL_TARGET_USB)) {
-                        ErrorLog::getInstance().log(Utility::Str::intToHex(installError, 8, true) + " access failed (no USB storage attached?)");
-                    }
-                    if (installError == 0xFFFBF446 || installError == 0xFFFBF43F) {
-                        ErrorLog::getInstance().log("Possible missing or bad title.tik file");
-                    }
-                    else if (installError == 0xFFFBF441) {
-                        ErrorLog::getInstance().log("Possible incorrect console for DLC title.tik file");
-                    }
-                    else if (installError == 0xFFFCFFE4) {
-                        ErrorLog::getInstance().log("Possible not enough memory on target device");
-                    }
-                    else if (installError == 0xFFFFF825) {
-                        ErrorLog::getInstance().log("Possible bad SD card. Reformat (32k blocks) or replace");
-                    }
-                    else if ((installError & 0xFFFF0000) == 0xFFFB0000) {
-                        ErrorLog::getInstance().log("Verify WUP files are correct & complete. DLC/E-shop require Sig Patch");
-                    }
-
-                    result = -9;
-                }
-            }
-            else
-            {
-                ErrorLog::getInstance().log("Not a game, game update, DLC, demo or version title");
-                result = -4;
-            }
-        } while(0);
-        
-        MCP_Close(mcpHandle);
-        if(mcpPathInfoVector) OSFreeToSystem(mcpPathInfoVector);
-        if(mcpInstallPath) OSFreeToSystem(mcpInstallPath);
-        if(mcpInstallInfo) OSFreeToSystem(mcpInstallInfo);
-    }
-    
-    if(result >= 0) {
-        return true;
-    }
-    else {
+    if(mcpHandle < 0) {
+        ErrorLog::getInstance().log("Failed to open MCP for install, error " + Utility::Str::intToHex(mcpHandle, 8));
         return false;
     }
+
+    if(path.string().length() + 1 > FS_MAX_PATH) {
+        ErrorLog::getInstance().log("Channel path \"" + relPath.string() + "\" is too long");
+        MCP_Close(mcpHandle);
+
+        return false;
+    }
+
+    alignas(0x40) char installPath[FS_MAX_PATH]{};
+    const size_t count = path.string().copy(installPath, sizeof(installPath));
+    if(count != path.string().length()) {
+        ErrorLog::getInstance().log("Could not copy full channel path \"" + relPath.string() + "\" to buffer");
+        MCP_Close(mcpHandle);
+
+        return false;
+    }
+    installPath[count] = '\0';
+
+    alignas(0x40) MCPInstallInfo installInfo{};
+    if(const MCPError err = MCP_InstallGetInfo(mcpHandle, installPath, &installInfo); err != 0) {
+        ErrorLog::getInstance().log("Could not find complete WUP files in the folder, error " + Utility::Str::intToHex(err, 8));
+        MCP_Close(mcpHandle);
+
+        return false;
+    }
+
+    const uint32_t titleType = reinterpret_cast<uint32_t*>(&installInfo)[0] & 0xF; // titleIdHigh & 0xF
+
+    if (titleType != 0x0 && titleType != 0x2 && titleType != 0xC && titleType != 0xE) { // Game || Demo || DLC || Update
+        ErrorLog::getInstance().log("Not a game, update, DLC, or demo title");
+        MCP_Close(mcpHandle);
+
+        return false;
+    }
+
+    if(const MCPError err = MCP_InstallSetTargetDevice(mcpHandle, loc); err != 0) {
+        ErrorLog::getInstance().log("MCP_InstallSetTargetDevice " + Utility::Str::intToHex(MCP_GetLastRawError(), 8));
+        MCP_Close(mcpHandle);
+
+        return false;
+    }
+
+    if(const MCPError err = MCP_InstallSetTargetUsb(mcpHandle, loc); err != 0) {
+        ErrorLog::getInstance().log("MCP_InstallSetTargetUsb " + Utility::Str::intToHex(MCP_GetLastRawError(), 8));
+        MCP_Close(mcpHandle);
+
+        return false;
+    }
+
+    alignas(0x40) IOSVec pathInfoVector[1]{};
+
+    pathInfoVector[0].vaddr = installPath;
+    pathInfoVector[0].len = FS_MAX_PATH;
+
+    reinterpret_cast<uint32_t*>(&installInfo)[2] = MCP_COMMAND_INSTALL_ASYNC;
+    reinterpret_cast<uint32_t*>(&installInfo)[3] = reinterpret_cast<uint32_t>(&pathInfoVector[0]);
+    reinterpret_cast<uint32_t*>(&installInfo)[4] = 1;
+    reinterpret_cast<uint32_t*>(&installInfo)[5] = 0;
+
+    if(const MCPError err = IOS_IoctlvAsync(mcpHandle, MCP_COMMAND_INSTALL_ASYNC, 1, 0, pathInfoVector, IosInstallCB, &installInfo); err != 0) {
+        ErrorLog::getInstance().log("MCP_InstallTitleAsync " + Utility::Str::intToHex(MCP_GetLastRawError(), 8));
+        MCP_Close(mcpHandle);
+
+        return false;
+    }
+
+    alignas(0x40) MCPInstallProgress progress{};
+
+    while(!installCompleted) {
+        MCP_InstallGetProgress(mcpHandle, &progress);
+
+        if(progress.inProgress != 0 && progress.sizeTotal != 0)
+        {
+            const uint32_t percent = (progress.sizeProgress * 100.0f) / progress.sizeTotal;
+            Utility::platformLog("Channel " + std::to_string(percent) + "% installed");
+        }
+
+        std::this_thread::sleep_for(500ms);
+    }
+
+    if(installStatus != IOS_ERROR_OK) {
+        const uint32_t category = (~installStatus >> 16) & 0x3FF;
+        const int16_t code = static_cast<int16_t>(installStatus);
+
+        ErrorLog::getInstance().log("Install error: category " + Utility::Str::intToHex(category, 4) + ", code " + Utility::Str::intToHex(code, 4) + " (" + Utility::Str::intToHex(installStatus, 8) + ")");
+
+        switch(category) {
+            case 0x0: // Kernel
+                switch(code) {
+                    case -0x7DB:
+                        ErrorLog::getInstance().log("Possible bad SD card. Reformat (32k blocks) or replace");
+                        break;
+                    default:
+                        // Unknown codes
+                        break;
+                }
+
+                break;
+            case 0x3: // FSA
+                switch(code) {
+                    case -0x17:
+                        if(loc == MCPInstallTarget::MCP_INSTALL_TARGET_USB) {
+                            ErrorLog::getInstance().log("Storage access failed (no USB storage attached?)");
+                        }
+
+                        break;
+                    case -0x1C:
+                        ErrorLog::getInstance().log("Possible not enough memory on target device");
+                        break;
+                    default:
+                        // Unknown codes
+                        break;
+                }
+
+                break;
+            case 0x4: // MCP
+                switch(code) {
+                    case -0xBBA:
+                    case -0xBC1:
+                        ErrorLog::getInstance().log("Possible missing or bad title.tik file");
+                        break;
+                    case -0xBBF:
+                        ErrorLog::getInstance().log("Possible incorrect console for DLC title.tik file");
+                        break;
+                    default:
+                        ErrorLog::getInstance().log("Signature patches may be missing or install files may be corrupted.");
+                        break;
+                }
+
+                break;
+            default:
+                // Unknown codes
+                break;
+        }
+
+        MCP_Close(mcpHandle);
+
+        return false;
+    }
+
+    if(const MCPError err = MCP_Close(mcpHandle); err < 0) {
+        ErrorLog::getInstance().log("MCP_Close encountered error " + Utility::Str::intToHex(err, 8));
+        return false;
+    }
+
+    return true;
 }
 
 static const fspath DataPath = SD_ROOT_PATH / CHANNEL_DATA_PATH;
