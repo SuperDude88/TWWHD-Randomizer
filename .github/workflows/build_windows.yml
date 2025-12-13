@@ -38,14 +38,14 @@ jobs:
       # Increase page size so that the compiler doesn't
       # run out of memory
       - name: Configure Pagefile
-        uses: al-cheb/configure-pagefile-action@v1.4
+        uses: al-cheb/configure-pagefile-action@v1.5
         with:
           minimum-size: 16GB
           maximum-size: 16GB
           disk-root: "C:"
 
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
@@ -100,7 +100,7 @@ jobs:
           ${{ github.workspace }}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{ github.workspace }}\build\wwhd_rando_windows && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
 
       - name: Save Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           path: ${{github.workspace}}/build/wwhd_rando_windows
           name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_windows

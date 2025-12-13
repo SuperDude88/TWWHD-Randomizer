@@ -37,24 +37,24 @@ jobs:
     steps:
     # Will make the later gh release command work
      - name: Checkout Repository
-       uses: actions/checkout@v4
+       uses: actions/checkout@v6
 
      - name: Create Folder for Windows Files
        run: mkdir wwhd_rando_${{ github.event.release.tag_name }}_windows
 
      - name: Download Windows Artifact
-       uses: actions/download-artifact@v4
+       uses: actions/download-artifact@v7
        with:
         path: ${{ github.workspace }}/wwhd_rando_${{ github.event.release.tag_name }}_windows
         name: wwhd_rando_${{ github.event.release.tag_name }}_windows # pass name so it doesn't get put in a folder
 
      - name: Download Wii U Artifact
-       uses: actions/download-artifact@v4
+       uses: actions/download-artifact@v7
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}.wuhb # pass name so it doesn't get put in a folder
     
      - name: Download Mac OS Artifact
-       uses: actions/download-artifact@v4
+       uses: actions/download-artifact@v7
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg # pass name so it doesn't get put in a folder
 
