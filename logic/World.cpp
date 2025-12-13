@@ -687,7 +687,7 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
             location->method = std::make_unique<ModifyBoss>();
             break;
         default:
-            //Should have this from the constructor
+            // Should have this from the constructor
             //location.method = std::make_unique<LocationModification>();
             break;
     }

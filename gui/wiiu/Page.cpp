@@ -186,10 +186,10 @@ bool ProgressionPage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol <= 0) {
-            curCol = buttonColumns.size() - 1; //wrap on leftmost row
+            curCol = buttonColumns.size() - 1; // wrap on leftmost row
         }
         else {
-            curCol -= 1; //left one row
+            curCol -= 1; // left one row
         }
         moved = true;
 
@@ -199,10 +199,10 @@ bool ProgressionPage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol >= buttonColumns.size() - 1) {
-            curCol = 0; //wrap on rightmost row
+            curCol = 0; // wrap on rightmost row
         }
         else {
-            curCol += 1; //right one row
+            curCol += 1; // right one row
         }
         moved = true;
 
@@ -213,10 +213,10 @@ bool ProgressionPage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow <= 0) {
-            curRow = buttonColumns[curCol].size() - 1; //wrap on top
+            curRow = buttonColumns[curCol].size() - 1; // wrap on top
         }
         else {
-            curRow -= 1; //up one row
+            curRow -= 1; // up one row
         }
         moved = true;
 
@@ -226,10 +226,10 @@ bool ProgressionPage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow >= buttonColumns[curCol].size() - 1) {
-            curRow = 0; //wrap on buttom row
+            curRow = 0; // wrap on buttom row
         }
         else {
-            curRow += 1; //down one row
+            curRow += 1; // down one row
         }
         moved = true;
 
@@ -243,7 +243,7 @@ void ProgressionPage::drawTV() const {
     for(size_t col = 0; col < buttonColumns.size(); col++) {
         const size_t startCol = (ScreenSizeData::tv_line_length / buttonColumns.size()) * col;
         for(size_t row = 0; row < buttonColumns[col].size(); row++) {
-            //save 1 extra space for the cursor beside a button
+            // save 1 extra space for the cursor beside a button
             buttonColumns[col][row]->drawTV(PAGE_FIRST_ROW + row, startCol + 1, startCol + 1 + 30);
         }
     }
@@ -296,20 +296,20 @@ bool HintsPage::update() {
     if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         buttonColumns[curCol][curRow]->unhovered();
         if(curCol <= 0) {
-            curCol = buttonColumns.size() - 1; //wrap on leftmost row
+            curCol = buttonColumns.size() - 1; // wrap on leftmost row
         }
         else {
-            curCol -= 1; //left one row
+            curCol -= 1; // left one row
         }
         moved = true;
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         buttonColumns[curCol][curRow]->unhovered();
         if(curCol >= buttonColumns.size() - 1) {
-            curCol = 0; //wrap on rightmost row
+            curCol = 0; // wrap on rightmost row
         }
         else {
-            curCol += 1; //right one row
+            curCol += 1; // right one row
         }
         moved = true;
     }
@@ -324,10 +324,10 @@ bool HintsPage::update() {
     if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         buttonColumns[curCol][curRow]->unhovered();
         if(curRow <= 0) {
-            curRow = buttonColumns[curCol].size() - 1; //wrap on top
+            curRow = buttonColumns[curCol].size() - 1; // wrap on top
         }
         else {
-            curRow -= 1; //up one row
+            curRow -= 1; // up one row
         }
         moved = true;
     }
@@ -335,10 +335,10 @@ bool HintsPage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow >= buttonColumns[curCol].size() - 1) {
-            curRow = 0; //wrap on buttom row
+            curRow = 0; // wrap on buttom row
         }
         else {
-            curRow += 1; //down one row
+            curRow += 1; // down one row
         }
         moved = true;
     }
@@ -357,7 +357,7 @@ void HintsPage::drawTV() const {
     for(size_t col = 0; col < buttonColumns.size(); col++) {
         const size_t startCol = (ScreenSizeData::tv_line_length / buttonColumns.size()) * col;
         for(size_t row = 0; row < buttonColumns[col].size(); row++) {
-            //save 1 extra space for the cursor beside a button
+            // save 1 extra space for the cursor beside a button
             buttonColumns[col][row]->drawTV(PAGE_FIRST_ROW + row, startCol + 1, startCol + 1 + 34);
         }
     }
@@ -411,10 +411,10 @@ bool EntrancePage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol <= 0) {
-            curCol = buttonColumns.size() - 1; //wrap on leftmost row
+            curCol = buttonColumns.size() - 1; // wrap on leftmost row
         }
         else {
-            curCol -= 1; //left one row
+            curCol -= 1; // left one row
         }
         moved = true;
 
@@ -424,10 +424,10 @@ bool EntrancePage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol >= buttonColumns.size() - 1) {
-            curCol = 0; //wrap on rightmost row
+            curCol = 0; // wrap on rightmost row
         }
         else {
-            curCol += 1; //right one row
+            curCol += 1; // right one row
         }
         moved = true;
 
@@ -438,10 +438,10 @@ bool EntrancePage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow <= 0) {
-            curRow = buttonColumns[curCol].size() - 1; //wrap on top
+            curRow = buttonColumns[curCol].size() - 1; // wrap on top
         }
         else {
-            curRow -= 1; //up one row
+            curRow -= 1; // up one row
         }
         moved = true;
 
@@ -451,10 +451,10 @@ bool EntrancePage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow >= buttonColumns[curCol].size() - 1) {
-            curRow = 0; //wrap on buttom row
+            curRow = 0; // wrap on buttom row
         }
         else {
-            curRow += 1; //down one row
+            curRow += 1; // down one row
         }
         moved = true;
 
@@ -468,7 +468,7 @@ void EntrancePage::drawTV() const {
     for(size_t col = 0; col < buttonColumns.size(); col++) {
         const size_t startCol = (ScreenSizeData::tv_line_length / buttonColumns.size()) * col;
         for(size_t row = 0; row < buttonColumns[col].size(); row++) {
-            //save 1 extra space for the cursor beside a button
+            // save 1 extra space for the cursor beside a button
             buttonColumns[col][row]->drawTV(PAGE_FIRST_ROW + row, startCol + 1, startCol + 1 + 30);
         }
     }
@@ -522,20 +522,20 @@ bool ConveniencePage::update() {
     if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         buttonColumns[curCol][curRow]->unhovered();
         if(curCol <= 0) {
-            curCol = buttonColumns.size() - 1; //wrap on leftmost row
+            curCol = buttonColumns.size() - 1; // wrap on leftmost row
         }
         else {
-            curCol -= 1; //left one row
+            curCol -= 1; // left one row
         }
         moved = true;
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         buttonColumns[curCol][curRow]->unhovered();
         if(curCol >= buttonColumns.size() - 1) {
-            curCol = 0; //wrap on rightmost row
+            curCol = 0; // wrap on rightmost row
         }
         else {
-            curCol += 1; //right one row
+            curCol += 1; // right one row
         }
         moved = true;
     }
@@ -550,10 +550,10 @@ bool ConveniencePage::update() {
     if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         buttonColumns[curCol][curRow]->unhovered();
         if(curRow <= 0) {
-            curRow = buttonColumns[curCol].size() - 1; //wrap on top
+            curRow = buttonColumns[curCol].size() - 1; // wrap on top
         }
         else {
-            curRow -= 1; //up one row
+            curRow -= 1; // up one row
         }
         moved = true;
     }
@@ -561,10 +561,10 @@ bool ConveniencePage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow >= buttonColumns[curCol].size() - 1) {
-            curRow = 0; //wrap on buttom row
+            curRow = 0; // wrap on buttom row
         }
         else {
-            curRow += 1; //down one row
+            curRow += 1; // down one row
         }
         moved = true;
     }
@@ -583,7 +583,7 @@ void ConveniencePage::drawTV() const {
     for(size_t col = 0; col < buttonColumns.size(); col++) {
         const size_t startCol = (ScreenSizeData::tv_line_length / buttonColumns.size()) * col;
         for(size_t row = 0; row < buttonColumns[col].size(); row++) {
-            //save 1 extra space for the cursor beside a button
+            // save 1 extra space for the cursor beside a button
             buttonColumns[col][row]->drawTV(PAGE_FIRST_ROW + row, startCol + 1, startCol + 1 + 30);
         }
     }
@@ -631,10 +631,10 @@ bool AdvancedPage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol <= 0) {
-            curCol = buttonColumns.size() - 1; //wrap on leftmost row
+            curCol = buttonColumns.size() - 1; // wrap on leftmost row
         }
         else {
-            curCol -= 1; //left one row
+            curCol -= 1; // left one row
         }
         moved = true;
 
@@ -644,10 +644,10 @@ bool AdvancedPage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curCol >= buttonColumns.size() - 1) {
-            curCol = 0; //wrap on rightmost row
+            curCol = 0; // wrap on rightmost row
         }
         else {
-            curCol += 1; //right one row
+            curCol += 1; // right one row
         }
         moved = true;
 
@@ -658,10 +658,10 @@ bool AdvancedPage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow <= 0) {
-            curRow = buttonColumns[curCol].size() - 1; //wrap on top
+            curRow = buttonColumns[curCol].size() - 1; // wrap on top
         }
         else {
-            curRow -= 1; //up one row
+            curRow -= 1; // up one row
         }
         moved = true;
 
@@ -671,10 +671,10 @@ bool AdvancedPage::update() {
         buttonColumns[curCol][curRow]->unhovered();
 
         if(curRow >= buttonColumns[curCol].size() - 1) {
-            curRow = 0; //wrap on buttom row
+            curRow = 0; // wrap on buttom row
         }
         else {
-            curRow += 1; //down one row
+            curRow += 1; // down one row
         }
         moved = true;
 
@@ -688,7 +688,7 @@ void AdvancedPage::drawTV() const {
     for(size_t col = 0; col < buttonColumns.size(); col++) {
         const size_t startCol = (ScreenSizeData::tv_line_length / buttonColumns.size()) * col;
         for(size_t row = 0; row < buttonColumns[col].size(); row++) {
-            //save 1 extra space for the cursor beside a button
+            // save 1 extra space for the cursor beside a button
             buttonColumns[col][row]->drawTV(PAGE_FIRST_ROW + row, startCol + 1, startCol + 1 + 30);
         }
     }
@@ -905,10 +905,10 @@ bool ItemsPage::update() {
                 countButtons[curRow]->unhovered();
 
                 if(curRow <= 0) {
-                    curRow = countButtons.size() - 1; //wrap on top row
+                    curRow = countButtons.size() - 1; // wrap on top row
                 }
                 else {
-                    curRow -= 1; //up one row
+                    curRow -= 1; // up one row
                 }
                 
                 countButtons[curRow]->hovered();
@@ -943,10 +943,10 @@ bool ItemsPage::update() {
                 countButtons[curRow]->unhovered();
 
                 if(curRow >= countButtons.size() - 1) {
-                    curRow = 0; //wrap on bottom row
+                    curRow = 0; // wrap on bottom row
                 }
                 else {
-                    curRow += 1; //down one row
+                    curRow += 1; // down one row
                 }
                 
                 countButtons[curRow]->hovered();
@@ -963,7 +963,7 @@ bool ItemsPage::update() {
             if(listButtons[listScrollPos + curRow].update()) {
                 btnUpdate = true;
 
-                //update gear list
+                // update gear list
                 OptionCB::clearStartingItems();
                 for(const auto& button : listButtons) {
                     if(button.isEnabled()) {
@@ -1121,7 +1121,7 @@ bool LocationsPage::update() {
     if(listButtons[listScrollPos + curRow].update()) {
         btnUpdate = true;
 
-        //update excluded locations
+        // update excluded locations
         OptionCB::clearExcludedLocations();
         for(const auto& button : listButtons) {
             if(button.isEnabled()) {
@@ -1252,10 +1252,10 @@ bool ColorPage::PresetsSubpage::update() {
                 break;
             case Column::BUTTONS:
                 if(curRow <= 0) {
-                    curRow = toggles.size() - 1; //wrap on top row
+                    curRow = toggles.size() - 1; // wrap on top row
                 }
                 else {
-                    curRow -= 1; //up one row
+                    curRow -= 1; // up one row
                 }
 
                 break;
@@ -1288,10 +1288,10 @@ bool ColorPage::PresetsSubpage::update() {
                 break;
             case Column::BUTTONS:
                 if(curRow >= toggles.size() - 1) {
-                    curRow = 0; //wrap on bottom row
+                    curRow = 0; // wrap on bottom row
                 }
                 else {
-                    curRow += 1; //down one row
+                    curRow += 1; // down one row
                 }
 
                 break;
@@ -1374,7 +1374,7 @@ void ColorPage::PresetsSubpage::drawTV() const {
 
         std::string hexColor = getModel().getColor(textures[i]);
         for(auto& c : hexColor) {
-            c = std::toupper(c); //capitalize for consistency
+            c = std::toupper(c); // capitalize for consistency
         }
 
         OSScreenPutFontEx(SCREEN_TV, countStartCol + 1 + 15, row, hexColor.c_str());
@@ -1464,19 +1464,19 @@ bool ColorPage::ColorPickerSubpage::updateList() {
     bool moved = false;
     if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         if(curCol <= 0) {
-            curCol = actions.size() - 1; //wrap on leftmost row
+            curCol = actions.size() - 1; // wrap on leftmost row
         }
         else {
-            curCol -= 1; //left one row
+            curCol -= 1; // left one row
         }
         moved = true;
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         if(curCol >= actions.size() - 1) {
-            curCol = 0; //wrap on rightmost row
+            curCol = 0; // wrap on rightmost row
         }
         else {
-            curCol += 1; //right one row
+            curCol += 1; // right one row
         }
         moved = true;
     }
@@ -1583,7 +1583,7 @@ void ColorPage::ColorPickerSubpage::drawListTV() const {
 
         std::string hexColor = getModel().getColor(textures[listScrollPos + row]);
         for(auto& c : hexColor) {
-            c = std::toupper(c); //capitalize for consistency
+            c = std::toupper(c); // capitalize for consistency
         }
 
         OSScreenPutFontEx(SCREEN_TV, startCol + 13, PAGE_FIRST_ROW + row, hexColor.c_str());

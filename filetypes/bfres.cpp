@@ -22,11 +22,11 @@ using StringTableEntry = FileTypes::resFile::StringTableEntry;
     } \
 }
 
-//This code should probably be optimized a bit, minimize loops etc, it runs quite often
+// This code should probably be optimized a bit, minimize loops etc, it runs quite often
 namespace {
     FRESError readStringTableEntry(std::istream& bfres, const unsigned int offset, std::string& out) {
-        bfres.seekg(offset - 4, std::ios::beg); //BFRES stores offsets to strings directly, but the 4 bytes preceding it store length which we want
-        out.clear(); //make sure string is empty before reading
+        bfres.seekg(offset - 4, std::ios::beg); // BFRES stores offsets to strings directly, but the 4 bytes preceding it store length which we want
+        out.clear(); // make sure string is empty before reading
         
         uint32_t len;
         if (!bfres.read(reinterpret_cast<char*>(&len), sizeof(len))) {
@@ -35,7 +35,7 @@ namespace {
         Utility::Endian::toPlatform_inplace(eType::Big, len);
         // Check out std::getline(bfres, out, '\0')
         if (out = Utility::Str::readNullTerminatedStr<std::string>(bfres, offset, true); out.empty()) {
-    		LOG_ERR_AND_RETURN(FRESError::REACHED_EOF); //empty string means it could not read a character from file
+    		LOG_ERR_AND_RETURN(FRESError::REACHED_EOF); // empty string means it could not read a character from file
     	}
         if (len != out.length()) LOG_ERR_AND_RETURN(FRESError::STRING_LEN_MISMATCH);
         return FRESError::NONE;
@@ -109,7 +109,7 @@ namespace {
         return FRESError::NONE;
     }
 
-    //Partial implementation, only process embedded files for now
+    // Partial implementation, only process embedded files for now
 
     std::variant<FRESError, std::vector<FileSpec>> readEmbedded(std::istream& bfres, FRESHeader& hdr) {
         if (hdr.groupCounts[11] != 0) {
@@ -171,14 +171,14 @@ namespace {
                 file.fileLength = fileInfo.fileLength;
                 file.fileOffset = fileInfo.location + fileInfo.dataOffset;
 
-                hdr.embeddedFiles.push_back(fileInfo); //Add the embedded files to the header
+                hdr.embeddedFiles.push_back(fileInfo); // Add the embedded files to the header
 
                 fileList.push_back(file);
             }
             return fileList;
         }
 
-        return FRESError::GROUP_IS_EMPTY; //Not sure the best way to handle this error, it isnt really an error but still useful info that doesnt fit elsewhere
+        return FRESError::GROUP_IS_EMPTY; // Not sure the best way to handle this error, it isnt really an error but still useful info that doesnt fit elsewhere
     }
 
     FRESError writeFRESHeader(std::ostream& out, FRESHeader& hdr) {
@@ -254,7 +254,7 @@ namespace FileTypes {
 
         std::variant<FRESError, std::vector<FileSpec>> readFiles = readEmbedded(bfres, fresHeader);
         if (readFiles.index() == 0) {
-            if (std::get<FRESError>(readFiles) != FRESError::GROUP_IS_EMPTY) { //ignore the group is empty error since we can still continue execution
+            if (std::get<FRESError>(readFiles) != FRESError::GROUP_IS_EMPTY) { // ignore the group is empty error since we can still continue execution
                 LOG_ERR_AND_RETURN(std::get<FRESError>(readFiles));
             }
         }
@@ -266,7 +266,7 @@ namespace FileTypes {
         std::sort(files.begin(), files.end(), [](const FileSpec& a, const FileSpec& b) {return a.fileOffset < b.fileOffset; });
 
         bfres.seekg(0x6C, std::ios::beg);
-        fileData.resize(fresHeader.fileSize - 0x6C); //Exclude header size since it doesn't get included in this data
+        fileData.resize(fresHeader.fileSize - 0x6C); // Exclude header size since it doesn't get included in this data
         if (!bfres.read(&fileData[0], fresHeader.fileSize - 0x6C)) {
             LOG_ERR_AND_RETURN(FRESError::REACHED_EOF);
         }
@@ -283,7 +283,7 @@ namespace FileTypes {
         Utility::Endian::toPlatform_inplace(eType::Big, group.groupLength);
         Utility::Endian::toPlatform_inplace(eType::Big, group.entryCount);
 
-        bfres.seekg(0x10, std::ios::cur); //skip root entry
+        bfres.seekg(0x10, std::ios::cur); // skip root entry
 
         for (int32_t entry_index = 0; entry_index < group.entryCount; entry_index++) {
             GroupEntry entry;
@@ -341,14 +341,14 @@ namespace FileTypes {
         fresHeader.embeddedFiles[fileIndex].fileLength = inData.size();
 
         //TODO: change the way the file list/embedded file list is handled so it doesn't completely suck
-        if (fileIndex != fresHeader.embeddedFiles.size() - 1) { //Check if it is the last embedded file
+        if (fileIndex != fresHeader.embeddedFiles.size() - 1) { // Check if it is the last embedded file
             for (unsigned int i = fileIndex + 1; i < fresHeader.embeddedFiles.size(); i++) {
-                fresHeader.embeddedFiles[i].dataOffset = fresHeader.embeddedFiles[i].dataOffset + (inData.size() - originalLen); //Change offset based on how much the previous file shifted it
+                fresHeader.embeddedFiles[i].dataOffset = fresHeader.embeddedFiles[i].dataOffset + (inData.size() - originalLen); // Change offset based on how much the previous file shifted it
                 files[i].fileOffset = files[i].fileOffset + (inData.size() - originalLen);
             }
         }
 
-        fileData.replace(fresHeader.embeddedFiles[fileIndex].dataOffset + fresHeader.embeddedFiles[fileIndex].location - 0x6C, originalLen, inData); //Offset is relative to the location it's stored in the file, location is relative to file start so we take away the header size
+        fileData.replace(fresHeader.embeddedFiles[fileIndex].dataOffset + fresHeader.embeddedFiles[fileIndex].location - 0x6C, originalLen, inData); // Offset is relative to the location it's stored in the file, location is relative to file start so we take away the header size
         return FRESError::NONE;
     }
 
@@ -360,14 +360,14 @@ namespace FileTypes {
         const int64_t sizeDiff = inData.size() - originalLen;
 
         //TODO: change the way the file list/embedded file list is handled so it doesn't completely suck
-        if (fileIndex != fresHeader.embeddedFiles.size() - 1) { //Check if it is the last embedded file
+        if (fileIndex != fresHeader.embeddedFiles.size() - 1) { // Check if it is the last embedded file
             for (unsigned int i = fileIndex + 1; i < fresHeader.embeddedFiles.size(); i++) {
-                fresHeader.embeddedFiles[i].dataOffset += sizeDiff; //Change offset based on how much the previous file shifted it
+                fresHeader.embeddedFiles[i].dataOffset += sizeDiff; // Change offset based on how much the previous file shifted it
                 files[i].fileOffset += sizeDiff;
             }
         }
 
-        fileData.replace(fresHeader.embeddedFiles[fileIndex].dataOffset + fresHeader.embeddedFiles[fileIndex].location - 0x6C, originalLen, inData); //Offset is relative to the location it's stored in the file, location is relative to file start so we take away the header size
+        fileData.replace(fresHeader.embeddedFiles[fileIndex].dataOffset + fresHeader.embeddedFiles[fileIndex].location - 0x6C, originalLen, inData); // Offset is relative to the location it's stored in the file, location is relative to file start so we take away the header size
         return FRESError::NONE;
     }
 
@@ -410,7 +410,7 @@ namespace FileTypes {
             if (charpos >= fileName.size()) {
                 direction = 0;
             } else {
-                direction = (fileName[charpos] >> bitpos) & 1U; //unsigned to resolve a compiler warning, makes no functional difference
+                direction = (fileName[charpos] >> bitpos) & 1U; // unsigned to resolve a compiler warning, makes no functional difference
             }
 
             if (direction == 0) {
@@ -427,7 +427,7 @@ namespace FileTypes {
             LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
         }
 
-        LOG_AND_RETURN_IF_ERR(replaceEmbeddedFile(entryIndex - 1, inFile)); //Entry index includes the root entry, we don't need it
+        LOG_AND_RETURN_IF_ERR(replaceEmbeddedFile(entryIndex - 1, inFile)); // Entry index includes the root entry, we don't need it
         return FRESError::NONE;
     }
 
@@ -470,7 +470,7 @@ namespace FileTypes {
             if (charpos >= fileName.size()) {
                 direction = 0;
             } else {
-                direction = (fileName[charpos] >> bitpos) & 1U; //unsigned to resolve a compiler warning, makes no functional difference
+                direction = (fileName[charpos] >> bitpos) & 1U; // unsigned to resolve a compiler warning, makes no functional difference
             }
 
             if (direction == 0) {
@@ -482,7 +482,7 @@ namespace FileTypes {
             nextSearchVal = group.entries[entryIndex].searchValue;
         }
 
-        LOG_AND_RETURN_IF_ERR(replaceEmbeddedFile(entryIndex - 1, newData)); //Entry index includes the root entry, we don't need it
+        LOG_AND_RETURN_IF_ERR(replaceEmbeddedFile(entryIndex - 1, newData)); // Entry index includes the root entry, we don't need it
         return FRESError::NONE;
     }
 
@@ -499,14 +499,14 @@ namespace FileTypes {
             if (!outFile.is_open()) {
                 LOG_ERR_AND_RETURN(FRESError::COULD_NOT_OPEN);
             }
-            outFile.write(&fileData[file.fileOffset - 0x6C], file.fileLength); //Offsets are relative to file start but the data doesnt include the header
+            outFile.write(&fileData[file.fileOffset - 0x6C], file.fileLength); // Offsets are relative to file start but the data doesnt include the header
         }
         return FRESError::NONE;
     }
     
     FRESError resFile::writeToStream(std::ostream& out) {
         LOG_AND_RETURN_IF_ERR(writeFRESHeader(out, fresHeader));
-        out.write(&fileData[fresHeader.embeddedFiles.size() * 0x8], fileData.size() - (fresHeader.embeddedFiles.size() * 0x8)); //Skip over the embedded file info at the start of the file
+        out.write(&fileData[fresHeader.embeddedFiles.size() * 0x8], fileData.size() - (fresHeader.embeddedFiles.size() * 0x8)); // Skip over the embedded file info at the start of the file
         uint32_t fileLen = out.tellp();
         out.seekp(0xC, std::ios::beg);
         Utility::Endian::toPlatform_inplace(eType::Big, fileLen);

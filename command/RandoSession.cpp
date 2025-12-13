@@ -37,7 +37,7 @@
 
 #define CHECK_INITIALIZED(ret) if(!initialized) { ErrorLog::getInstance().log("Session is not initialized (encountered on line " TOSTRING(__LINE__) ")"); return ret; }
 
-RandoSession g_session; //definition for extern stuff
+RandoSession g_session; // definition for extern stuff
 
 #ifdef DEVKITPRO
 static BS::thread_pool workerThreads(3);
@@ -281,7 +281,7 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
                 current->data = std::make_unique<RawFile>(resData.substr((*it).fileOffset - 0x6C, (*it).fileLength));
             }
             else {
-                return false; //what
+                return false; // what
             }
         }
         break;
@@ -297,7 +297,7 @@ bool RandoSession::extractFile(std::shared_ptr<CacheEntry> current)
             return false;
     }
 
-    if(parentData != nullptr) parentData->data.str(std::string()); //clear parent sstream, don't need it
+    if(parentData != nullptr) parentData->data.str(std::string()); // clear parent sstream, don't need it
     return true;
 }
 
@@ -523,67 +523,67 @@ bool RandoSession::copyToGameFile(const fspath& source, const fspath& relPath, c
     return true;
 }
 
-bool RandoSession::restoreGameFile(const fspath& relPath) { //Restores a file from the base directory (without extracting any data)
+bool RandoSession::restoreGameFile(const fspath& relPath) { // Restores a file from the base directory (without extracting any data)
     CHECK_INITIALIZED(false);
 
-    CacheEntry& entry = openGameFile(relPath); //doesn't need actions, open loads from base and resaves to output
+    CacheEntry& entry = openGameFile(relPath); // doesn't need actions, open loads from base and resaves to output
     return true;
 }
 
 bool RandoSession::handleChildren(const fspath filename, std::shared_ptr<CacheEntry> current) {
-    if(current->parent->parent == nullptr) { //only print start of chain to avoid spam
+    if(current->parent->parent == nullptr) { // only print start of chain to avoid spam
         Utility::platformLog("Working on " + filename.string());
     }
-    //extract this level, move down tree
+    // extract this level, move down tree
     if(!extractFile(current)) return false;
 
-    //has mods to stream (item location edits), handle these before filetype stuff
+    // has mods to stream (item location edits), handle these before filetype stuff
     if(current->children.size() == 1 && current->actions.size() != 0 && dynamic_cast<RawFile*>(current->data.get()) != nullptr) {
         for(auto& action : current->actions) {
             action(this, current->data.get());
         }
     }
 
-    //bottom of branch, run mods
+    // bottom of branch, run mods
     if(current->children.size() == 0) {
         for(auto& action : current->actions) {
             action(this, current->data.get());
         }
     }
-    else { //modify, repack children
+    else { // modify, repack children
         for(auto& [filename, child] : current->children) {
-            if(child->getNumPrereqs() > 0 || child->isFinished() == true) continue; //skip this child, prereq did/will do it
+            if(child->getNumPrereqs() > 0 || child->isFinished() == true) continue; // skip this child, prereq did/will do it
 
             RandoSession::handleChildren(filename, child);
         }
     }
 
-    //repack this level
+    // repack this level
     repackFile(current);
 
     current->setFinished();
 
-    //handle dependents
+    // handle dependents
     for(auto& dependent : current->dependents) {
-        //check if this is the last dependency
-        if(dependent->decrementPrereq() > 0) continue; //decrement returns new value
+        // check if this is the last dependency
+        if(dependent->decrementPrereq() > 0) continue; // decrement returns new value
 
-        //handle the data
+        // handle the data
         if(current->isSibling(dependent)) { //IMPROVEMENT: more precise sibling checks, filename stuff
             RandoSession::handleChildren(filename / dependent->element, dependent);
         }
         else { //IMPROVEMENT: check entry is root, handle other edge cases
-            workerThreads.push_task(&RandoSession::handleChildren, this, dependent->element, dependent); //add root of this other chain
+            workerThreads.push_task(&RandoSession::handleChildren, this, dependent->element, dependent); // add root of this other chain
         }
     }
 
-    //clear children once done
+    // clear children once done
     current->children.clear();
 
-    //update progress if this is the root of the chain
+    // update progress if this is the root of the chain
     if(current->storedFormat == CacheEntry::Format::ROOT) {
         num_completed_tasks++;
-        UPDATE_DIALOG_VALUE(int(50.0f + 49.0f * (float(num_completed_tasks)/float(total_num_tasks)))); //also update progress bar
+        UPDATE_DIALOG_VALUE(int(50.0f + 49.0f * (float(num_completed_tasks)/float(total_num_tasks)))); // also update progress bar
     }
 
     return true;
@@ -647,7 +647,7 @@ bool RandoSession::runFirstTimeSetup() {
     #ifdef DEVKITPRO
         // create folders and add all game files to RandoSession (it will thread the copies and skip anything that we will modify and overwrite)
         Utility::platformLog("Running first time setup (this will increase repack time)");
-        if(!iterate_directory_recursive(*this, baseDir / "content")) { //code and meta folders are handled by channel install
+        if(!iterate_directory_recursive(*this, baseDir / "content")) { // code and meta folders are handled by channel install
             return false; 
         }
     #else
@@ -684,7 +684,7 @@ bool RandoSession::modFiles()
 
     total_num_tasks = fileCache->children.size();
     for(auto& [filename, child] : fileCache->children) {
-        //has dependency, it will add it when necessary
+        // has dependency, it will add it when necessary
         if(child->getNumPrereqs() > 0) {
             continue;
         }

@@ -8,7 +8,7 @@
 #include <nuspack/crypto/IV.hpp>
 #include <nuspack/crypto/Key.hpp>
 
-class Content; //forward declare to avoid include circle
+class Content; // forward declare to avoid include circle
 
 class Encryption {
     Key key;

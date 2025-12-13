@@ -41,7 +41,7 @@ namespace Utility {
     bool copy_file(const fspath& from, const fspath& to) {
         Utility::platformLog("Copying " + Utility::toUtf8String(to));
         #ifdef DEVKITPRO
-            //use a buffer to speed up file copying
+            // Use a buffer to speed up file copying
 
             std::ifstream src(from, std::ios::binary);
             std::ofstream dst(to, std::ios::binary);
@@ -72,7 +72,7 @@ namespace Utility {
 
     bool copy(const fspath& from, const fspath& to) {
         #ifdef DEVKITPRO
-            //based on https://github.com/emiyl/dumpling/blob/12935ede46e9720fdec915cdb430d10eb7df54a7/source/app/dumping.cpp#L208
+            // Based on https://github.com/emiyl/dumpling/blob/12935ede46e9720fdec915cdb430d10eb7df54a7/source/app/dumping.cpp#L208
 
             DIR* dirHandle;
             if ((dirHandle = opendir(from.string().c_str())) == nullptr) {
@@ -160,7 +160,6 @@ namespace Utility {
     // Short function for getting the string data from a file
     int getFileContents(const fspath& filename, std::stringstream& fileContents)
     {
-        // Otherwise load it normally
         std::ifstream file(filename, std::ios::binary);
         if (!file.is_open())
         {

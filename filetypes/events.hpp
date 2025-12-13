@@ -1,5 +1,5 @@
-//Event lists store event information for in-game sequences
-//Larger cutscenes have their own model archives and use .stb files
+// Event lists store event information for in-game sequences
+// Larger cutscenes have their own model archives and use .stb files
 
 #pragma once
 
@@ -33,7 +33,7 @@ enum struct [[nodiscard]] EventlistError {
 };
 
 namespace FileTypes {
-    class EventList; //forward declare
+    class EventList; // forward declare
 }
 
 struct Prop {

@@ -39,7 +39,7 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 		if (layer_char_to_layer_index.contains(layer_char)) {
 			layer = layer_char_to_layer_index.at(layer_char);
 		}
-		else if (layer_char != 'S') { //Should always be 'S' if it is not a unique layer char
+		else if (layer_char != 'S') { // Should always be 'S' if it is not a unique layer char
 			LOG_ERR_AND_RETURN(DZXError::UNKNOWN_LAYER_CHAR);
 		}
 		type = "TRES";
@@ -50,7 +50,7 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 		if (layer_char_to_layer_index.contains(layer_char)) {
 			layer = layer_char_to_layer_index.at(layer_char);
 		}
-		else if (layer_char != 'R') { //Should always be 'R' if it is not a unique layer char
+		else if (layer_char != 'R') { // Should always be 'R' if it is not a unique layer char
 			LOG_ERR_AND_RETURN(DZXError::UNKNOWN_LAYER_CHAR);
 		}
 		type = "ACTR";
@@ -61,7 +61,7 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 		if (layer_char_to_layer_index.contains(layer_char)) {
 			layer = layer_char_to_layer_index.at(layer_char);
 		}
-		else if (layer_char != 'B') { //Should always be 'B' if it is not a unique layer char
+		else if (layer_char != 'B') { // Should always be 'B' if it is not a unique layer char
 			LOG_ERR_AND_RETURN(DZXError::UNKNOWN_LAYER_CHAR);
 		}
 		type = "SCOB";
@@ -73,7 +73,7 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 	entry_size = size_by_type.at(type);
 
 	file.seekg(first_entry_offset, std::ios::beg);
-	if (std::strncmp("RTBL", &type[0], 4) == 0) { //RTBL has dynamic length based on the number of rooms, needs a special case
+	if (std::strncmp("RTBL", &type[0], 4) == 0) { // RTBL has dynamic length based on the number of rooms, needs a special case
 		for (unsigned int entry_index = 0; entry_index < num_entries; entry_index++) {
 			ChunkEntry entry;
 			file.seekg(entry_index * 0x4 + first_entry_offset, std::ios::beg);
@@ -94,7 +94,7 @@ DZXError Chunk::read(std::istream& file, const unsigned int offset) {
 
 			entry.data.resize(12 + num_rooms);
 			file.seekg(adjacent_rooms_offset, std::ios::beg);
-			if (!file.read(&entry.data[12], num_rooms)) { //read all the rooms into data at once
+			if (!file.read(&entry.data[12], num_rooms)) { // read all the rooms into data at once
 				LOG_ERR_AND_RETURN(DZXError::REACHED_EOF);
 			}
 			entry_size = entry.data.size();
@@ -118,7 +118,7 @@ DZXError Chunk::save_changes(std::ostream& out) {
 	offset = out.tellp();
 
 	num_entries = entries.size();
-	//When nintendo deleted tuner triggers they left some empty chunks
+	// When nintendo deleted tuner triggers they left some empty chunks
 	//if (num_entries == 0) {
 	//	return DZXError::CHUNK_NO_ENTRIES;
 	//}
@@ -129,9 +129,9 @@ DZXError Chunk::save_changes(std::ostream& out) {
 		type[3] = buf[0];
 	}
 	out.write(&type[0], 4);
-	const auto num_entries_byteswap = Utility::Endian::toPlatform(eType::Big, num_entries); //Need to use num_entries later, can't byteswap inplace
+	const auto num_entries_byteswap = Utility::Endian::toPlatform(eType::Big, num_entries); // Need to use num_entries later, can't byteswap inplace
 	out.write(reinterpret_cast<const char*>(&num_entries_byteswap), 4);
-	Utility::seek(out, 4, std::ios::cur); //filled in later
+	Utility::seek(out, 4, std::ios::cur); // filled in later
 
 	return DZXError::NONE;
 }
@@ -206,7 +206,7 @@ namespace FileTypes {
 		for (Chunk& chunk : chunks) {
 			if (chunk_type == chunk.type) {
 				for (ChunkEntry& entry : chunk.entries) {
-					entries.push_back(&entry); //can't use insert because it needs to be converted to a pointer
+					entries.push_back(&entry); // can't use insert because it needs to be converted to a pointer
 				}
 			}
 		}
@@ -218,7 +218,7 @@ namespace FileTypes {
 		for (Chunk& chunk : chunks) {
 			if (chunk_type == chunk.type && layer == chunk.layer) {
 				for (ChunkEntry& entry : chunk.entries) {
-					entries.push_back(&entry); //can't use insert because it needs to be converted to a pointer
+					entries.push_back(&entry); // can't use insert because it needs to be converted to a pointer
 				}
 			}
 		}
@@ -230,29 +230,29 @@ namespace FileTypes {
 		for (Chunk& chunk : chunks) {
 			if (chunk_type == chunk.type && layer == chunk.layer) {
 				chunk.entries.push_back(entity);
-				return chunk.entries.back(); //return reference to the entity we added
+				return chunk.entries.back(); // return reference to the entity we added
 			}
 		}
 
-		//if chunk does not already exist
+		// if chunk does not already exist
 		Chunk chunk;
 		chunk.type = chunk_type;
 		chunk.layer = layer;
 		chunk.entry_size = size_by_type.at(chunk_type);
 		chunk.entries.push_back(entity);
 		chunks.push_back(chunk);
-		return chunks.back().entries.back(); //return reference to the entity we added
+		return chunks.back().entries.back(); // return reference to the entity we added
 	}
 
 	void DZXFile::remove_entity(ChunkEntry* entity) {
 		size_t len = entity->data.size();
 		entity->data.clear();
-		entity->data.resize(len, '\x00'); //clear entity, replace it with null data
+		entity->data.resize(len, '\x00'); // clear entity, replace it with null data
 	}
 
 	DZXError DZXFile::writeToStream(std::ostream& out) {
 		for (auto it = chunks.begin(); it != chunks.end(); it++) {
-			if(it->entries.empty()) it = chunks.erase(it); //remove empty chunks
+			if(it->entries.empty()) it = chunks.erase(it); // remove empty chunks
 		}
 		num_chunks = chunks.size();
 		if (num_chunks == 0) {
@@ -276,11 +276,11 @@ namespace FileTypes {
 			if (chunk.entries.empty()) {
 				LOG_ERR_AND_RETURN(DZXError::CHUNK_NO_ENTRIES);
 			}
-			if (std::strncmp("RTBL", &chunk.type[0], 4) == 0) { //RTBL has a dynamic length based on rooms, needs to be saved differently
+			if (std::strncmp("RTBL", &chunk.type[0], 4) == 0) { // RTBL has a dynamic length based on rooms, needs to be saved differently
 				unsigned int rooms_offset = chunk.first_entry_offset + chunk.entries.size() * 0xC;
 				for (unsigned int entry_index = 0; entry_index < chunk.entries.size(); entry_index++) {
 					ChunkEntry& entry = chunk.entries[entry_index];
-					uint32_t subentry_offset = chunk.first_entry_offset + entry_index * 0x8 + chunk.entries.size() * 0x4; //update the subentry's offset
+					uint32_t subentry_offset = chunk.first_entry_offset + entry_index * 0x8 + chunk.entries.size() * 0x4; // update the subentry's offset
 					const auto subentry_offset_byteswap = Utility::Endian::toPlatform(eType::Big, subentry_offset);
 					entry.data.replace(0, 4, reinterpret_cast<const char*>(&subentry_offset_byteswap), 4);
 					Utility::seek(out, chunk.first_entry_offset + entry_index * 4, std::ios::beg);
@@ -294,7 +294,7 @@ namespace FileTypes {
 					Utility::seek(out, rooms_offset, std::ios::beg);
 
 					out.write(&entry.data[12], entry.data[4]);
-					rooms_offset += entry.data[4]; //Add number of rooms (1 byte each) to the room offset for next iteration
+					rooms_offset += entry.data[4]; // Add number of rooms (1 byte each) to the room offset for next iteration
 				}
 
 			}

@@ -57,7 +57,7 @@ private:
             return false;
         }
 
-        //Check the meta.xml for other platforms (+ a sanity check on console)
+        // Check the meta.xml for other platforms (+ a sanity check on console)
         const fspath& metaPath = g_session.getBaseDir() / "meta/meta.xml";
         if(!is_regular_file(metaPath)) {
             ErrorLog::getInstance().log("Failed finding meta.xml");
@@ -118,7 +118,7 @@ private:
             #endif
         }
 
-        //Double check the meta.xml
+        // Double check the meta.xml
         const fspath& metaPath = out / "meta/meta.xml";
         if(!is_regular_file(metaPath)) {
             ErrorLog::getInstance().log("Failed finding meta.xml");
@@ -292,7 +292,7 @@ public:
             return 1;
         }
 
-        //done!
+        // done!
         return 0;
     }
 };

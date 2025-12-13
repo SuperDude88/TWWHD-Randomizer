@@ -13,7 +13,7 @@ using LogLine_t = std::array<char, tv_line_length>;
 static std::array<LogLine_t, tv_num_lines> logLines;
 static size_t curLine = 0;
 
-static void AddLine(const LogLine_t& line) { //we expect LogLine_t is null-terminated
+static void AddLine(const LogLine_t& line) { // we expect LogLine_t is null-terminated
     if(curLine == tv_num_lines) {
         for(size_t i = 0; i < logLines.size() - 1; i++) {
             logLines[i] = logLines[i + 1];

@@ -1,5 +1,5 @@
-//Format is part of sead (Nintendo's standard library)
-//YAZ0 is a compression algorithm Nintendo has used across many games
+// Format is part of sead (Nintendo's standard library)
+// YAZ0 is a compression algorithm Nintendo has used across many games
 
 #pragma once
 

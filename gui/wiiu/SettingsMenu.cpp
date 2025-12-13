@@ -35,7 +35,7 @@ static void showVersionWarning() {
             break;
         }
         
-        std::this_thread::sleep_for(std::chrono::milliseconds(17)); //update ~60 times a second
+        std::this_thread::sleep_for(std::chrono::milliseconds(17)); // update ~60 times a second
     }
 }
 
@@ -74,10 +74,10 @@ SettingsMenu::Status SettingsMenu::update() {
         pages[curPage]->close();
 
         if(curPage <= 0) {
-            curPage = pages.size() - 1; //wrap on leftmost page
+            curPage = pages.size() - 1; // wrap on leftmost page
         }
         else {
-            curPage -= 1; //left one page
+            curPage -= 1; // left one page
         }
         moved = true;
     }
@@ -85,10 +85,10 @@ SettingsMenu::Status SettingsMenu::update() {
         pages[curPage]->close();
 
         if(curPage >= pages.size() - 1) {
-            curPage = 0; //wrap on rightmost page
+            curPage = 0; // wrap on rightmost page
         }
         else {
-            curPage += 1; //right one page
+            curPage += 1; // right one page
         }
         moved = true;
     }
@@ -122,7 +122,7 @@ void SettingsMenu::drawTV() const {
             headerSecondLine += ' ' + pages[i]->getName() + ' ';
         }
 
-        //not the last item
+        // not the last item
         if(i + 1 != pages.size()) {
             headerSecondLine += '|';
         }
@@ -212,7 +212,7 @@ SettingsMenu::Result SettingsMenu::run() {
             }
         }
 
-        std::this_thread::sleep_for(17ms); //update ~60 times a second
+        std::this_thread::sleep_for(17ms); // update ~60 times a second
     }
 
     setHomeMenuEnable(false);

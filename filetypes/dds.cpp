@@ -26,7 +26,7 @@ static const std::unordered_map<uint32_t, uint8_t> a4l4_masks = {{0xf, 0}, {0xf0
 
 
 
-//This might be super unsafe, no idea
+// This might be super unsafe, no idea
 template<typename T> requires std::is_enum_v<T>
 T operator |(T a, T b) {
     return static_cast<T>(static_cast<std::underlying_type_t<T>>(a) | static_cast<std::underlying_type_t<T>>(b));
@@ -360,7 +360,7 @@ namespace FileTypes {
 		}
 
         if((format_ == 0x1A || format_ == 0x41A) && bpp == 3) {
-            data = rgb8torgbx8(data);//convert
+            data = rgb8torgbx8(data); // convert
             bpp += 1;
             size = header.width * header.height * bpp;
         }

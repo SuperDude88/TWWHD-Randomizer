@@ -54,5 +54,5 @@ public:
         std::vector<std::string>,
         std::vector<std::u16string>,
         std::vector<uint8_t>
-    > data; //index matches data type enum
+    > data; // index matches data type enum
 };

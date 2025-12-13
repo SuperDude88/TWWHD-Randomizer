@@ -203,7 +203,7 @@ ModificationError ModifyActor::writeLocation(const Item& item) {
             stream.seekg(offset, std::ios::beg);
             ACTR actor = WWHDStructs::readACTR(stream);
 
-            if(pot_actor_names.contains(actor.name)) { //special case for pots since they have a custom param
+            if(pot_actor_names.contains(actor.name)) { // special case for pots since they have a custom param
                 if(item.getGameItemId() == GameItem::HeartDrop) {
                     LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, 0x0000003F, 0x00));
                 }
@@ -384,7 +384,7 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
         uint32_t address;
         uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
-        if (symbol[0] == '@') { //support hardcoding addresses for checks like zunari (where a symbol and address are needed)
+        if (symbol[0] == '@') { // support hardcoding addresses for checks like zunari (where a symbol and address are needed)
             const std::string offsetStr = symbol.substr(1);
             address = std::strtoul(offsetStr.c_str(), nullptr, 0);
             if (address == 0 || address == std::numeric_limits<decltype(address)>::max())

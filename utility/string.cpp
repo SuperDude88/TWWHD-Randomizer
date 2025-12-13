@@ -4,8 +4,8 @@
 #include <string>
 
 namespace Utility::Str {
-    //can't use codecvt on Wii U, deprecated in c++17 and g++ hates it
-    //Borrowed from https://docs.microsoft.com/en-us/cpp/standard-library/codecvt-class?view=msvc-170#out
+    // Can't use codecvt on Wii U, deprecated in c++17 and g++ hates it
+    // Borrowed from https://docs.microsoft.com/en-us/cpp/standard-library/codecvt-class?view=msvc-170#out
     std::string toUTF8(const std::u16string& str) {
         if(str.empty()) return "";
 

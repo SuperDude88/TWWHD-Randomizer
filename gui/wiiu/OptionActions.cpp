@@ -549,7 +549,7 @@ namespace OptionCB {
     }
 
 
-    //this one gets special handling
+    // this one gets special handling
     //std::string setStartingGear();
 
     std::string cycleStartingHP() {
@@ -1022,7 +1022,7 @@ std::string getValue(const Option& option) {
         //    return fromBool(conf.settings.player_in_casual_clothes);
         case Option::PigColor:
             return PigColorToName(conf.settings.pig_color);
-        case Option::StartingGear: //placeholder
+        case Option::StartingGear: // placeholder
             return "";
         case Option::StartingHP:
             return std::to_string(conf.settings.starting_pohs);
@@ -1054,7 +1054,7 @@ std::string getValue(const Option& option) {
             return fromBool(conf.settings.classic_mode);
         case Option::Plandomizer:
             return fromBool(conf.settings.plandomizer);
-        case Option::PlandomizerFile: //cant return this like everything else, just here as placeholder
+        case Option::PlandomizerFile: // Can't return this like everything else, just here as placeholder
             return "";
         case Option::TargetType:
             return TargetTypePreferenceToName(conf.settings.target_type); 
@@ -1232,7 +1232,7 @@ TriggerCallback getCallback(const Option& option) {
         //    return &toggleCasualClothes;
         case Option::PigColor:
             return &cyclePigColor;
-        case Option::StartingGear: //placeholder
+        case Option::StartingGear: // placeholder
             return &invalidCB;
         case Option::StartingHP:
             return &cycleStartingHP;
@@ -1264,7 +1264,7 @@ TriggerCallback getCallback(const Option& option) {
             return &toggleClassicMode;
         case Option::Plandomizer:
             return &togglePlandomizer;
-        case Option::PlandomizerFile: //cant return this like everything else, just here as placeholder
+        case Option::PlandomizerFile: // Can't return this like everything else, just here as placeholder
             return &invalidCB;
         case Option::TargetType:
             return &toggleTargetPref;

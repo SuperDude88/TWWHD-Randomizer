@@ -28,7 +28,7 @@ namespace Utility::Str {
             tail = tail.substr(index + 1);
             index = tail.find_first_of(delim);
         }
-        ret.push_back(tail); //add anything after last line break
+        ret.push_back(tail); // add anything after last line break
 
         return ret;
     }
@@ -91,7 +91,7 @@ namespace Utility::Str {
 
     bool contains(const std::string& str, const std::string& substr);
 
-    //wrapper for a constexpr string, for use in other templates
+    // wrapper for a constexpr string, for use in other templates
     template<size_t N>
     struct StringLiteral {
         constexpr StringLiteral(const char (&str)[N]) {
@@ -99,7 +99,7 @@ namespace Utility::Str {
         }
 
         constexpr operator std::string_view() const {
-            return std::string_view(value, N - 1); //leave out null terminator
+            return std::string_view(value, N - 1); // leave out null terminator
         }
 
         char value[N];

@@ -1,4 +1,4 @@
-//A binary format used to store information for the game's charts
+// A binary format used to store information for the game's charts
 
 #pragma once
 

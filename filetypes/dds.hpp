@@ -1,4 +1,4 @@
-//DDS files store image data
+// DDS files store image data
 
 #pragma once
 

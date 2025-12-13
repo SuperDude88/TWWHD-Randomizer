@@ -389,7 +389,7 @@ namespace FileTypes::Subfiles {
     }
 
     FTEXError FTEXFile::writeToStream(std::ostream& out) {
-        //doesnt support updating offsets/lengths, would mess up offsets in other (unsupported) file sections
+        // doesnt support updating offsets/lengths, would mess up offsets in other (unsupported) file sections
         out.write(magicFTEX, 4);
         
         viewMipFirst = 0;

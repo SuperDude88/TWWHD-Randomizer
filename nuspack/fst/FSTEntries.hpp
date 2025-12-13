@@ -9,7 +9,7 @@
 #include <utility/path.hpp>
 #include <utility/string.hpp>
 
-class Content; //forward declare, circular include issue
+class Content; // forward declare, circular include issue
 
 class StringTable {
 private:
@@ -106,7 +106,7 @@ public:
     StringTable strings;
 
     FSTEntries() :
-        entries(1, FSTEntry(1)) //add root
+        entries(1, FSTEntry(1)) // add root
     {}
 
     inline FSTEntry& GetRootEntry() { return entries.front(); }

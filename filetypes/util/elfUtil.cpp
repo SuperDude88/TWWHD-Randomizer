@@ -18,8 +18,8 @@ namespace elfUtil {
         return false;
     }
 
-    offset_t AddressToOffset(const FileTypes::ELF& elf, const uint32_t& address) { //calculates offset into section, returns first value as section index and second as offset
-        for (const uint16_t index : {2, 3, 4}) { //only check a few sections that might be written to
+    offset_t AddressToOffset(const FileTypes::ELF& elf, const uint32_t& address) { // calculates offset into section, returns first value as section index and second as offset
+        for (const uint16_t index : {2, 3, 4}) { // only check a few sections that might be written to
             if (containsAddress(address, elf.shdr_table[index].second.sh_addr, elf.shdr_table[index].second.sh_size)) {
                 return {index, address - elf.shdr_table[index].second.sh_addr};
             }
@@ -115,7 +115,7 @@ namespace elfUtil {
     std::vector<uint8_t> read_bytes(const FileTypes::ELF& in, const offset_t& offset, const size_t& numBytes) {
         std::vector<uint8_t> bytes;
 
-        bytes.reserve(numBytes); //avoid reallocations
+        bytes.reserve(numBytes); // avoid reallocations
         for (size_t i = 0; i < numBytes; i++) {
             bytes.emplace_back(static_cast<uint8_t>(in.shdr_table[offset.shdrIdx].second.data[offset.offset + i]));
         }

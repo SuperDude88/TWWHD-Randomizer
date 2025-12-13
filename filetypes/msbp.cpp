@@ -823,7 +823,7 @@ namespace FileTypes {
         out.seekp(0x12, std::ios::beg);
 
         uint32_t fileSize_BE = Utility::Endian::toPlatform(eType::Big, header.fileSize);
-        out.write(reinterpret_cast<const char*>(&fileSize_BE), sizeof(fileSize_BE)); //Update full file size
+        out.write(reinterpret_cast<const char*>(&fileSize_BE), sizeof(fileSize_BE)); // Update full file size
 
         return LMSError::NONE;
     }

@@ -28,12 +28,12 @@ enum struct GameItem : uint8_t
     TenArrows,
     TwentyArrows,
     ThirtyArrows,
-    SomethingTingleBottleRelated1, //not sure what this does but the game has extra checks for it
-    SomethingTingleBottleRelated2, //not sure what this does but the game has extra checks for it
+    SomethingTingleBottleRelated1, // not sure what this does but the game has extra checks for it
+    SomethingTingleBottleRelated2, // not sure what this does but the game has extra checks for it
     SmallKey,
     Fairy,
 
-    YellowRupee2 = 0x1A, //joke message
+    YellowRupee2 = 0x1A, // joke message
     
     ThreeHearts = 0x1E,
     JoyPendant,
@@ -68,7 +68,7 @@ enum struct GameItem : uint8_t
     MirrorShield,
     RecoveredHerosSword,
     MasterSwordFull,
-    PieceOfHeart2, //alternate message
+    PieceOfHeart2, // alternate message
 
     PiratesCharm = 0x42,
     HerosCharm,
@@ -162,8 +162,8 @@ enum struct GameItem : uint8_t
     NinetyNineBombBag,
     ProgressiveQuiver,
     NinetyNineQuiver,
-    MagicMeter, //Added by rando
-    ProgressiveMagicMeter,  //Replaces magic upgrade
+    MagicMeter, // Added by rando
+    ProgressiveMagicMeter,  // Replaces magic upgrade
     FiftyRupees,
     HundredRupees,
     HundredFiftyRupees,
@@ -233,7 +233,7 @@ enum struct GameItem : uint8_t
     TreasureChart42,
     TriforceChart1,
 
-    //Custom Items
+    // Custom Items
     DRCSmallKey = 0x40,
     DRCBigKey = 0x41,
     DRCDungeonMap = 0x5A,
@@ -257,7 +257,7 @@ enum struct GameItem : uint8_t
     WTDungeonMap = 0x8A,
     WTCompass = 0x8B,
 
-    NOTHING = 0x17, //not an item, uses a free space to represent no item (but not invalid)
+    NOTHING = 0x17, // not an item, uses a free space to represent no item (but not invalid)
     GameBeatable = 0x18, // Dummy item to check for game beatability
     HINT = 0x19, // Dummy item to represent placing a hint at a hint location
 
@@ -297,7 +297,7 @@ static const std::set<GameItem> junkItems = {
     GameItem::TwentyArrows,
     GameItem::ThirtyArrows,
     GameItem::Fairy,
-    GameItem::YellowRupee2, //joke message
+    GameItem::YellowRupee2, // joke message
     GameItem::DRCDungeonMap,
     GameItem::DRCCompass,
     GameItem::ThreeHearts,
@@ -307,7 +307,7 @@ static const std::set<GameItem> junkItems = {
     GameItem::MagicArmor,
     GameItem::HerosClothes,
     GameItem::HerosNewClothes,
-    GameItem::PieceOfHeart2, //alternate message
+    GameItem::PieceOfHeart2, // alternate message
     GameItem::FWDungeonMap,
     GameItem::PiratesCharm,
     GameItem::HerosCharm,
@@ -373,7 +373,7 @@ static const std::set<GameItem> junkConsumables = {
     GameItem::TwentyArrows,
     GameItem::ThirtyArrows,
     GameItem::Fairy,
-    GameItem::YellowRupee2, //joke message
+    GameItem::YellowRupee2, // joke message
     GameItem::ThreeHearts,
     GameItem::JoyPendant,
     GameItem::SkullNecklace,

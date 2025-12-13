@@ -14,19 +14,19 @@ Seed_t seedFromString(const std::string& str) {
     return hash;
 }
 
-//Initialize with seed specified
+// Initialize with seed specified
 void Random_Init(Seed_t seed)
 {
     init = true;
     generator = Generator_t{seed};
 }
 
-//Returns a random integer in range [min, max-1]
+// Returns a random integer in range [min, max-1]
 uint32_t Random(int min, int max)
 {
     if (!init)
     {
-        //No seed given, get a random number from device to seed
+        // No seed given, get a random number from device to seed
         const Seed_t& seed = static_cast<Seed_t>(std::random_device{}());
         Random_Init(seed);
     }
@@ -35,12 +35,12 @@ uint32_t Random(int min, int max)
     return min + (number % (max - min));
 }
 
-//Returns a random floating point number in [0.0, 1.0]
+// Returns a random floating point number in [0.0, 1.0]
 double RandomDouble()
 {
     if (!init)
     {
-        //No seed given, get a random number from device to seed
+        // No seed given, get a random number from device to seed
         const Seed_t& seed = static_cast<Seed_t>(std::random_device{}());
         Random_Init(seed);
     }

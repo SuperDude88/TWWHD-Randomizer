@@ -80,7 +80,7 @@ struct chartComparator {
 static void printBasicInfo(std::ofstream& log)
 {
     log << "# Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
-    log << "# Program opened " << ProgramTime::getDateStr(); //time string ends with \n
+    log << "# Program opened " << ProgramTime::getDateStr(); // time string ends with \n
     log << std::endl;
 
     log << "# Settings" << std::endl;

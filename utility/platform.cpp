@@ -58,7 +58,7 @@ bool initMocha()
 
 void closeMocha() {
     if(MLCMounted) {
-        if(!flushVolume("/vol/storage_mlc01")) { //maybe check if we wrote to MLC
+        if(!flushVolume("/vol/storage_mlc01")) { // maybe check if we wrote to MLC
             ErrorLog::getInstance().log("Could not flush MLC");
         }
         if(const MochaUtilsStatus status = Mocha_UnmountFS("storage_mlc01"); status != MOCHA_RESULT_SUCCESS) {
@@ -68,7 +68,7 @@ void closeMocha() {
     }
 
     if(USBMounted) {
-        if(!flushVolume("/vol/storage_usb01")) { //maybe check if we wrote to USB
+        if(!flushVolume("/vol/storage_usb01")) { // maybe check if we wrote to USB
             ErrorLog::getInstance().log("Could not flush USB");
         }
         if(const MochaUtilsStatus status = Mocha_UnmountFS("storage_usb01"); status != MOCHA_RESULT_SUCCESS) {
@@ -162,7 +162,7 @@ namespace Utility
             }
         #else
             printf("%s\n", str.c_str());
-            fflush(stdout); //vscode debug console works better with this
+            fflush(stdout); // vscode debug console works better with this
         #endif
         lock.unlock();
     }
@@ -197,15 +197,15 @@ namespace Utility
 #ifdef PLATFORM_DKP
         return ProcIsRunning();
 #else
-        return true; //not sure if it's worth doing anything for this
+        return true; // not sure if it's worth doing anything for this
 #endif
     }
 
     void waitForPlatformStop()
     {
-#ifdef PLATFORM_DKP //only need to wait on console
+#ifdef PLATFORM_DKP // Only need to wait on console
         while(platformIsRunning()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(33)); //Check ~30 times a second
+            std::this_thread::sleep_for(std::chrono::milliseconds(33)); // Check ~30 times a second
         }
 #endif
     }

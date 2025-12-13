@@ -1,6 +1,6 @@
-//Format is handled under the nw::font namespace, possibly part of the NintendoWare::lyt library(?)
-//BFFNT files store fonts, primarily for BFLYT layouts
-//This isn't used in rando at the moment but could be used for more precise text wrapping
+// Format is handled under the nw::font namespace, possibly part of the NintendoWare::lyt library(?)
+// BFFNT files store fonts, primarily for BFLYT layouts
+// This isn't used in rando at the moment but could be used for more precise text wrapping
 
 #pragma once
 

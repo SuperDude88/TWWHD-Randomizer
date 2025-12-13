@@ -397,7 +397,7 @@ namespace FileTypes {
 		}
 		inData.append(readChunkBuf, in.gcount());
 
-		std::string outData(header.uncompressedSize, '\0'); //string instead of char array to avoid manual deletion
+		std::string outData(header.uncompressedSize, '\0'); // string instead of char array to avoid manual deletion
 		LOG_AND_RETURN_IF_ERR(yaz0DataDecode(inData.data(), &outData[0], header.uncompressedSize));
 		out.write(&outData[0], header.uncompressedSize);
 
@@ -410,7 +410,7 @@ namespace FileTypes {
 
 		LOG_AND_RETURN_IF_ERR(readYaz0Header(in, header));
 
-		std::string outData(header.uncompressedSize, '\0'); //string instead of char array to avoid manual deletion
+		std::string outData(header.uncompressedSize, '\0'); // string instead of char array to avoid manual deletion
 		LOG_AND_RETURN_IF_ERR(yaz0DataDecode(&in.str()[0x10], &outData[0], header.uncompressedSize));
 		out.write(&outData[0], header.uncompressedSize);
 

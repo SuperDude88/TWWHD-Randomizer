@@ -245,7 +245,7 @@ ItemNamePool generateGameItemPool(const Settings& settings, World* world)
 
 ItemNamePool generateStartingGameItemPool(const Settings& settings)
 {
-    //Should be able to randomize wind waker/sail but it would require some logic changes/fixes which aren't in yet
+    // Should be able to randomize wind waker/sail but it would require some logic changes/fixes which aren't in yet
     ItemNamePool startingItems = {
         "Wind Waker",
         "Wind's Requiem",

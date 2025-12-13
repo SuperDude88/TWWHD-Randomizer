@@ -57,7 +57,7 @@ std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
             uint64_t padding = alignedFileSize - entry.fileSize;
             Utility::seek(output, padding, std::ios::cur);
             
-            //dump stringstream into a file if its above 500MB, limit ram usage a bit
+            // dump stringstream into a file if its above 500MB, limit ram usage a bit
             if(output.tellp() >= MAX_SSTREAM_SIZE) {
                 if(!outFile.is_open()) {
                     outFile.open(tmpPath, std::ios::binary);
@@ -65,7 +65,7 @@ std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
 
                 const std::string& strm = output.str();
                 outFile.write(&strm[0], strm.size());
-                output.str(std::string()); //reset stringstream
+                output.str(std::string()); // reset stringstream
             }
             
             // Update progress dialog
@@ -82,7 +82,7 @@ std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
 
     if(outFile.is_open()) {
         const std::string& remaining = output.str();
-        outFile.write(&remaining[0], remaining.size()); //write whatever is left at the end
+        outFile.write(&remaining[0], remaining.size()); // write whatever is left at the end
 
         outFile.close();
         return std::ifstream(tmpPath, std::ios::binary);
@@ -93,13 +93,13 @@ std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
 }
 
 void Content::PackContentToFile(const fspath& outputDir, Encryption& encryption) {
-    //At first we need to create the decrypted file.
+    // At first we need to create the decrypted file.
     auto decryptedStream = PackDecrypted();
 
     std::istream& file = decryptedStream.index() == 0 ? std::get<0>(decryptedStream) : static_cast<std::istream&>(std::get<1>(decryptedStream));
 
-    //Calculates the hashes for the decrypted content. If the content is not hashed,
-    //only the hash of the decrypted file will be calculated
+    // Calculates the hashes for the decrypted content. If the content is not hashed,
+    // only the hash of the decrypted file will be calculated
     ContentHashes contentHashes(file, isHashed());
 
     if (contentHashes.h3Hashes.size() > 0)
@@ -116,7 +116,7 @@ void Content::PackContentToFile(const fspath& outputDir, Encryption& encryption)
     file.clear();
     size = PackEncrypted(file, output, contentHashes, encryption);
     
-    //delete derypted file, we're done with it
+    // delete derypted file, we're done with it
     if(decryptedStream.index() == 1) {
         std::get<1>(decryptedStream).close();
         std::filesystem::remove(Utility::get_temp_dir() / (Utility::Str::intToHex(id, 8, false) + ".dec"));
@@ -135,7 +135,7 @@ uint64_t Content::PackEncrypted(std::istream& input, std::ostream& output, Conte
         encryption.EncryptFileWithPadding(input, id, output, PAD_LEN);
     }
 
-    return output.tellp(); //should always be at the end?
+    return output.tellp(); // should always be at the end?
 }
 
 uint64_t Content::writeFSTContentHeader(std::ostream& out, const uint64_t& oldOffset) {
@@ -178,7 +178,7 @@ uint64_t Content::writeFSTContentHeader(std::ostream& out, const uint64_t& oldOf
     out.write(reinterpret_cast<const char*>(&tID), sizeof(tID));
     out.write(reinterpret_cast<const char*>(&gID), sizeof(gID));
     out.write(reinterpret_cast<const char*>(&unknown), sizeof(unknown));
-    Utility::seek(out, start + 0x20, std::ios::beg); //adds padding
+    Utility::seek(out, start + 0x20, std::ios::beg); // adds padding
 
     return content_offset;
 }
@@ -194,7 +194,7 @@ void Content::writeToStream(std::ostream& out) {
     out.write(reinterpret_cast<const char*>(&type_), sizeof(type_));
     out.write(reinterpret_cast<const char*>(&size_), sizeof(size_));
     out.write(reinterpret_cast<const char*>(&hash[0]), sizeof(hash));
-    Utility::seek(out, 0xC, std::ios::cur); //padding
+    Utility::seek(out, 0xC, std::ios::cur); // padding
 }
 
 
@@ -238,7 +238,7 @@ void Contents::writeFSTContentHeader(std::ostream& out) {
 }
 
 void Contents::writeToStream(std::ostream& out) {
-    std::vector<Content*> sortedContents(contents.size()); //sorted by index
+    std::vector<Content*> sortedContents(contents.size()); // sorted by index
     for(Content& content : contents) {
         sortedContents[content.index] = &content;
     }

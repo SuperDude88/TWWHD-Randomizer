@@ -78,7 +78,7 @@ struct Elf32_Shdr {
     uint32_t sh_addralign;
     uint32_t sh_entsize;
 
-    std::string data; //not used for rpx
+    std::string data; // not used for rpx
 };
 
 struct Elf32_Sym {

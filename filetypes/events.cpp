@@ -33,7 +33,7 @@ EventlistError Property::read(std::istream& in) {
     if(!in.read(reinterpret_cast<char*>(&next_property_index), 4)) {
         LOG_ERR_AND_RETURN(EventlistError::REACHED_EOF);
     }
-    name = name.substr(0, name.find('\0')); //remove null characters so we can work with the string
+    name = name.substr(0, name.find('\0')); // remove null characters so we can work with the string
     Utility::Endian::toPlatform_inplace(eType::Big, property_index);
     Utility::Endian::toPlatform_inplace(eType::Big, data_type);
     Utility::Endian::toPlatform_inplace(eType::Big, data_index);
@@ -47,7 +47,7 @@ EventlistError Property::read(std::istream& in) {
 }
 
 void Property::save_changes(std::ostream& out) {
-    name.resize(0x20, '\0'); //pad to length with null
+    name.resize(0x20, '\0'); // pad to length with null
     Utility::Endian::toPlatform_inplace(eType::Big, property_index);
     Utility::Endian::toPlatform_inplace(eType::Big, data_type);
     Utility::Endian::toPlatform_inplace(eType::Big, data_index);
@@ -82,7 +82,7 @@ EventlistError Action::read(std::istream& in) {
     if(!in.read(reinterpret_cast<char*>(&action_index), 4)) {
         LOG_ERR_AND_RETURN(EventlistError::REACHED_EOF);
     }
-    name = name.substr(0, name.find('\0')); //remove null characters so we can work with the string
+    name = name.substr(0, name.find('\0')); // remove null characters so we can work with the string
     Utility::Endian::toPlatform_inplace(eType::Big, duplicate_id);
     Utility::Endian::toPlatform_inplace(eType::Big, action_index);
 
@@ -115,7 +115,7 @@ EventlistError Action::read(std::istream& in) {
 }
 
 void Action::save_changes(std::ostream& out) {
-    name.resize(0x20, '\0'); //pad to length with null
+    name.resize(0x20, '\0'); // pad to length with null
     Utility::Endian::toPlatform_inplace(eType::Big, duplicate_id);
     Utility::Endian::toPlatform_inplace(eType::Big, action_index);
 
@@ -186,7 +186,7 @@ EventlistError Actor::read(std::istream& in) {
     if(!in.read(reinterpret_cast<char*>(&initial_action_index), 4)) {
         LOG_ERR_AND_RETURN(EventlistError::REACHED_EOF);
     }
-    name = name.substr(0, name.find('\0')); //remove null characters so we can work with the string
+    name = name.substr(0, name.find('\0')); // remove null characters so we can work with the string
     Utility::Endian::toPlatform_inplace(eType::Big, staff_identifier);
     Utility::Endian::toPlatform_inplace(eType::Big, actor_index);
     Utility::Endian::toPlatform_inplace(eType::Big, flag_id_to_set);
@@ -204,7 +204,7 @@ EventlistError Actor::save_changes(std::ostream& out) {
         LOG_ERR_AND_RETURN(EventlistError::CANNOT_SAVE_ACTOR_WITH_NO_ACTIONS);
     }
     
-    name.resize(0x20, '\0'); //pad to length with null
+    name.resize(0x20, '\0'); // pad to length with null
     Utility::Endian::toPlatform_inplace(eType::Big, staff_identifier);
     Utility::Endian::toPlatform_inplace(eType::Big, actor_index);
     Utility::Endian::toPlatform_inplace(eType::Big, flag_id_to_set);
@@ -225,7 +225,7 @@ EventlistError Actor::save_changes(std::ostream& out) {
     return EventlistError::NONE;
 }
 
-std::shared_ptr<Action> Actor::add_action(const FileTypes::EventList& list, const std::string& name, const std::vector<Prop>& properties) { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
+std::shared_ptr<Action> Actor::add_action(const FileTypes::EventList& list, const std::string& name, const std::vector<Prop>& properties) { // only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
     std::shared_ptr<Action> action = actions.emplace_back(std::make_shared<Action>());
     action->name = name;
     std::optional<int32_t> flag_id_to_set = list.get_unused_flag_id();
@@ -254,7 +254,7 @@ EventlistError Event::read(std::istream& in) {
     if(!in.read(reinterpret_cast<char*>(&priority), 4)) {
         LOG_ERR_AND_RETURN(EventlistError::REACHED_EOF);
     }
-    name = name.substr(0, name.find('\0')); //remove null characters so we can work with the string
+    name = name.substr(0, name.find('\0')); // remove null characters so we can work with the string
     Utility::Endian::toPlatform_inplace(eType::Big, event_index);
     Utility::Endian::toPlatform_inplace(eType::Big, unknown_1);
     Utility::Endian::toPlatform_inplace(eType::Big, priority);
@@ -303,7 +303,7 @@ EventlistError Event::read(std::istream& in) {
 }
 
 void Event::save_changes(std::ostream& out) {
-    name.resize(0x20, '\0'); //pad to length with null
+    name.resize(0x20, '\0'); // pad to length with null
     Utility::Endian::toPlatform_inplace(eType::Big, event_index);
     Utility::Endian::toPlatform_inplace(eType::Big, unknown_1);
     Utility::Endian::toPlatform_inplace(eType::Big, priority);
@@ -355,7 +355,7 @@ std::shared_ptr<Actor> Event::get_actor(const std::string& name) {
     return nullptr;
 }
 
-std::shared_ptr<Actor> Event::add_actor(const FileTypes::EventList& list, const std::string& name) { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
+std::shared_ptr<Actor> Event::add_actor(const FileTypes::EventList& list, const std::string& name) { // only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
     std::shared_ptr<Actor> actor = actors.emplace_back(std::make_shared<Actor>()); 
     actor->name = name;
     std::optional<int32_t> flag_id_to_set = list.get_unused_flag_id();
@@ -509,7 +509,7 @@ namespace FileTypes
             LOG_ERR_AND_RETURN(EventlistError::UNEXPECTED_EVENT_OFFSET);
         }
 
-        Events.reserve(num_events); //Minimize copies
+        Events.reserve(num_events); // Minimize copies
         for (uint32_t event_index = 0; event_index < num_events; event_index++) {
             std::shared_ptr<Event> event = Events.emplace_back(std::make_shared<Event>());
             LOG_AND_RETURN_IF_ERR(event->read(in));
@@ -520,25 +520,25 @@ namespace FileTypes
             Events_By_Name[event->name] = event;
         }
 
-        All_Actors.reserve(num_actors); //Minimize copies
+        All_Actors.reserve(num_actors); // Minimize copies
         for (uint32_t actor_index = 0; actor_index < num_actors; actor_index++) {
             std::shared_ptr<Actor> actor = All_Actors.emplace_back(std::make_shared<Actor>());
             LOG_AND_RETURN_IF_ERR(actor->read(in));
         }
 
-        All_Actions.reserve(num_actions); //Minimize copies
+        All_Actions.reserve(num_actions); // Minimize copies
         for (uint32_t action_index = 0; action_index < num_actions; action_index++) {
             std::shared_ptr<Action> action = All_Actions.emplace_back(std::make_shared<Action>());
             LOG_AND_RETURN_IF_ERR(action->read(in));
         }
 
-        All_Properties.reserve(num_properties); //Minimize copies
-        for (uint32_t property_index = 0; property_index < num_properties; property_index++) { //Populate properties
+        All_Properties.reserve(num_properties); // Minimize copies
+        for (uint32_t property_index = 0; property_index < num_properties; property_index++) { // Populate properties
             std::shared_ptr<Property> property = All_Properties.emplace_back(std::make_shared<Property>());
             LOG_AND_RETURN_IF_ERR(property->read(in));
         }
 
-        All_Floats.reserve(num_floats); //Minimize copies
+        All_Floats.reserve(num_floats); // Minimize copies
         for (uint32_t float_index = 0; float_index < num_floats; float_index++) {
             float float_val;
             if(!in.read(reinterpret_cast<char*>(&float_val), 4)) {
@@ -548,7 +548,7 @@ namespace FileTypes
             All_Floats.push_back(float_val);
         }
 
-        All_Integers.reserve(num_integers); //Minimize copies
+        All_Integers.reserve(num_integers); // Minimize copies
         for (uint32_t integer_index = 0; integer_index < num_integers; integer_index++) {
             int32_t integer;
             if(!in.read(reinterpret_cast<char*>(&integer), 4)) {
@@ -562,7 +562,7 @@ namespace FileTypes
         while (offset < string_list_offset + string_list_total_size) {
             std::string string = Utility::Str::readNullTerminatedStr<std::string>(in, offset);
             if (string.empty()) {
-                LOG_ERR_AND_RETURN(EventlistError::REACHED_EOF); //only error that can happen in read_str
+                LOG_ERR_AND_RETURN(EventlistError::REACHED_EOF); // only error that can happen in read_str
             }
             All_Strings_By_Offset[offset - string_list_offset] = string;
             offset += string.length();
@@ -586,7 +586,7 @@ namespace FileTypes
         for (const auto& property : All_Properties) {
             if (property->data_type == 0) {
                 std::vector<float>& value = property->value.emplace<std::vector<float>>();
-                value.reserve(property->data_size); //Minimize copies
+                value.reserve(property->data_size); // Minimize copies
                 for (unsigned int i = 0; i < property->data_size; i++) {
                     value.push_back(All_Floats[property->data_index + i]);
                 }
@@ -617,7 +617,7 @@ namespace FileTypes
             }
         }
 
-        for (const auto& action : All_Actions) { //Populate properties for each action
+        for (const auto& action : All_Actions) { // Populate properties for each action
             if (action->first_property_index == -1) {
                 continue;
             }
@@ -630,10 +630,10 @@ namespace FileTypes
                 action->properties.push_back(next_property);
                 property = next_property;
             }
-            property->next_property = nullptr; //index is -1, no next property
+            property->next_property = nullptr; // index is -1, no next property
         }
 
-        for (const auto& actor : All_Actors) { //Fill each actor's list of actions before we add them to the events because they don't update both instances if we do this after
+        for (const auto& actor : All_Actors) { // Fill each actor's list of actions before we add them to the events because they don't update both instances if we do this after
             actor->initial_action = All_Actions[actor->initial_action_index];
             actor->actions.push_back(actor->initial_action);
             std::shared_ptr<Action> action = actor->initial_action;
@@ -664,7 +664,7 @@ namespace FileTypes
         }
 
         unused_flag_ids.reserve(TOTAL_NUM_FLAGS);
-        for (int32_t i = 0; i < TOTAL_NUM_FLAGS; i++) { //Populate the list of all flags (SD randomizer uses range but this is c++ so we don't have a super good substitute)
+        for (int32_t i = 0; i < TOTAL_NUM_FLAGS; i++) { // Populate the list of all flags (SD randomizer uses range but this is c++ so we don't have a super good substitute)
             unused_flag_ids.push_back(i);
         }
 
@@ -709,7 +709,7 @@ namespace FileTypes
 
             offset += Actor::DATA_SIZE;
 
-            All_Actions.reserve(actor->actions.size()); //Minimize copies
+            All_Actions.reserve(actor->actions.size()); // Minimize copies
             for (unsigned int x = 0; x < actor->actions.size(); x++) {
                 auto action = actor->actions[x];
                 if (x == actor->actions.size() - 1) {
@@ -787,8 +787,8 @@ namespace FileTypes
             }
             else if (property_value.index() == 3) {
                 property->data_type = 4;
-                property->data_index = 0; //gets set later
-                property->data_size = 0; //gets set later
+                property->data_index = 0; // gets set later
+                property->data_size = 0; // gets set later
 
                 All_Strings.push_back(std::get<std::string>(property_value));
             }
@@ -799,7 +799,7 @@ namespace FileTypes
         num_floats = All_Floats.size();
         for (float& float_val : All_Floats) {
             Utility::seek(out, offset, std::ios::beg);
-            uint32_t value = std::bit_cast<const uint32_t>(float_val); //byteswap as uint32 because casting it back to float in reversed order can make it NaN and change the value
+            uint32_t value = std::bit_cast<const uint32_t>(float_val); // byteswap as uint32 because casting it back to float in reversed order can make it NaN and change the value
             Utility::Endian::toPlatform_inplace(eType::Big, value);
             out.write(reinterpret_cast<const char*>(&value), 4);
             offset += 4;
@@ -821,7 +821,7 @@ namespace FileTypes
                 std::string string = std::get<std::string>(property->value);
                 string.resize(roundUp<size_t>(string.length(), 8), '\0');
 
-                out.write(string.data(), string.length()); //Write string
+                out.write(string.data(), string.length()); // Write string
                 offset += string.length();
 
                 property->data_index = new_relative_string_offset;
@@ -895,7 +895,7 @@ namespace FileTypes
         return *Events_By_Name[name];
     }
 
-    std::optional<int32_t> EventList::get_unused_flag_id() const { //only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
+    std::optional<int32_t> EventList::get_unused_flag_id() const { // only possible error is EventlistError::NO_UNUSED_FLAGS_TO_USE
         if (unused_flag_ids.empty()) {
             return std::nullopt;
         }

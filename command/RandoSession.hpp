@@ -37,8 +37,8 @@ public:
             SARC,
             YAZ0,
             STREAM,
-            ROOT, //root of chain, open file from disk
-            EMPTY, //fileCache, no data
+            ROOT, // root of chain, open file from disk
+            EMPTY, // fileCache, no data
         };
         
         CacheEntry(std::shared_ptr<CacheEntry> parent_, const fspath& elem_, const Format& format_) :
@@ -50,7 +50,7 @@ public:
         using Action_t = std::function<int(RandoSession*, FileType*)>;
 
         void addAction(Action_t action);
-        void addDependent(std::shared_ptr<CacheEntry> depends); //add entry to tree after this one is completed, prevent repack-mod-repack
+        void addDependent(std::shared_ptr<CacheEntry> depends); // add entry to tree after this one is completed, prevent repack-mod-repack
 
         size_t incrementPrereq() { return ++numPrereqs; }
         size_t decrementPrereq() { return --numPrereqs; }
@@ -63,13 +63,13 @@ public:
 
     private:
         const std::shared_ptr<CacheEntry> parent = nullptr;
-        std::unordered_map<std::string, std::shared_ptr<CacheEntry>> children = {}; //can't use CacheEntry directly, unordered_map needs complete type per the standard
+        std::unordered_map<std::string, std::shared_ptr<CacheEntry>> children = {}; // can't use CacheEntry directly, unordered_map needs complete type per the standard
         std::vector<std::shared_ptr<CacheEntry>> dependents = {};
 
         const fspath element = "";
         const Format storedFormat = Format::EMPTY;
         std::unique_ptr<FileType> data = nullptr;
-        std::vector<Action_t> actions = {}; //store actions as lambdas to execute in order
+        std::vector<Action_t> actions = {}; // store actions as lambdas to execute in order
         std::atomic<size_t> numPrereqs = 0;
         std::atomic<bool> finished = false;
     
@@ -103,4 +103,4 @@ private:
     std::shared_ptr<CacheEntry> fileCache = std::make_shared<CacheEntry>(nullptr, "", CacheEntry::Format::EMPTY);
 };
 
-extern RandoSession g_session; //defined in RandoSession.cpp, shared between a couple files, set up in randomizer.cpp
+extern RandoSession g_session; // defined in RandoSession.cpp, shared between a couple files, set up in randomizer.cpp

@@ -35,6 +35,6 @@ bool confirmRandomize() {
             return true;
         }
         
-        std::this_thread::sleep_for(17ms); //update ~60 times a second
+        std::this_thread::sleep_for(17ms); // update ~60 times a second
     }
 }

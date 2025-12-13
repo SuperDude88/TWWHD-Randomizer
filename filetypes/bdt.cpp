@@ -86,7 +86,7 @@ namespace FileTypes {
             fileInfo[i].offset = static_cast<uint32_t>(offset);
 
 			out.write(&files[i][0], files[i].size());
-            padToLen(out, 4); //Not sure if this is correct, just a guess
+            padToLen(out, 4); // Not sure if this is correct, just a guess
 
             offset = out.tellp();
             fileInfo[i].size = offset - fileInfo[i].offset;

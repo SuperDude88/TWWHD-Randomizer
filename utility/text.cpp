@@ -61,15 +61,15 @@ namespace Text {
         size_t curr_word_len = 0;
         size_t len_curr_line = 0;
 
-        while (index_in_str < string.length()) { //length is weird because its utf-16
+        while (index_in_str < string.length()) { // length is weird because its utf-16
             char16_t character = string[index_in_str];
 
-            if (character == u'\x0E') { //need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
+            if (character == u'\x0E') { // need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
                 std::u16string substr;
                 size_t code_len = 0;
                 if (string[index_in_str + 1] == u'\x00') {
-                    if (string[index_in_str + 2] == u'\x03') { //color command
-                        if (string[index_in_str + 4] == u'\xFFFF') { //text color white, weird length
+                    if (string[index_in_str + 2] == u'\x03') { // color command
+                        if (string[index_in_str + 4] == u'\xFFFF') { // text color white, weird length
                         code_len = 10;
                         }
                         else {
@@ -77,16 +77,16 @@ namespace Text {
                         }
                     }
                 }
-                else if (string[index_in_str + 1] == u'\x01') { //all implemented commands in this group have length 4
+                else if (string[index_in_str + 1] == u'\x01') { // all implemented commands in this group have length 4
                     code_len = 4;
                 }
-                else if (string[index_in_str + 1] == u'\x02') { //all implemented commands in this group have length 4
+                else if (string[index_in_str + 1] == u'\x02') { // all implemented commands in this group have length 4
                     code_len = 4;
                 }
-                else if (string[index_in_str + 1] == u'\x03') { //all implemented commands in this group have length 4
+                else if (string[index_in_str + 1] == u'\x03') { // all implemented commands in this group have length 4
                     code_len = 4;
                 }
-                else if (string[index_in_str + 1] == u'\x04') { //all implemented commands in this group have length 4. Only used for Ho Ho sound
+                else if (string[index_in_str + 1] == u'\x04') { // all implemented commands in this group have length 4. Only used for Ho Ho sound
                     code_len = 4;
                 }
 

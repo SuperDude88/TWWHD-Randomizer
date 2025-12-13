@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-//LMS is LibMessageStudio, Nintendo's small library for message data
-//Includes MSBT, MSBP, and MSBF files (only MSBT and MSBP are present in WWHD)
+// LMS is LibMessageStudio, Nintendo's small library for message data
+// Includes MSBT, MSBP, and MSBF files (only MSBT and MSBP are present in WWHD)
 
 enum struct [[nodiscard]] LMSError
 {

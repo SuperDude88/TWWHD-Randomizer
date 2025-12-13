@@ -1,6 +1,6 @@
-//Filesystem table for Wii U disk images/downloaded content
-//Describes folders and files in the title, necessary for building a NUS package
-//Likely an evolution of the Wii format
+// Filesystem table for Wii U disk images/downloaded content
+// Describes folders and files in the title, necessary for building a NUS package
+// Likely an evolution of the Wii format
 
 #pragma once
 

@@ -71,7 +71,7 @@ void HexKeyboard::open(const std::string& title_, const std::string& desc_, cons
     curCol = 0;
     
     for(char& c : input) {
-        c = std::toupper(c); //capitalize for consistency
+        c = std::toupper(c); // capitalize for consistency
     }
 
     closed = false;
@@ -89,38 +89,38 @@ bool HexKeyboard::update() {
 
     if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         if(curCol <= 0) {
-            curCol = keys[0].size() - 1; //wrap on leftmost row
+            curCol = keys[0].size() - 1; // wrap on leftmost row
         }
         else {
-            curCol -= 1; //left one row
+            curCol -= 1; // left one row
         }
         moved = true;
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         if(curCol >= keys[0].size() - 1) {
-            curCol = 0; //wrap on rightmost row
+            curCol = 0; // wrap on rightmost row
         }
         else {
-            curCol += 1; //right one row
+            curCol += 1; // right one row
         }
         moved = true;
     }
 
     if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         if(curRow <= 0) {
-            curRow = keys.size() - 1; //wrap on top
+            curRow = keys.size() - 1; // wrap on top
         }
         else {
-            curRow -= 1; //up one row
+            curRow -= 1; // up one row
         }
         moved = true;
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         if(curRow >= keys.size() - 1) {
-            curRow = 0; //wrap on buttom row
+            curRow = 0; // wrap on buttom row
         }
         else {
-            curRow += 1; //down one row
+            curRow += 1; // down one row
         }
         moved = true;
     }
@@ -212,38 +212,38 @@ bool USKeyboard::update() {
     bool moved = false;
     if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         if(curCol <= 0) {
-            curCol = rows[0].size() - 1; //wrap on leftmost row
+            curCol = rows[0].size() - 1; // wrap on leftmost row
         }
         else {
-            curCol -= 1; //left one row
+            curCol -= 1; // left one row
         }
         moved = true;
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         if(curCol >= rows[0].size() - 1) {
-            curCol = 0; //wrap on rightmost row
+            curCol = 0; // wrap on rightmost row
         }
         else {
-            curCol += 1; //right one row
+            curCol += 1; // right one row
         }
         moved = true;
     }
 
     if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         if(curRow <= 0) {
-            curRow = numRows - 1; //wrap on top
+            curRow = numRows - 1; // wrap on top
         }
         else {
-            curRow -= 1; //up one row
+            curRow -= 1; // up one row
         }
         moved = true;
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         if(curRow >= numRows - 1) {
-            curRow = 0; //wrap on buttom row
+            curRow = 0; // wrap on buttom row
         }
         else {
-            curRow += 1; //down one row
+            curRow += 1; // down one row
         }
         moved = true;
     }

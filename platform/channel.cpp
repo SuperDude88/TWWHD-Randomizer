@@ -60,7 +60,7 @@ bool checkEnoughFreeSpace(const MCPInstallTarget& device, const uint64_t& minSpa
         ErrorLog::getInstance().log("Invalid device for checkEnoughFreeSpace()!");
         return false;
     }
-    const std::string& path = deviceToPath[device]; //0 is TARGET_MLC, 1 is TARGET_USB
+    const std::string& path = deviceToPath[device]; // 0 is TARGET_MLC, 1 is TARGET_USB
 
     const FSAClientHandle handle = FSAAddClient(NULL);
     if(handle < 0) {
@@ -276,23 +276,23 @@ static const fspath DataPath = SD_ROOT_PATH / CHANNEL_DATA_PATH;
 static bool packFreeChannel(const fspath& baseDir) {
     Utility::platformLog("Packing channel...");
 
-    //create necessary folders
+    // create necessary folders
     Utility::platformLog("Creating data folder at " + DataPath.string());
     if(!Utility::create_directories(DataPath)) {
         ErrorLog::getInstance().log("Failed to create data folder " + DataPath.string());
         return false;
     }
 
-    //copy over channel data
+    // copy over channel data
     Utility::platformLog("Copying channel data");
     if(!Utility::copy(baseDir / "code", DataPath / "code")) {
         ErrorLog::getInstance().log("Failed to copy code folder " + (baseDir / "code").string());
         return false;
     }
-    std::filesystem::remove(DataPath / "code/title.fst"); //would cause nullptr issues when packing
-    std::filesystem::remove(DataPath / "code/title.tmd"); //would cause nullptr issues when packing
+    std::filesystem::remove(DataPath / "code/title.fst"); // would cause nullptr issues when packing
+    std::filesystem::remove(DataPath / "code/title.tmd"); // would cause nullptr issues when packing
 
-    if(!Utility::create_directories(DataPath / "content")) { //don't encrypt all the data, we can copy it over much faster
+    if(!Utility::create_directories(DataPath / "content")) { // don't encrypt all the data, we can copy it over much faster
         ErrorLog::getInstance().log("Failed to create content folder " + (DataPath / "content").string());
         return false;
     }
@@ -309,7 +309,7 @@ static bool packFreeChannel(const fspath& baseDir) {
         return false;
     }
 
-    //change the title ID so it gets its own channel
+    // change the title ID so it gets its own channel
     Utility::platformLog("Modifying XMLs");
     tinyxml2::XMLPrinter printer;
 
@@ -344,7 +344,7 @@ static bool packFreeChannel(const fspath& baseDir) {
     appOut.write(&appStr[0], appStr.size());
     appOut.close();
     
-    //get common key
+    // get common key
     Utility::platformLog("Getting keys");
     WiiUConsoleOTP otp;
     if(MochaUtilsStatus status = Mocha_ReadOTP(&otp); status != MOCHA_RESULT_SUCCESS) {
@@ -355,7 +355,7 @@ static bool packFreeChannel(const fspath& baseDir) {
     Key commonKey;
     std::copy(otp.wiiUBank.wiiUCommonKey, otp.wiiUBank.wiiUCommonKey + 0x10, commonKey.begin());
 
-    //pack the channel
+    // pack the channel
     Utility::platformLog("Creating package");
     if(const PackError err = createPackage(DataPath, SD_ROOT_PATH / CHANNEL_OUTPUT_PATH, defaultEncryptionKey, commonKey); err != PackError::NONE)
     {

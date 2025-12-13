@@ -902,7 +902,7 @@ DEFINE_STATE_CHANGE_FUNCTION(skip_rematch_bosses)
 DEFINE_STATE_CHANGE_FUNCTION(add_shortcut_warps_between_dungeons)
 DEFINE_STATE_CHANGE_FUNCTION(remove_music)
 
-//Advanced Options
+// Advanced Options
 DEFINE_STATE_CHANGE_FUNCTION(do_not_generate_spoiler_log)
 DEFINE_STATE_CHANGE_FUNCTION(start_with_random_item)
 DEFINE_STATE_CHANGE_FUNCTION(random_item_slide_item)

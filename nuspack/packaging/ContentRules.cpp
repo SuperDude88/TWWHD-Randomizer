@@ -4,7 +4,7 @@
 
 enum FSTFlags : uint16_t {
     NOT_HASHED = 0x0000,
-    BYTE_OFFSET = 0x0004, //offset in bytes instead of sectors
+    BYTE_OFFSET = 0x0004, // offset in bytes instead of sectors
     HASHED_META = 0x0040,
     HASHED_CONTENT = 0x0400
 };

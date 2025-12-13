@@ -1,6 +1,6 @@
-//Format is part of JParticle (a particle library for GameCube games)
-//JPC files store particles and their info in banks
-//Some changes were made to the format for WWHD, namely textures being moved into a BFRES archive
+// Format is part of JParticle (a particle library for GameCube games)
+// JPC files store particles and their info in banks
+// Some changes were made to the format for WWHD, namely textures being moved into a BFRES archive
 
 #pragma once
 
@@ -238,7 +238,7 @@ namespace JParticle {
         bool listOrder;
         bool childOrder;
 
-        //TEV / PE Settings
+        // TEV / PE Settings
         uint8_t colorInSelect;
         uint8_t alphaInSelect;
         uint16_t blendModeFlags;
@@ -248,7 +248,7 @@ namespace JParticle {
         uint8_t zModeFlags;
         int16_t anmRndm;
 
-        //Texture palette animation
+        // Texture palette animation
         bool isEnableTexture;
         bool isGlblTexAnm;
         JParticle::CalcIdxType texCalcIdxType;
@@ -256,7 +256,7 @@ namespace JParticle {
         std::vector<uint8_t> texIdxAnimData;
         int16_t texLoopOffset;
 
-        //Texture coordinate animation
+        // Texture coordinate animation
         bool isEnableProjection;
         bool isEnableTexScrollAnm;
         vec2<float> texInitTrans;
@@ -266,7 +266,7 @@ namespace JParticle {
         vec2<float> texIncScale;
         float texIncRot;
 
-        //Color animation settings
+        // Color animation settings
         bool isGlblClrAnm;
         JParticle::CalcIdxType colorCalcIdxType;
         RGBA8 colorPrm;
@@ -471,7 +471,7 @@ public:
     char magicJEFF[8];
     uint32_t unknown_1;
     uint32_t num_chunks;
-    uint32_t size; //sometimes inaccurate
+    uint32_t size; // sometimes inaccurate
 
     uint8_t num_kfa1_chunks;
     uint8_t num_fld1_chunks;
@@ -508,7 +508,7 @@ namespace FileTypes {
         std::unordered_map<uint16_t, size_t> particle_index_by_id;
         std::vector<Particle> particles;
 
-        std::unordered_map<std::string, size_t> textures; //store index to preserve original order
+        std::unordered_map<std::string, size_t> textures; // store index to preserve original order
 
         JPC() = default;
         static JPC createNew();

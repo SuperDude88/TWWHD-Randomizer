@@ -374,7 +374,7 @@ namespace FileTypes {
         Utility::Endian::toPlatform_inplace(eType::Big, info.dataSize);
 
         if (info.size_0x10 != 0x00000010) LOG_ERR_AND_RETURN(FLIMError::UNEXPECTED_VALUE)
-        if ((info.alignment & (info.alignment - 1)) != 0) LOG_ERR_AND_RETURN(FLIMError::UNEXPECTED_VALUE) //check if alignment is a power of 2
+        if ((info.alignment & (info.alignment - 1)) != 0) LOG_ERR_AND_RETURN(FLIMError::UNEXPECTED_VALUE) // check if alignment is a power of 2
         //if (supportedFormats.count(info.format) == 0) LOG_ERR_AND_RETURN(FLIMError::UNSUPPORTED_FORMAT)
 
         computeSwizzleTileMode(info.tile_swizzle, info.swizzle, info.tileMode);
@@ -797,7 +797,7 @@ namespace FileTypes {
         Utility::Endian::toPlatform_inplace(eType::Big, info.height);
         Utility::Endian::toPlatform_inplace(eType::Big, info.alignment);
         Utility::Endian::toPlatform_inplace(eType::Big, info.dataSize);
-        const uint8_t format = static_cast<uint8_t>(info.format); //narrow from uint32_t so endianness doesn't affect the byte written
+        const uint8_t format = static_cast<uint8_t>(info.format); // narrow from uint32_t so endianness doesn't affect the byte written
 
         out.write(info.magicImag, 4);
         out.write(reinterpret_cast<const char*>(&info.size_0x10), sizeof(info.size_0x10));

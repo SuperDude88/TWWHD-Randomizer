@@ -32,7 +32,7 @@ const std::string& LogInfo::getSeedHash() {
 ErrorLog::ErrorLog() {
     output.open(LOG_PATH);
 
-    output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
+    output << "Program opened " << ProgramTime::getDateStr(); // time string ends with \n
 
     output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
 
@@ -98,7 +98,7 @@ void ErrorLog::clearLastErrors()
 DebugLog::DebugLog() {
     output.open(LOG_PATH);
 
-    output << "Program opened " << ProgramTime::getDateStr(); //time string ends with \n
+    output << "Program opened " << ProgramTime::getDateStr(); // time string ends with \n
 
     output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
     if (LogInfo::getConfig().configSet)

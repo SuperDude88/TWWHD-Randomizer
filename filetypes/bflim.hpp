@@ -1,6 +1,6 @@
-//Format is a part of NintendoWare::lyt (a UI library)
-//BFLIM files store textures used for 2D layouts
-//They are used in conjunction with BFLYT files
+// Format is a part of NintendoWare::lyt (a UI library)
+// BFLIM files store textures used for 2D layouts
+// They are used in conjunction with BFLYT files
 
 #pragma once
 

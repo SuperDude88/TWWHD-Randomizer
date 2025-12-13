@@ -122,7 +122,7 @@ LMSError HashTable::read(std::istream& in) {
         Utility::Endian::toPlatform_inplace(eType::Big, slot.labelCount);
         Utility::Endian::toPlatform_inplace(eType::Big, slot.labelOffset);
         
-        in.seekg(slot.labelOffset + tableStart, std::ios::beg); //Seek to the start of the entries before the loop so it doesnt reset to the same string each time
+        in.seekg(slot.labelOffset + tableStart, std::ios::beg); // Seek to the start of the entries before the loop so it doesnt reset to the same string each time
         
         slot.labels.reserve(slot.labelCount);
         for (uint32_t x = 0; x < slot.labelCount; x++) {
@@ -132,7 +132,7 @@ LMSError HashTable::read(std::istream& in) {
             {
                 LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
             }
-            label.string.resize(label.length); //Length is 1 byte so no byteswap
+            label.string.resize(label.length); // Length is 1 byte so no byteswap
             if (!in.read(&label.string[0], label.length))
             {
                 LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
@@ -162,7 +162,7 @@ void HashTable::write(std::ostream& out) {
 
         entry.labelCount = entry.labels.size();
         entry.labelOffset = curOffset;
-        Utility::Endian::toPlatform_inplace(eType::Big, entry.labelCount); //byteswap inplace here and swap back later so all the swaps can be grouped in 1 spot instead of in each write (allows for easier Wii U conversion later)
+        Utility::Endian::toPlatform_inplace(eType::Big, entry.labelCount); // byteswap inplace here and swap back later so all the swaps can be grouped in 1 spot instead of in each write (allows for easier Wii U conversion later)
         Utility::Endian::toPlatform_inplace(eType::Big, entry.labelOffset);
 
         out.write(reinterpret_cast<const char*>(&entry.labelCount), sizeof(entry.labelCount));

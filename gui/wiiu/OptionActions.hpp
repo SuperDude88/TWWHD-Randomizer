@@ -88,7 +88,7 @@ namespace OptionCB {
 
     std::string cyclePigColor();
 
-    //this one gets special handling
+    // this one gets special handling
     //std::string setStartingGear();
     std::string cycleStartingHP();
     std::string cycleStartingHC();
@@ -114,7 +114,7 @@ namespace OptionCB {
     std::string invalidCB();
 
     void clearStartingItems();
-    bool hasStartingItem(const GameItem& item, const size_t& num = 1); //num is for duplicated items
+    bool hasStartingItem(const GameItem& item, const size_t& num = 1); // num is for duplicated items
     void addStartingItem(const GameItem& item);
     void clearExcludedLocations();
     bool hasExcludedLocation(const std::string& locName);
@@ -128,7 +128,7 @@ namespace OptionCB {
 
 namespace ColorCB {
     std::string randomizeColor(const std::string& name_);
-    //std::string pickColor(const std::string& name_); //handled as subpage
+    //std::string pickColor(const std::string& name_); // handled as subpage
     std::string resetColor(const std::string& name_);
     std::string invalidCB(const std::string&);
 }

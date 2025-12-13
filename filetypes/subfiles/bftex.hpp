@@ -1,5 +1,5 @@
-//Format is a part of NintendoWare::g3d (a model rendering library)
-//BFTEX are a BFRES subfile that stores texture data
+// Format is a part of NintendoWare::g3d (a model rendering library)
+// BFTEX are a BFRES subfile that stores texture data
 
 #pragma once
 
@@ -81,4 +81,3 @@ namespace FileTypes::Subfiles {
         void initNew();
     };
 }
-

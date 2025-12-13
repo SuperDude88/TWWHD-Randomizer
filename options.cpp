@@ -277,7 +277,7 @@ uint8_t Settings::getSetting(const Option& option) const {
             return chest_type_matches_contents;
         case Option::PigColor:
             return static_cast<std::underlying_type_t<PigColor>>(pig_color);
-        //cant return these like everything else, just here as placeholder
+        // Can't return these like everything else, just here as placeholder
         case Option::StartingGear:
         case Option::ExcludedLocations:
             return 0;
@@ -311,7 +311,7 @@ uint8_t Settings::getSetting(const Option& option) const {
             return classic_mode;
         case Option::Plandomizer:
             return plandomizer;
-        case Option::PlandomizerFile: //cant return this like everything else, just here as placeholder
+        case Option::PlandomizerFile: // Can't return this like everything else, just here as placeholder
             return 0;
         case Option::TargetType:
             return static_cast<std::underlying_type_t<TargetTypePreference>>(target_type);   
@@ -464,7 +464,7 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             chest_type_matches_contents = value; return;
         case Option::PigColor:
             pig_color = static_cast<PigColor>(value); return;
-        //cant set these like everything else, just here as placeholder
+        // Can't set these like everything else, just here as placeholder
         case Option::StartingGear: 
         case Option::ExcludedLocations:
             return;
@@ -498,7 +498,7 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             classic_mode = value; return;
         case Option::Plandomizer:
             plandomizer = value; return;
-        case Option::PlandomizerFile: //cant set this like everything else, just here as placeholder
+        case Option::PlandomizerFile: // Can't set this like everything else, just here as placeholder
             return;
         case Option::TargetType:
             target_type = static_cast<TargetTypePreference>(value); return;

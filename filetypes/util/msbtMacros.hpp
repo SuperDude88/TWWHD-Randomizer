@@ -2,11 +2,11 @@
 
 #include <cstdint>
 
-using namespace std::literals::string_literals; //spooky namespace in header, not sure of workaround
+using namespace std::literals::string_literals; // spooky namespace in header, not sure of workaround
 
-//color commands from "System" group (00)
+// Color commands from "System" group (00)
 #define TEXT_SIZE(size)             u"\x0E\x00\x02\x02"s + static_cast<char16_t>(size)
-#define TEXT_COLOR_DEFAULT          u"\x0E\x00\x03\x02\xFFFF\x0E\x00\x03\x02\x00"s //resets to color from TSY entry?
+#define TEXT_COLOR_DEFAULT          u"\x0E\x00\x03\x02\xFFFF\x0E\x00\x03\x02\x00"s // Resets to color from TSY entry?
 #define TEXT_COLOR_RED              u"\x0E\x00\x03\x02\x01"s
 #define TEXT_COLOR_GREEN            u"\x0E\x00\x03\x02\x02"s
 #define TEXT_COLOR_BLUE             u"\x0E\x00\x03\x02\x03"s
@@ -19,41 +19,41 @@ using namespace std::literals::string_literals; //spooky namespace in header, no
 // For some reason the rock spire shop messages only function correctly when they end with this
 #define TEXT_END                    u"\x0E\x00\x03\x02\xFFFF\x00"s
 
-//commands from "ControlTags" group (01)
+// Commands from "ControlTags" group (01)
 #define DRAW_INSTANT                u"\x0E\x01\x00\x00"s
 #define DRAW_CHAR                   u"\x0E\x01\x01\x00"s
-#define WAIT_DISMISS_PROMPT(frames) u"\x0E\x01\x02\x02"s + static_cast<char16_t>(frames) //input frames as int
-#define WAIT_DISMISS(frames)        u"\x0E\x01\x03\x02"s + static_cast<char16_t>(frames) //input frames as int
-#define DISMISS(frames)             u"\x0E\x01\x04\x02"s + static_cast<char16_t>(frames) //input frames as int
-#define STEP(frames)                u"\x0E\x01\x05\x02"s + static_cast<char16_t>(frames) //input frames as int, exact purpose unknown
-#define WAIT(frames)                u"\x0E\x01\x06\x02"s + static_cast<char16_t>(frames) //input frames as int
-#define TWO_CHOICES                 u"\x0E\x01\x07\x00"s //two choices in a textbox
-#define THREE_CHOICES               u"\x0E\x01\x08\x00"s //three choices in a textbox
-#define TWO_CHOICES_LEFT            u"\x0E\x01\x09\x00"s //first choice, left side
-#define TWO_CHOICES_RIGHT           u"\x0E\x01\x0A\x00"s //second choice, right side
-#define CAPITAL                     u"\x0E\x01\x0B\x00"s //presumably capitalizes following letter
-#define CREDIT_POSITION             u"\x0E\x01\x0C\x00"s //unknown effect
-#define TWO_CHOICES_LEFT_B          u"\x0E\x01\x0D\x00"s //first choice, (bottom?) left side
-#define TWO_CHOICES_RIGHT_B         u"\x0E\x01\x0E\x00"s //second choice, (bottom?) right side
+#define WAIT_DISMISS_PROMPT(frames) u"\x0E\x01\x02\x02"s + static_cast<char16_t>(frames) // Input frames as int
+#define WAIT_DISMISS(frames)        u"\x0E\x01\x03\x02"s + static_cast<char16_t>(frames) // Input frames as int
+#define DISMISS(frames)             u"\x0E\x01\x04\x02"s + static_cast<char16_t>(frames) // Input frames as int
+#define STEP(frames)                u"\x0E\x01\x05\x02"s + static_cast<char16_t>(frames) // Input frames as int, exact purpose unknown
+#define WAIT(frames)                u"\x0E\x01\x06\x02"s + static_cast<char16_t>(frames) // Input frames as int
+#define TWO_CHOICES                 u"\x0E\x01\x07\x00"s // Two choices in a textbox
+#define THREE_CHOICES               u"\x0E\x01\x08\x00"s // Three choices in a textbox
+#define TWO_CHOICES_LEFT            u"\x0E\x01\x09\x00"s // First choice, left side
+#define TWO_CHOICES_RIGHT           u"\x0E\x01\x0A\x00"s // Second choice, right side
+#define CAPITAL                     u"\x0E\x01\x0B\x00"s // Presumably capitalizes following letter
+#define CREDIT_POSITION             u"\x0E\x01\x0C\x00"s // Unknown effect
+#define TWO_CHOICES_LEFT_B          u"\x0E\x01\x0D\x00"s // First choice, (bottom?) left side
+#define TWO_CHOICES_RIGHT_B         u"\x0E\x01\x0E\x00"s // Second choice, (bottom?) right side
 
 
-//commands from "ReplaceTags" group (02)
+// Commands from "ReplaceTags" group (02)
 #define REPLACE(replaceNum)         u"\x0E\x02"s + static_cast<char16_t>(replaceNum) + u"\x00"s
 
 
-//commands from "PictureFontTags" group (03)
+// Commands from "PictureFontTags" group (03)
 #define IMAGE(image)                u"\x0E\x03"s + static_cast<char16_t>(image) + u"\x00"s
 
 
-//commands from "SoundTags" group (04)
+// Commands from "SoundTags" group (04)
 #define SOUND(sound)                u"\x0E\x04"s + static_cast<char16_t>(sound) + u"\x00"s
 
 
-//commands from "Camera" group (05)
+// Commands from "Camera" group (05)
 #define CAMERA(camPos)              u"\x0E\x05"s + static_cast<char16_t>(camPos) + u"\x00"s
 
 
-//commands from "Action" group (06)
+// Commands from "Action" group (06)
 #define ACTION(action)              u"\x0E\x05"s + static_cast<char16_t>(action) + u"\x00"s
 
 
@@ -65,7 +65,7 @@ enum struct ReplaceTags : uint16_t {
     AUCTION_ITEM_NAME,
     AUCTION_BID_RUPEES,
     AUCTION_INITIAL_BID,
-    AUCTION_BID_SELECTOR, //for the player
+    AUCTION_BID_SELECTOR, // for the player
     SWORD_GAME_HITS,
     PASSWORD,
     SORTED_LETTERS,
@@ -98,13 +98,13 @@ enum struct ReplaceTags : uint16_t {
     JOY_PENDANT_SELL_ENTRY,
     GOLDEN_FEATHER_SELL_ENTRY,
     KNIGHTS_CREST_SELL_ENTRY
-    //SetValue 1-4, purpose unknown
+    // SetValue 1-4, purpose unknown
 };
 
 enum struct ImageTags : uint16_t {
     A = 0,
     B,
-    C, //seems unused
+    C, // seems unused
     L,
     R,
     X,
@@ -122,7 +122,7 @@ enum struct ImageTags : uint16_t {
     L_STICK_U_D,
     L_STICK_L_R,
     A_FLASH,
-    STARBURST, //can hookshot/grapple indicator
+    STARBURST, // can hookshot/grapple indicator
     HEART,
     MUSIC_NOTE,
     PLUS,
@@ -141,12 +141,12 @@ enum struct ImageTags : uint16_t {
     DPAD_DOWN,
     DPAD_LEFT,
     DPAD_RIGHT,
-    PAGE_TURN, //not sure where this is used
+    PAGE_TURN, // not sure where this is used
     SAIL,
     SWIFT_SAIL
 };
 
-//Sounds don't have unique names, no enum needed
+// Sounds don't have unique names, no enum needed
 
 enum struct CameraTags : uint16_t {
     BASIC_CONVERSATION = 0,
@@ -189,7 +189,7 @@ enum struct ActionTags : uint16_t {
     CRY,
     SURPRISE,
     TROUBLED,
-    BLANK, //called "-" in the files
+    BLANK, // called "-" in the files
     SNIFFLE,
     ARYLL_NOTICE,
     ARYLL_SMIRK,

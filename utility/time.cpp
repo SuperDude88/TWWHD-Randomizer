@@ -37,9 +37,9 @@ ProgramTime::Duration_t ProgramTime::getElapsedTime() {
     std::string ProgramTime::getDateStr() {
         const time_t point = Clock_t::to_time_t(ProgramTime::getOpenedTime());
 
-        static std::mutex localtimeMut; //std::ctime is not thread safe
+        static std::mutex localtimeMut; // std::ctime is not thread safe
         std::unique_lock<std::mutex> lock(localtimeMut);
-        return std::ctime(&point); //time string ends with \n
+        return std::ctime(&point); // time string ends with \n
     }
 
     std::string ProgramTime::getTimeStr() {
@@ -63,4 +63,4 @@ ProgramTime::Duration_t ProgramTime::getElapsedTime() {
     }
 #endif
 
-static const ProgramTime& temp = ProgramTime::getInstance(); //inaccessible global to create instance when program starts
+static const ProgramTime& temp = ProgramTime::getInstance(); // inaccessible global to create instance when program starts

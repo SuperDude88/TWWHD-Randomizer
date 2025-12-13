@@ -1,4 +1,4 @@
-//ELF files are program binaries
+// ELF files are program binaries
 
 #pragma once
 

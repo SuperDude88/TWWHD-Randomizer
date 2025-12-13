@@ -34,7 +34,7 @@ const auto& RandomElement(const Container& container) {
     return container[Random(0, std::size(container))];
 }
 
-//Shuffle items within a vector or array
+// Shuffle items within a vector or array
 template <typename T>
 void shufflePool(std::vector<T>& vector) {
     for (std::size_t i = 0; i + 1 < vector.size(); i++)

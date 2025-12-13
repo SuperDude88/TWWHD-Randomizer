@@ -474,8 +474,8 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
 YAML::Node Config::settingsToYaml() const {
     YAML::Node root;
 
-    SET_FIELD(root, "program_version", RANDOMIZER_VERSION) //Keep track of rando version to give warning (different versions will have different item placements)
-    SET_FIELD(root, "file_version", CONFIG_VERSION) //Keep track of file version so it can avoid incompatible ones
+    SET_FIELD(root, "program_version", RANDOMIZER_VERSION) // Keep track of rando version to give warning (different versions will have different item placements)
+    SET_FIELD(root, "file_version", CONFIG_VERSION) // Keep track of file version so it can avoid incompatible ones
 
     SET_FIELD(root, "game_version", GameVersionToName(settings.game_version))
 

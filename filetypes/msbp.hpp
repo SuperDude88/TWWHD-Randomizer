@@ -1,6 +1,6 @@
-//Format is part of LibMessageStudio
-//MSBP files store project data including text commands, colors, attributes, etc
-//This isn't used in rando yet, but is a base for documentation and tools
+// Format is part of LibMessageStudio
+// MSBP files store project data including text commands, colors, attributes, etc
+// This isn't used in rando yet, but is a base for documentation and tools
 
 #pragma once
 
@@ -49,8 +49,8 @@ public:
 struct Attribute {
     uint8_t type;
     uint8_t padding_0x00;
-    uint16_t listIdx; //ALI2 block index, only used for type 9
-    uint32_t atrOffset; //Location in the text attribute struct
+    uint16_t listIdx; // ALI2 block index, only used for type 9
+    uint32_t atrOffset; // Location in the text attribute struct
 };
 
 class ATI2 final : public SectionHeader {
@@ -86,7 +86,7 @@ private:
 
 struct TagGroup {
     uint16_t numTags;
-    std::vector<uint16_t> tagIndexes; //in TAG2 block
+    std::vector<uint16_t> tagIndexes; // in TAG2 block
     std::string groupName;
 };
 
@@ -106,7 +106,7 @@ private:
 
 struct Tag {
     uint16_t numParams;
-    std::vector<uint16_t> parameterIndexes; //in TGP2 block
+    std::vector<uint16_t> parameterIndexes; // in TGP2 block
     std::string tagName;
 };
 
@@ -128,11 +128,11 @@ struct TagParameter {
     uint8_t paramType;
     std::string paramName;
 
-    //These are only used for type 9
-    //Could be std::optional but it's a bit unwieldy
+    // These are only used for type 9
+    // Could be std::optional but it's a bit unwieldy
     uint8_t padding_0x00;
     uint16_t numListItems;
-    std::vector<uint16_t> itemIndexes; //in TGL2 block
+    std::vector<uint16_t> itemIndexes; // in TGL2 block
 };
 
 class TGP2 final : public SectionHeader {
@@ -172,7 +172,7 @@ public:
 };
 
 struct Style {
-    uint32_t regionWidth; //textbox width in pixels, 720x1080 screen
+    uint32_t regionWidth; // textbox width in pixels, 720x1080 screen
     uint32_t lineNum;
     uint32_t fontIdx;
     uint32_t baseColorIdx;

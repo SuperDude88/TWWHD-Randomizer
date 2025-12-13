@@ -43,8 +43,8 @@ namespace FileTypes {
         ehdr.e_type = 0xFE01;
         ehdr.e_machine = 0x0014;
         ehdr.e_version = 1;
-        ehdr.e_entry = 0; //Not sure if this should be the default
-        ehdr.e_phoff = 0; //Wii U doesn't have a program header
+        ehdr.e_entry = 0; // Not sure if this should be the default
+        ehdr.e_phoff = 0; // Wii U doesn't have a program header
         ehdr.e_shoff = 0x40;
         ehdr.e_flags = 0;
         ehdr.e_ehsize = 0x34;
@@ -124,7 +124,7 @@ namespace FileTypes {
         Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shnum);
         Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_shstrndx);
 
-        shdr_table.reserve(ehdr.e_shnum); //Allocate the memory from the start to minimize copies
+        shdr_table.reserve(ehdr.e_shnum); // Allocate the memory from the start to minimize copies
         for (unsigned int i = 0; i < ehdr.e_shnum; i++) {
             Elf32_Shdr shdr;
             elf.seekg(ehdr.e_shoff + ehdr.e_shentsize * i, std::ios::beg);
@@ -176,13 +176,13 @@ namespace FileTypes {
                 if(!elf.read(&shdr.data[0], shdr.sh_size)) {
                     LOG_ERR_AND_RETURN(ELFError::REACHED_EOF);
                 }
-                if(shdr.sh_type != SectionType::SHT_NULL && shdr.sh_size == 0) { //If type isn't nobits or NULL and the size is 0, should not happen for WWHD
+                if(shdr.sh_type != SectionType::SHT_NULL && shdr.sh_size == 0) { // If type isn't nobits or NULL and the size is 0, should not happen for WWHD
                     LOG_ERR_AND_RETURN(ELFError::USED_SECTION_IS_EMTPY);
                 }
             }
-            else { //Don't read data if section is nobits
+            else { // Don't read data if section is nobits
                 if(shdr.sh_offset != 0) {
-                    LOG_ERR_AND_RETURN(ELFError::NOBITS_SECTION_NOT_EMPTY); //Offset in file should always be 0
+                    LOG_ERR_AND_RETURN(ELFError::NOBITS_SECTION_NOT_EMPTY); // Offset in file should always be 0
                 }
             }
             shdr_table.emplace_back(i, shdr);
@@ -201,13 +201,13 @@ namespace FileTypes {
         return loadFromBinary(file);
     }
 
-    ELFError ELF::extend_section(uint16_t index, const std::string& newData) { //newData is data to append, not replace
+    ELFError ELF::extend_section(uint16_t index, const std::string& newData) { // newData is data to append, not replace
         if (isEmpty == true) {
             LOG_ERR_AND_RETURN(ELFError::HEADER_DATA_NOT_LOADED);
         }
 
-        //Assume items are sorted by index, always should be
-        if (shdr_table[index].second.data.empty()) { //Can't append data to an empty section
+        // Assume items are sorted by index, always should be
+        if (shdr_table[index].second.data.empty()) { // Can't append data to an empty section
             LOG_ERR_AND_RETURN(ELFError::SECTION_DATA_NOT_LOADED);
         }
 
@@ -216,13 +216,13 @@ namespace FileTypes {
         return ELFError::NONE;
     }
 
-    ELFError ELF::extend_section(uint16_t index, uint32_t startAddr, const std::string& newData) { //add new data starting at an offset
+    ELFError ELF::extend_section(uint16_t index, uint32_t startAddr, const std::string& newData) { // Add new data starting at an offset
         if (isEmpty == true) {
             LOG_ERR_AND_RETURN(ELFError::HEADER_DATA_NOT_LOADED);
         }
 
-        //Assume items are sorted by index, always should be
-        if (shdr_table[index].second.data.empty()) { //Wouldn't append data to a section that didn't already have some
+        // Assume items are sorted by index, always should be
+        if (shdr_table[index].second.data.empty()) { // Wouldn't append data to a section that didn't already have some
             LOG_ERR_AND_RETURN(ELFError::SECTION_DATA_NOT_LOADED);
         }
         const uint32_t sectionOffset = startAddr - shdr_table[index].second.sh_addr;
@@ -267,7 +267,7 @@ namespace FileTypes {
         out.write(reinterpret_cast<const char*>(&ehdr.e_shnum), sizeof(ehdr.e_shnum));
         out.write(reinterpret_cast<const char*>(&ehdr.e_shstrndx), sizeof(ehdr.e_shstrndx));
 
-        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_type); //Swap ehdr data back so the data is correct for use later, byteswap inplace so things can be more easily converted to cross-platform
+        Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_type); // Swap ehdr data back so the data is correct for use later, byteswap inplace so things can be more easily converted to cross-platform
         Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_machine);
         Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_version);
         Utility::Endian::toPlatform_inplace(eType::Big, ehdr.e_entry);
@@ -285,7 +285,7 @@ namespace FileTypes {
 
         Utility::seek(out, ehdr.e_shoff + ehdr.e_shentsize * ehdr.e_shnum, std::ios::beg);
         for (auto& [index, section] : shdr_table) {
-            if (section.sh_type != SectionType::SHT_NOBITS && section.sh_type != SectionType::SHT_NULL) { //Ignore null or nobits sections since their offsets are 0 and have no data in the file
+            if (section.sh_type != SectionType::SHT_NOBITS && section.sh_type != SectionType::SHT_NULL) { // Ignore null or nobits sections since their offsets are 0 and have no data in the file
                 padToLen(out, section.sh_addralign);
 
                 section.sh_offset = out.tellp();
@@ -293,7 +293,7 @@ namespace FileTypes {
                 out.write(&section.data[0], section.data.size());
             }
         }
-        //Sort again so they are written by index, to update offsets we needed to write the data first
+        // Sort again so they are written by index, to update offsets we needed to write the data first
         std::ranges::sort(shdr_table, [](const shdr_index_t& a, const shdr_index_t& b) { return a.first < b.first; });
 
         Utility::seek(out, ehdr.e_shoff, std::ios::beg);

@@ -1,9 +1,9 @@
-//mostly taken from https://github.com/devkitPro/wut/blob/master/include/gx2/enum.h
+// Mostly taken from https://github.com/devkitPro/wut/blob/master/include/gx2/enum.h
 #pragma once
 
 #include <cstdint>
 
-//use non-scoped enums to allow implicit conversions and related operator things
+// Use non-scoped enums to allow implicit conversions and related operator things
 
 enum GX2AAMode : uint32_t
 {
@@ -462,7 +462,7 @@ enum GX2SurfaceUse : uint32_t
    GX2_SURFACE_USE_COLOR_BUFFER                 = 1 << 1,
    GX2_SURFACE_USE_DEPTH_BUFFER                 = 1 << 2,
    GX2_SURFACE_USE_SCAN_BUFFER                  = 1 << 3,
-   GX2_SURFACE_USE_TV                           = 1U << 31, //error if it shifts a signed value
+   GX2_SURFACE_USE_TV                           = 1U << 31, // error if it shifts a signed value
    GX2_SURFACE_USE_TEXTURE_COLOR_BUFFER_TV      = (GX2_SURFACE_USE_TEXTURE | GX2_SURFACE_USE_COLOR_BUFFER | GX2_SURFACE_USE_TV)
 };
 

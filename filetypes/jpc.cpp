@@ -18,13 +18,13 @@ std::vector<JParticle::ColorAnimationKeyframe> readColorTable(std::istream& in, 
         JParticle::ColorAnimationKeyframe& keyframe = table.emplace_back();
 
         if (!in.read(reinterpret_cast<char*>(&keyframe.time), sizeof(keyframe.time))) {
-            table.clear(); //return empty vector to signal error
+            table.clear(); // return empty vector to signal error
             return table;
         }
         Utility::Endian::toPlatform_inplace(eType::Big, keyframe.time);
 
         if (!readRGBA(in, in.tellg(), keyframe.color)) {
-            table.clear(); //return empty vector to signal error
+            table.clear(); // return empty vector to signal error
             return table;
         }
     }
@@ -122,7 +122,7 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
         out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldn't need to update?
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldn't need to update?
         Utility::seek(out, 4, std::ios::cur);
 
         flags &= ~0x700;
@@ -161,7 +161,7 @@ namespace JParticle {
         out.write(reinterpret_cast<const char*>(&rate), sizeof(rate));
         out.write(reinterpret_cast<const char*>(&rateRndm), sizeof(rateRndm));
         out.write(reinterpret_cast<const char*>(&rateStep), sizeof(rateStep));
-        Utility::seek(out, 1, std::ios::cur); //what is this?
+        Utility::seek(out, 1, std::ios::cur); // what is this?
 
         out.write(reinterpret_cast<const char*>(&maxFrame), sizeof(maxFrame));
         out.write(reinterpret_cast<const char*>(&startFrame), sizeof(startFrame));
@@ -303,7 +303,7 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
         out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
         // reset all the flags we are about to set
@@ -502,7 +502,7 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
         out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
         flags &= ~(0x010FFF0F); // = ~(0x100 | 0x200 | 0x400 | 0x800 | 0x40000 | 0x80000 | 0x1000 | 0x2000 | 0x1 | 0x2 | 0x1000000 | 0xC | 0xC000 | 0x30000)
@@ -624,7 +624,7 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
         out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
         flags &= ~0x103; // = ~(0x100 | 0x3)
@@ -732,7 +732,7 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
         out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
         flags &= ~0x01EF07FF; // ~(0x1000000 | 0x800000 | 0x400000 | 0x200000 | 0x80000 | 0x40000 | 0x20000 | 0x10000 | 0xF | 0x70 | 0x380 | 0x400)
@@ -867,7 +867,7 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
         out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
         flags &= ~0x00FF030F; // = ~(0xFF0000 | 0x300 | 0xF)
@@ -951,7 +951,7 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
         out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
         out.write(reinterpret_cast<const char*>(&keyType), sizeof(keyType));
@@ -1011,7 +1011,7 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
         out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); //isnt used, shouldnt need to update?
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
         Utility::seek(out, 4, std::ios::cur);
 
         texIDs.clear();
@@ -1148,7 +1148,7 @@ JPCError Particle::save_changes(std::ostream& out, const std::unordered_map<std:
 
 	Utility::Endian::toPlatform_inplace(eType::Big, unknown_1);
 	Utility::Endian::toPlatform_inplace(eType::Big, num_chunks);
-	Utility::Endian::toPlatform_inplace(eType::Big, size); //not always accurate, shouldnt need to update?
+	Utility::Endian::toPlatform_inplace(eType::Big, size); // not always accurate, shouldnt need to update?
 	Utility::Endian::toPlatform_inplace(eType::Big, particle_id);
 
 	out.write(reinterpret_cast<const char*>(&unknown_1), sizeof(unknown_1));
@@ -1161,7 +1161,7 @@ JPCError Particle::save_changes(std::ostream& out, const std::unordered_map<std:
 	out.write(reinterpret_cast<const char*>(&particle_id), sizeof(particle_id));
 	out.write(reinterpret_cast<const char*>(&unknown_6), sizeof(unknown_6));
 
-	//bem -> fld -> kfa -> bsp -> esp -> ssp -> etx -> tdb
+	// bem -> fld -> kfa -> bsp -> esp -> ssp -> etx -> tdb
 	if (emitter.has_value()) {
 		LOG_AND_RETURN_IF_ERR(emitter.value().save_changes(out));
 		padToLen(out, 0x20);
@@ -1288,7 +1288,7 @@ namespace FileTypes {
 				LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 			}
 
-			jpc.seekg(8, std::ios::cur); //ignore section size, its not accurate anyway, also skip 4 unused bytes
+			jpc.seekg(8, std::ios::cur); // ignore section size, its not accurate anyway, also skip 4 unused bytes
 			std::string filename(0x14, '\0');
 			if (!jpc.read(&filename[0], 0x14)) {
 				LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
@@ -1361,9 +1361,9 @@ namespace FileTypes {
 			padToLen(out, 0x20);
 		}
 
-		std::streamoff texStart = out.tellp(); //some stuff to preserve original order
+		std::streamoff texStart = out.tellp(); // some stuff to preserve original order
 		for (const auto& [filename, index] : textures) {
-			Utility::seek(out, texStart + (index * 0x20), std::ios::beg); //some stuff to preserve original order
+			Utility::seek(out, texStart + (index * 0x20), std::ios::beg); // some stuff to preserve original order
 			out.write("TEX1", 4);
 
 			out.write("\x00\x00\x00\x20\x00\x00\x00\x00", 8);

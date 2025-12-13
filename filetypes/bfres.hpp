@@ -1,6 +1,6 @@
-//Format is a part of NintendoWare::g3d (a model rendering library)
-//BFRES files contain several subfiles with model, texture, and animation data
-//They can also have embedded files of any type
+// Format is a part of NintendoWare::g3d (a model rendering library)
+// BFRES files contain several subfiles with model, texture, and animation data
+// They can also have embedded files of any type
 
 #pragma once
 
@@ -28,7 +28,7 @@ enum struct [[nodiscard]] FRESError
 // Changes are limited to ones that do not require shifting the rest of the file
 
 struct EmbeddedFileSpec {
-    unsigned int location; //Used to deal with relative offsets, not a part of the file data
+    unsigned int location; // Used to deal with relative offsets, not a part of the file data
     
     int32_t dataOffset;
     uint32_t fileLength;
@@ -48,12 +48,12 @@ struct FRESHeader
     int32_t groupOffsets[12];
     uint16_t groupCounts[12];
     uint32_t userPointer;
-    std::vector<EmbeddedFileSpec> embeddedFiles; //Mostly for ease of editing, aren't directly related to the main header
+    std::vector<EmbeddedFileSpec> embeddedFiles; // Mostly for ease of editing, aren't directly related to the main header
 };
 
 struct GroupEntry
 {
-    unsigned int location; //Used to deal with relative offsets, not a part of the file data
+    unsigned int location; // Used to deal with relative offsets, not a part of the file data
     uint32_t searchValue;
     uint16_t leftIndex;
     uint16_t rightIndex;
@@ -103,18 +103,18 @@ namespace FileTypes
         std::string fileData;
 
         resFile();
-        //static FRESFile createNew(); //Needs more complete implementation to be usable
+        //static FRESFile createNew(); // Needs more complete implementation to be usable
         FRESError loadFromBinary(std::istream& bfres); // Only does embedded files and textures for now
         FRESError loadFromFile(const fspath& filePath);
         FRESError replaceEmbeddedFile(const std::string& fileName, const fspath& newFilename);
         FRESError replaceEmbeddedFile(const std::string& fileName, std::stringstream& newData);
         FRESError replaceFromDir(const fspath& dirPath);
-        FRESError extractToDir(const fspath& dirPath) const; //Only does embedded files for now
+        FRESError extractToDir(const fspath& dirPath) const; // Only does embedded files for now
         FRESError writeToStream(std::ostream& out);
         FRESError writeToFile(const fspath& outFilePath);
     private:
         FRESError replaceEmbeddedFile(const unsigned int fileIndex, std::istream& newFile);
         FRESError replaceEmbeddedFile(const unsigned int fileIndex, std::stringstream& newFile);
-        void initNew() override {} //Needs a more complete implementation to work
+        void initNew() override {} // Needs a more complete implementation to work
     };
 }

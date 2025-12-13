@@ -20,7 +20,7 @@ MCPInstallTarget pickInstallLocation() {
 
     ScreenDraw();
     
-    while(true) { //not sure if this should have a timeout
+    while(true) { // not sure if this should have a timeout
         if(InputManager::getInstance().poll() != InputError::NONE) {
             continue;
         }
@@ -32,6 +32,6 @@ MCPInstallTarget pickInstallLocation() {
             return MCPInstallTarget::MCP_INSTALL_TARGET_MLC;
         }
         
-        std::this_thread::sleep_for(17ms); //update ~60 times a second
+        std::this_thread::sleep_for(17ms); // update ~60 times a second
     }
 }

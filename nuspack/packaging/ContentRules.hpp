@@ -10,7 +10,7 @@
 struct ContentRule {
     std::string pattern;
     ContentDetails details;
-    bool contentPerMatch = false; //each match gets new content
+    bool contentPerMatch = false; // each match gets new content
 
     ContentRule(const std::string& pattern_, const ContentDetails& details_, const bool& perMatch_=false) :
         pattern(pattern_),

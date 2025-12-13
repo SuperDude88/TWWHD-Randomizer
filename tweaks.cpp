@@ -84,17 +84,17 @@ static TweakError Apply_Patch(const fspath& file_path) {
             for (const auto& patch : patches["Data"]) {
                 const uint32_t offset = patch.first.as<uint32_t>();
                 offset_t sectionOffset = elfUtil::AddressToOffset(elf, offset);
-                if (!sectionOffset) { //address not in section
+                if (!sectionOffset) { // address not in section
                     std::string data;
                     for (const uint8_t& byte : patch.second.as<std::vector<uint8_t>>()) {
                         data += byte;
                     }
-                    RPX_ERROR_CHECK(elf.extend_section(2, offset, data)); //add data at the specified offset
+                    RPX_ERROR_CHECK(elf.extend_section(2, offset, data)); // add data at the specified offset
                 }
                 else {
                     for (const uint8_t& byte : patch.second.as<std::vector<uint8_t>>()) {
                         RPX_ERROR_CHECK(elfUtil::write_u8(elf, sectionOffset, byte));
-                        sectionOffset.offset++; //Cycles through the bytes individually, need to increase the offset by one each time
+                        sectionOffset.offset++; // Cycles through the bytes individually, need to increase the offset by one each time
                     }
                 }
             }
@@ -119,14 +119,14 @@ static TweakError Apply_Patch(const fspath& file_path) {
 
                 if(reloc.r_offset >= 0x10000000) {
                     if(reloc.r_offset >= 0x1018C0C0) {   
-                        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 9, reloc)); //in the .data section, go in .rela.data
+                        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 9, reloc)); // in the .data section, go in .rela.data
                     }
                     else {
-                        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 8, reloc)); //in the .rodata section, go in .rela.rodata
+                        RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 8, reloc)); // in the .rodata section, go in .rela.rodata
                     }
                 }
                 else {
-                    RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, reloc)); //in the .text section, go in .rela.text
+                    RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, reloc)); // in the .text section, go in .rela.text
                 }
 
                 return true;
@@ -164,7 +164,7 @@ TweakError change_ship_starting_island(const uint8_t room_num) {
         
         std::vector<ChunkEntry*> ship_spawns = room_dzr.entries_by_type("SHIP");
         ChunkEntry* ship_spawn_0 = nullptr;
-        for (ChunkEntry* spawn : ship_spawns) { //Find spawn with ID 0
+        for (ChunkEntry* spawn : ship_spawns) { // Find spawn with ID 0
             if (*reinterpret_cast<uint8_t*>(&spawn->data[0xE]) == 0) ship_spawn_0 = spawn;
         }
         if(ship_spawn_0 == nullptr) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
@@ -177,7 +177,7 @@ TweakError change_ship_starting_island(const uint8_t room_num) {
                 if (std::strncmp(&actor->data[0], "Ship", 4) == 0) {
                     actor->data.replace(0xC, 0xC, ship_spawn_0.data, 0x0, 0xC);
                     actor->data.replace(0x1A, 0x2, ship_spawn_0.data, 0xC, 0x2);
-                    actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00"s, 0x0, 0x4); //prevent softlock on fire mountain (may be wrong offset)
+                    actor->data.replace(0x10, 0x4, "\xC8\xF4\x24\x00"s, 0x0, 0x4); // prevent softlock on fire mountain (may be wrong offset)
                     break;
                 }
             }
@@ -209,9 +209,9 @@ TweakError make_all_text_instant() {
                 for (auto& [label, message] : msbt.messages_by_label) {
                     std::u16string& String = message.text.message;
 
-                    message.attributes.drawType = 1; //draw instant
+                    message.attributes.drawType = 1; // draw instant
 
-                    std::u16string::size_type wait = String.find(u"\x0e\x01\x06\x02"s); //dont use macro because duration shouldnt matter
+                    std::u16string::size_type wait = String.find(u"\x0e\x01\x06\x02"s); // dont use macro because duration shouldnt matter
                     while (wait != std::u16string::npos) {
                         String.erase(wait, 5);
                         wait = String.find(u"\x0e\x01\x06\x02"s);
@@ -243,14 +243,14 @@ TweakError make_all_text_instant() {
                     };
 
                     if(wait_dismiss_to_remove.contains(label)) {
-                        std::u16string::size_type wait_dismiss = String.find(u"\x0e\x01\x03\x02"s); //dont use macro because duration shouldnt matter
+                        std::u16string::size_type wait_dismiss = String.find(u"\x0e\x01\x03\x02"s); // dont use macro because duration shouldnt matter
                         while (wait_dismiss != std::u16string::npos) {
                             String.erase(wait_dismiss, 5);
                             wait_dismiss = String.find(u"\x0e\x01\x03\x02"s);
                         }
                     }
 
-                    std::u16string::size_type wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s); //dont use macro because duration shouldnt matter
+                    std::u16string::size_type wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s); // dont use macro because duration shouldnt matter
                     while (wait_dismiss_prompt != std::u16string::npos) {
                         String.erase(wait_dismiss_prompt, 5);
                         wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s);
@@ -269,7 +269,7 @@ TweakError fix_deku_leaf_model() {
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Omori_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
     entry.addAction([](RandoSession* session, FileType* data) -> int 
     {
-        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) //do this on the stream so it happens before location mod
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) // do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
         LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
@@ -340,11 +340,11 @@ TweakError allow_all_items_to_be_field_items() {
 
         if (item_id == 0xAA) {
             //szs_name_pointer = custom_symbols.at("hurricane_spin_item_resource_arc_name");
-            szs_name_pointer = szs_name_pointers.at(0x38); //issues with custom .szs currently, use sword model instead
+            szs_name_pointer = szs_name_pointers.at(0x38); // issues with custom .szs currently, use sword model instead
             item_resources_addr_to_fix = item_resources_list_start + item_id * 0x24;
 
 
-            //section_start = 0x02000000; //custom stuff only gets put in .text
+            //section_start = 0x02000000; // custom stuff only gets put in .text
             //not needed because we use the sword model (would be for a custom szs)
         }
         else {
@@ -370,12 +370,12 @@ TweakError allow_all_items_to_be_field_items() {
         Elf32_Rela relocation;
         relocation.r_offset = field_item_resources_addr;
         if (section_start == 0x02000000) {
-            relocation.r_info = 0x00000101; //need different .symtab index for .text pointer
+            relocation.r_info = 0x00000101; // need different .symtab index for .text pointer
         }
         else {
             relocation.r_info = 0x00000201;
         }
-        relocation.r_addend = szs_name_pointer - section_start; //needs offset into the .rodata section (.text for vscroll), subtract start address from data location
+        relocation.r_addend = szs_name_pointer - section_start; // needs offset into the .rodata section (.text for vscroll), subtract start address from data location
 
         rpx.addAction([=](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -387,8 +387,8 @@ TweakError allow_all_items_to_be_field_items() {
         if (item_resources_addr_to_fix) {
             Elf32_Rela relocation2;
             relocation2.r_offset = item_resources_addr_to_fix;
-            relocation2.r_info = relocation.r_info; //same as first entry
-            relocation2.r_addend = relocation.r_addend; //same as first entry
+            relocation2.r_info = relocation.r_info; // same as first entry
+            relocation2.r_addend = relocation.r_addend; // same as first entry
 
             rpx.addAction([=](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -424,7 +424,7 @@ TweakError allow_all_items_to_be_field_items() {
         return true;
     });
 
-    //execItemGet, mode_wait, and getYOffset had their switch cases optimized out, so their patches are a little more involved in HD
+    // execItemGet, mode_wait, and getYOffset had their switch cases optimized out, so their patches are a little more involved in HD
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/field_items_diff.yaml")); 
     
     const uint32_t item_info_list_start = 0x101E8674;
@@ -506,7 +506,7 @@ TweakError remove_ff2_cutscenes(const bool& randomize_boss_entrances) {
 TweakError make_items_progressive() {
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/make_items_progressive_diff.yaml"));
 
-    const uint32_t item_get_func_pointer = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
+    const uint32_t item_get_func_pointer = 0x0001DA54; // First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 
     RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
     rpx.addAction([](RandoSession* session, FileType* data) -> int {
@@ -549,16 +549,16 @@ TweakError make_items_progressive() {
             RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_addr, 9), custom_symbols.at("progressive_magic_meter_item_func") - 0x02000000));
         }
 
-        //nop some code that sets max bombs and arrows to 30
-        //This avoids downgrading bomb bags or quivers
+        // nop some code that sets max bombs and arrows to 30
+        // This avoids downgrading bomb bags or quivers
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e8c4), 0x60000000));
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e8cc), 0x60000000));
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e66c), 0x60000000));
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e674), 0x60000000));
 
-        //Modify the deku leaf to skip giving you magic
-        //Instead we make magic its own item that the player starts with by default
-        //Allows other items to use magic before getting leaf
+        // Modify the deku leaf to skip giving you magic
+        // Instead we make magic its own item that the player starts with by default
+        // Allows other items to use magic before getting leaf
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e96c), 0x60000000));
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0254e97c), 0x60000000));
 
@@ -608,7 +608,7 @@ TweakError add_ganons_tower_warp_to_ff2() {
 TweakError add_chest_in_place_medli_gift() {
     RandoSession::CacheEntry& stage = g_session.openGameFile("content/Common/Stage/M_Dra09_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@stage.dzs");
     stage.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) //do this on the stream so it happens before location mod
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) // do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzs;
         LOG_AND_RETURN_BOOL_IF_ERR(dzs.loadFromBinary(generic.data));
@@ -637,7 +637,7 @@ TweakError add_chest_in_place_medli_gift() {
 TweakError add_chest_in_place_queen_fairy_cutscene() {
     RandoSession::CacheEntry& room = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room9.szs@YAZ0@SARC@Room9.bfres@BFRES@room.dzr");
     room.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) //do this on the stream so it happens before location mod
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) // do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
         LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
@@ -654,9 +654,9 @@ TweakError add_chest_in_place_queen_fairy_cutscene() {
 }
 
 TweakError add_more_magic_jars() {
-    //DRC doesn't have any magic since you wouldn't normally have Deku Leaf there
-    //But it can be required in the randomizer, so we make some skulls drop magic
-    //Same thing for arrows
+    // DRC doesn't have any magic since you wouldn't normally have Deku Leaf there
+    // But it can be required in the randomizer, so we make some skulls drop magic
+    // Same thing for arrows
     {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/M_NewD2_Room2.szs@YAZ0@SARC@Room2.bfres@BFRES@room.dzr@DZX");
         entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -670,9 +670,9 @@ TweakError add_more_magic_jars() {
 
             if(skulls.size() < 6) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
 
-            skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x10", 0, 4); //arrows in case logic expects you to use them for BK chest
-            skulls[2]->data.replace(0x8, 0x4, "\x75\x7f\xff\x09", 0, 4); //small magic
-            skulls[5]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); //large magic
+            skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x10", 0, 4); // arrows in case logic expects you to use them for BK chest
+            skulls[2]->data.replace(0x8, 0x4, "\x75\x7f\xff\x09", 0, 4); // small magic
+            skulls[5]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); // large magic
 
             return true;
         });
@@ -691,30 +691,30 @@ TweakError add_more_magic_jars() {
 
             if(skulls.size() < 11) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY);
 
-            skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); //large magic
-            skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); //large magic
+            skulls[0]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); // large magic
+            skulls[9]->data.replace(0x8, 0x4, "\x75\x7f\xff\x0A", 0, 4); // large magic
 
             return true;
         });
     }
 
-    //The grass on the small islands behind DRI do not have guaranteed magic
-    //Add grass that will always drop some on each of the islands
+    // The grass on the small islands behind DRI do not have guaranteed magic
+    // Add grass that will always drop some on each of the islands
     {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/szs_permanent1.pack@SARC@sea_Room13.szs@YAZ0@SARC@Room13.bfres@BFRES@room.dzr@DZX");
         entry.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(dri, FileTypes::DZXFile, data)
 
             ChunkEntry& grass1 = dri.add_entity("ACTR");
-            grass1.data = "kusax1\x00\x00\x00\x00\x0E\x00\x48\x4C\xC7\x80\x44\xED\x80\x00\xC8\x45\xB7\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF"s; //62.50% chance of small magic, 37.50% chance of large magic
+            grass1.data = "kusax1\x00\x00\x00\x00\x0E\x00\x48\x4C\xC7\x80\x44\xED\x80\x00\xC8\x45\xB7\xC0\x00\x00\x00\x00\x00\x00\xFF\xFF"s; // 62.50% chance of small magic, 37.50% chance of large magic
             ChunkEntry& grass2 = dri.add_entity("ACTR");
-            grass2.data = "kusax1\x00\x00\x00\x00\x0E\x00\x48\x4C\x6D\x40\x44\xA2\x80\x00\xC8\x4D\x38\x40\x00\x00\x00\x00\x00\x00\xFF\xFF"s; //62.50% chance of small magic, 37.50% chance of large magic
+            grass2.data = "kusax1\x00\x00\x00\x00\x0E\x00\x48\x4C\x6D\x40\x44\xA2\x80\x00\xC8\x4D\x38\x40\x00\x00\x00\x00\x00\x00\xFF\xFF"s; // 62.50% chance of small magic, 37.50% chance of large magic
 
             return true;
         });
     }
 
-    //Add magic to one of the pots outside the TotG miniboss
+    // Add magic to one of the pots outside the TotG miniboss
     {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Siren_Room14.szs@YAZ0@SARC@Room14.bfres@BFRES@room.dzr@DZX");
         entry.addAction([](RandoSession* session, FileType* data) -> int {
@@ -744,31 +744,31 @@ TweakError modify_title_screen() {
     lytEntry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(layout, FileTypes::FLYTFile, data)
         
-        //add version number
-        Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //unused version number text
+        // Add version number
+        Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); // unused version number text
         newPane.pane->name = "T_Version";
         newPane.pane->name.resize(0x18);
-        dynamic_cast<txt1*>(newPane.pane.get())->text = u"Ver " + Utility::Str::toUTF16(RANDOMIZER_VERSION) + u'\0'; //~20-21 characters per line
+        dynamic_cast<txt1*>(newPane.pane.get())->text = u"Ver " + Utility::Str::toUTF16(RANDOMIZER_VERSION) + u'\0'; // ~20-21 characters per line
         dynamic_cast<txt1*>(newPane.pane.get())->fontIndex = 0;
-        dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = dynamic_cast<txt1*>(newPane.pane.get())->text.length() * 2; //includes null
+        dynamic_cast<txt1*>(newPane.pane.get())->restrictedLen = dynamic_cast<txt1*>(newPane.pane.get())->text.length() * 2; // includes null
         dynamic_cast<txt1*>(newPane.pane.get())->lineAlignment = txt1::LineAlignment::CENTER;
 
-        //update "HD" image position
+        // Update "HD" image position
         layout.rootPane.children[0].children[1].children[1].children[0].pane->translation.X = -165.0f;
         layout.rootPane.children[0].children[1].children[1].children[0].pane->translation.Y = 12.0f;
 
-        //update subtitle size/position
+        // Update subtitle size/position
         layout.rootPane.children[0].children[1].children[1].children[1].children[0].pane->translation.Y = -30.0f;
         layout.rootPane.children[0].children[1].children[1].children[1].children[0].pane->height = 120.0f;
 
-        //update subtitle mask size/position
+        // Update subtitle mask size/position
         layout.rootPane.children[0].children[1].children[1].children[1].children[1].pane->translation.Y = -30.0f;
         layout.rootPane.children[0].children[1].children[1].children[1].children[1].pane->height = 120.0f;
 
         return true;
     });
 
-    //update "The Legend of Zelda" texture
+    // Update "The Legend of Zelda" texture
     RandoSession::CacheEntry& tEntry = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoZelda_00^l.bflim@BFLIM");
     tEntry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(title, FileTypes::FLIMFile, data)
@@ -778,7 +778,7 @@ TweakError modify_title_screen() {
         return true;
     });
 
-    //update "The Wind Waker" texture
+    // Update "The Wind Waker" texture
     RandoSession::CacheEntry& sEntry = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwaker_00^l.bflim@BFLIM");
     sEntry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(subtitle, FileTypes::FLIMFile, data)
@@ -788,7 +788,7 @@ TweakError modify_title_screen() {
         return true;
     });
 
-    //update mask for "The Wind Waker" texture
+    // Update mask for "The Wind Waker" texture
     RandoSession::CacheEntry& mEntry = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@timg/TitleLogoWindwakerMask_00^s.bflim@BFLIM");
     mEntry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(mask, FileTypes::FLIMFile, data)
@@ -798,14 +798,14 @@ TweakError modify_title_screen() {
         return true;
     });
 
-    //update sparkle size/position
+    // Update sparkle size/position
     RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
     rpx.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-        RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x101F7048), 1.4f)); //scale
-        RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x101F7044), 2.25f)); //possibly particle size, JP changes it for its larger title text
-        RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x10108280), -38.0f)); //vertical position
+        RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x101F7048), 1.4f)); // scale
+        RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x101F7044), 2.25f)); // possibly particle size, JP changes it for its larger title text
+        RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x10108280), -38.0f)); // vertical position
 
         return true;
     });
@@ -835,7 +835,7 @@ TweakError update_name_and_icon() {
         metaRoot->FirstChildElement("shortname_es")->SetText("The Wind Waker HD Randomizer");
         metaRoot->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
 
-        //change the title ID so it gets its own channel when repacked
+        // change the title ID so it gets its own channel when repacked
         metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
         
         tinyxml2::XMLPrinter printer;
@@ -872,7 +872,7 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
         const GameItem item_value;
     };
 
-    const uint32_t item_get_func_pointer = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
+    const uint32_t item_get_func_pointer = 0x0001DA54; // First relevant relocation entry in .rela.data (overwrites .data section when loaded)
     const uint32_t item_resources_list_start = 0x101E4674;
     const uint32_t field_item_resources_list_start = 0x101E6A74;
     const uint32_t item_info_list_start = 0x101E8674;
@@ -966,7 +966,7 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
         rpx.addAction([=](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-            RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_pointer + (0xC * item_id) + 0x8, 9), custom_symbols.at(itemToFunc.at(item_data.item_value)) - 0x02000000)); //write to the relocation entries
+            RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, item_get_func_pointer + (0xC * item_id) + 0x8, 9), custom_symbols.at(itemToFunc.at(item_data.item_value)) - 0x02000000)); // write to the relocation entries
 
             return true;
         });
@@ -1011,12 +1011,12 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
         Elf32_Rela relocation;
         relocation.r_offset = field_item_resources_addr;
         relocation.r_info = 0x00000201;
-        relocation.r_addend = szs_name_pointer - 0x10000000; //needs offset into .rodata section, subtract start address from data location
+        relocation.r_addend = szs_name_pointer - 0x10000000; // needs offset into .rodata section, subtract start address from data location
 
         Elf32_Rela relocation2;
         relocation2.r_offset = item_resources_addr;
-        relocation2.r_info = relocation.r_info; //same as first entry
-        relocation2.r_addend = relocation.r_addend; //same as first entry
+        relocation2.r_info = relocation.r_info; // same as first entry
+        relocation2.r_addend = relocation.r_addend; // same as first entry
 
         // Also update the item info for custom dungeon items to match the vanilla ones
         // Includes the flag that stops the item from fading out over time
@@ -1445,7 +1445,7 @@ TweakError add_pirate_ship_to_windfall() {
         CAST_ENTRY_TO_FILETYPE(windfallDzr, FileTypes::DZXFile, data)
 
         std::vector<ChunkEntry*> wf_layer_2_actors = windfallDzr.entries_by_type_and_layer("ACTR", 2);
-        std::string layer_2_ship_data; //copy actor data, add_entity reallocates vector and invalidates pointer
+        std::string layer_2_ship_data; // copy actor data, add_entity reallocates vector and invalidates pointer
         for (ChunkEntry* actor : wf_layer_2_actors) {
             if (std::strncmp(&actor->data[0], "Pirates\x00", 8) == 0) layer_2_ship_data = actor->data;
         }
@@ -1484,10 +1484,10 @@ TweakError add_pirate_ship_to_windfall() {
         ChunkEntry& swop = shipDzr.add_entity("ACTR");
         swop.data = "SwOp\x00\x00\x00\x00\x01\xC0\xC2\x13\x00\x00\x00\x00\x00\x00\x00\x00\xC5\x89\x80\x00\x00\xFF\x00\x00\x00\x00\xFF\xFF"s;
 
-        //for starting the event (hardcode the index because it avoids the file dependency, not great but whatever)
+        // for starting the event (hardcode the index because it avoids the file dependency, not great but whatever)
         ChunkEntry& swop2 = shipDzr.add_entity("ACTR");
         swop2.data = "SwOp\x00\x00\x00\x00\x02\xC2\xC1\x10\x00\x00\x00\x00\x00\x00\x00\x00\xC5\x73\xC0\x00\x00\x02\x00\x00\x00\x96\xFF\xFF"s;
-        //opening the door
+        // opening the door
         ChunkEntry& swop3 = shipDzr.add_entity("ACTR");
         swop3.data = "SwOp\x00\x00\x00\x00\x02\xC0\xC4\x12\x00\x00\x00\x00\x00\x00\x00\x00\xC5\x54\x80\x00\x00\xFF\x00\x00\x00\x00\xFF\xFF"s;
         
@@ -1508,11 +1508,11 @@ TweakError add_pirate_ship_to_windfall() {
             msbt.messages_by_label["03008"].attributes.soundEffect = 106;
 
             Attributes attributes;
-            attributes.character = 0x3; //Aryll
+            attributes.character = 0x3; // Aryll
             attributes.boxStyle = 0x0;
             attributes.drawType = 0x1;
             attributes.screenPos = 0x3;
-            attributes.lineAlignment = 1; //left alignment
+            attributes.lineAlignment = 1; // left alignment
             TSY1Entry tsy;
             tsy.styleIndex = 0x12A;
             msbt.addMessage("00849", attributes, tsy, u""s); // Text set in text_replacements.cpp
@@ -1641,7 +1641,7 @@ TweakError add_cross_dungeon_warps() {
                 for (ChunkEntry* spawn_to_check : spawns) {
                     if (std::strncmp(&spawn_to_check->data[0x1D], "\x45", 1) == 0) spawn_id_69.push_back(spawn_to_check);
                 }
-                if (spawn_id_69.size() != 1) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY); //technically too many and not missing, but its close enough with line number
+                if (spawn_id_69.size() != 1) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_ENTITY); // technically too many and not missing, but its close enough with line number
 
                 return true;
             });
@@ -1739,8 +1739,8 @@ TweakError add_cross_dungeon_warps() {
         return true;
     });
     
-    drc.addDependent(totg.getParent()); //Want the file above the JPC entry
-    drc.addDependent(ff.getParent()); //Want the file above the JPC entry
+    drc.addDependent(totg.getParent()); // Want the file above the JPC entry
+    drc.addDependent(ff.getParent()); // Want the file above the JPC entry
 
     return TweakError::NONE;
 }
@@ -1816,10 +1816,10 @@ TweakError add_boss_door_return_spawns() {
             spawn.data.replace(0x1A, 2, reinterpret_cast<const char*>(&newSpawn.y_rot), 2);
             spawn.data.replace(0x1C, 4, "\xFF\x46\xFF\xFF", 4);
             if(newSpawn.stage_name == "sea") {
-                spawn.data[0x1C] = '\x00'; //use ship spawn ID 0 if this exits to sea
+                spawn.data[0x1C] = '\x00'; // use ship spawn ID 0 if this exits to sea
             }
             else {
-                spawn.data[0x1C] = '\xFF'; //otherwise don't do anything with KoRL
+                spawn.data[0x1C] = '\xFF'; // otherwise don't do anything with KoRL
             }
 
             return true;
@@ -1835,7 +1835,7 @@ TweakError remove_makar_kidnapping() {
 
         std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
 
-        ChunkEntry* switch_actor = nullptr; //initialization is just to make compiler happy
+        ChunkEntry* switch_actor = nullptr; // initialization is just to make compiler happy
         for (ChunkEntry* actor : actors) {
             if (std::strncmp(&actor->data[0], "AND_SW2\x00", 8) == 0) switch_actor = actor;
         }
@@ -1855,13 +1855,13 @@ TweakError remove_makar_kidnapping() {
 }
 
 TweakError increase_crawl_speed() {
-    //The 3.0 float crawling uses is shared with other things in HD, can't change it directly
-    //Redirect both instances to load 6.0 from elsewhere
+    // The 3.0 float crawling uses is shared with other things in HD, can't change it directly
+    // Redirect both instances to load 6.0 from elsewhere
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014EC04, 7), 0x000355C4)); //update .rela.text entry
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014EC4C, 7), 0x000355C4)); //update .rela.text entry
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014EC04, 7), 0x000355C4)); // update .rela.text entry
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014EC4C, 7), 0x000355C4)); // update .rela.text entry
 
         return true;
     });
@@ -1911,7 +1911,7 @@ TweakError increase_grapple_animation_speed() {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x02170250), 0x394B000A));
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00075170, 7), 0x00010FFC)); //update .rela.text entry
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00075170, 7), 0x00010FFC)); // update .rela.text entry
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x100110C8), 0x41C80000));
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x021711D4), 0x390B0006));
 
@@ -1925,11 +1925,11 @@ TweakError increase_block_move_animation() {
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00153b00, 7), 0x00035AAC)); //update .rela.text entries
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00153b00, 7), 0x00035AAC)); // update .rela.text entries
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00153b48, 7), 0x00035AAC));
 
         uint32_t offset = 0x101CB424;
-        for (unsigned int i = 0; i < 13; i++) { //13 types of blocks total
+        for (unsigned int i = 0; i < 13; i++) { // 13 types of blocks total
             RPX_ERROR_CHECK(elfUtil::write_u16(elf, elfUtil::AddressToOffset(elf, offset + 0x04), 0x000C)); // Reduce number frames for pushing to last from 20 to 12
             RPX_ERROR_CHECK(elfUtil::write_u16(elf, elfUtil::AddressToOffset(elf, offset + 0x0A), 0x000C)); // Reduce number frames for pulling to last from 20 to 12
             offset += 0x9C;
@@ -1942,7 +1942,7 @@ TweakError increase_block_move_animation() {
 }
 
 TweakError increase_misc_animations() {
-    //Float is shared, redirect it to read another float with the right value
+    // Float is shared, redirect it to read another float with the right value
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
@@ -1998,7 +1998,7 @@ TweakError shorten_auction_intro_event() {
             LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
         }
 
-        camera->actions.erase(camera->actions.begin() + 3, camera->actions.begin() + 5); //last iterator not inclusive, only erase actions 3-4
+        camera->actions.erase(camera->actions.begin() + 3, camera->actions.begin() + 5); // last iterator not inclusive, only erase actions 3-4
 
         return true;
     });
@@ -2067,7 +2067,7 @@ TweakError update_sword_mode_game_variable(const bool& remove_swords) {
 }
 
 TweakError update_starting_gear(const std::vector<GameItem>& startingItems) {
-    std::vector<GameItem> startingGear = startingItems; //copy so we can edit without causing problems
+    std::vector<GameItem> startingGear = startingItems; // copy so we can edit without causing problems
 
     // Changing starting magic doesn't work when done via our normal starting items initialization code, so we need to handle it specially.
     LOG_AND_RETURN_IF_ERR(set_starting_magic(16 * std::count(startingGear.begin(), startingGear.end(), GameItem::ProgressiveMagicMeter)));
@@ -2078,7 +2078,7 @@ TweakError update_starting_gear(const std::vector<GameItem>& startingItems) {
     }
 
     if (startingGear.size() > MAXIMUM_ADDITIONAL_STARTING_ITEMS) {
-        LOG_ERR_AND_RETURN(TweakError::UNEXPECTED_VALUE); //error
+        LOG_ERR_AND_RETURN(TweakError::UNEXPECTED_VALUE);
     }
 
     if(custom_symbols.count("starting_gear") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
@@ -2109,7 +2109,7 @@ TweakError add_hint_signs() {
 
             const std::string new_message_label = "00847";
             Attributes attributes;
-            attributes.character = 0xF; //sign
+            attributes.character = 0xF; // sign
             attributes.boxStyle = 0x2;
             attributes.drawType = 0x1;
             attributes.screenPos = 0x2;
@@ -2448,7 +2448,7 @@ TweakError add_barren_dungeon_hint_triggers(World& world) {
 }
 
 TweakError update_tingle_statue_item_get_funcs() {
-    const uint32_t item_get_func_ptr = 0x0001DA54; //First relevant relocation entry in .rela.data (overwrites .data section when loaded)
+    const uint32_t item_get_func_ptr = 0x0001DA54; // First relevant relocation entry in .rela.data (overwrites .data section when loaded)
     const std::unordered_map<int, std::string> symbol_name_by_item_id = { {0xA3, "dragon_tingle_statue_item_get_func"}, {0xA4, "forbidden_tingle_statue_item_get_func"}, {0xA5, "goddess_tingle_statue_item_get_func"}, {0xA6, "earth_tingle_statue_item_get_func"}, {0xA7, "wind_tingle_statue_item_get_func"} };
     RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
@@ -2485,16 +2485,16 @@ TweakError make_tingle_statue_reward_rupee_rainbow_colored() {
     return TweakError::NONE;
 }
 
-TweakError show_seed_hash_on_title_screen(const std::u16string& hash) { //make sure hash is null terminated
+TweakError show_seed_hash_on_title_screen(const std::u16string& hash) { // make sure hash is null terminated
     using namespace NintendoWare::Layout;
 
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@blyt/Title_00.bflyt@BFLYT");
     
-    //add hash
+    // add hash
     entry.addAction([hash](RandoSession* sessio, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(layout, FileTypes::FLYTFile, data)
 
-        Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); //hidden version number text
+        Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); // hidden version number text
         txt1& textPane = *dynamic_cast<txt1*>(newPane.pane.get());
         textPane.name = "T_Hash";
         textPane.name.resize(0x18);
@@ -2658,7 +2658,7 @@ TweakError show_dungeon_markers_on_chart(World& world) {
 TweakError add_chest_in_place_jabun_cutscene() {
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/Pjavdou_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
     entry.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) //do this on the stream so it happens before location mod
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) // do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
         LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
@@ -2737,7 +2737,7 @@ TweakError remove_jabun_stone_door_event() {
 TweakError add_chest_in_place_master_sword() {
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Stage/kenroom_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr");
     entry.addAction([](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) //do this on the stream so it happens before location mod
+        CAST_ENTRY_TO_FILETYPE(generic, RawFile, data) // do this on the stream so it happens before location mod
 
         FileTypes::DZXFile dzr;
         LOG_AND_RETURN_BOOL_IF_ERR(dzr.loadFromBinary(generic.data));
@@ -3038,7 +3038,7 @@ TweakError fix_stone_head_bugs() {
         uint32_t status_bits = elfUtil::read_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100));
         Utility::Endian::toPlatform_inplace(eType::Big, status_bits);
         status_bits &= ~0x00000080;
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100), status_bits)); //write function handles byteswap back
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x101ca100), status_bits)); // write function handles byteswap back
 
         return true;
     });
@@ -3163,8 +3163,8 @@ TweakError add_shortcut_warps_into_dungeons(World& world) {
 }
 
 TweakError update_entrance_events() {
-    //Some entrances have event triggers with hardcoded stages rather than a load zone with a SCLS entry
-    //Update those edge cases based on the SCLS entries in their respective dzr
+    // Some entrances have event triggers with hardcoded stages rather than a load zone with a SCLS entry
+    // Update those edge cases based on the SCLS entries in their respective dzr
 
     RandoSession::CacheEntry& dzr = g_session.openGameFile("content/Common/Pack/szs_permanent2.pack@SARC@sea_Room41.szs@YAZ0@SARC@Room41.bfres@BFRES@room.dzr@DZX");
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/first_szs_permanent.pack@SARC@sea_Stage.szs@YAZ0@SARC@Stage.bfres@BFRES@event_list.dat@EVENTS");
@@ -3203,15 +3203,15 @@ TweakError update_entrance_events() {
 }
 
 TweakError fix_entrance_params() {
-    //Some entrances have params that cause issues when they're randomized
+    // Some entrances have params that cause issues when they're randomized
 
-    //set our custom param for the crawlspaces so they always have Link crawling
+    // set our custom param for the crawlspaces so they always have Link crawling
     RandoSession::CacheEntry& link_ug = g_session.openGameFile("content/Common/Stage/LinkUG_Room0.szs@YAZ0@SARC@Room0.bfres@BFRES@room.dzr@DZX");
     link_ug.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
         const std::vector<ChunkEntry*> spawns = dzr.entries_by_type("PLYR");
-        spawns[1]->data.data()[0x19] |= 0x01; //last byte of X rotation
+        spawns[1]->data.data()[0x19] |= 0x01; // last byte of X rotation
 
         return true;
     });
@@ -3302,7 +3302,7 @@ TweakError apply_ingame_preferences(const Settings& settings) {
 }
 
 TweakError updateCodeSize() {
-    //Increase the max codesize in cos.xml to load all our code
+    // Increase the max codesize in cos.xml to load all our code
     RandoSession::CacheEntry& cosEntry = g_session.openGameFile("code/cos.xml");
     cosEntry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(generic, RawFile, data)\
@@ -3319,8 +3319,8 @@ TweakError updateCodeSize() {
         return true;
     });
 
-    //Also update the RPL info section of the RPX
-    //Change the textSize and loadSize to be large enough for the new code/relocations
+    // Also update the RPL info section of the RPX
+    // Change the textSize and loadSize to be large enough for the new code/relocations
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
@@ -3383,7 +3383,7 @@ TweakError add_ff_warp_button() {
         map.addAction([](RandoSession* sessio, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(layout, FileTypes::FLYTFile, data)
 
-            Pane& newPane = layout.rootPane.children[0].duplicateChildPane(4); //L_WarpArea_00
+            Pane& newPane = layout.rootPane.children[0].duplicateChildPane(4); // L_WarpArea_00
             prt1& partPane = *dynamic_cast<prt1*>(newPane.pane.get());
             partPane.name = "L_WarpArea_09";
             partPane.translation.X = -158.0f;
@@ -3493,21 +3493,21 @@ TweakError allow_nonlinear_servants_of_the_towers() {
 
         std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
         for (ChunkEntry* actor : actors) {
-            if (std::strncmp(&actor->data[0], "Hsh\0\0\0\0\0", 8) == 0) { //stone tablet
-                actor->data[0xB] = tablet_item_obtained_switch; //params & 0x000000FF
+            if (std::strncmp(&actor->data[0], "Hsh\0\0\0\0\0", 8) == 0) { // stone tablet
+                actor->data[0xB] = tablet_item_obtained_switch; // params & 0x000000FF
                 break;
             }
         }
         for (ChunkEntry* actor : actors) {
-            if (std::strncmp(&actor->data[0], "Ywarp00\0", 8) == 0) { //warp beam
-                actor->data[0xB] = all_servants_returned_switch; //params & 0x000000FF
+            if (std::strncmp(&actor->data[0], "Ywarp00\0", 8) == 0) { // warp beam
+                actor->data[0xB] = all_servants_returned_switch; // params & 0x000000FF
                 break;
             }
         }
         std::vector<ChunkEntry*> scobs = dzr.entries_by_type("ACTR");
         for (ChunkEntry* scob : scobs) {
-            if (std::strncmp(&scob->data[0], "kytag00\0", 8) == 0) { //weather trigger
-                scob->data[0x19] = all_servants_returned_switch; //X rotation & 0x00FF
+            if (std::strncmp(&scob->data[0], "kytag00\0", 8) == 0) { // weather trigger
+                scob->data[0x19] = all_servants_returned_switch; // X rotation & 0x00FF
                 break;
             }
         }
@@ -3972,14 +3972,14 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
         //blockMoveReloc.r_addend = 0;
         //RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, blockMoveReloc));
 
-        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001c0ae8})); //would mess with save init
-        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00160224})); //would mess with salvage point patch
-        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00199854})); //would overwrite getLayerNo patch
+        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001c0ae8})); // would mess with save init
+        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00160224})); // would mess with salvage point patch
+        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00199854})); // would overwrite getLayerNo patch
 
         return true;
     });
 
-    //Update hurricane spin item func, not done through asm because of relocation things
+    // Update hurricane spin item func, not done through asm because of relocation things
     if(custom_symbols.count("hurricane_spin_item_func") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -4015,7 +4015,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
         g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-            RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001C1ED4})); //would overwrite branch to custom code
+            RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001C1ED4})); // would overwrite branch to custom code
             return true;
         });
     }
@@ -4112,7 +4112,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
         TWEAK_ERR_CHECK(restore_cross_dungeon_warps());
     }
 
-    //update text last so everything has a chance to add textboxes
+    // Update text last so everything has a chance to add textboxes
     TWEAK_ERR_CHECK(update_text_replacements(world));
     TWEAK_ERR_CHECK(update_korl_dialog(world));
     TWEAK_ERR_CHECK(update_ho_ho_dialog(world));

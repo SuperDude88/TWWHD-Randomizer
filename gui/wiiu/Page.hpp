@@ -153,7 +153,7 @@ private:
     size_t curRow = 0;
     size_t listScrollPos = 0;
 
-    std::vector<ItemButton> listButtons; //sorted alphabetically, sometimes has items added/removed
+    std::vector<ItemButton> listButtons; // sorted alphabetically, sometimes has items added/removed
     std::array<std::unique_ptr<BasicButton>, 11> countButtons;
 
 public:

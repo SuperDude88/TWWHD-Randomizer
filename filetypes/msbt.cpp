@@ -235,17 +235,17 @@ LMSError TXT2::read(std::istream &in) {
         Utility::Endian::toPlatform_inplace(eType::Big, entry.offset);
         Utility::Endian::toPlatform_inplace(eType::Big, entry.nextOffset);
 
-        //can't use null-terminated string read, some commands include null characters that would break things
+        // can't use null-terminated string read, some commands include null characters that would break things
         in.seekg(sectionStart + 0x10 + entry.offset);
         uint32_t length;
-        if (i + 1 == entryCount) { //Check if the index is the last in the file
+        if (i + 1 == entryCount) { // Check if the index is the last in the file
             length = sectionSize - entry.offset;
             entry.nextOffset = sectionSize;
         }
         else {
             length = entry.nextOffset - entry.offset;
         }
-        entry.message.resize(length / 2); //length is bytes, 2 bytes per char
+        entry.message.resize(length / 2); // length is bytes, 2 bytes per char
         if (!in.read(reinterpret_cast<char*>(&entry.message[0]), length))
         {
             LOG_ERR_AND_RETURN(LMSError::REACHED_EOF);
@@ -265,14 +265,14 @@ void TXT2::write(std::ostream &out) {
     Utility::Endian::toPlatform_inplace(eType::Big, entryCount);
     out.write(reinterpret_cast<const char*>(&entryCount), sizeof(entryCount));
 
-    for (TXT2Entry& entry : entries) { //Loop through all the header and offset table data, then write the strings
+    for (TXT2Entry& entry : entries) { // Loop through all the header and offset table data, then write the strings
         Utility::Endian::toPlatform_inplace(eType::Big, entry.offset);
         out.write(reinterpret_cast<const char*>(&entry.offset), sizeof(entry.offset));
     }
 
-    for (TXT2Entry& entry : entries) { //Write strings
+    for (TXT2Entry& entry : entries) { // Write strings
         Utility::Endian::toPlatform_inplace(eType::Big, entry.message);
-        out.write(reinterpret_cast<const char*>(&entry.message[0]), entry.message.size() * 2); //size() returns number of 2-byte chars, function needs bytes total
+        out.write(reinterpret_cast<const char*>(&entry.message[0]), entry.message.size() * 2); // size() returns number of 2-byte chars, function needs bytes total
     }
 
     padToLen(out, 16, '\xab');
@@ -320,7 +320,7 @@ namespace FileTypes {
         LOG_AND_RETURN_IF_ERR(text.read(msbt));
 
         for (const HashTableSlot& slot : labels.tableSlots) {
-            for (const Label& label : slot.labels) { //Populate map of messages
+            for (const Label& label : slot.labels) { // Populate map of messages
                 Message& msg = messages_by_label[label.string];
                 msg.label = label;
                 msg.attributes = attributes.entries[label.itemIndex];
@@ -343,7 +343,7 @@ namespace FileTypes {
     Message& MSBTFile::addMessage(const std::string& label, const Attributes& attributes, const TSY1Entry& style, const std::u16string& message) {
         Message& newMessage = messages_by_label[label];
 
-        newMessage.label.tableIdx = LMS::calcLabelHash(labels.entryCount, label); //Entry count is always 0x65 for .msbt
+        newMessage.label.tableIdx = LMS::calcLabelHash(labels.entryCount, label); // Entry count is always 0x65 for .msbt
         newMessage.label.length = label.size();
         newMessage.label.string = label;
         newMessage.label.itemIndex = messages_by_label.size() - 1;
@@ -356,10 +356,10 @@ namespace FileTypes {
     }
 
     LMSError MSBTFile::writeToStream(std::ostream& out) {
-        //Go through and update all the sections based on the messages by ID
+        // Go through and update all the sections based on the messages by ID
         labels.tableSlots.clear();
-        labels.tableSlots.resize(101); //hash table always has 101 tableSlots in MSBT files
-        attributes.entries.resize(messages_by_label.size()); //Make sure these are full size, the file relies on indexes a bunch so we need to replace the right indexes in the list (labels store indexes, they're different)
+        labels.tableSlots.resize(101); // hash table always has 101 tableSlots in MSBT files
+        attributes.entries.resize(messages_by_label.size()); // Make sure these are full size, the file relies on indexes a bunch so we need to replace the right indexes in the list (labels store indexes, they're different)
         styles.entries.resize(messages_by_label.size());
         text.entries.resize(messages_by_label.size());
 
@@ -371,24 +371,24 @@ namespace FileTypes {
         }
 
         labels.sectionSize = labels.entryCount * 0x8 + 0x4;
-        uint32_t nextGroupOffset = labels.sectionSize; //First entry starts after the table
+        uint32_t nextGroupOffset = labels.sectionSize; // First entry starts after the table
         for (HashTableSlot& entry : labels.tableSlots) {
             entry.labelCount = entry.labels.size();
             entry.labelOffset = nextGroupOffset;
             for (Label& label : entry.labels) {
-                nextGroupOffset += label.string.size() + 0x5; //loop through the labels in group, add their length to offset
-                labels.sectionSize += label.string.size() + 0x5; //Add entry lengths to section length
+                nextGroupOffset += label.string.size() + 0x5; // loop through the labels in group, add their length to offset
+                labels.sectionSize += label.string.size() + 0x5; // Add entry lengths to section length
             }
         }
 
-        attributes.sectionSize = attributes.entries.size() * attributes.getEntrySize() + 0x8; //Size includes 8 bytes for entry count + size
+        attributes.sectionSize = attributes.entries.size() * attributes.getEntrySize() + 0x8; // Size includes 8 bytes for entry count + size
 
         styles.sectionSize = styles.entries.size() * 0x4;
 
-        uint32_t nextOffset = text.entries.size() * 0x4 + 0x4; //first offset = offset for each entry + the number of entries
+        uint32_t nextOffset = text.entries.size() * 0x4 + 0x4; // first offset = offset for each entry + the number of entries
         for (TXT2Entry& entry : text.entries) {
             entry.offset = nextOffset;
-            entry.nextOffset = entry.offset + (entry.message.size() * 2); //size x2 because it returns the number of utf-16 chars, but file offsets need byte counts
+            entry.nextOffset = entry.offset + (entry.message.size() * 2); // size x2 because it returns the number of utf-16 chars, but file offsets need byte counts
             nextOffset = entry.nextOffset;
         }
         text.sectionSize = text.entries.back().nextOffset;
@@ -404,7 +404,7 @@ namespace FileTypes {
         out.seekp(0x12, std::ios::beg);
 
         uint32_t fileSize_BE = Utility::Endian::toPlatform(eType::Big, header.fileSize);
-        out.write(reinterpret_cast<const char*>(&fileSize_BE), sizeof(fileSize_BE)); //Update full file size
+        out.write(reinterpret_cast<const char*>(&fileSize_BE), sizeof(fileSize_BE)); // Update full file size
 
         return LMSError::NONE;
     }

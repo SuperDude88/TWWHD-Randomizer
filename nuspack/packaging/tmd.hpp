@@ -1,5 +1,5 @@
-//Metadata for Wii U titles
-//Contains info on the title and contents (including hashes), necessary for building a NUS package
+// Metadata for Wii U titles
+// Contains info on the title and contents (including hashes), necessary for building a NUS package
 
 #pragma once
 

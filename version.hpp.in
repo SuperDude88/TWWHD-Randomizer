@@ -1,4 +1,4 @@
-//Strings for RNG and compatibility checks
+// Strings for RNG and compatibility checks
 #pragma once
 
 #define RANDOMIZER_VERSION "@GIT_TAG@"

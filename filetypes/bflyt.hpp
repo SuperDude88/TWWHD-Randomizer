@@ -1,6 +1,6 @@
-//Format is a part of NintendoWare::lyt (a UI library)
-//BFLYT files store a pane tree to create a 2D layout
-//They are used in conjunction with BFLAN and BFLIM files
+// Format is a part of NintendoWare::lyt (a UI library)
+// BFLYT files store a pane tree to create a 2D layout
+// They are used in conjunction with BFLAN and BFLIM files
 
 #pragma once
 
@@ -125,7 +125,7 @@ namespace NintendoWare::Layout {
 		STRING = 0,
 		INT,
 		FLOAT,
-		STRUCT //only seen in Switch files?
+		STRUCT // only seen in Switch files?
 	};
 
 
@@ -242,7 +242,7 @@ namespace NintendoWare::Layout {
 		FLYTError save_changes(std::ostream& out);
 	};
 
-	class  material { //add functions to handle bitflags?
+	class  material { // add functions to handle bitflags?
 	private:
 		uint32_t flags;
 
@@ -284,7 +284,7 @@ namespace NintendoWare::Layout {
 		std::vector<uint32_t> matOffsets;
 
 	public:
-		std::vector<material> materials; //fields don't really need editing, just need to read data (theyre also quite complex)
+		std::vector<material> materials; // fields don't really need editing, just need to read data (theyre also quite complex)
 
 		FLYTError read(std::istream& bflyt);
 		FLYTError save_changes(std::ostream& out);
@@ -317,7 +317,7 @@ namespace NintendoWare::Layout {
 
 	class cnt1 {
 	private:
-		unsigned int animNameTableOffset; //offset in section, not file
+		unsigned int animNameTableOffset; // offset in section, not file
 
 		char magic[4];
 		uint32_t sectionSize;
@@ -345,7 +345,7 @@ namespace NintendoWare::Layout {
 
 	public:
 		std::string groupName;
-		std::vector<std::string> paneNames; //names of panes in group
+		std::vector<std::string> paneNames; // names of panes in group
 
 		std::vector<grp1> children;
 
@@ -363,7 +363,7 @@ namespace NintendoWare::Layout {
 		uint8_t originFlags;
 		uint8_t alpha;
 		uint8_t paneMagFlags;
-		std::string name; //always 24 bytes, padded with null (hence no char array)
+		std::string name; // always 24 bytes, padded with null (hence no char array)
 		std::string userInfo;
 		vec3<float> translation;
 		vec3<float> rotation;
@@ -411,7 +411,7 @@ namespace NintendoWare::Layout {
 		uint32_t contentOffset;
 		uint8_t frameNum;
 		uint32_t frameTableOffset;
-		std::vector<uint32_t> frameTable; //table of frame offsets	
+		std::vector<uint32_t> frameTable; // table of frame offsets	
 	public:
 		int16_t leftStretch;
 		int16_t rightStretch;
@@ -508,7 +508,7 @@ namespace NintendoWare::Layout {
 		std::optional<usd1> userData;
 		std::optional<std::string> paneInfo;
 		partProperty() = default;
-		partProperty(const partProperty& property); //define this manually to deepcopy unique_ptr
+		partProperty(const partProperty& property); // define this manually to deepcopy unique_ptr
 	};
 	class prt1 final : public PaneBase {
 	private:
@@ -560,13 +560,13 @@ namespace FileTypes {
 	public:
 		FLYTHeader header;
 		NintendoWare::Layout::lyt1 LYT1;
-		std::optional<NintendoWare::Layout::txl1> textures; //Some layouts don't use these
-		std::optional<NintendoWare::Layout::fnl1> fonts; //Some layouts don't use these
-		std::optional<NintendoWare::Layout::mat1> materials; //Some layouts don't use these
-		std::optional<NintendoWare::Layout::cnt1> container; //Some layouts don't use these
-		std::optional<NintendoWare::Layout::usd1> userData; //Some layouts don't use these
+		std::optional<NintendoWare::Layout::txl1> textures; // Some layouts don't use these
+		std::optional<NintendoWare::Layout::fnl1> fonts; // Some layouts don't use these
+		std::optional<NintendoWare::Layout::mat1> materials; // Some layouts don't use these
+		std::optional<NintendoWare::Layout::cnt1> container; // Some layouts don't use these
+		std::optional<NintendoWare::Layout::usd1> userData; // Some layouts don't use these
 
-		Pane rootPane; //all panes are children of root
+		Pane rootPane; // all panes are children of root
 		NintendoWare::Layout::grp1 rootGroup;
 
 		FLYTFile() = default;

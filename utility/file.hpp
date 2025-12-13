@@ -14,12 +14,12 @@
 
 namespace Utility
 {
-    //std::filesystem is partially broken on Wii U, these are cross-platform replacements
+    // std::filesystem is partially broken on Wii U, these are cross-platform replacements
 
     inline std::ostream& seek(std::ostream& stream, const std::streamoff& off, const std::ios::seekdir& way = std::ios::beg) {
         //#ifdef DEVKITPRO
-        //Wii U crashes if you seek past eof, most other platforms extend the file
-        //Handle writing the extra padding manually
+        // Wii U crashes if you seek past eof, most other platforms extend the file
+        // Handle writing the extra padding manually
 
         switch(way) {
             case std::ios::cur:
@@ -33,7 +33,7 @@ namespace Utility
                     }
                 }
                 else if ((cur + off) < 0) {
-                    //can't seek before start of file, seek to beginning as failsafe
+                    // Can't seek before start of file, seek to beginning as failsafe
                     return stream.seekp(0, std::ios::beg);
                 }
                 return stream.seekp(cur + off, std::ios::beg);
@@ -47,7 +47,7 @@ namespace Utility
                     stream.write(&buffer[0], buffer.size());
                 }
                 else if((-off) > stream.tellp()) {
-                    //Can't seek before start of file, seek to beginning as failsafe
+                    // Can't seek before start of file, seek to beginning as failsafe
                     return stream.seekp(0, std::ios::beg);
                 }
                 return stream.seekp(off, std::ios::end);
@@ -57,7 +57,7 @@ namespace Utility
             default:
             {
                 if(off < 0) {
-                    //can't seek before start of file, seek to beginning as failsafe
+                    // Can't seek before start of file, seek to beginning as failsafe
                     stream.seekp(0, std::ios::beg);
                 }
                 stream.seekp(0, std::ios::end);
@@ -73,10 +73,10 @@ namespace Utility
         //#endif
     }
 
-    //from https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L177
+    // From https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L177
     bool isRoot(const fspath& fsPath);
 
-    //from https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L193
+    // From https://github.com/emiyl/dumpling/blob/5dc5131243385050e45339779e75a2eaad31f1e4/source/app/filesystem.cpp#L193
     inline bool dirExists(const fspath& fsPath) {
         #ifdef DEVKITPRO
             static struct stat existStat;

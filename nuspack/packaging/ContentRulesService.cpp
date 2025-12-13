@@ -2,7 +2,7 @@
 
 #include <regex>
 
-static constexpr uint64_t MAX_CONTENT_LENGTH = 0xBFFFFFFFULL * 0.975; //Hashes take about 2 - 2.5%. Depending on the number of files the alignment/padding is added too. Needs further checks at packing
+static constexpr uint64_t MAX_CONTENT_LENGTH = 0xBFFFFFFFULL * 0.975; // Hashes take about 2 - 2.5%. Depending on the number of files the alignment/padding is added too. Needs further checks at packing
 
 static uint64_t cur_content_size = 0L;    
 static Content* cur_content = nullptr;
