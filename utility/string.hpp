@@ -77,7 +77,7 @@ namespace Utility::Str {
     std::string intToHex(const T& i, const bool& base = true)
     {
         std::stringstream stream;
-        stream << std::hex << (base ? std::showbase : std::noshowbase) << i;
+        stream << std::hex << (base ? std::showbase : std::noshowbase) << std::internal << i;
         return stream.str();
     }
 
@@ -85,7 +85,7 @@ namespace Utility::Str {
     std::string intToHex(const T& i, const std::streamsize& width, const bool& base = true)
     {
         std::stringstream stream;
-        stream << std::hex << (base ? std::showbase : std::noshowbase) << std::setfill('0') << std::setw(width) << i;
+        stream << std::hex << (base ? std::showbase : std::noshowbase) << std::setfill('0') << std::setw(width) << std::internal << i;
         return stream.str();
     }
 
