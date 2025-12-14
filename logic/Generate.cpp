@@ -32,9 +32,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       UPDATE_DIALOG_LABEL("Building World");
   #endif
   int buildRetryCount = 20;
-  EntranceShuffleError entranceErr = EntranceShuffleError::NONE;
   int fillAttemptCount = 0;
-  bool successfulFill = false;
   while (buildRetryCount > 0)
   {
       for (size_t i = 0; i < worlds.size(); i++)
@@ -98,12 +96,8 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 
       // If race mode is not enabled in any world, then the number of progression
       // locations is already fixed and we can check if we have enough locations now
-      if (!ANY_WORLD_HAS_RACE_MODE(worlds))
-      {
-          if (validateEnoughLocations(worlds) == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS)
-          {
-              return 1;
-          }
+      if (!ANY_WORLD_HAS_RACE_MODE(worlds) && validateEnoughLocations(worlds) == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS) {
+          return 1;
       }
 
       // If the user(s) selected "Overworld" as the placement option for small/big keys
@@ -114,7 +108,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           if (settings.progression_dungeons != ProgressionDungeons::Disabled)
           {
               size_t neededOverworldLocations = 0;
-              size_t numOverworldLocations = world.getNumOverworldProgressionLocations();
+              const size_t numOverworldLocations = world.getNumOverworldProgressionLocations();
               if (settings.dungeon_small_keys == PlacementOption::Overworld)
               {
                   neededOverworldLocations += filterFromPool(world.getItemPoolReference(), [](const Item& item){return Utility::Str::contains(item.getName(), "Small Key");}).size();
@@ -136,8 +130,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
 
       // Randomize entrances before placing items
       LOG_TO_DEBUG("Randomizing Entrances");
-      entranceErr = randomizeEntrances(worlds);
-      if (entranceErr != EntranceShuffleError::NONE)
+      if (const EntranceShuffleError entranceErr = randomizeEntrances(worlds); entranceErr != EntranceShuffleError::NONE)
       {
           LOG_TO_DEBUG("Entrance randomization unsuccessful. Error Code: " + errorToName(entranceErr));
           // Return early for errors which can't be resolved by re-shuffling
@@ -148,7 +141,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           }
 
           buildRetryCount--;
-          if (buildRetryCount == 0 && entranceErr != EntranceShuffleError::NONE)
+          if (buildRetryCount == 0)
           {
               ErrorLog::getInstance().log("Build retry count exceeded. Error: " + errorToName(entranceErr));
               if (entranceErr == EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS)
@@ -176,7 +169,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       int totalFillAttempts = 10;
       FillError fillError = FillError::NONE;
       #ifndef LOGIC_TESTS
-          std::string message = std::string("Filling World") + (worlds.size() > 1 ? "s" : "") + (fillAttemptCount++ > 0 ? " (Attempt " + std::to_string(fillAttemptCount) + ")" : "");
+          const std::string message = std::string("Filling World") + (worlds.size() > 1 ? "s" : "") + (fillAttemptCount++ > 0 ? " (Attempt " + std::to_string(fillAttemptCount) + ")" : "");
           Utility::platformLog(message);
           UPDATE_DIALOG_VALUE(10);
           UPDATE_DIALOG_LABEL(message.c_str());
@@ -190,18 +183,6 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
           }
           LOG_TO_DEBUG("Fill attempt failed completely. Error: " + errorToName(fillError) + ". Will retry " + std::to_string(totalFillAttempts) + " more times");
           clearWorlds(worlds);
-          if (totalFillAttempts == 0 && buildRetryCount == 0)
-          {
-              ErrorLog::getInstance().log("Ran out of retries on fill algorithm");
-          }
-      }
-
-      // If we don't have enough locations available, but one of the worlds has race mode enabled,
-      // then try rebuilding the world with different dungeons to increase the number of locations
-      if (fillError == FillError::NOT_ENOUGH_PROGRESSION_LOCATIONS && ANY_WORLD_HAS_RACE_MODE(worlds))
-      {
-          buildRetryCount--;
-          continue;
       }
 
       if (fillError != FillError::NONE)
@@ -215,20 +196,18 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
                   world.dumpWorldGraph("World" + std::to_string(world.getWorldId()));
               }
           #endif
+
           buildRetryCount--;
           if (buildRetryCount == 0)
           {
+              ErrorLog::getInstance().log("Ran out of retries on fill algorithm.");
               return 1;
           }
+
           continue;
       }
-      successfulFill = true;
-      break;
-  }
 
-  if (!successfulFill)
-  {
-      return 1;
+      break;
   }
 
   #ifndef LOGIC_TESTS
@@ -243,8 +222,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       UPDATE_DIALOG_VALUE(20);
       UPDATE_DIALOG_LABEL("Generating Hints");
   #endif
-  auto hintError = generateHints(worlds);
-  if (hintError != HintError::NONE)
+  if (const HintError err = generateHints(worlds); err != HintError::NONE)
   {
       return 1;
   }
