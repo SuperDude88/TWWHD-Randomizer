@@ -32,7 +32,7 @@ env:
 jobs:
   build-desktop-application-mac:
     name: Build Desktop Application Mac
-    runs-on: macos-13
+    runs-on: macos-15-intel
 
     steps:
       - name: Checkout Repository
