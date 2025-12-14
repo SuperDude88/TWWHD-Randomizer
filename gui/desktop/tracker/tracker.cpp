@@ -427,9 +427,16 @@ bool MainWindow::autosave_current_tracker_preferences()
 
 void MainWindow::load_tracker_autosave()
 {
+    const fspath& preferencesPath = Utility::get_app_save_path() / "tracker_preferences.yaml";
+    if(!std::filesystem::exists(preferencesPath)) {
+        // No existing preferences file, don't try to do anything
+        return;
+    }
+
     YAML::Node pref;
-    if(!LoadYAML(pref, Utility::get_app_save_path() / "tracker_preferences.yaml")) {
-        return; // No valid autosave file, don't try to do anything
+    if(!LoadYAML(pref, preferencesPath)) {
+        show_warning_dialog("Could not load tracker preferences.\nDefault preferences will be used.");
+        return;
     }
 
     // Last saved tracker location
@@ -500,17 +507,16 @@ void MainWindow::load_tracker_autosave()
         trackerPreferences.clearAllIncludesDependentLocations = pref["clear_all_includes_dungeon_mail"].as<bool>();
     }
 
-    if (!std::filesystem::exists(trackerPreferences.autosaveFilePath) || !std::filesystem::exists(Utility::get_app_save_path() / "tracker_preferences.yaml"))
+    if (!std::filesystem::exists(trackerPreferences.autosaveFilePath))
     {
         // No autosave file, don't try to do anything
         return;
     }
 
     Config trackerConfig;
-    auto configErr = trackerConfig.loadFromFile(trackerPreferences.autosaveFilePath, Utility::get_app_save_path() / "tracker_preferences.yaml", true);
-    if (configErr != ConfigError::NONE)
+    if (const ConfigError err = trackerConfig.loadFromFile(trackerPreferences.autosaveFilePath, preferencesPath, true); err != ConfigError::NONE)
     {
-        show_warning_dialog("Could not load tracker autosave config\nError: " + ConfigErrorGetName(configErr));
+        show_warning_dialog("Could not load tracker autosave config\nError: " + ConfigErrorGetName(err));
         return;
     }
 
