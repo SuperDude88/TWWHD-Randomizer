@@ -392,6 +392,10 @@ starting_quarter_hearts:
 starting_magic:
 .byte 16 ; By default start with 16 units of magic (small magic meter)
 
+.global progressive_magic_always_double
+progressive_magic_always_double:
+.byte 0 ; By default the first progressive magic gives single magic
+
 .global outset_pig_color
 outset_pig_color:
 .byte 0
@@ -672,7 +676,12 @@ b convert_progressive_item_id_func_end
 
 
 convert_progressive_magic_meter_id:
-lis r3,gameInfo_ptr@ha
+lis r4, progressive_magic_always_double@ha ; If progressive magic is always double, jump to upgrade
+addi r4, r4, progressive_magic_always_double@l
+lbz r4, 0 (r4)
+cmpwi r4, 1
+beq convert_progressive_magic_meter_id_to_magic_meter_upgrade
+lis r3,gameInfo_ptr@ha ; Otherwise check current max magic meter to determine which meter the player gets
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x33
 lbz r4, 0 (r3) ; Max magic meter
@@ -956,8 +965,12 @@ stwu sp, -0x10 (sp)
 mflr r0
 stw r0, 0x14 (sp)
 
-
-lis r3,gameInfo_ptr@ha
+lis r4, progressive_magic_always_double@ha ; If progressive magic is always double, jump to upgrade
+addi r4, r4, progressive_magic_always_double@l
+lbz r4, 0 (r4)
+cmpwi r4, 1
+beq progressive_magic_meter_item_func_get_magic_meter_upgrade
+lis r3,gameInfo_ptr@ha ; Otherwise proceed as normal
 lwz r3,gameInfo_ptr@l(r3)
 addi r3,r3, 0x33
 lbz r4, 0 (r3) ; Max magic meter

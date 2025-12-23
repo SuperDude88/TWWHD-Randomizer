@@ -114,6 +114,8 @@ void Settings::resetDefaultSettings() {
     classic_mode = false;
     plandomizer = false;
 
+    progressive_magic_always_double = false;
+
     return;
 }
 
@@ -313,6 +315,8 @@ uint8_t Settings::getSetting(const Option& option) const {
             return plandomizer;
         case Option::PlandomizerFile: // Can't return this like everything else, just here as placeholder
             return 0;
+        case Option::ProgressiveMagicAlwaysDouble:
+            return progressive_magic_always_double;
         case Option::TargetType:
             return static_cast<std::underlying_type_t<TargetTypePreference>>(target_type);   
         case Option::Camera:
@@ -500,6 +504,8 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             plandomizer = value; return;
         case Option::PlandomizerFile: // Can't set this like everything else, just here as placeholder
             return;
+        case Option::ProgressiveMagicAlwaysDouble:
+            progressive_magic_always_double = value; return;
         case Option::TargetType:
             target_type = static_cast<TargetTypePreference>(value); return;
         case Option::Camera:
@@ -947,6 +953,7 @@ Option nameToSetting(const std::string& name) {
         {"Classic Mode", Option::ClassicMode},
         {"Plandomizer", Option::Plandomizer},
         {"Plandomizer File", Option::PlandomizerFile},
+        {"Progressive Magic Always Double", Option::ProgressiveMagicAlwaysDouble},
         {"Target Type", Option::TargetType},
         {"Camera", Option::Camera},
         {"First-Person Camera", Option::FirstPersonCamera},
@@ -1048,6 +1055,7 @@ std::string settingToName(const Option& setting) {
         {Option::ClassicMode, "Classic Mode"},
         {Option::Plandomizer, "Plandomizer"},
         {Option::PlandomizerFile, "Plandomizer File"},
+        {Option::ProgressiveMagicAlwaysDouble, "Progressive Magic Always Double"},
         {Option::TargetType, "Target Type"},
         {Option::Camera, "Camera"},
         {Option::FirstPersonCamera, "First-Person Camera"},

@@ -286,6 +286,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "performance",
       "Mostly recommended for console users. Adjusts game code that causes performance issues, but may come at the cost of visual quality. Currently only affects particles."
     },
+    {
+      "progressive_magic_always_double",
+      "Progressive Magic Meters will always give double magic. Finding a second Progressive Magic Meter will have no effect (i.e., will not quadruple your magic)."
+    },
 
     // Hints
     {

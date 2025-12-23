@@ -603,6 +603,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, classic_mode);
     APPLY_CHECKBOX_SETTING(config, ui, performance);
     APPLY_CHECKBOX_SETTING(config, ui, fix_rng);
+    APPLY_CHECKBOX_SETTING(config, ui, progressive_magic_always_double);
     APPLY_CHECKBOX_SETTING(config, ui, plandomizer);
     update_plandomizer_widget_visbility();
     ui->plandomizer_path->setText(Utility::toQString(config.settings.plandomizerFile));
@@ -909,6 +910,7 @@ DEFINE_STATE_CHANGE_FUNCTION(random_item_slide_item)
 DEFINE_STATE_CHANGE_FUNCTION(classic_mode)
 DEFINE_STATE_CHANGE_FUNCTION(performance)
 DEFINE_STATE_CHANGE_FUNCTION(fix_rng)
+DEFINE_STATE_CHANGE_FUNCTION(progressive_magic_always_double)
 void MainWindow::on_plandomizer_stateChanged(int arg1)
 {
     config.settings.plandomizer = ui->plandomizer->isChecked();

@@ -171,6 +171,9 @@ enum struct Option {
     Plandomizer,
     PlandomizerFile,
 
+    // Logic Tweaks
+    ProgressiveMagicAlwaysDouble,
+
     // Hints
     HoHoHints,
     HoHoTriforceHints,
@@ -309,6 +312,8 @@ public:
     bool classic_mode;
     bool plandomizer;
     fspath plandomizerFile;
+
+    bool progressive_magic_always_double;
 
     TargetTypePreference target_type;
     CameraPreference camera;
