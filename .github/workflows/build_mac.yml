@@ -48,7 +48,6 @@ jobs:
           target: 'desktop'
           arch: 'clang_64'
           cache: true
-          cache-key-prefix: install-qt-${{ env.QT_VERSION }}-action
 
       - name: Set Debug Flags
         if: inputs.build_type == 'Debug'
