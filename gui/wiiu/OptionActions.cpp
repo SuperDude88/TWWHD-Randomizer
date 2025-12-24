@@ -688,6 +688,11 @@ namespace OptionCB {
         return fromBool(conf.settings.plandomizer);
     }
 
+    std::string toggleProgressiveMagicAlwaysDouble() {
+        conf.settings.progressive_magic_always_double = !conf.settings.progressive_magic_always_double;
+        return fromBool(conf.settings.classic_mode);
+    }
+
 
     std::string toggleTargetPref() {
         using enum TargetTypePreference;
@@ -1056,6 +1061,8 @@ std::string getValue(const Option& option) {
             return fromBool(conf.settings.plandomizer);
         case Option::PlandomizerFile: // Can't return this like everything else, just here as placeholder
             return "";
+        case Option::ProgressiveMagicAlwaysDouble:
+            return fromBool(conf.settings.progressive_magic_always_double);
         case Option::TargetType:
             return TargetTypePreferenceToName(conf.settings.target_type); 
         case Option::Camera:
@@ -1266,6 +1273,8 @@ TriggerCallback getCallback(const Option& option) {
             return &togglePlandomizer;
         case Option::PlandomizerFile: // Can't return this like everything else, just here as placeholder
             return &invalidCB;
+        case Option::ProgressiveMagicAlwaysDouble:
+            return &toggleProgressiveMagicAlwaysDouble;
         case Option::TargetType:
             return &toggleTargetPref;
         case Option::Camera:
@@ -1287,103 +1296,104 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
     using enum Option;
 
     static const std::unordered_map<Option, std::pair<std::string, std::string>> optionInfoMap = {
-        {ProgressDungeons,           {"Dungeons",                            "Disabled: Dungeons will not contain any items necessary to beat the game.\nStandard: Dungeons may contain items necessary to beat the game.\nRace Mode: Dungeons without a required boss will not contain progress items"}},
-        {ProgressGreatFairies,       {"Great Fairies",                       "Controls whether the items given by Great Fairies can be progress items."}},
-        {ProgressPuzzleCaves,        {"Puzzle Secret Caves",                 "Controls whether puzzle-focused secret caves can contain progress items."}},
-        {ProgressCombatCaves,        {"Combat Secret Caves",                 "Controls whether combat-focused secret caves can contain progress items."}},
-        {ProgressShortSidequests,    {"Short Sidequests",                    "Controls whether sidequests that can be completed quickly can reward progress items."}},
-        {ProgressLongSidequests,     {"Long Sidequests",                     "Controls whether long sidequests (e.g. Lenzo's assistant, withered trees, goron trading) can reward progress items."}},
-        {ProgressSpoilsTrading,      {"Spoils Trading",                      "Controls whether the items you get by trading in spoils to NPCs can be progress items."}},
-        {ProgressMinigames,          {"Minigames",                           "Controls whether most minigames can reward progress items (auction, mail sorting, barrel shooting, bird-man contest)."}},
-        {ProgressFreeGifts,          {"Free Gifts",                          "Controls whether gifts freely given by NPCs can be progress items (Tott, Salvage Corp, imprisoned Tingle)."}},
-        {ProgressMail,               {"Mail",                                "Controls whether mail can contain progress items."}},
-        {ProgressPlatformsRafts,     {"Lookout Platforms and Rafts",         "Controls whether lookout platforms and rafts can contain progress items."}},
-        {ProgressSubmarines,         {"Submarines",                          "Controls whether submarines can contain progress items."}},
-        {ProgressEyeReefs,           {"Eye Reef Chests",                     "Controls whether the chests that appear after clearing out the eye reefs can contain progress items."}},
-        {ProgressOctosGunboats,      {"Big Octos and Gunboats",              "Controls whether the items dropped by Big Octos and gunboats can contain progress items."}},
-        {ProgressTriforceCharts,     {"Triforce Charts",                     "Controls whether the sunken treasure chests marked on Triforce Charts can contain progress items."}},
-        {ProgressTreasureCharts,     {"Treasure Charts",                     "Controls whether the sunken treasure chests marked on Treasure Charts can contain progress items."}},
-        {ProgressExpPurchases,       {"Expensive Purchases",                 "Controls whether items that cost a lot of rupees can be progress items (Rock Spire Shop, auctions, Tingle's letter, trading quest)."}},
-        {ProgressMisc,               {"Miscellaneous",                       "Miscellaneous locations that don't fit into any of the other categories (outdoors chests, wind shrine, Cyclos, etc)."}},
-        {ProgressTingleChests,       {"Tingle Chests",                       "Tingle Chests that are hidden in dungeons which appear when bombed."}},
-        {ProgressBattlesquid,        {"Battlesquid Minigame",                "Controls whether the Windfall battleship minigame can reward progress items."}},
-        {ProgressSavageLabyrinth,    {"Savage Labyrinth",                    "Controls whether the Savage Labyrinth can contain progress items."}},
-        {ProgressIslandPuzzles,      {"Island Puzzles",                      "Controls whether various island puzzles can contain progress items (e.g. chests hidden in unusual places)."}},
-        {ProgressDungeonSecrets,     {"Dungeon Secrets",                     "Controls whether the 11 secret items hidden in dungeons can be progress items."}},
-        {ProgressObscure,            {"Obscure",                             "Controls whether obscure locations can contain progress items (e.g. Kane Windfall gate decorations)."}},
+        {ProgressDungeons,            {"Dungeons",                            "Disabled: Dungeons will not contain any items necessary to beat the game.\nStandard: Dungeons may contain items necessary to beat the game.\nRace Mode: Dungeons without a required boss will not contain progress items"}},
+        {ProgressGreatFairies,        {"Great Fairies",                       "Controls whether the items given by Great Fairies can be progress items."}},
+        {ProgressPuzzleCaves,         {"Puzzle Secret Caves",                 "Controls whether puzzle-focused secret caves can contain progress items."}},
+        {ProgressCombatCaves,         {"Combat Secret Caves",                 "Controls whether combat-focused secret caves can contain progress items."}},
+        {ProgressShortSidequests,     {"Short Sidequests",                    "Controls whether sidequests that can be completed quickly can reward progress items."}},
+        {ProgressLongSidequests,      {"Long Sidequests",                     "Controls whether long sidequests (e.g. Lenzo's assistant, withered trees, goron trading) can reward progress items."}},
+        {ProgressSpoilsTrading,       {"Spoils Trading",                      "Controls whether the items you get by trading in spoils to NPCs can be progress items."}},
+        {ProgressMinigames,           {"Minigames",                           "Controls whether most minigames can reward progress items (auction, mail sorting, barrel shooting, bird-man contest)."}},
+        {ProgressFreeGifts,           {"Free Gifts",                          "Controls whether gifts freely given by NPCs can be progress items (Tott, Salvage Corp, imprisoned Tingle)."}},
+        {ProgressMail,                {"Mail",                                "Controls whether mail can contain progress items."}},
+        {ProgressPlatformsRafts,      {"Lookout Platforms and Rafts",         "Controls whether lookout platforms and rafts can contain progress items."}},
+        {ProgressSubmarines,          {"Submarines",                          "Controls whether submarines can contain progress items."}},
+        {ProgressEyeReefs,            {"Eye Reef Chests",                     "Controls whether the chests that appear after clearing out the eye reefs can contain progress items."}},
+        {ProgressOctosGunboats,       {"Big Octos and Gunboats",              "Controls whether the items dropped by Big Octos and gunboats can contain progress items."}},
+        {ProgressTriforceCharts,      {"Triforce Charts",                     "Controls whether the sunken treasure chests marked on Triforce Charts can contain progress items."}},
+        {ProgressTreasureCharts,      {"Treasure Charts",                     "Controls whether the sunken treasure chests marked on Treasure Charts can contain progress items."}},
+        {ProgressExpPurchases,        {"Expensive Purchases",                 "Controls whether items that cost a lot of rupees can be progress items (Rock Spire Shop, auctions, Tingle's letter, trading quest)."}},
+        {ProgressMisc,                {"Miscellaneous",                       "Miscellaneous locations that don't fit into any of the other categories (outdoors chests, wind shrine, Cyclos, etc)."}},
+        {ProgressTingleChests,        {"Tingle Chests",                       "Tingle Chests that are hidden in dungeons which appear when bombed."}},
+        {ProgressBattlesquid,         {"Battlesquid Minigame",                "Controls whether the Windfall battleship minigame can reward progress items."}},
+        {ProgressSavageLabyrinth,     {"Savage Labyrinth",                    "Controls whether the Savage Labyrinth can contain progress items."}},
+        {ProgressIslandPuzzles,       {"Island Puzzles",                      "Controls whether various island puzzles can contain progress items (e.g. chests hidden in unusual places)."}},
+        {ProgressDungeonSecrets,      {"Dungeon Secrets",                     "Controls whether the 11 secret items hidden in dungeons can be progress items."}},
+        {ProgressObscure,             {"Obscure",                             "Controls whether obscure locations can contain progress items (e.g. Kane Windfall gate decorations)."}},
 
-        {RemoveSwords,               {"Remove Swords",                       "Controls whether swords will be placed throughout the game."}},
-        {NumRequiredDungeons,        {"Number of Required Bosses",           "The number of dungeon bosses with required items (applies to \"Standard\" and \"Race Mode\" dungeons)."}},
-        {RandomCharts,               {"Randomize Charts",                    "Randomizes which sector is drawn on each Triforce/Treasure Chart."}},
-        {CTMC,                       {"Chest Type Matches Contents",         "Changes the chest type to reflect its contents. A metal chest has a progress item, a key chest has a dungeon key, and a wooden chest has a non-progress item or a consumable.\nKey chests are dark wood chests that use a custom texture based on Big Key Chests. Keys for non-required dungeons in race mode will be in wooden chests."}},
+        {RemoveSwords,                {"Remove Swords",                       "Controls whether swords will be placed throughout the game."}},
+        {NumRequiredDungeons,         {"Number of Required Bosses",           "The number of dungeon bosses with required items (applies to \"Standard\" and \"Race Mode\" dungeons)."}},
+        {RandomCharts,                {"Randomize Charts",                    "Randomizes which sector is drawn on each Triforce/Treasure Chart."}},
+        {CTMC,                        {"Chest Type Matches Contents",         "Changes the chest type to reflect its contents. A metal chest has a progress item, a key chest has a dungeon key, and a wooden chest has a non-progress item or a consumable.\nKey chests are dark wood chests that use a custom texture based on Big Key Chests. Keys for non-required dungeons in race mode will be in wooden chests."}},
 
-        {DungeonSmallKeys,           {"Small Keys",                          "Vanilla: Small Keys will appear in their vanilla locations.\nOwn Dungeon: Small Keys can only appear in their respective dungeon.\nAny Dungeon: Small Keys can only appear in dungeon locations.\nOverworld: Small Keys can only appear in non-dungeon locations\nKeysanity: Small Keys can appear anywhere"}},
-        {DungeonBigKeys,             {"Big Keys",                            "Vanilla: Big Keys will appear in their vanilla locations.\nOwn Dungeon: Big Keys can only appear in their respective dungeon.\nAny Dungeon: Big Keys can only appear in dungeon locations.\nOverworld: Big Keys can only appear in non-dungeon locations\nKeysanity: Big Keys can appear anywhere"}},
-        {DungeonMapsAndCompasses,    {"Maps/Compasses",                      "Vanilla: Maps/Compasses will appear in their vanilla locations.\nOwn Dungeon: Maps/Compasses can only appear in their respective dungeon.\nAny Dungeon: Maps/Compasses can only appear in dungeon locations.\nOverworld: Maps/Compasses can only appear in non-dungeon locations\nKeysanity: Maps/Compasses can appear anywhere"}},
+        {DungeonSmallKeys,            {"Small Keys",                          "Vanilla: Small Keys will appear in their vanilla locations.\nOwn Dungeon: Small Keys can only appear in their respective dungeon.\nAny Dungeon: Small Keys can only appear in dungeon locations.\nOverworld: Small Keys can only appear in non-dungeon locations\nKeysanity: Small Keys can appear anywhere"}},
+        {DungeonBigKeys,              {"Big Keys",                            "Vanilla: Big Keys will appear in their vanilla locations.\nOwn Dungeon: Big Keys can only appear in their respective dungeon.\nAny Dungeon: Big Keys can only appear in dungeon locations.\nOverworld: Big Keys can only appear in non-dungeon locations\nKeysanity: Big Keys can appear anywhere"}},
+        {DungeonMapsAndCompasses,     {"Maps/Compasses",                      "Vanilla: Maps/Compasses will appear in their vanilla locations.\nOwn Dungeon: Maps/Compasses can only appear in their respective dungeon.\nAny Dungeon: Maps/Compasses can only appear in dungeon locations.\nOverworld: Maps/Compasses can only appear in non-dungeon locations\nKeysanity: Maps/Compasses can appear anywhere"}},
 
-        {InvertCompass,              {"Invert Sea Compass X-Axis",           "Inverts the east-west direction of the compass that shows while at sea."}},
-        {InstantText,                {"Instant Text Boxes",                  "Text appears instantly. The B button is changed to instantly skip through text as long as you hold it down."}},
-        {QuietSwiftSail,             {"Quiet Swift Sail",                    "Mute the \"pwing\" sound when pulling out the swift sail."}},
-        {FixRNG,                     {"Fix RNG",                             "Certain RNG elements will have fixed outcomes. Currently only includes Helmaroc King's attacks."}},
-        {Performance,                {"Performance",                         "Adjust game code that causes lag or other performance issues. May come at the cost of visual quality.\nCurrently only affects particles."}},
-        {RevealSeaChart,             {"Reveal Full Sea Chart",               "Start the game with the sea chart fully drawn out."}},
-        {SkipRefights,               {"Skip Boss Rematches",                 "Removes the door in Ganon's Tower that only unlocks when you defeat the rematch versios of Gohma, Kalle Demos, Jalhalla, and Molgera."}},
-        {AddShortcutWarps,           {"Add Warps Between Dungeons",          "Adds new warp pots that act as shortcuts connecting dungeons to each other directly. Each pot must be unlocked before it can be used, so you cannot use them to access dungeons early."}},
-        {RemoveMusic,                {"Remove Music",                        "Mutes all in-game music."}},
+        {InvertCompass,               {"Invert Sea Compass X-Axis",           "Inverts the east-west direction of the compass that shows while at sea."}},
+        {InstantText,                 {"Instant Text Boxes",                  "Text appears instantly. The B button is changed to instantly skip through text as long as you hold it down."}},
+        {QuietSwiftSail,              {"Quiet Swift Sail",                    "Mute the \"pwing\" sound when pulling out the swift sail."}},
+        {FixRNG,                      {"Fix RNG",                             "Certain RNG elements will have fixed outcomes. Currently only includes Helmaroc King's attacks."}},
+        {Performance,                 {"Performance",                         "Adjust game code that causes lag or other performance issues. May come at the cost of visual quality.\nCurrently only affects particles."}},
+        {RevealSeaChart,              {"Reveal Full Sea Chart",               "Start the game with the sea chart fully drawn out."}},
+        {SkipRefights,                {"Skip Boss Rematches",                 "Removes the door in Ganon's Tower that only unlocks when you defeat the rematch versios of Gohma, Kalle Demos, Jalhalla, and Molgera."}},
+        {AddShortcutWarps,            {"Add Warps Between Dungeons",          "Adds new warp pots that act as shortcuts connecting dungeons to each other directly. Each pot must be unlocked before it can be used, so you cannot use them to access dungeons early."}},
+        {RemoveMusic,                 {"Remove Music",                        "Mutes all in-game music."}},
 
         //{StartingGear,               {"",                                    ""}},
-        {StartingHP,                 {"Heart Pieces",                        "Number of extra heart pieces that you start with."}},
-        {StartingHC,                 {"Heart Containers",                    "Number of extra heart containers that you start with."}},
-        {StartingJoyPendants,        {"Joy Pendants",                        "Number of extra joy pendants that you start with."}},
-        {StartingSkullNecklaces,     {"Skull Necklaces",                     "Number of extra skull necklaces that you start with."}},
-        {StartingBokoBabaSeeds,      {"Boko Baba Seeds",                     "Number of extra boko baba seeds that you start with."}},
-        {StartingGoldenFeathers,     {"Golden Feathers",                     "Number of extra golden feathers that you start with."}},
-        {StartingKnightsCrests,      {"Knight's Crests",                     "Number of extra knight's crests that you start with."}},
-        {StartingRedChuJellys,       {"Red Chu Jellys",                      "Number of extra red Chu jellies that you start with."}},
-        {StartingGreenChuJellys,     {"Green Chu Jellys",                    "Number of extra green Chu jellies that you start with."}},
-        {StartingBlueChuJellys,      {"Blue Chu Jellys",                     "Number of extra blue Chu jellies that you start with."}},
+        {StartingHP,                  {"Heart Pieces",                        "Number of extra heart pieces that you start with."}},
+        {StartingHC,                  {"Heart Containers",                    "Number of extra heart containers that you start with."}},
+        {StartingJoyPendants,         {"Joy Pendants",                        "Number of extra joy pendants that you start with."}},
+        {StartingSkullNecklaces,      {"Skull Necklaces",                     "Number of extra skull necklaces that you start with."}},
+        {StartingBokoBabaSeeds,       {"Boko Baba Seeds",                     "Number of extra boko baba seeds that you start with."}},
+        {StartingGoldenFeathers,      {"Golden Feathers",                     "Number of extra golden feathers that you start with."}},
+        {StartingKnightsCrests,       {"Knight's Crests",                     "Number of extra knight's crests that you start with."}},
+        {StartingRedChuJellys,        {"Red Chu Jellys",                      "Number of extra red Chu jellies that you start with."}},
+        {StartingGreenChuJellys,      {"Green Chu Jellys",                    "Number of extra green Chu jellies that you start with."}},
+        {StartingBlueChuJellys,       {"Blue Chu Jellys",                     "Number of extra blue Chu jellies that you start with."}},
 
-        {NoSpoilerLog,               {"Do Not Generate Spoiler Log",         "Prevents the randomizer from generating a text file containing item placements. This also changes where items are placed in the seed.\nGenerating a spoiler log is highly recommended even if you don't intend to use it, in case you get stuck."}},
-        {StartWithRandomItem,        {"Start With Random Item",              "Start with one extra item, selected uniformly at random from the pool.\n\nDefault item pool: Bait Bag, Bombs, Boomerang, Bow, Deku Leaf, Delivery Bag, Grappling Hook, Hookshot, Picto Box, Power Bracelets, and Skull Hammer.\nThis pool can be modified with the plandomizer."}},
-        {RandomItemSlideItem,        {"Random Item Sliding Item",            "Randomly start with one first-person item to allow item sliding (Grappling Hook, Boomerang, Bow, or Hookshot). This option is aimed at glitch-heavy races where finding one of these items could massively change the outcome. If you already start with one of these items, this setting will *not* add another."}},
-        {ClassicMode,                {"Classic Mode",                        "Add back behaviors and glitches that were removed in the remake. Currently includes Wind Waker dives and dry storage. Only use these if you know what you are doing!"}},
-        {Plandomizer,                {"Plandomizer",                         "Allows you to provide a file which manually sets item locations and/or entrances."}},
+        {NoSpoilerLog,                {"Do Not Generate Spoiler Log",         "Prevents the randomizer from generating a text file containing item placements. This also changes where items are placed in the seed.\nGenerating a spoiler log is highly recommended even if you don't intend to use it, in case you get stuck."}},
+        {StartWithRandomItem,         {"Start With Random Item",              "Start with one extra item, selected uniformly at random from the pool.\n\nDefault item pool: Bait Bag, Bombs, Boomerang, Bow, Deku Leaf, Delivery Bag, Grappling Hook, Hookshot, Picto Box, Power Bracelets, and Skull Hammer.\nThis pool can be modified with the plandomizer."}},
+        {RandomItemSlideItem,         {"Random Item Sliding Item",            "Randomly start with one first-person item to allow item sliding (Grappling Hook, Boomerang, Bow, or Hookshot). This option is aimed at glitch-heavy races where finding one of these items could massively change the outcome. If you already start with one of these items, this setting will *not* add another."}},
+        {ClassicMode,                 {"Classic Mode",                        "Add back behaviors and glitches that were removed in the remake. Currently includes Wind Waker dives and dry storage. Only use these if you know what you are doing!"}},
+        {Plandomizer,                 {"Plandomizer",                         "Allows you to provide a file which manually sets item locations and/or entrances."}},
+        {ProgressiveMagicAlwaysDouble,{"Magic is Always Double",              "Progressive Magic Meters will always give double magic. Finding a second Progressive Magic Meter will have no effect (i.e., will not quadruple your magic)."}},
 
-        {HoHoHints,                  {"Place Hints on Old Man Ho Ho",        "Places hints on Old Man Ho Ho. Old Man Ho Ho appears at 10 different islands. Simply talk to Old Man Ho Ho to get hints."}},
-        {HoHoTriforceHints,          {"Old Man Ho Ho Hints Shards",          "When this option is selected, each Old Man Ho Ho will give an item hint for a Triforce Shard. Hints are not repeated until each shard is hinted once. This setting will override placing other hints on Old Man Ho Ho."}},
-        {KorlHints,                  {"Place Hints on King of Red Lions",    "Places hints on the King of Red Lions. Talk to the King of Red Lions to get hints."}},
-        {ClearerHints,               {"Clearer Hints",                       "When this option is selected, location and item hints will use the standard check or item name, instead of using cryptic hints."}},
-        {UseAlwaysHints,             {"Use Always Hints",                    "When the number of location hints is nonzero, certain locations that will always be hinted will take precedence over normal location hints."}},
-        {HintImportance,             {"Hint Importance",                     "When this option is selected, item and location hints will also indicate if the hinted item is required, possibly required, or not required. Only progress items will have these additions; non-progress items are trivially not required."}},
-        {PathHints,                  {"Path Hints",                          "Determines the number of path hints that will be placed."}},
-        {BarrenHints,                {"Barren Hints",                        "Determines the number of barren hints that will be placed."}},
-        {ItemHints,                  {"Item Hints",                          "Determines the number of location hints that will be placed."}},
-        {LocationHints,              {"Location Hints",                      "Determines the number of item hints that will be placed."}},
+        {HoHoHints,                   {"Place Hints on Old Man Ho Ho",        "Places hints on Old Man Ho Ho. Old Man Ho Ho appears at 10 different islands. Simply talk to Old Man Ho Ho to get hints."}},
+        {HoHoTriforceHints,           {"Old Man Ho Ho Hints Shards",          "When this option is selected, each Old Man Ho Ho will give an item hint for a Triforce Shard. Hints are not repeated until each shard is hinted once. This setting will override placing other hints on Old Man Ho Ho."}},
+        {KorlHints,                   {"Place Hints on King of Red Lions",    "Places hints on the King of Red Lions. Talk to the King of Red Lions to get hints."}},
+        {ClearerHints,                {"Clearer Hints",                       "When this option is selected, location and item hints will use the standard check or item name, instead of using cryptic hints."}},
+        {UseAlwaysHints,              {"Use Always Hints",                    "When the number of location hints is nonzero, certain locations that will always be hinted will take precedence over normal location hints."}},
+        {HintImportance,              {"Hint Importance",                     "When this option is selected, item and location hints will also indicate if the hinted item is required, possibly required, or not required. Only progress items will have these additions; non-progress items are trivially not required."}},
+        {PathHints,                   {"Path Hints",                          "Determines the number of path hints that will be placed."}},
+        {BarrenHints,                 {"Barren Hints",                        "Determines the number of barren hints that will be placed."}},
+        {ItemHints,                   {"Item Hints",                          "Determines the number of location hints that will be placed."}},
+        {LocationHints,               {"Location Hints",                      "Determines the number of item hints that will be placed."}},
 
-        {RandomizeDungeonEntrances,  {"Randomize Dungeon Entrances",         "Shuffles which dungeon entrances take you into which dungeons."}},
-        {RandomizeBossEntrances,     {"Randomize Boss Entrance",             "Shuffles which boss entrances take you to what boss."}},
-        {RandomizeMinibossEntrances, {"Randomize Miniboss Entrances",        "Shuffles which miniboss entrances take you to what miniboss (excluding DRC)."}},
-        {RandomizeCaveEntrances,     {"Randomize Cave Entrances",            "Shuffles which secret cave entrances take you into which secret caves."}},
-        {RandomizeDoorEntrances,     {"Randomize Door Entrances",            "Shuffles which door entrances take you into which interiors."}},
-        {RandomizeMiscEntrances,     {"Randomzie Misc Entrances",            "Shuffles entrances that do not fit into the other categories\nIncludes entrances on Forest Haven and Dragon Roost Island. Exludes Hyrule."}},
-        {MixDungeons,                {"Mix Dungeons",                        "Add dungeons into the combined entrance pool, instead of keeping them separated."}},
-        {MixBosses,                  {"Mix Bosses",                          "Add bosses into the combined entrance pool, instead of keeping them separated."}},
-        {MixMinibosses,              {"Mix Minibosses",                      "Add minibosses into the combined entrance pool, instead of keeping them separated."}},
-        {MixCaves,                   {"Mix Caves",                           "Add secret caves into the combined entrance pool, instead of keeping them separated."}},
-        {MixDoors,                   {"Mix Doors",                           "Add doors into the combined entrance pool, instead of keeping them separated."}},
-        {MixMisc,                    {"Mix Misc",                            "Add miscellaneous entrances into the combined entrance pool, instead of keeping them separated."}},
-        {DecoupleEntrances,          {"Decouple Entrances",                  "Decouple entrances when shuffling. This means you may not end up where you came from if you go back through an entrance."}},
-        {RandomStartIsland,          {"Randomize Starting Island",           "Randomzies which island you start the game on."}},
+        {RandomizeDungeonEntrances,   {"Randomize Dungeon Entrances",         "Shuffles which dungeon entrances take you into which dungeons."}},
+        {RandomizeBossEntrances,      {"Randomize Boss Entrance",             "Shuffles which boss entrances take you to what boss."}},
+        {RandomizeMinibossEntrances,  {"Randomize Miniboss Entrances",        "Shuffles which miniboss entrances take you to what miniboss (excluding DRC)."}},
+        {RandomizeCaveEntrances,      {"Randomize Cave Entrances",            "Shuffles which secret cave entrances take you into which secret caves."}},
+        {RandomizeDoorEntrances,      {"Randomize Door Entrances",            "Shuffles which door entrances take you into which interiors."}},
+        {RandomizeMiscEntrances,      {"Randomzie Misc Entrances",            "Shuffles entrances that do not fit into the other categories\nIncludes entrances on Forest Haven and Dragon Roost Island. Exludes Hyrule."}},
+        {MixDungeons,                 {"Mix Dungeons",                        "Add dungeons into the combined entrance pool, instead of keeping them separated."}},
+        {MixBosses,                   {"Mix Bosses",                          "Add bosses into the combined entrance pool, instead of keeping them separated."}},
+        {MixMinibosses,               {"Mix Minibosses",                      "Add minibosses into the combined entrance pool, instead of keeping them separated."}},
+        {MixCaves,                    {"Mix Caves",                           "Add secret caves into the combined entrance pool, instead of keeping them separated."}},
+        {MixDoors,                    {"Mix Doors",                           "Add doors into the combined entrance pool, instead of keeping them separated."}},
+        {MixMisc,                     {"Mix Misc",                            "Add miscellaneous entrances into the combined entrance pool, instead of keeping them separated."}},
+        {DecoupleEntrances,           {"Decouple Entrances",                  "Decouple entrances when shuffling. This means you may not end up where you came from if you go back through an entrance."}},
+        {RandomStartIsland,           {"Randomize Starting Island",           "Randomzies which island you start the game on."}},
 
-        {PigColor,                   {"Pig Color",                           "Controls the color of the big pig on Outset Island."}},
+        {PigColor,                    {"Pig Color",                           "Controls the color of the big pig on Outset Island."}},
 
-        {DamageMultiplier,           {"Damage Multiplier",                   "Change the damage multiplier used in Hero Mode. By default Hero Mode applies a 2x damage multiplier. This will not affect damage taken in Normal Mode."}},
+        {DamageMultiplier,            {"Damage Multiplier",                   "Change the damage multiplier used in Hero Mode. By default Hero Mode applies a 2x damage multiplier. This will not affect damage taken in Normal Mode."}},
 
-        {TargetType,                 {"Target Type",                         "Set your in-game preference for the target type."}},
-        {Camera,                     {"Camera",                              "Set your in-game preference for the camera."}},
-        {FirstPersonCamera,          {"First Person Camera",                 "Set your in-game preference for the first-person camera."}},
-        {Gyroscope,                  {"Gyroscope",                           "Set your in-game preference for gyroscope aiming."}},
-        {UIDisplay,                  {"UI Display",                          "Set your in-game preference for the UI display."}}
+        {TargetType,                  {"Target Type",                         "Set your in-game preference for the target type."}},
+        {Camera,                      {"Camera",                              "Set your in-game preference for the camera."}},
+        {FirstPersonCamera,           {"First Person Camera",                 "Set your in-game preference for the first-person camera."}},
+        {Gyroscope,                   {"Gyroscope",                           "Set your in-game preference for gyroscope aiming."}},
+        {UIDisplay,                   {"UI Display",                          "Set your in-game preference for the UI display."}}
     };
 
     if(!optionInfoMap.contains(option)) {

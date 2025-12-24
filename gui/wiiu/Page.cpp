@@ -606,13 +606,14 @@ void ConveniencePage::drawDRC() const {
 AdvancedPage::AdvancedPage() {
     using namespace std::literals::chrono_literals;
 
-    buttonColumns[0][0] = std::make_unique<BasicButton>(Option::NoSpoilerLog);
-    buttonColumns[0][1] = std::make_unique<BasicButton>(Option::DamageMultiplier, 250ms, 55ms);
-    buttonColumns[0][2] = std::make_unique<BasicButton>(Option::ClassicMode);
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::NoSpoilerLog));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::DamageMultiplier, 250ms, 55ms));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::ClassicMode));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::ProgressiveMagicAlwaysDouble));
 
-    buttonColumns[1][0] = std::make_unique<BasicButton>(Option::CTMC);
-    buttonColumns[1][1] = std::make_unique<BasicButton>(Option::Plandomizer);
-    buttonColumns[1][2] = std::make_unique<BasicButton>(Option::RandomItemSlideItem);
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::CTMC));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::Plandomizer));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::RandomItemSlideItem));
 }
 
 void AdvancedPage::open() {
@@ -629,7 +630,6 @@ bool AdvancedPage::update() {
 
     if(InputManager::getInstance().pressed(ButtonInfo::LEFT)) {
         buttonColumns[curCol][curRow]->unhovered();
-
         if(curCol <= 0) {
             curCol = buttonColumns.size() - 1; // wrap on leftmost row
         }
@@ -637,12 +637,9 @@ bool AdvancedPage::update() {
             curCol -= 1; // left one row
         }
         moved = true;
-
-        buttonColumns[curCol][curRow]->hovered();
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::RIGHT)) {
         buttonColumns[curCol][curRow]->unhovered();
-
         if(curCol >= buttonColumns.size() - 1) {
             curCol = 0; // wrap on rightmost row
         }
@@ -650,13 +647,17 @@ bool AdvancedPage::update() {
             curCol += 1; // right one row
         }
         moved = true;
+    }
+
+    if(moved) {
+        curCol = std::clamp<size_t>(curCol, 0, buttonColumns.size() - 1);
+        curRow = std::clamp<size_t>(curRow, 0, buttonColumns[curCol].size() - 1);
 
         buttonColumns[curCol][curRow]->hovered();
     }
 
     if(InputManager::getInstance().pressed(ButtonInfo::UP)) {
         buttonColumns[curCol][curRow]->unhovered();
-
         if(curRow <= 0) {
             curRow = buttonColumns[curCol].size() - 1; // wrap on top
         }
@@ -664,8 +665,6 @@ bool AdvancedPage::update() {
             curRow -= 1; // up one row
         }
         moved = true;
-
-        buttonColumns[curCol][curRow]->hovered();
     }
     else if(InputManager::getInstance().pressed(ButtonInfo::DOWN)) {
         buttonColumns[curCol][curRow]->unhovered();
@@ -677,10 +676,15 @@ bool AdvancedPage::update() {
             curRow += 1; // down one row
         }
         moved = true;
+    }
+
+    if(moved) {
+        curCol = std::clamp<size_t>(curCol, 0, buttonColumns.size() - 1);
+        curRow = std::clamp<size_t>(curRow, 0, buttonColumns[curCol].size() - 1);
 
         buttonColumns[curCol][curRow]->hovered();
     }
-    
+
     return moved || buttonColumns[curCol][curRow]->update();
 }
 

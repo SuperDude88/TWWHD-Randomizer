@@ -2066,11 +2066,39 @@ TweakError update_sword_mode_game_variable(const bool& remove_swords) {
     return TweakError::NONE;
 }
 
-TweakError update_starting_gear(const std::vector<GameItem>& startingItems) {
-    std::vector<GameItem> startingGear = startingItems; // copy so we can edit without causing problems
+TweakError update_progressive_magic_always_double_game_variable(const bool& progressive_magic_always_double) {
+    if(custom_symbols.count("progressive_magic_always_double") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    const uint32_t progressive_magic_always_double_addr = custom_symbols.at("progressive_magic_always_double");
+
+    RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+    entry.addAction([=](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+        if (progressive_magic_always_double) {
+            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, progressive_magic_always_double_addr), 0x01));
+        }
+        else {
+            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, progressive_magic_always_double_addr), 0x00));
+        }
+
+        return true;
+    });
+
+    return TweakError::NONE;
+}
+
+TweakError update_starting_gear(const Settings& settings) {
+    std::vector<GameItem> startingGear = settings.starting_gear; // copy so we can edit without causing problems
 
     // Changing starting magic doesn't work when done via our normal starting items initialization code, so we need to handle it specially.
-    LOG_AND_RETURN_IF_ERR(set_starting_magic(16 * std::count(startingGear.begin(), startingGear.end(), GameItem::ProgressiveMagicMeter)));
+    uint8_t startingMagic = 16 * std::count(startingGear.begin(), startingGear.end(), GameItem::ProgressiveMagicMeter);
+    if (settings.progressive_magic_always_double)
+        startingMagic *= 2;
+    
+    if (startingMagic > 32)
+        startingMagic = 32;
+
+    LOG_AND_RETURN_IF_ERR(set_starting_magic(startingMagic));
     auto it = std::find(startingGear.begin(), startingGear.end(), GameItem::ProgressiveMagicMeter);
     while (it != startingGear.end()) {
         startingGear.erase(it);
@@ -4070,7 +4098,8 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
 
     TWEAK_ERR_CHECK(update_skip_rematch_bosses_game_variable(settings.skip_rematch_bosses));
     TWEAK_ERR_CHECK(update_sword_mode_game_variable(settings.remove_swords));
-    TWEAK_ERR_CHECK(update_starting_gear(settings.starting_gear));
+    TWEAK_ERR_CHECK(update_progressive_magic_always_double_game_variable(settings.progressive_magic_always_double));
+    TWEAK_ERR_CHECK(update_starting_gear(settings));
     if(settings.selectedModel.casual) {
         TWEAK_ERR_CHECK(set_casual_clothes());
     }

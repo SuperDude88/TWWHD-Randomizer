@@ -234,6 +234,8 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     GET_FIELD(root, "classic_mode", settings.classic_mode)
     GET_FIELD(root, "plandomizer", settings.plandomizer)
 
+    GET_FIELD(root, "progressive_magic_always_double", settings.progressive_magic_always_double)
+
     if(!preferencesRoot["pig_color"])  {
         if(!ignoreErrors) LOG_ERR_AND_RETURN(ConfigError::MISSING_KEY);
     }
@@ -563,6 +565,8 @@ YAML::Node Config::settingsToYaml() const {
     SET_FIELD(root, "classic_mode", settings.classic_mode)
     SET_FIELD(root, "plandomizer", settings.plandomizer)
 
+    SET_FIELD(root, "progressive_magic_always_double", settings.progressive_magic_always_double)
+
     SET_FIELD(root, "dungeon_small_keys", PlacementOptionToName(settings.dungeon_small_keys))
     SET_FIELD(root, "dungeon_big_keys", PlacementOptionToName(settings.dungeon_big_keys))
     SET_FIELD(root, "dungeon_maps_compasses", PlacementOptionToName(settings.dungeon_maps_compasses))
@@ -797,6 +801,9 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::FixRNG,
     Option::Performance,
 
+    // Logic Tweaks
+    Option::ProgressiveMagicAlwaysDouble,
+
     // Hints
     Option::HoHoHints,
     Option::HoHoTriforceHints,
@@ -891,6 +898,7 @@ static size_t getOptionBitCount(const Option& option) {
         case Option::Plandomizer:
         case Option::FixRNG:
         case Option::Performance:
+        case Option::ProgressiveMagicAlwaysDouble:
         case Option::HoHoHints:
         case Option::HoHoTriforceHints:
         case Option::KorlHints:

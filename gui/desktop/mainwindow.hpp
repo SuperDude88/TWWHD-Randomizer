@@ -234,6 +234,7 @@ private slots:
     void on_plandomizer_path_browse_button_clicked();
     void on_plandomizer_path_editingFinished();
     void on_fix_rng_stateChanged(int arg1);
+    void on_progressive_magic_always_double_stateChanged(int arg1);
 
     // Hints
     void on_ho_ho_hints_stateChanged(int arg1);
@@ -302,6 +303,8 @@ private slots:
     void on_view_all_entrances_button_clicked();
     void open_chart_mapping_list(uint8_t islandNum);
     void tracker_give_and_map_chart(TrackerLabel* label, GameItem chart);
+
+
 
 
 public:
