@@ -517,8 +517,6 @@ void MainWindow::apply_config_settings()
     startingGear.sort();
     randomizedGearModel->setStringList(randomizedGear);
     startingGearModel->setStringList(startingGear);
-    ui->randomized_gear->setModel(randomizedGearModel);
-    ui->starting_gear->setModel(startingGearModel);
 
 
     // Excluded Locations
@@ -537,8 +535,6 @@ void MainWindow::apply_config_settings()
     }
     progressionLocationsModel->setStringList(progressionLocations);
     excludedLocationsModel->setStringList(excludedLocations);
-    ui->progression_locations->setModel(progressionLocationsModel);
-    ui->excluded_locations->setModel(excludedLocationsModel);
 
 
     APPLY_CHECKBOX_SETTING(config, ui, remove_swords);
@@ -643,6 +639,7 @@ void MainWindow::apply_config_settings()
     APPLY_COMBOBOX_SETTING(config, ui, gyroscope);
     APPLY_COMBOBOX_SETTING(config, ui, ui_display);
 
+    update_excluded_locations(); // make sure the visible locations are consistent with the enabled settings
     update_permalink_and_seed_hash();
 }
 
@@ -1047,8 +1044,7 @@ DEFINE_SPINBOX_VALUE_CHANGE_FUNCTION(starting_joy_pendants)
 // Excluded Locations
 void MainWindow::swap_selected_locations(QListView* locsFrom, QStringListModel* locsTo)
 {
-    // Add selected items to the gear and
-    // put all selected rows into a list for sorting
+    // Combine the existing list with the new locations for sorting
     QStringList list = locsTo->stringList();
     std::list<int> selectedRows = {};
     for (auto& index : locsFrom->selectionModel()->selectedIndexes())
@@ -1058,10 +1054,10 @@ void MainWindow::swap_selected_locations(QListView* locsFrom, QStringListModel* 
     }
     list.sort();
 
-    // Set the sorted strings as the new starting gear list
+    // Set the sorted strings as the new destination list
     locsTo->setStringList(list);
 
-    // Remove rows from the randomized gear list in reverse order
+    // Remove rows from the source list in reverse order
     // to not invalidate row positions as we go
     selectedRows.sort();
     selectedRows.reverse();
