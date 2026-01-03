@@ -9,8 +9,3 @@ Hello Mac User. Before you begin using the Wind Waker HD Randomizer there are so
    as the randomizer application and type in the following command:
 
    xattr -d com.apple.quarantine wwhd_rando.app
-
-2. Running the application by double-clicking it normally may result in the program crashing when
-   you click the randomize button. To prevent this from happening, right click the application and
-   select *Show Package Contents*. Then navigate to Contents/MacOS/ and instead double-click the
-   wwhd_rando executable inside the folder. This will ensure that the randomizer doesn't crash. 
