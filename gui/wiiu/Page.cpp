@@ -270,6 +270,7 @@ HintsPage::HintsPage() {
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::HoHoHints));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::HoHoTriforceHints));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::KorlHints));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::KorlSwordHints));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::KreebBowHints));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::ClearerHints));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::UseAlwaysHints));

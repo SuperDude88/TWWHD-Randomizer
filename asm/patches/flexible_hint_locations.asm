@@ -65,6 +65,9 @@ continue_check_other_messages:
 ; - Defeating the Mighty Darknuts in the Master Sword Chamber ("So, despite our efforts, the princess")
 ; - Being in Hyrule before any of the other 3 have triggered ("I am concerned about Princess Zelda")
 ; These don't make as much sense in the randomizer, and cause issues if KoRL hints are enabled
-; Skip checking for them and just show the randomizer's text instead
-.org 0x024734F4 ; In daShip_c::setInitMessage
-  beq 0x024741E0 ; Show message 3443 (0xD73)
+; Skip checking for all of them except the Hyrule one incase KoRL sword hints in Hyrule are enabled
+.org 0x02473540 ; In daShip_c::setInitMessage
+  b 0x0247412C ; begin checking for "Hyrule" stage
+
+.org 0x02474194
+  li r30, 0xD77 ; Change Hyrule stage message id to this index for Korl Hyrule Hints

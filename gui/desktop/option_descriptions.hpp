@@ -305,6 +305,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Places hints on the King of Red Lions. Talk to the King of Red Lions to get hints.",
     },
     {
+      "korl_sword_hints",
+      "When this option is selected, the King of Red Lions will give an item hint for each Progressive Sword if spoken to in Hyrule.",
+    },
+    {
       "kreeb_bow_hints",
       "When this option is selected, Kreeb will give an item hint for each Progressive Bow after Link reactivates the Windfall lighthouse.",
     },

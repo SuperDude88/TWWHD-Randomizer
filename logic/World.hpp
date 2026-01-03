@@ -128,6 +128,7 @@ public:
     std::list<Location*> goalLocations = {};
     std::map<std::string, std::unordered_set<Location*>> barrenRegions = {};
     std::list<Location*> korlHints = {};
+    std::list<Location*> korlHyruleHints = {};
     std::list<Location*> kreebHints = {};
     std::map<Location*, std::unordered_set<Location*>, PointerLess<Location>> hohoHints = {}; // map of Ho Ho Hint Location to hinted locations
     Location* bigOctoFairyHintLocation = nullptr;

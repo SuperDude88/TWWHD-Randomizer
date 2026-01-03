@@ -608,6 +608,7 @@ void MainWindow::apply_config_settings()
     APPLY_CHECKBOX_SETTING(config, ui, ho_ho_hints);
     APPLY_CHECKBOX_SETTING(config, ui, ho_ho_triforce_hints);
     APPLY_CHECKBOX_SETTING(config, ui, korl_hints);
+    APPLY_CHECKBOX_SETTING(config, ui, korl_sword_hints);
     APPLY_CHECKBOX_SETTING(config, ui, kreeb_bow_hints);
     APPLY_CHECKBOX_SETTING(config, ui, use_always_hints);
     APPLY_CHECKBOX_SETTING(config, ui, clearer_hints);
@@ -1103,6 +1104,7 @@ void MainWindow::on_player_in_casual_clothes_stateChanged(int arg1) {
 DEFINE_STATE_CHANGE_FUNCTION(ho_ho_hints)
 DEFINE_STATE_CHANGE_FUNCTION(ho_ho_triforce_hints)
 DEFINE_STATE_CHANGE_FUNCTION(korl_hints)
+DEFINE_STATE_CHANGE_FUNCTION(korl_sword_hints)
 DEFINE_STATE_CHANGE_FUNCTION(kreeb_bow_hints)
 DEFINE_STATE_CHANGE_FUNCTION(use_always_hints)
 DEFINE_STATE_CHANGE_FUNCTION(clearer_hints)

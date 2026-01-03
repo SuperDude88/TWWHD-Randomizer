@@ -59,6 +59,7 @@ namespace OptionCB {
     std::string toggleHoHoHints();
     std::string toggleHoHoTriforceHints();
     std::string toggleKorlHints();
+    std::string toggleKorlSwordHints();
     std::string toggleKreebBowHints();
     std::string toggleClearHints();
     std::string toggleAlwaysHints();
