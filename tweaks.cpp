@@ -1251,28 +1251,28 @@ TweakError update_korl_dialog(World& world) {
         });
 
         for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
-        
-        entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
             std::u16string hintLines = u"";
             size_t i = 0; // counter to know when to add null terminator
             for (auto location : world.korlHyruleHints) {
-                std::u16string hint = u"";
-                hint += location->hint.text[language];
-                hint = Text::word_wrap_string(hint, 43);
+                std::u16string hint = Text::word_wrap_string(location->hint.text[language], 43);
                 ++i;
                 if (i == world.korlHyruleHints.size()) {
                     hint += u'\0'; // add null terminator on last hint before padding
                 }
-                hint = Text::pad_str_4_lines(hint);
-                hintLines += hint;
+                hintLines += Text::pad_str_4_lines(hint);
             }
-            CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
-            msbt.messages_by_label["03447"].text.message = hintLines;
-            return true;
-        });
+
+            RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
+
+            entry.addAction([hintLines](RandoSession* session, FileType* data) -> int {
+                CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+                msbt.messages_by_label["03447"].text.message = hintLines;
+
+                return true;
+            });
         }
     }
+
     return TweakError::NONE;
 }
 
