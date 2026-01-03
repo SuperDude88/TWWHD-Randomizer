@@ -352,6 +352,11 @@ namespace OptionCB {
         return fromBool(conf.settings.korl_hints);
     }
 
+    std::string toggleKreebBowHints() {
+        conf.settings.kreeb_bow_hints = !conf.settings.kreeb_bow_hints;
+        return fromBool(conf.settings.kreeb_bow_hints);
+    }
+
     std::string toggleClearHints() {
         conf.settings.clearer_hints = !conf.settings.clearer_hints;
         return fromBool(conf.settings.clearer_hints);
@@ -983,6 +988,8 @@ std::string getValue(const Option& option) {
             return fromBool(conf.settings.ho_ho_triforce_hints);
         case Option::KorlHints:
             return fromBool(conf.settings.korl_hints);
+        case Option::KreebBowHints:
+            return fromBool(conf.settings.kreeb_bow_hints);
         case Option::ClearerHints:
             return fromBool(conf.settings.clearer_hints);
         case Option::UseAlwaysHints:
@@ -1195,6 +1202,8 @@ TriggerCallback getCallback(const Option& option) {
             return &toggleHoHoTriforceHints;
         case Option::KorlHints:
             return &toggleKorlHints;
+        case Option::KreebBowHints:
+            return &toggleKreebBowHints;
         case Option::ClearerHints:
             return &toggleClearHints;
         case Option::UseAlwaysHints:
@@ -1362,6 +1371,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {HoHoHints,                   {"Place Hints on Old Man Ho Ho",        "Places hints on Old Man Ho Ho. Old Man Ho Ho appears at 10 different islands. Simply talk to Old Man Ho Ho to get hints."}},
         {HoHoTriforceHints,           {"Old Man Ho Ho Hints Shards",          "When this option is selected, each Old Man Ho Ho will give an item hint for a Triforce Shard. Hints are not repeated until each shard is hinted once. This setting will override placing other hints on Old Man Ho Ho."}},
         {KorlHints,                   {"Place Hints on King of Red Lions",    "Places hints on the King of Red Lions. Talk to the King of Red Lions to get hints."}},
+        {KreebBowHints,               {"Kreeb Hints Bows",                    "When this option is selected, Kreeb will give an item hint for each Progressive Bow after Link reactivates the Windfall lighthouse."}},
         {ClearerHints,                {"Clearer Hints",                       "When this option is selected, location and item hints will use the standard check or item name, instead of using cryptic hints."}},
         {UseAlwaysHints,              {"Use Always Hints",                    "When the number of location hints is nonzero, certain locations that will always be hinted will take precedence over normal location hints."}},
         {HintImportance,              {"Hint Importance",                     "When this option is selected, item and location hints will also indicate if the hinted item is required, possibly required, or not required. Only progress items will have these additions; non-progress items are trivially not required."}},

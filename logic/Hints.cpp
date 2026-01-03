@@ -724,6 +724,24 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
     return HintError::NONE;
 }
 
+static HintError assignKreebHints(World& world, WorldPool& worlds)
+{
+    // Get all bow locations
+    // Shuffle locations to prevent any possible meta-gaming where the last bow might be
+    // since otherwise they'll appear in order of location id
+    auto allLocations = world.getLocations(/*onlyProgression = */ true);
+    shufflePool(allLocations);
+    for (auto& location : allLocations)
+    {
+        if (location->currentItem.getGameItemId() == GameItem::ProgressiveBow)
+        {
+            world.kreebHints.push_back(location);
+            LOG_AND_RETURN_IF_ERR(generateItemHintMessage(location));
+        }
+    }
+    return HintError::NONE;
+}
+
 HintError generateHints(WorldPool& worlds)
 {
     LOG_AND_RETURN_IF_ERR(calculatePossiblePathLocations(worlds));
@@ -750,6 +768,12 @@ HintError generateHints(WorldPool& worlds)
         uint8_t totalNumHints = settings.path_hints + settings.barren_hints + settings.item_hints + settings.location_hints;
         uint8_t totalMadeHints = hintLocations.size();
         LOG_AND_RETURN_IF_ERR(generateLocationHintLocations(world, hintLocations, totalNumHints - totalMadeHints));
+
+        // Assign Kreeb Bow Hints if the setting is enabled
+        if (settings.kreeb_bow_hints)
+        {
+            assignKreebHints(world, worlds);
+        }
 
         // Distribute hints evenly among the possible hint placement options
         std::vector<std::string> hintPlacementOptions = {};

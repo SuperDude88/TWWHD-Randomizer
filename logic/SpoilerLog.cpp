@@ -238,7 +238,7 @@ void generateSpoilerLog(WorldPool& worlds)
     for (auto& world : worlds)
     {
         // Don't print "Hints" if there are none
-        if (world.hohoHints.empty() && world.korlHints.empty() && world.bigOctoFairyHintLocation == nullptr)
+        if (world.hohoHints.empty() && world.korlHints.empty() && world.bigOctoFairyHintLocation == nullptr && world.kreebHints.empty())
         {
             continue;
         }
@@ -290,6 +290,16 @@ void generateSpoilerLog(WorldPool& worlds)
                 }
             }
             spoilerLog << "        " << Utility::Str::toUTF8(hintText) << std::endl; 
+        }
+
+        if (!world.kreebHints.empty())
+        {
+            spoilerLog << "    Kreeb Hints:" << std::endl;
+            for (auto location : world.kreebHints)
+            {
+                spoilerLog << "        " << getSpoilerFormatHint(location);
+                spoilerLog << std::endl;
+            }
         }
     }
     spoilerLog << std::endl;

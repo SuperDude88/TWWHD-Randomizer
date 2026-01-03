@@ -305,6 +305,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Places hints on the King of Red Lions. Talk to the King of Red Lions to get hints.",
     },
     {
+      "kreeb_bow_hints",
+      "When this option is selected, Kreeb will give an item hint for each Progressive Bow after Link reactivates the Windfall lighthouse.",
+    },
+    {
       "path_hints",
       "Determines the number of path hints that will be placed in the game, distributed using the selected hint placement options.<br>If multiple hint placement options are selected, the hint count will be split evenly among the placement options.",
     },
