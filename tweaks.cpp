@@ -1240,6 +1240,16 @@ TweakError update_korl_dialog(World& world) {
     }
     
     if (!world.korlHyruleHints.empty()) {
+        if(custom_symbols.count("use_different_korl_hyrule_text") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+        const uint32_t check_hyrule_text_addr = custom_symbols.at("use_different_korl_hyrule_text");
+        g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([check_hyrule_text_addr](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, check_hyrule_text_addr), 1));
+
+            return true;
+        });
+
         for (const auto& language : Text::supported_languages) {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
         

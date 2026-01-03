@@ -59,15 +59,27 @@ continue_no_next_hint_message:
 continue_check_other_messages:
   b 0x02481054
 
+.org @NextFreeSpace
+.global use_different_korl_hyrule_text
+use_different_korl_hyrule_text:
+.byte 0 ; Don't change KoRL's Hyrule text by default
+
+.align 2 ; Align to the next 4 bytes
+
 ; KoRL also has some late-game text that triggers based on a few milestones:
 ; - Opening the dark portal ("If you wish to return to the world above" / "we must return to Ganon's Tower")
 ; - Breaking the barrier ("Long ago, Ganon's Tower was an impenetrable fortress")
 ; - Defeating the Mighty Darknuts in the Master Sword Chamber ("So, despite our efforts, the princess")
 ; - Being in Hyrule before any of the other 3 have triggered ("I am concerned about Princess Zelda")
 ; These don't make as much sense in the randomizer, and cause issues if KoRL hints are enabled
-; Skip checking for all of them except the Hyrule one incase KoRL sword hints in Hyrule are enabled
-.org 0x02473540 ; In daShip_c::setInitMessage
-  b 0x0247412C ; begin checking for "Hyrule" stage
+.org 0x02473514 ; In daShip_c::setInitMessage
+  lis r4, use_different_korl_hyrule_text@ha
+  lbz r4, use_different_korl_hyrule_text@l(r4)
+  cmpwi r4, 0 ; Check if Hyrule should use different KoRL text
+  beq 0x024741E0 ; Show message 3443 (0xD73) if not
+
+.org 0x02473540
+  b 0x0247412C ; Begin checking for "Hyrule" stage
 
 .org 0x02474194
   li r30, 0xD77 ; Change Hyrule stage message id to this index for Korl Hyrule Hints
