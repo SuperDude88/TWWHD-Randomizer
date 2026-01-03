@@ -1280,6 +1280,38 @@ TweakError update_ho_ho_dialog(World& world) {
     return TweakError::NONE;
 }
 
+TweakError update_kreeb_dialog(World& world) {
+    // Don't change text if theres no kreeb hints
+    if (world.kreebHints.empty()) {
+        return TweakError::NONE;
+    }
+
+    for (const auto& language : Text::supported_languages) {
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT");
+        
+        entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
+            std::u16string hintLines = u"";
+            size_t i = 0; // counter to know when to add null terminator
+            for (auto location : world.kreebHints) {
+                std::u16string hint = u"";
+                hint += location->hint.text[language];
+                hint = Text::word_wrap_string(hint, 43);
+                ++i;
+                if (i == world.kreebHints.size()) {
+                    hint += u'\0'; // add null terminator on last hint before padding
+                }
+                hint = Text::pad_str_4_lines(hint);
+                hintLines += hint;
+            }
+            CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+
+            msbt.messages_by_label["12220"].text.message = hintLines;
+            return true;
+        });
+    }
+    return TweakError::NONE;
+}
+
 TweakError rotate_ho_ho_to_face_hints(World& world) {
 
     // If no ho ho hints, don't do anything
@@ -4144,6 +4176,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     // Update text last so everything has a chance to add textboxes
     TWEAK_ERR_CHECK(update_text_replacements(world));
     TWEAK_ERR_CHECK(update_korl_dialog(world));
+    TWEAK_ERR_CHECK(update_kreeb_dialog(world));
     TWEAK_ERR_CHECK(update_ho_ho_dialog(world));
     TWEAK_ERR_CHECK(rotate_ho_ho_to_face_hints(world));
     TWEAK_ERR_CHECK(add_chart_number_to_item_get_messages(world));

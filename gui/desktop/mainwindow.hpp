@@ -240,6 +240,7 @@ private slots:
     void on_ho_ho_hints_stateChanged(int arg1);
     void on_ho_ho_triforce_hints_stateChanged(int arg1);
     void on_korl_hints_stateChanged(int arg1);
+    void on_kreeb_bow_hints_stateChanged(int arg1);
     void on_use_always_hints_stateChanged(int arg1);
     void on_path_hints_valueChanged(int path_hints);
     void on_barren_hints_valueChanged(int barren_hints);
@@ -303,9 +304,6 @@ private slots:
     void on_view_all_entrances_button_clicked();
     void open_chart_mapping_list(uint8_t islandNum);
     void tracker_give_and_map_chart(TrackerLabel* label, GameItem chart);
-
-
-
 
 public:
     void update_items_color();
