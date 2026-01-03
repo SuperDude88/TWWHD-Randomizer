@@ -178,6 +178,7 @@ enum struct Option {
     HoHoHints,
     HoHoTriforceHints,
     KorlHints,
+    KorlSwordHints,
     KreebBowHints,
     ClearerHints,
     UseAlwaysHints,
@@ -270,6 +271,7 @@ public:
     bool ho_ho_hints;
     bool ho_ho_triforce_hints;
     bool korl_hints;
+    bool korl_sword_hints;
     bool kreeb_bow_hints;
     bool clearer_hints;
     bool use_always_hints;

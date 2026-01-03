@@ -238,7 +238,7 @@ void generateSpoilerLog(WorldPool& worlds)
     for (auto& world : worlds)
     {
         // Don't print "Hints" if there are none
-        if (world.hohoHints.empty() && world.korlHints.empty() && world.bigOctoFairyHintLocation == nullptr && world.kreebHints.empty())
+        if (world.hohoHints.empty() && world.korlHints.empty() && world.bigOctoFairyHintLocation == nullptr && world.kreebHints.empty() && world.korlHyruleHints.empty())
         {
             continue;
         }
@@ -273,6 +273,16 @@ void generateSpoilerLog(WorldPool& worlds)
                 {
                     spoilerLog << " (" << location->currentItem.getName() << " at " << location->getName() << ")";
                 }
+                spoilerLog << std::endl;
+            }
+        }
+
+        if (!world.korlHyruleHints.empty())
+        {
+            spoilerLog << "    KoRL Hyrule Hints:" << std::endl;
+            for (auto location : world.korlHyruleHints)
+            {
+                spoilerLog << "        " << getSpoilerFormatHint(location);
                 spoilerLog << std::endl;
             }
         }

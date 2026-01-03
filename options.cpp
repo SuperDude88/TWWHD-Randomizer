@@ -61,6 +61,7 @@ void Settings::resetDefaultSettings() {
     decouple_entrances = false;
 
     korl_hints = false;
+    korl_sword_hints = false;
     kreeb_bow_hints = false;
     ho_ho_hints = false;
     ho_ho_triforce_hints = false;
@@ -238,6 +239,8 @@ uint8_t Settings::getSetting(const Option& option) const {
             return ho_ho_triforce_hints;
         case Option::KorlHints:
             return korl_hints;
+        case Option::KorlSwordHints:
+            return korl_sword_hints;
         case Option::KreebBowHints:
             return kreeb_bow_hints;
         case Option::ClearerHints:
@@ -429,6 +432,8 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             ho_ho_triforce_hints = value; return;
         case Option::KorlHints:
             korl_hints = value; return;
+        case Option::KorlSwordHints:
+            korl_sword_hints = value; return;
         case Option::KreebBowHints:
             kreeb_bow_hints = value; return;
         case Option::ClearerHints:
@@ -919,6 +924,7 @@ Option nameToSetting(const std::string& name) {
         {"Ho Ho Hints", Option::HoHoHints},
         {"Ho Ho Triforce Hints", Option::HoHoTriforceHints},
         {"Korl Hints", Option::KorlHints},
+        {"Korl Sword Hints", Option::KorlSwordHints},
         {"Kreeb Bow Hints", Option::KreebBowHints},
         {"Clearer Hints", Option::ClearerHints},
         {"Use Always Hints", Option::UseAlwaysHints},
@@ -1022,6 +1028,7 @@ std::string settingToName(const Option& setting) {
         {Option::HoHoHints, "Ho Ho Hints"},
         {Option::HoHoTriforceHints, "Ho Ho Triforce Hints"},
         {Option::KorlHints, "Korl Hints"},
+        {Option::KorlSwordHints, "Korl Sword Hints"},
         {Option::KreebBowHints, "Kreeb Bow Hints"},
         {Option::ClearerHints, "Clearer Hints"},
         {Option::UseAlwaysHints, "Use Always Hints"},

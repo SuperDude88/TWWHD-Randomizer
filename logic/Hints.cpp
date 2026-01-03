@@ -742,6 +742,24 @@ static HintError assignKreebHints(World& world, WorldPool& worlds)
     return HintError::NONE;
 }
 
+static HintError assignKorlSwordHints(World& world, WorldPool& worlds)
+{
+    // Get all sword locations
+    // Shuffle locations to prevent any possible meta-gaming where the swords bow might be
+    // since otherwise they'll appear in order of location id
+    auto allLocations = world.getLocations(/*onlyProgression = */ true);
+    shufflePool(allLocations);
+    for (auto& location : allLocations)
+    {
+        if (location->currentItem.getGameItemId() == GameItem::ProgressiveSword)
+        {
+            world.korlHyruleHints.push_back(location);
+            LOG_AND_RETURN_IF_ERR(generateItemHintMessage(location));
+        }
+    }
+    return HintError::NONE;
+}
+
 HintError generateHints(WorldPool& worlds)
 {
     LOG_AND_RETURN_IF_ERR(calculatePossiblePathLocations(worlds));
@@ -773,6 +791,12 @@ HintError generateHints(WorldPool& worlds)
         if (settings.kreeb_bow_hints)
         {
             assignKreebHints(world, worlds);
+        }
+
+        // Assign Korl Sword Hints if the setting is enabled
+        if (settings.korl_sword_hints)
+        {
+            assignKorlSwordHints(world, worlds);
         }
 
         // Distribute hints evenly among the possible hint placement options

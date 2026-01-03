@@ -196,6 +196,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     GET_FIELD(root, "ho_ho_hints", settings.ho_ho_hints)
     GET_FIELD(root, "ho_ho_triforce_hints", settings.ho_ho_triforce_hints)
     GET_FIELD(root, "korl_hints", settings.korl_hints)
+    GET_FIELD(root, "korl_sword_hints", settings.korl_sword_hints)
     GET_FIELD(root, "kreeb_bow_hints", settings.kreeb_bow_hints)
     GET_FIELD(root, "clearer_hints", settings.clearer_hints)
     GET_FIELD(root, "use_always_hints", settings.use_always_hints)
@@ -528,6 +529,7 @@ YAML::Node Config::settingsToYaml() const {
     SET_FIELD(root, "ho_ho_hints", settings.ho_ho_hints)
     SET_FIELD(root, "ho_ho_triforce_hints", settings.ho_ho_triforce_hints)
     SET_FIELD(root, "korl_hints", settings.korl_hints)
+    SET_FIELD(root, "korl_sword_hints", settings.korl_sword_hints)
     SET_FIELD(root, "kreeb_bow_hints", settings.kreeb_bow_hints)
     SET_FIELD(root, "clearer_hints", settings.clearer_hints)
     SET_FIELD(root, "use_always_hints", settings.use_always_hints)
@@ -810,6 +812,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::HoHoHints,
     Option::HoHoTriforceHints,
     Option::KorlHints,
+    Option::KorlSwordHints,
     Option::KreebBowHints,
     Option::PathHints,
     Option::BarrenHints,
@@ -905,6 +908,7 @@ static size_t getOptionBitCount(const Option& option) {
         case Option::HoHoHints:
         case Option::HoHoTriforceHints:
         case Option::KorlHints:
+        case Option::KorlSwordHints:
         case Option::KreebBowHints:
         case Option::UseAlwaysHints:
         case Option::ClearerHints:
