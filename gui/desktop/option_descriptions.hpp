@@ -287,6 +287,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Mostly recommended for console users. Adjusts game code that causes performance issues, but may come at the cost of visual quality. Currently only affects particles."
     },
     {
+      "open_drc",
+      "Allow DRC entrance to be accessed from the beginning of the game with no items."
+    },
+    {
       "progressive_magic_always_double",
       "Progressive Magic Meters will always give double magic. Finding a second Progressive Magic Meter will have no effect (i.e., will not quadruple your magic)."
     },

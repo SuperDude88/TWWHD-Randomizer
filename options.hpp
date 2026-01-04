@@ -172,6 +172,7 @@ enum struct Option {
     PlandomizerFile,
 
     // Logic Tweaks
+    OpenDRC,
     ProgressiveMagicAlwaysDouble,
 
     // Hints
@@ -317,6 +318,7 @@ public:
     bool plandomizer;
     fspath plandomizerFile;
 
+    bool open_drc;
     bool progressive_magic_always_double;
 
     TargetTypePreference target_type;

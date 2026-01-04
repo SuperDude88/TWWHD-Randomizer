@@ -236,6 +236,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     GET_FIELD(root, "classic_mode", settings.classic_mode)
     GET_FIELD(root, "plandomizer", settings.plandomizer)
 
+    GET_FIELD(root, "open_drc", settings.open_drc)
     GET_FIELD(root, "progressive_magic_always_double", settings.progressive_magic_always_double)
 
     if(!preferencesRoot["pig_color"])  {
@@ -569,6 +570,7 @@ YAML::Node Config::settingsToYaml() const {
     SET_FIELD(root, "classic_mode", settings.classic_mode)
     SET_FIELD(root, "plandomizer", settings.plandomizer)
 
+    SET_FIELD(root, "open_drc", settings.open_drc)
     SET_FIELD(root, "progressive_magic_always_double", settings.progressive_magic_always_double)
 
     SET_FIELD(root, "dungeon_small_keys", PlacementOptionToName(settings.dungeon_small_keys))
@@ -806,6 +808,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::Performance,
 
     // Logic Tweaks
+    Option::OpenDRC,
     Option::ProgressiveMagicAlwaysDouble,
 
     // Hints
@@ -904,6 +907,7 @@ static size_t getOptionBitCount(const Option& option) {
         case Option::Plandomizer:
         case Option::FixRNG:
         case Option::Performance:
+        case Option::OpenDRC:
         case Option::ProgressiveMagicAlwaysDouble:
         case Option::HoHoHints:
         case Option::HoHoTriforceHints:

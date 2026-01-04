@@ -2154,6 +2154,27 @@ TweakError update_progressive_magic_always_double_game_variable(const bool& prog
     return TweakError::NONE;
 }
 
+TweakError update_open_drc_game_variable(const bool& open_drc) {
+    if(custom_symbols.count("open_drc") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    const uint32_t open_drc_addr = custom_symbols.at("open_drc");
+
+    RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
+    entry.addAction([=](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+        if (open_drc) {
+            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, open_drc_addr), 0x01));
+        }
+        else {
+            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, open_drc_addr), 0x00));
+        }
+
+        return true;
+    });
+
+    return TweakError::NONE;
+}
+
 TweakError update_starting_gear(const Settings& settings) {
     std::vector<GameItem> startingGear = settings.starting_gear; // copy so we can edit without causing problems
 
@@ -4034,6 +4055,27 @@ TweakError fix_second_quest_locations() {
     return TweakError::NONE;
 }
 
+TweakError change_rock_in_dragon_roost_pond() {
+    // Add the special rock that only reacts to bomb flowers to a regular rock that can also react to bombs and power bracelets
+    RandoSession::CacheEntry& dri_pond = g_session.openGameFile(getRoomDzrPath("Adanmae", 0));
+    dri_pond.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        // Change special boulder to regular boulder
+        const std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
+        for (auto actor : actors) {
+            if (actor->data.substr(0, 6) == "Eskban") {
+                actor->data = "Ebrock\x00\x00\xF2\x7F\x08\x3F\x42\x93\x28\x26\xC2\x48\x00\x00\x43\xCC\x75\xC2\x00\x00\x00\x00\x00\xFF\xFF\xFF"s;
+                break;
+            }
+        }
+
+        return true;
+    });
+
+    return TweakError::NONE;
+}
+
 TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(Utility::get_data_path() / "asm/custom_symbols.yaml"));
 
@@ -4160,12 +4202,14 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(make_dungeon_joy_pendants_flexible());
     TWEAK_ERR_CHECK(prevent_fairy_island_softlocks());
     TWEAK_ERR_CHECK(give_fairy_fountains_distinct_colors());
+    TWEAK_ERR_CHECK(change_rock_in_dragon_roost_pond());
     //rat hole visibility
     //failsafe id 0 spawns
 
     TWEAK_ERR_CHECK(update_skip_rematch_bosses_game_variable(settings.skip_rematch_bosses));
     TWEAK_ERR_CHECK(update_sword_mode_game_variable(settings.remove_swords));
     TWEAK_ERR_CHECK(update_progressive_magic_always_double_game_variable(settings.progressive_magic_always_double));
+    TWEAK_ERR_CHECK(update_open_drc_game_variable(settings.open_drc));
     TWEAK_ERR_CHECK(update_starting_gear(settings));
     if(settings.selectedModel.casual) {
         TWEAK_ERR_CHECK(set_casual_clothes());

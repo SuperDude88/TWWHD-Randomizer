@@ -872,3 +872,18 @@ spawn_drc_shortcut_warp:
 spawn_drc_shortcut_warp_return:
   mr r3, r31 ; Replace the line we overwrote to jump here
   b 0x021e3214 ; Return
+
+; The puzzle at DRC entrance where the pond fills up with water is very slow
+; (~20s from the boulder breaking to the water reaching max level)
+; This speeds it up by a factor of 5 by modifying the speeds of various animations
+.org 0x10029a30
+.float -0.5263158, 0.5263158 ; Water spread speed
+.org 0x10029a40
+.float 8.388704              ; Water rise speed
+
+.org 0x0234d08c ; in daObjGryw00_c::switch_wait_act_proc 
+  stfs f13, 0x490 (r31)      ; change arg to mBtk/mBck.setPlaySpeed from 1.0f to 5.0f
+.org 0x0234d094
+  stfs f13, 0x41c (r31)      ; Same as above
+.org 0x0234d0bc ;
+  li r12, 62                 ; Shorten geyser sound effect length

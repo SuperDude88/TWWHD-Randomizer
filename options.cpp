@@ -116,6 +116,7 @@ void Settings::resetDefaultSettings() {
     classic_mode = false;
     plandomizer = false;
 
+    open_drc = false;
     progressive_magic_always_double = false;
 
     return;
@@ -321,6 +322,8 @@ uint8_t Settings::getSetting(const Option& option) const {
             return plandomizer;
         case Option::PlandomizerFile: // Can't return this like everything else, just here as placeholder
             return 0;
+        case Option::OpenDRC:
+            return open_drc;
         case Option::ProgressiveMagicAlwaysDouble:
             return progressive_magic_always_double;
         case Option::TargetType:
@@ -514,6 +517,8 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             plandomizer = value; return;
         case Option::PlandomizerFile: // Can't set this like everything else, just here as placeholder
             return;
+        case Option::OpenDRC:
+            open_drc = value; return;
         case Option::ProgressiveMagicAlwaysDouble:
             progressive_magic_always_double = value; return;
         case Option::TargetType:
@@ -965,6 +970,7 @@ Option nameToSetting(const std::string& name) {
         {"Classic Mode", Option::ClassicMode},
         {"Plandomizer", Option::Plandomizer},
         {"Plandomizer File", Option::PlandomizerFile},
+        {"Open DRC", Option::OpenDRC},
         {"Progressive Magic Always Double", Option::ProgressiveMagicAlwaysDouble},
         {"Target Type", Option::TargetType},
         {"Camera", Option::Camera},
@@ -1069,6 +1075,7 @@ std::string settingToName(const Option& setting) {
         {Option::ClassicMode, "Classic Mode"},
         {Option::Plandomizer, "Plandomizer"},
         {Option::PlandomizerFile, "Plandomizer File"},
+        {Option::OpenDRC, "Open DRC"},
         {Option::ProgressiveMagicAlwaysDouble, "Progressive Magic Always Double"},
         {Option::TargetType, "Target Type"},
         {Option::Camera, "Camera"},
