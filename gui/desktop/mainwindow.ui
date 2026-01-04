@@ -2109,9 +2109,23 @@
               </property>
               <layout class="QGridLayout" name="gridLayout_9">
                <item row="0" column="0">
+                <widget class="QCheckBox" name="open_drc">
+                 <property name="text">
+                  <string>Open DRC</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
                 <widget class="QCheckBox" name="progressive_magic_always_double">
                  <property name="text">
                   <string>Progressive Magic is Always Double</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QLabel" name="dummy_label">
+                 <property name="text">
+                  <string/>
                  </property>
                 </widget>
                </item>
@@ -2562,8 +2576,8 @@ font-size: 15px;</string>
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>360</width>
-                    <height>313</height>
+                    <width>100</width>
+                    <height>30</height>
                    </rect>
                   </property>
                   <layout class="QGridLayout" name="specific_locations_layout">
@@ -2835,7 +2849,7 @@ font-size: 15px;
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>265</height>
+                    <height>30</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_targets_scroll_layout">

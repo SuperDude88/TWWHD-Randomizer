@@ -234,6 +234,7 @@ private slots:
     void on_plandomizer_path_browse_button_clicked();
     void on_plandomizer_path_editingFinished();
     void on_fix_rng_stateChanged(int arg1);
+    void on_open_drc_stateChanged(int arg1);
     void on_progressive_magic_always_double_stateChanged(int arg1);
 
     // Hints

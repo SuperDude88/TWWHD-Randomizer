@@ -698,6 +698,11 @@ namespace OptionCB {
         return fromBool(conf.settings.plandomizer);
     }
 
+    std::string toggleOpenDRC() {
+        conf.settings.open_drc = !conf.settings.open_drc;
+        return fromBool(conf.settings.open_drc);
+    }
+
     std::string toggleProgressiveMagicAlwaysDouble() {
         conf.settings.progressive_magic_always_double = !conf.settings.progressive_magic_always_double;
         return fromBool(conf.settings.classic_mode);
@@ -1075,6 +1080,8 @@ std::string getValue(const Option& option) {
             return fromBool(conf.settings.plandomizer);
         case Option::PlandomizerFile: // Can't return this like everything else, just here as placeholder
             return "";
+        case Option::OpenDRC:
+            return fromBool(conf.settings.open_drc);
         case Option::ProgressiveMagicAlwaysDouble:
             return fromBool(conf.settings.progressive_magic_always_double);
         case Option::TargetType:
@@ -1291,6 +1298,8 @@ TriggerCallback getCallback(const Option& option) {
             return &togglePlandomizer;
         case Option::PlandomizerFile: // Can't return this like everything else, just here as placeholder
             return &invalidCB;
+        case Option::OpenDRC:
+            return &toggleOpenDRC;
         case Option::ProgressiveMagicAlwaysDouble:
             return &toggleProgressiveMagicAlwaysDouble;
         case Option::TargetType:
@@ -1375,6 +1384,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
         {RandomItemSlideItem,         {"Random Item Sliding Item",            "Randomly start with one first-person item to allow item sliding (Grappling Hook, Boomerang, Bow, or Hookshot). This option is aimed at glitch-heavy races where finding one of these items could massively change the outcome. If you already start with one of these items, this setting will *not* add another."}},
         {ClassicMode,                 {"Classic Mode",                        "Add back behaviors and glitches that were removed in the remake. Currently includes Wind Waker dives and dry storage. Only use these if you know what you are doing!"}},
         {Plandomizer,                 {"Plandomizer",                         "Allows you to provide a file which manually sets item locations and/or entrances."}},
+        {OpenDRC,                     {"Open DRC",                            "Allow DRC entrance to be accessed from the beginning of the game with no items."}},
         {ProgressiveMagicAlwaysDouble,{"Magic is Always Double",              "Progressive Magic Meters will always give double magic. Finding a second Progressive Magic Meter will have no effect (i.e., will not quadruple your magic)."}},
 
         {HoHoHints,                   {"Place Hints on Old Man Ho Ho",        "Places hints on Old Man Ho Ho. Old Man Ho Ho appears at 10 different islands. Simply talk to Old Man Ho Ho to get hints."}},

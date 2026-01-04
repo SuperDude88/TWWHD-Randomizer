@@ -810,7 +810,7 @@
 - Name: Dragon Roost Pond
   Exits:
       Dragon Roost Rito Aerie: Nothing
-      Dragon Roost Pond Past Statues: Nothing
+      Dragon Roost Pond Past Statues: Open_DRC == true or Bombs or Power_Bracelets or Empty_Bottle or Can_Fly_With_Deku_Leaf_Indoors
 
 - Name: Dragon Roost Pond Past Statues
   Exits:

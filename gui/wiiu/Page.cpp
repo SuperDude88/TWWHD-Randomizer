@@ -611,6 +611,7 @@ AdvancedPage::AdvancedPage() {
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::NoSpoilerLog));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::DamageMultiplier, 250ms, 55ms));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::ClassicMode));
+    buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::OpenDRC));
     buttonColumns[0].emplace_back(std::make_unique<BasicButton>(Option::ProgressiveMagicAlwaysDouble));
 
     buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::CTMC));
