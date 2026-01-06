@@ -14,6 +14,7 @@
 #include <gui/desktop/tracker/tracker_area_widget.hpp>
 #include <gui/desktop/tracker/tracker_preferences_dialog.hpp>
 #include <gui/desktop/tracker/tracker_label.hpp>
+#include <gui/desktop/tracker/tracker_required_boss_checkbox.hpp>
 #include <gui/desktop/tracker/set_font.hpp>
 
 #include <logic/Fill.hpp>
@@ -30,7 +31,9 @@ void MainWindow::initialize_tracker_world(Settings& settings,
                                           const GameItemPool& markedItems,
                                           const std::vector<std::string>& markedLocations,
                                           const std::unordered_map<std::string, std::string>& connectedEntrances,
-                                          const std::map<GameItem, uint8_t>& chartMappings)
+                                          const std::map<GameItem, uint8_t>& chartMappings,
+                                          const std::set<std::string>& requiredBosses_,
+                                          bool fromAutosave)
 {
     trackerStarted = true;
 
@@ -301,6 +304,33 @@ void MainWindow::initialize_tracker_world(Settings& settings,
 
     // Add vertical spacer to push labels up
     ui->entrance_scroll_layout->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    // Update required boss checkboxes
+    requiredBosses = requiredBosses_;
+    for (RequiredBossCheckBox* checkBox : ui->other_areas_widget->findChildren<RequiredBossCheckBox*>())
+    {
+        // Block signals so we don't needlessly autosave 6 extra times
+        checkBox->blockSignals(true);
+        if (trackerWorld.getSettings().num_required_dungeons > 0)
+        {
+            checkBox->setVisible(true);
+            if (fromAutosave && !requiredBosses.contains(checkBox->getBossName().toStdString()))
+            {
+                checkBox->setCheckState(Qt::Unchecked);
+            }
+            else
+            {
+                checkBox->setCheckState(Qt::Checked);
+                requiredBosses.insert(checkBox->getBossName().toStdString());
+            }
+        }
+        else
+        {
+            checkBox->setVisible(false);
+            checkBox->setCheckState(Qt::Unchecked);
+        }
+        checkBox->blockSignals(false);
+    }
 }
 
 void MainWindow::on_start_tracker_button_clicked()
@@ -378,6 +408,15 @@ bool MainWindow::autosave_current_tracker_config()
         for (auto& [chart, island] : mappedCharts)
         {
             root["mapped_charts"][gameItemToName(chart)] = roomNumToIslandName(island);
+        }
+    }
+
+    // Save required bosses
+    if(!requiredBosses.empty())
+    {
+        for (const auto& boss : requiredBosses)
+        {
+            root["required_bosses"].push_back(boss);
         }
     }
 
@@ -586,7 +625,18 @@ void MainWindow::load_tracker_autosave()
         }
     }
 
-    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections, chartMappings);
+    // Load any saved required bosses
+    std::set<std::string> requiredBosses_ = {};
+    const auto& bosses = root["required_bosses"];
+    if (bosses)
+    {
+        for (const auto& boss : bosses)
+        {
+            requiredBosses_.insert(boss.as<std::string>());
+        }
+    }
+
+    initialize_tracker_world(trackerConfig.settings, markedItems, markedLocations, entranceConnections, chartMappings, requiredBosses_, true);
 
     update_tracker();
 }
@@ -730,6 +780,20 @@ void MainWindow::initialize_tracker()
     ui->other_areas_layout->addWidget(new TAW("Mailbox",             "mailbox"),      0, 7);
     ui->other_areas_layout->addWidget(new TAW("Hyrule",              "hyrule" ),      0, 8);
     ui->other_areas_layout->addWidget(new TAW("Ganon's Tower",       "ganondorf"),    0, 9);
+
+    // Add required boss checkboxes
+    ui->other_areas_layout->addWidget(new RequiredBossCheckBox("Dragon Roost Cavern - Gohma Heart Container", "Gohma", nullptr), 1, 0, Qt::AlignRight);
+    ui->other_areas_layout->addWidget(new RequiredBossCheckBox("Forbidden Woods - Kalle Demos Heart Container", "Kalle Demos", nullptr), 1, 1, Qt::AlignRight);
+    ui->other_areas_layout->addWidget(new RequiredBossCheckBox("Tower of the Gods - Gohdan Heart Container", "Gohdan", nullptr), 1, 2, Qt::AlignRight);
+    ui->other_areas_layout->addWidget(new RequiredBossCheckBox("Forsaken Fortress - Helmaroc King Heart Container", "Helmaroc King", nullptr), 1, 3, Qt::AlignRight);
+    ui->other_areas_layout->addWidget(new RequiredBossCheckBox("Earth Temple - Jalhalla Heart Container", "Jalhalla", nullptr), 1, 4, Qt::AlignRight);
+    ui->other_areas_layout->addWidget(new RequiredBossCheckBox("Wind Temple - Molgera Heart Container", "Molgera", nullptr), 1, 5, Qt::AlignRight);
+
+    // Connect required boss checkboxes with updating the required bosses
+    for (auto checkbox : ui->other_areas_widget->findChildren<RequiredBossCheckBox*>())
+    {
+        connect(checkbox, &RequiredBossCheckBox::setRequiredBoss, this, &MainWindow::tracker_set_required_boss);
+    }
 
     // Set world and inventory and connect inventory button actions to updating the tracker
     for (auto inventoryButton : ui->tracker_tab->findChildren<TrackerInventoryButton*>())
@@ -949,6 +1013,16 @@ void MainWindow::check_special_accessibility_conditions()
             if(!isIslandMappedToChart(i)) {
                 trackerWorld.locationTable[roomNumToIslandName(i) + " - Sunken Treasure"]->hasBeenFound = false;
             }
+        }
+    }
+
+    // If the user has not marked all required bosses as defeated, then Defeat Ganondorf is not possible
+    for (const auto& boss : requiredBosses)
+    {
+        if (!trackerWorld.locationTable[bossNamesToLocations[boss]]->marked)
+        {
+            trackerWorld.locationTable["Ganon's Tower - Defeat Ganondorf"]->hasBeenFound = false;
+            break;
         }
     }
 }
@@ -1875,4 +1949,18 @@ QString prettyTrackerName(Item& item, const int& count, MainWindow* mainWindow)
             return QString(item.getName().c_str()) + " x" + QString::number(count);
         }
     }
+}
+
+void MainWindow::tracker_set_required_boss(const QString& bossName, Qt::CheckState checked)
+{
+    if (checked == Qt::Checked)
+    {
+        requiredBosses.insert(bossName.toStdString());
+    }
+    else
+    {
+        requiredBosses.erase(bossName.toStdString());
+    }
+
+    update_tracker();
 }

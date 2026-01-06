@@ -48,6 +48,7 @@ onSwitch = 0x025b9e38;
 offSwitch = 0x025b9f7c;
 dSv_membit_c_isSwitch = 0x025b8dc8; /* dSv_memBit_c::isSwitch */
 onDungeonItem = 0x025b9098;
+isDungeonItem = 0x025b9100;
 onSymbol = 0x025b7cc0;
 isCollect = 0x025b7a2c;
 onCollect = 0x025b7944;

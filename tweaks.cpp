@@ -2216,6 +2216,35 @@ TweakError update_starting_gear(const Settings& settings) {
     return TweakError::NONE;
 }
 
+TweakError update_required_bosses(const World& world) {
+    if(custom_symbols.count("required_bosses") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    const uint32_t required_bosses_array_addr = custom_symbols.at("required_bosses");
+
+    std::unordered_set<uint8_t> requiredBossStageIds = {};
+    for (const auto& [dungeonName, dungeon] : world.dungeons)
+    {
+        if (dungeon.isRequiredDungeon)
+        {
+            requiredBossStageIds.insert(dungeon.raceModeLocation->stageId);
+        }
+    }
+
+    g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
+
+        size_t i = 0;
+        for (auto stageId : requiredBossStageIds)
+        {
+            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, required_bosses_array_addr + i), stageId));
+            ++i;
+        }
+        RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, required_bosses_array_addr + i), 0xFF));
+        return true;
+    });
+    
+    return TweakError::NONE;
+}
+
 TweakError add_hint_signs() {
     for (const auto& language : Text::supported_languages) {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
@@ -4093,6 +4122,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/flexible_item_locations_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/fix_vanilla_bugs_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/misc_rando_features_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/required_bosses_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/switch_op_diff.yaml"));
 
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
@@ -4228,6 +4258,7 @@ TweakError apply_necessary_post_randomization_tweaks(World& world/* , const bool
     TWEAK_ERR_CHECK(add_ganons_tower_warp_to_ff2());
     TWEAK_ERR_CHECK(add_more_magic_jars());
     TWEAK_ERR_CHECK(add_pirate_ship_to_windfall());
+    TWEAK_ERR_CHECK(update_required_bosses(world));
     TWEAK_ERR_CHECK(add_hint_signs());
     TWEAK_ERR_CHECK(prevent_reverse_door_softlocks());
     TWEAK_ERR_CHECK(add_barren_dungeon_hint_triggers(world));

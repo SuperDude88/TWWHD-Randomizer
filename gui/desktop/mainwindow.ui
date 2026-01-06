@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1072</width>
-    <height>822</height>
+    <height>836</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -35,7 +35,7 @@
          <x>0</x>
          <y>0</y>
          <width>1054</width>
-         <height>654</height>
+         <height>668</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>6</number>
           </property>
           <widget class="QWidget" name="getting_started_tab">
            <attribute name="title">
@@ -2576,8 +2576,8 @@ font-size: 15px;</string>
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>100</width>
-                    <height>30</height>
+                    <width>360</width>
+                    <height>313</height>
                    </rect>
                   </property>
                   <layout class="QGridLayout" name="specific_locations_layout">
@@ -2849,7 +2849,7 @@ font-size: 15px;
                     <x>0</x>
                     <y>0</y>
                     <width>360</width>
-                    <height>30</height>
+                    <height>265</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="entrance_targets_scroll_layout">
@@ -2995,7 +2995,7 @@ font-size: 15px;</string>
               <x>10</x>
               <y>365</y>
               <width>1028</width>
-              <height>161</height>
+              <height>181</height>
              </rect>
             </property>
             <property name="styleSheet">
@@ -3007,6 +3007,9 @@ font-size: 15px;</string>
              </property>
              <property name="rightMargin">
               <number>5</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
              </property>
              <property name="spacing">
               <number>3</number>
@@ -3245,34 +3248,12 @@ font-weight: bold;</string>
             <property name="geometry">
              <rect>
               <x>820</x>
-              <y>540</y>
+              <y>550</y>
               <width>221</width>
               <height>118</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_10">
-             <item row="1" column="0">
-              <widget class="QPushButton" name="open_chart_list_button">
-               <property name="styleSheet">
-                <string notr="true">background: rgba(79, 79, 79, 0.85);
-color: lightgray</string>
-               </property>
-               <property name="text">
-                <string>View Charts</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QPushButton" name="open_tracker_settings_button">
-               <property name="styleSheet">
-                <string notr="true">background: rgba(79, 79, 79, 0.85);
-color: lightgray</string>
-               </property>
-               <property name="text">
-                <string>Open Settings</string>
-               </property>
-              </widget>
-             </item>
              <item row="3" column="0">
               <spacer name="verticalSpacer_5">
                <property name="orientation">
@@ -3294,6 +3275,28 @@ color: lightgray</string>
                </property>
                <property name="text">
                 <string>View All Entrances</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QPushButton" name="open_chart_list_button">
+               <property name="styleSheet">
+                <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
+               </property>
+               <property name="text">
+                <string>View Charts</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QPushButton" name="open_tracker_settings_button">
+               <property name="styleSheet">
+                <string notr="true">background: rgba(79, 79, 79, 0.85);
+color: lightgray</string>
+               </property>
+               <property name="text">
+                <string>Open Settings</string>
                </property>
               </widget>
              </item>

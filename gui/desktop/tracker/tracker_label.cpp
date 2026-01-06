@@ -408,7 +408,7 @@ QString TrackerLabel::getTooltipText()
         auto str = text[i];
         // Check for special shorthand cases
         // If we're listing the whole triforce, combine it into 1 item
-        if (str.contains("Triforce Shard 1") && text.size() > i + 7 && text[i + 7].contains("Triforce Shard 8"))
+        if (str.contains("Triforce Shard") && text.size() > i + 7 && text[i + 7].contains("Triforce Shard"))
         {
             QString color = TOOLTIP_MET;
             // Color the text red if we don't have even 1 shard
@@ -445,6 +445,20 @@ QString TrackerLabel::getTooltipText()
             returnStr += "</li><li>";
         }
     }
+
+    // Add in required bosses for Defeat Ganondorf
+    if (type == TrackerLabelType::Location && location->getName() == "Ganon's Tower - Defeat Ganondorf")
+    {
+
+        for (const auto& boss : mainWindow->requiredBosses)
+        {
+            returnStr += "</li><li>";
+            std::string bossDefeatedText = boss + " Defeated";
+            std::string color = mainWindow->trackerWorlds[0].locationTable[mainWindow->bossNamesToLocations[boss]]->marked ? TOOLTIP_MET : TOOLTIP_UNMET;
+            returnStr += "<span style=\"color:" + color + "\">" + bossDefeatedText + "</span>";
+        }
+    }
+
     returnStr += "</li></ul>";
     return returnStr;
 }

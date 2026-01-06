@@ -40,16 +40,16 @@
   Locations:
       Mailbox - Letter from Hoskit's Girlfriend: Can_Farm_Golden_Feathers and Can_Play_SoP and Spoils_Bag and can_access(Dragon Roost Rito Aerie)
       Mailbox - Letter from Baito's Mother: Can_Play_SoP and Note_to_Mom and Delivery_Bag
-      Mailbox - Letter from Baito: Can_Defeat_Jalhalla and can_access(Jalhalla Battle Arena) and Note_to_Mom and Delivery_Bag
+      Mailbox - Letter from Baito:  Note_to_Mom and Delivery_Bag and 'Jalhalla_Defeated'
       Mailbox - Letter from Komali's Father: Farores_Pearl
       Mailbox - Letter Advertising Bombs: Bombs
       Mailbox - Letter Advertising Rock Spire Shop Ship: Wallet_Upgrade
       Mailbox - Beedle's Silver Membership Reward: Can_Play_SoP and (Bait_Bag or Bombs or Heros_Bow or Empty_Bottle)
       Mailbox - Beedle's Gold Membership Reward: Can_Play_SoP and (Bait_Bag or Bombs or Heros_Bow or Empty_Bottle)
-      Mailbox - Letter from Orca: Can_Defeat_Kalle_Demos and can_access(Kalle Demos Battle Arena)
+      Mailbox - Letter from Orca: "'Kalle_Demos_Defeated'"
       Mailbox - Letter from Grandma: Can_Play_SoP and can_access(Outset Link's House) and Empty_Bottle and 'Can_Get_Fairies'
-      Mailbox - Letter from Aryll: can_access(Helmaroc King Battle Arena) and Can_Defeat_Helmaroc_King and Can_Play_SoP
-      Mailbox - Letter from Tingle: can_access(Helmaroc King Battle Arena) and Can_Defeat_Helmaroc_King and Can_Play_SoP and 'Rescued_Tingle'
+      Mailbox - Letter from Aryll: Can_Play_SoP and 'Helmaroc_King_Defeated'
+      Mailbox - Letter from Tingle: Can_Play_SoP and 'Rescued_Tingle' and 'Helmaroc_King_Defeated'
 
 - Name: The Great Sea
   Hint Region: The Great Sea
@@ -360,6 +360,8 @@
       Forsaken Fortress Before Second Sidle Gap: Nothing # Can jump back across the platforms
 
 - Name: Helmaroc King Battle Arena
+  Events:
+      Helmaroc King Defeated: Can_Defeat_Helmaroc_King
   Locations:
       Forsaken Fortress - Helmaroc King Heart Container: Can_Defeat_Helmaroc_King
   Exits:
@@ -2152,10 +2154,12 @@
 
 - Name: Gohma Battle Arena
   Boss Room: Dragon Roost Cavern
+  Events:
+      Gohma Defeated: Can_Defeat_Gohma
   Locations:
-      Dragon Roost Cavern - Gohma Heart Container: Grappling_Hook
+      Dragon Roost Cavern - Gohma Heart Container: Can_Defeat_Gohma
   Exits: 
-      DRC Boss Door Room Across Lava: Grappling_Hook
+      DRC Boss Door Room Across Lava: Can_Defeat_Gohma
 
 - Name: FW First Room
   Dungeon: Forbidden Woods
@@ -2401,6 +2405,8 @@
 
 - Name: Kalle Demos Battle Arena
   Boss Room: Forbidden Woods
+  Events:
+      Kalle Demos Defeated: Can_Defeat_Kalle_Demos
   Locations:
       Forbidden Woods - Kalle Demos Heart Container: Can_Defeat_Kalle_Demos
   Exits:
@@ -2619,6 +2625,8 @@
 
 - Name: Gohdan Battle Arena
   Boss Room: Tower of the Gods
+  Events:
+      Gohdan Defeated: Can_Defeat_Gohdan
   Locations:
       Tower of the Gods - Gohdan Heart Container: Can_Defeat_Gohdan
   Exits:
@@ -2838,6 +2846,8 @@
 
 - Name: Jalhalla Battle Arena
   Boss Room: Earth Temple
+  Events:
+      Jalhalla Defeated: Can_Defeat_Jalhalla
   Locations:
       Earth Temple - Jalhalla Heart Container: Can_Defeat_Jalhalla
   Exits:
@@ -3125,6 +3135,8 @@
 
 - Name: Molgera Battle Arena
   Boss Room: Wind Temple
+  Events:
+      Molgera Defeated: Can_Defeat_Molgera
   Locations:
       Wind Temple - Molgera Heart Container: Can_Defeat_Molgera
   Exits:
@@ -3253,7 +3265,7 @@
 - Name: Ganon's Tower Final Staircase
   Hint Region: Ganon's Tower
   Exits:
-      Ganon's Tower Puppet Ganon Boss Arena: Can_Defeat_Moblins and Can_Defeat_Mighty_Darknuts
+      Ganon's Tower Puppet Ganon Boss Arena: Can_Defeat_Moblins and Can_Defeat_Mighty_Darknuts and All_Required_Bosses_Defeated
       Ganon's Tower Middle Hub Room: Nothing
 
 - Name: Ganon's Tower Puppet Ganon Boss Arena

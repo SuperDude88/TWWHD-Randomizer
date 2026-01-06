@@ -7,6 +7,7 @@
 #include <command/Log.hpp>
 #include <utility/file.hpp>
 #include <utility/platform.hpp>
+#include <utility/string.hpp>
 
 Settings::Settings() {
     resetDefaultSettings();
@@ -118,6 +119,13 @@ void Settings::resetDefaultSettings() {
 
     open_drc = false;
     progressive_magic_always_double = false;
+
+    gohma_required = false;
+    kalle_demos_required = false;
+    gohdan_required = false;
+    helmaroc_king_required = false;
+    jalhalla_required = false;
+    molgera_required = false;
 
     return;
 }
@@ -336,6 +344,18 @@ uint8_t Settings::getSetting(const Option& option) const {
             return static_cast<std::underlying_type_t<GyroscopePreference>>(gyroscope);
         case Option::UIDisplay:
             return static_cast<std::underlying_type_t<UIDisplayPreference>>(ui_display);
+        case Option::GohmaRequired:
+            return gohma_required;
+        case Option::KalleDemosRequired:
+            return kalle_demos_required;
+        case Option::GohdanRequired:
+            return gohdan_required;
+        case Option::HelmarocKingRequired:
+            return helmaroc_king_required;
+        case Option::JalhallaRequired:
+            return jalhalla_required;
+        case Option::MolgeraRequired:
+            return molgera_required;
         default:
             return 0;
     }
@@ -531,6 +551,18 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             gyroscope = static_cast<GyroscopePreference>(value); return;
         case Option::UIDisplay:
             ui_display = static_cast<UIDisplayPreference>(value); return;
+        case Option::GohmaRequired:
+            gohma_required = value; return;
+        case Option::KalleDemosRequired:
+            kalle_demos_required = value; return;
+        case Option::GohdanRequired:
+            gohdan_required = value; return;
+        case Option::HelmarocKingRequired:
+            helmaroc_king_required = value; return;
+        case Option::JalhallaRequired:
+            jalhalla_required = value; return;
+        case Option::MolgeraRequired:
+            molgera_required = value; return;
         default:
             return;
     }
@@ -544,6 +576,42 @@ int Settings::evaluateOption(const std::string& optionStr) const {
 
     // -1 means that the setting doesn't exist
     return -1;
+}
+
+void Settings::setRequiredBoss(const std::string& name, bool value) {
+    if (Utility::Str::contains(name, "Gohma"))
+        gohma_required = value;
+    else if (Utility::Str::contains(name, "Kalle Demos"))
+        kalle_demos_required = value;
+    else if (Utility::Str::contains(name, "Gohdan"))
+        gohdan_required = value;
+    else if (Utility::Str::contains(name, "Helmaroc King"))
+        helmaroc_king_required = value;
+    else if (Utility::Str::contains(name, "Jalhalla"))
+        jalhalla_required = value;
+    else if (Utility::Str::contains(name, "Molgera"))
+        molgera_required = value;
+    else
+        ErrorLog::getInstance().log(std::string("Unknown Boss Location \"") + name + "\"");
+}
+
+bool Settings::isRequiredBoss(const std::string& name) const {
+    if (Utility::Str::contains(name, "Gohma"))
+        return gohma_required;
+    else if (Utility::Str::contains(name, "Kalle Demos"))
+        return kalle_demos_required;
+    else if (Utility::Str::contains(name, "Gohdan"))
+        return gohdan_required;
+    else if (Utility::Str::contains(name, "Helmaroc King"))
+        return helmaroc_king_required;
+    else if (Utility::Str::contains(name, "Jalhalla"))
+        return jalhalla_required;
+    else if (Utility::Str::contains(name, "Molgera"))
+        return molgera_required;
+    else
+        ErrorLog::getInstance().log(std::string("Unknown Boss Location \"") + name + "\"");
+    
+    return false;
 }
 
 static const std::unordered_map<std::string, GameVersion> nameGameVersionMap = {
@@ -977,6 +1045,12 @@ Option nameToSetting(const std::string& name) {
         {"First-Person Camera", Option::FirstPersonCamera},
         {"Gyroscope", Option::Gyroscope},
         {"UI Display", Option::UIDisplay},
+        {"Gohma Required", Option::GohmaRequired},
+        {"Kalle Demos Required", Option::KalleDemosRequired},
+        {"Gohdan Required", Option::GohdanRequired},
+        {"Helmaroc King Required", Option::HelmarocKingRequired},
+        {"Jalhalla Required", Option::JalhallaRequired},
+        {"Molgera Required", Option::MolgeraRequired},
     };
 
     if (optionNameMap.contains(name))
@@ -1082,6 +1156,12 @@ std::string settingToName(const Option& setting) {
         {Option::FirstPersonCamera, "First-Person Camera"},
         {Option::Gyroscope, "Gyroscope"},
         {Option::UIDisplay, "UI Display"},
+        {Option::GohmaRequired, "Gohma Required"},
+        {Option::KalleDemosRequired, "Kalle Demos Required"},
+        {Option::GohdanRequired, "Gohdan Required"},
+        {Option::HelmarocKingRequired, "Helmaroc King Required"},
+        {Option::JalhallaRequired, "Jalhalla Required"},
+        {Option::MolgeraRequired, "Molgera Required"},
     };
 
     if (optionNameMap.contains(setting))

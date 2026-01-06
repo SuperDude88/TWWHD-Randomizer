@@ -459,49 +459,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
         do
         {
             shufflePool(dungeonPool);
-
             int setRaceModeDungeons = 0;
-            // Loop through all the dungeons and see if any of them have items plandomized
-            // within them (or within their dependent locations). If they have major items
-            // plandomized, then select those dungeons as race mode dungeons
-            if (settings.plandomizer && settings.progression_dungeons == ProgressionDungeons::RaceMode)
-            {
-                for (const auto& dungeon : dungeonPool)
-                {
-                    auto allDungeonLocations = dungeon.locations;
-                    // Add any outside dependent locations from this dungeon's locations
-                    auto outsideLocs = dungeon.getOutsideDependentLocations();
-                    allDungeonLocations.insert(allDungeonLocations.end(), outsideLocs.begin(), outsideLocs.end());
-                    for (auto dungeonLocation : allDungeonLocations)
-                    {
-                        if (plandomizer.locations.contains(dungeonLocation) && !plandomizer.locations[dungeonLocation].isJunkItem())
-                        {
-                            // However, if the dungeon's naturally assigned race mode location is junk or excluded then
-                            // that's an error on the user's part.
-                            Location* raceModeLocation = dungeon.raceModeLocation;
-                            bool raceModeLocationIsAcceptable = raceModeLocation->progression && (!plandomizer.locations.contains(raceModeLocation) || !plandomizer.locations[raceModeLocation].isJunkItem());
-                            if (dungeon.hasNaturalRaceModeLocation && !raceModeLocationIsAcceptable)
-                            {
-                                ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
-                                LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
-                            }
-                            LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
-                            dungeons[dungeon.name].isRequiredDungeon = true;
-                            setRaceModeDungeons++;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // If too many are set, return an error
-            if (setRaceModeDungeons > settings.num_required_dungeons)
-            {
-                ErrorLog::getInstance().log("Plandomizer Error: Too many race mode locations set with potentially major items");
-                ErrorLog::getInstance().log("Set race mode locations: " + std::to_string(setRaceModeDungeons));
-                ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(settings.num_required_dungeons));
-                LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
-            }
 
             // Now check again and fill in any more dungeons that may be necessary
             // Also set non-race mode dungeons locations as non-progress
@@ -512,11 +470,10 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                 {
                     continue;
                 }
-                // If this dungeon has a junk item placed as its race mode
-                // location or the race mode location is excluded, then skip it
+                // If this dungeon's race mode location is excluded, then skip it
                 auto raceModeLocation = dungeon.raceModeLocation;
-                bool raceModeLocationIsAcceptable = raceModeLocation->progression && (!plandomizer.locations.contains(raceModeLocation) || !plandomizer.locations[raceModeLocation].isJunkItem());
-                if (dungeon.hasNaturalRaceModeLocation && raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_required_dungeons)
+                bool raceModeLocationIsAcceptable = raceModeLocation->progression;
+                if (raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_required_dungeons)
                 {
                     LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
                     dungeons[dungeon.name].isRequiredDungeon = true;
@@ -588,9 +545,18 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                 nonProgressRollbacks.clear();
             }
         } while (!successfullyChoseRaceModeDungeons);
+
+        // Set setting variables for required bosses
+        for (const auto& [dungeonName, dungeon] : dungeons)
+        {
+            if (dungeon.isRequiredDungeon)
+            {
+                settings.setRequiredBoss(dungeon.raceModeLocation->getName(), true);
+            }
+        }
     }
 
-    return WorldLoadingError::NONE;
+    return reparseMacro("All Required Bosses Defeated");
 }
 
 RequirementError World::parseMacro(const std::string& macroLogicExpression, Requirement& reqOut)
@@ -622,6 +588,24 @@ World::WorldLoadingError World::loadMacros(const YAML::Node& macroListTree)
             return WorldLoadingError::BAD_REQUIREMENT;
         }
     }
+    return WorldLoadingError::NONE;
+}
+
+// Reparses a macro for specific situations (i.e. setting change)
+World::WorldLoadingError World::reparseMacro(const std::string& macroName)
+{
+    if (!macroStrings.contains(macroName))
+    {
+        return WorldLoadingError::MACRO_DOES_NOT_EXIST;
+    }
+
+    auto& macroString = macroStrings[macroName];
+    if (const RequirementError err = parseMacro(macroString, macros[macroNameMap[macroName]]); err != RequirementError::NONE)
+    {
+        lastError << " | Encountered reparsing macro of name " << macroName;
+        return WorldLoadingError::BAD_REQUIREMENT;
+    }
+
     return WorldLoadingError::NONE;
 }
 
@@ -727,6 +711,11 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
     {
         location->isRaceModeLocation = true;
         raceModeLocations.push_back(location);
+    }
+
+    if(locationObject["Stage ID"])
+    {
+        location->stageId = locationObject["Stage ID"].as<uint8_t>();
     }
 
     if (locationObject["Goal Names"])
@@ -1469,6 +1458,21 @@ void World::flattenLogicRequirements()
             }
         }
     }
+}
+
+bool World::isSphereEvent(const EventId& event)
+{
+    static const std::unordered_set<std::string> sphereEvents = {
+        "Gohma Defeated",
+        "Kalle Demos Defeated",
+        "Gohdan Defeated",
+        "Helmaroc King Defeated",
+        "Jalhalla Defeated",
+        "Molgera Defeated",
+    };
+
+    auto eventName = reverseEventMap[event];
+    return sphereEvents.contains(eventName) && settings.isRequiredBoss(eventName);
 }
 
 std::string World::errorToName(WorldLoadingError err)

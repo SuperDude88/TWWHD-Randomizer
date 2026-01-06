@@ -598,7 +598,7 @@ static HintError generateLocationHintLocations(World& world, std::vector<Locatio
     // Put locations into the always or sometimes categories depending on what their hint priority is
     for (auto& [name, location] : world.locationTable)
     {
-        if (location->progression && !location->hasBeenHinted && !location->isRaceModeLocation)
+        if (location->progression && !location->hasBeenHinted)
         {
             if (location->hintPriority == "Always")
             {
@@ -649,7 +649,7 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
     {
         for (auto location : world.getLocations(/*onlyProgression =*/ true))
         {
-            if (location->currentItem.isTriforceShard() && !location->isRaceModeLocation)
+            if (location->currentItem.isTriforceShard())
             {
                 locations.push_back(location);
                 LOG_AND_RETURN_IF_ERR(generateItemHintMessage(location));

@@ -72,6 +72,7 @@ public:
     std::unordered_set<LocationCategory> categories;
     bool progression;
     bool isRaceModeLocation;
+    uint8_t stageId = 0;
     bool plandomized;
     bool hasBeenHinted;
     bool hasKnownVanillaItem;
@@ -114,6 +115,7 @@ public:
         categories({LocationCategory::INVALID}),
         progression(false),
         isRaceModeLocation(false),
+        stageId(0),
         plandomized(false),
         hasBeenHinted(false),
         hasKnownVanillaItem(false),
