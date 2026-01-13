@@ -589,51 +589,74 @@ static HintError generateLocationHintMessage(Location* location)
     return HintError::NONE;
 }
 
-static HintError generateLocationHintLocations(World& world, std::vector<Location*>& locationHintLocations, uint8_t numLocationHints)
+static HintError generateAlwaysHints(World& world, std::vector<Location*>& alwaysHintLocations)
 {
+    // Return early if we're not specifically generating always hints, or if we don't have any location hints
+    if (!world.getSettings().use_always_hints || world.getSettings().location_hints == 0)
+    {
+        return HintError::NONE;
+    }
 
+    // Gather all the always locations
     std::vector<Location*> alwaysLocations = {};
-    std::vector<Location*> sometimesLocations = {};
-
-    // Put locations into the always or sometimes categories depending on what their hint priority is
     for (auto& [name, location] : world.locationTable)
     {
-        if (location->progression && !location->hasBeenHinted && !location->isRaceModeLocation)
+        if (location->progression && location->hintPriority == "Always")
         {
-            if (location->hintPriority == "Always")
-            {
-                alwaysLocations.push_back(location.get());
-            }
-            else if (location->hintPriority == "Sometimes" && !(world.getSettings().ho_ho_triforce_hints && location->currentItem.isTriforceShard()))
-            {
-                sometimesLocations.push_back(location.get());
-            }
+            alwaysLocations.push_back(location.get());
         }
     }
 
-    // If use_always_hints is off, then add the always locations to the sometimes locations
-    if (!world.getSettings().use_always_hints)
-    {
-        addElementsToPool(sometimesLocations, alwaysLocations);
-        alwaysLocations.clear();
-    }
+    // Shuffle the always locations so we don't hint them in the same order
+    shufflePool(alwaysLocations);
 
-    for (uint8_t i = 0; i < numLocationHints; i++)
+    for (uint8_t i = 0; i < world.getSettings().location_hints; ++i)
     {
         Location* hintLocation = nullptr;
         if (i < alwaysLocations.size())
         {
             hintLocation = alwaysLocations[i];
         }
+        // Break if we've hinted all the always locations
         else
         {
-            if (sometimesLocations.empty())
-            {
-                LOG_TO_DEBUG("No more possible location hints.");
-                break;
-            }
-            hintLocation = popRandomElement(sometimesLocations);
+            break;
         }
+        alwaysHintLocations.push_back(hintLocation);
+        LOG_AND_RETURN_IF_ERR(generateLocationHintMessage(hintLocation));
+        LOG_TO_DEBUG("Chose \"" + hintLocation->getName() + "\" as always hint location");
+    }
+
+    return HintError::NONE;
+}
+
+static HintError generateLocationHintLocations(World& world, std::vector<Location*>& locationHintLocations, uint8_t numLocationHints)
+{
+    std::vector<Location*> sometimesLocations = {};
+
+    // Gather all the sometimes locations
+    for (auto& [name, location] : world.locationTable)
+    {
+        if (location->progression && 
+           !location->hasBeenHinted && 
+           !location->isRaceModeLocation && 
+            location->hintPriority == "Sometimes" && 
+           !(world.getSettings().ho_ho_triforce_hints && location->currentItem.isTriforceShard()))
+            {
+                sometimesLocations.push_back(location.get());
+            }
+    }
+
+    // Choose them randomly
+    for (uint8_t i = 0; i < numLocationHints; ++i)
+    {
+        Location* hintLocation = nullptr;
+        if (sometimesLocations.empty())
+        {
+            LOG_TO_DEBUG("No more possible location hints.");
+            break;
+        }
+        hintLocation = popRandomElement(sometimesLocations);
         locationHintLocations.push_back(hintLocation);
         LOG_AND_RETURN_IF_ERR(generateLocationHintMessage(hintLocation));
         LOG_TO_DEBUG("Chose \"" + hintLocation->getName() + "\" as location hint location");
@@ -769,7 +792,10 @@ HintError generateHints(WorldPool& worlds)
     {
         std::vector<Location*> hintLocations = {};
 
-        // First, select path hint locations so that we don't hint at them during item and location hints
+        // First, select always hints
+        LOG_AND_RETURN_IF_ERR(generateAlwaysHints(world, hintLocations));
+
+        // Then select path hint locations so that we don't hint at them during item and location hints
         LOG_AND_RETURN_IF_ERR(generatePathHintLocations(world, hintLocations));
 
         // Determine barren hint locations next so that we similarly don't hint at locations
@@ -786,6 +812,11 @@ HintError generateHints(WorldPool& worlds)
         uint8_t totalNumHints = settings.path_hints + settings.barren_hints + settings.item_hints + settings.location_hints;
         uint8_t totalMadeHints = hintLocations.size();
         LOG_AND_RETURN_IF_ERR(generateLocationHintLocations(world, hintLocations, totalNumHints - totalMadeHints));
+
+        // Sort hints by type
+        std::sort(hintLocations.begin(), hintLocations.end(), [](Location* l1, Location* l2){
+            return l1->hint.type < l2->hint.type;
+        });
 
         // Assign Kreeb Bow Hints if the setting is enabled
         if (settings.kreeb_bow_hints)
