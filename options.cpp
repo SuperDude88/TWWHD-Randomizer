@@ -117,7 +117,7 @@ void Settings::resetDefaultSettings() {
     classic_mode = false;
     plandomizer = false;
 
-    open_drc = false;
+    open_drc = true;
     progressive_magic_always_double = false;
 
     gohma_required = false;
