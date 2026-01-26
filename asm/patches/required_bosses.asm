@@ -1,6 +1,7 @@
-; Initial hook in function ALLdie_execute
-.org 0x02048430
-  b check_stage_name
+; Initial hook in function daALLdie_Create
+.org 0x02048608
+  sth r12, 0x320(r31) ; swap sth and li instruction to not worry about registers
+  b check_required_bosses
 
 .org @NextFreeSpace
 .global required_bosses
@@ -14,11 +15,21 @@ staircase_to_puppet_ganon_stage_name:
   .string "GanonL"
   .align 2 ; Align to the next 4 bytes
 
-.global check_stage_name
-check_stage_name:
-; If the enemy pointer is not null, jump to the end of the original function
-  cmpwi r3, 0 
-  bne jump_back_to_all_die_end
+.global check_required_bosses
+check_required_bosses:
+  bl check_and_set_required_bosses_defeated
+  li r3, 4 ; Instruction we overwrote to jump here
+  b 0x02048610 ; jump back to daALLdie_Create
+
+; This function checks to see if we're on the final staircase stage and if all required bosses have been beaten.
+; If both of these conditions are true, then the bit for having defeated all bosses is set.
+.global check_and_set_required_bosses_defeated
+check_and_set_required_bosses_defeated:
+  stwu sp, -0x10 (sp)
+  mflr r0
+  stw r0, 0x14 (sp)
+  stw r31, 0xC (sp)
+
 ; Check if we're currently on the staircase before Puppet Ganon stage
   bl FUN_025200d4
   addi r3, r3, 0x5133
@@ -35,30 +46,11 @@ strcmp_start:
 strncmp_end:
   subf. r3, r5, r6
 
-; If we aren't on the stage, jump back to the original function where mState and mTimer get set
+; If we aren't on the stage, return early
   cmpwi r3, 0
-  bne jump_back_to_all_die_success
+  bne end_check_and_set_required_bosses_defeated
 
-; If we are on the stage, then check for each required boss being defeated.
-  bl check_required_bosses_defeated
-  cmpwi r3, 1
-  beq jump_back_to_all_die_success
-
-; These addresses is too far away for a conditional branch instruction
-jump_back_to_all_die_end:
-  b 0x02048448
-jump_back_to_all_die_success:
-  b 0x02048438
-
-
-; This function checks to see if all required bosses have been beaten. Returns 1 if all defeated and 0 if not all defeated
-.global check_required_bosses_defeated
-check_required_bosses_defeated:
-  stwu sp, -0x10 (sp)
-  mflr r0
-  stw r0, 0x14 (sp)
-  stw r31, 0xC (sp)
-
+; Begin checking defeated flags for required bosses
   lis r31, required_bosses@ha
   addi r31, r31, required_bosses@l
   lbz r3, 0 (r31)
@@ -67,15 +59,22 @@ check_required_bosses_defeated:
 check_required_bosses_begin_loop:
   li r4, 3 ; bit for boss being defeated
   bl generic_is_dungeon_bit
-  cmpwi r3, 0 ; If the bit for the boss isn't set, jump to the end with 0 stored in r3
-  beq end_check_required_bosses_defeated
+  cmpwi r3, 0 ; If the bit for the boss isn't set, jump to the end
+  beq end_check_and_set_required_bosses_defeated
   lbzu r3, 1(r31)
 check_required_bosses_check_continue_loop:
   cmplwi r3, 0xFF ; check for terminator
   bne+ check_required_bosses_begin_loop
-  li r3, 1
 
-end_check_required_bosses_defeated:
+; If all required bosses are defeated, set the associated switch flag (0x25)
+  lis r3, 0x1020
+  lwz r3, -0x7b24(r3)
+  addi r3, r3, 0x20 ; SaveData->mCurInfo
+  li r4, 0x25 ; flag
+  li r5, 0 ; current room number (which is 0)
+  bl onSwitch
+
+end_check_and_set_required_bosses_defeated:
   lwz r31, 0xC (sp)
   lwz r0, 0x14 (sp)
   mtlr r0

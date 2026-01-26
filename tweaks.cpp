@@ -2242,6 +2242,66 @@ TweakError update_required_bosses(const World& world) {
         return true;
     });
     
+    // Set a bunch of things in the final staircase room
+    RandoSession::CacheEntry& final_staircase = g_session.openGameFile(getRoomDzrPath("GanonL", 0));
+    final_staircase.addAction([](RandoSession* session, FileType* data) -> int {
+        CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+
+        // Change ALLdie to instead set flag 0x26 (unused in vanilla) instead of flag 0x19 (originally opened door)
+        const std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
+        for (auto actor : actors)
+        {
+            if (actor->data.substr(0, 6) == "ALLdie") {
+                actor->data = "ALLdie\x00\x00\xFF\xFF\x26\xFF\xC4\xBB\x80\x00\x45\x75\x34\x23\xC6\xA8\xC0\x00\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
+                break;
+            }
+        }
+
+        // Add a switch operator that checks that both 0x25 (all required bosses are defeated) and 0x26 (all enemies are dead)
+        // and then sets 0x19 to unlock the door.
+        ChunkEntry& swOp_00 = dzr.add_entity("ACTR");
+        swOp_00.data = "SwOp\x00\x00\x00\x00\x02\x25\x19\x00\x44\xE1\x00\x00\x44\xFA\x00\x00\xC6\x96\x00\x00\x00\xFF\x00\x00\x00\x00\xFF\xFF"s;
+
+        // Also add an invisible wall behind the door to prevent touching the exit from out of bounds early.
+        // The invisible wall disappears once the required bosses are dead, not when the door itself is unlocked, so skipping
+        // the door can still be done to avoid defeating just the enemies in this room.
+        // As none of the invisible wall models have a top or bottom, we scale its height to the maximum possible value so
+        // that jumping behind the door from above is not possible either.
+        ChunkEntry& nbox10_00 = dzr.add_entity("SCOB");
+        nbox10_00.data = "NBOX10\x00\x00\x00\x03\x03\x25\xBF\x4B\x60\x00\x00\x00\x00\x00\xC7\x13\xA5\xB8\x00\x00\x00\x00\x00\x00\xFF\xFF\x09\xFF\x07\xFF"s;
+
+        // Add a TagMsg on the door telling the player it's locked because they haven't defeated the required bosses yet.
+        ChunkEntry& tagMsg = dzr.add_entity("SCOB");
+        tagMsg.data = "TagMsg\x00\x00\xFF\xE5\xFF\x00\xBF\x4B\x61\x02\x45\xBD\x21\x30\xC7\x12\x62\x8D\x03\x53\x00\x00\xFF\xFF\xFF\xFF\x50\xFF\x0A\xFF"s;
+
+        // We want the TagMsg to disappear once the required bosses are defeated, so add a NAND switch
+        // operator that checks for the switch set by the dungeon flag checker and sets a switch if it's
+        // NOT set.
+        ChunkEntry& swOp_01 = dzr.add_entity("ACTR");
+        swOp_01.data = "SwOp\x00\x00\x00\x00\x01\x25\xE5\x01\x44\xE1\x00\x00\x44\xFA\x00\x00\xC6\x97\x90\x00\x00\xFF\x00\x00\x00\x00\xFF\xFF"s;
+
+        return true;
+    });
+
+    // Add the custom message text
+    for (const auto& language : Text::supported_languages) {
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+        entry.addAction([](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+
+            Attributes attributes;
+            attributes.boxStyle = 0x1;
+            attributes.drawType = 0x1;
+            attributes.screenPos = 0x3;
+            attributes.lineAlignment = 1; // left alignment
+            TSY1Entry tsy;
+            tsy.styleIndex = 0x12A;
+            msbt.addMessage("00851", attributes, tsy, u""s); // Text set in text_replacements.cpp
+
+            return true;
+        });
+    }
+
     return TweakError::NONE;
 }
 
