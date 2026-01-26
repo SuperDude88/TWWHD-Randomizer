@@ -870,7 +870,7 @@ HintError generateHints(WorldPool& worlds)
             std::string placementOption = hintPlacementOptions[i % hintPlacementOptions.size()];
             // add the hint location to that placement option
             hintsForCategory[placementOption].push_back(hint);
-            LOG_TO_DEBUG("Hint \"" + hint.text["English"] + "\" will be given to " + placementOption);
+            LOG_TO_DEBUG("Hint \"" + Utility::Str::toUTF8(hint.text["English"]) + "\" will be given to " + placementOption);
             ++i;
         }
 
