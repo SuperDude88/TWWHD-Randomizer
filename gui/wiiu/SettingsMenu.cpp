@@ -100,9 +100,15 @@ SettingsMenu::Status SettingsMenu::update() {
     return (moved || pages[curPage]->update()) ? Status::CHANGED : Status::NONE;
 }
 
+void SettingsMenu::draw() const {
+    ScreenClear();
+    drawTV();
+    drawDRC();
+    ScreenDraw();
+}
+
 void SettingsMenu::drawTV() const {
     std::string headerFirstLine;
-    // 
     for(size_t i = 0; i < 7; i++) {
         if(i == curPage) {
             headerFirstLine += '<' + pages[i]->getName() + '>';
@@ -151,10 +157,7 @@ uint32_t SettingsMenu::acquireCB(void*) {
     ScreenClear();
     ScreenDraw();
 
-    ScreenClear();
-    getInstance().drawTV();
-    getInstance().drawDRC();
-    ScreenDraw();
+    getInstance().draw();
 
     return 0;
 }
@@ -195,16 +198,17 @@ SettingsMenu::Result SettingsMenu::run() {
         if(ProcIsForeground()) { // only update in foreground
             switch(sInstance.update()) {
                 case Status::CHANGED:
-                    ScreenClear();
-                    sInstance.drawTV();
-                    sInstance.drawDRC();
-                    ScreenDraw();
+                    sInstance.draw();
 
                     break;
                 case Status::EXIT:
                     if(confirmRandomize()) {
                         inMenu = false;
                     }
+                    else {
+                        sInstance.draw(); // Redraw the settings menu
+                    }
+
                     break;
                 case Status::NONE:
                 default:

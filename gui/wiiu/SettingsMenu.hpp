@@ -31,6 +31,7 @@ private:
     static SettingsMenu& getInstance();
 
     Status update();
+    void draw() const;
     void drawTV() const;
     void drawDRC() const;
 
