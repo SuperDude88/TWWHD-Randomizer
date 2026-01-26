@@ -655,8 +655,8 @@ bool RandoSession::runFirstTimeSetup() {
             ScopedTimer<"Copying dump took "> copyTimer;
         #endif
  
-        Utility::platformLog("Copying dump to output...");
-        UPDATE_DIALOG_LABEL("Copying dump to output...");
+        Utility::platformLog("Copying dump to output... (This may take a while)");
+        UPDATE_DIALOG_LABEL("Copying dump to output... (This may take a while)");
         std::filesystem::copy(baseDir / "code", outputDir / "code", std::filesystem::copy_options::recursive);
         std::filesystem::copy(baseDir / "content", outputDir / "content", std::filesystem::copy_options::recursive);
         std::filesystem::copy(baseDir / "meta", outputDir / "meta", std::filesystem::copy_options::recursive);

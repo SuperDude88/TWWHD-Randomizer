@@ -1902,7 +1902,7 @@ TweakError remove_makar_kidnapping() {
 
         std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
 
-        ChunkEntry* switch_actor = nullptr; // initialization is just to make compiler happy
+        ChunkEntry* switch_actor = nullptr;
         for (ChunkEntry* actor : actors) {
             if (std::strncmp(&actor->data[0], "AND_SW2\x00", 8) == 0) switch_actor = actor;
         }
