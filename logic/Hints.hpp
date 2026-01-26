@@ -23,10 +23,12 @@ enum struct HintType
     LOCATION,
 };
 
+class Location;
 struct Hint
 {
     // Message for this location (one for each language)
     std::unordered_map<std::string, std::u16string> text = {};
+    Location* location;
     HintType type = HintType::NONE;
 };
 
