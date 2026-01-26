@@ -110,7 +110,7 @@ FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlac
         #if ENABLE_DEBUG
             for (const Location* loc : accessibleLocations)
             {
-                LOG_TO_DEBUG("  " + loc->getName());
+                LOG_TO_DEBUG("\t" + loc->getName());
             }
         #endif
         // Filter out already accessible locations
@@ -155,7 +155,7 @@ FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlac
                 for (auto& index : indices)
                 {
                     newForwardItems.push_back(itemsToPlace[index]);
-                    LOG_TO_DEBUG(std::string("  ") + itemsToPlace[index].getName());
+                    LOG_TO_DEBUG("\t" + itemsToPlace[index].getName());
                 }
 
 

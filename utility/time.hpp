@@ -35,7 +35,7 @@ protected:
         message << stem << (stem.back() == ' ' ? "" : " ") << std::chrono::duration_cast<Units>(duration);
 
         Utility::platformLog(message.str());
-        LOG_TO_DEBUG(message.str() + '\n');
+        LOG_TO_DEBUG(message.str());
     }
 
 private:

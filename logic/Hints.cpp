@@ -90,7 +90,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
                 LOG_TO_DEBUG("Path locations for " + location->getName() + " [");
                 for (auto& pathLocation : location->pathLocations)
                 {
-                    LOG_TO_DEBUG("  " + pathLocation->getName() + " (" + pathLocation->currentItem.getName() + ")");
+                    LOG_TO_DEBUG("\t" + pathLocation->getName() + " (" + pathLocation->currentItem.getName() + ")");
                 }
                 LOG_TO_DEBUG("]");
             }

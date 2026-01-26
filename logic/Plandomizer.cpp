@@ -91,7 +91,7 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
                 auto gameItem = nameToGameItem(itemName);
 
                 plandomizer.locationsStr.insert({locationName, {gameItem, plandoWorldId}});
-                LOG_TO_DEBUG("  Plandomizing " +  itemName + " [W" + std::to_string(plandoWorldId + 1) + "] to " + locationName + " [W" + std::to_string(i + 1) + "]");
+                LOG_TO_DEBUG("\tPlandomizing " +  itemName + " [W" + std::to_string(plandoWorldId + 1) + "] to " + locationName + " [W" + std::to_string(i + 1) + "]");
             }
         }
 
@@ -120,13 +120,13 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
                 ErrorLog::getInstance().log("Plandomizer Error: Starting island name \"" + island + "\" is not recognized");
                 return PlandomizerError::BAD_STARTING_ISLAND;
             }
-            LOG_TO_DEBUG("  Setting starting island to " + island);
+            LOG_TO_DEBUG("\tSetting starting island to " + island);
         }
 
         // Process random starting item pool
         if (world["random starting item pool"] && world["random starting item pool"].IsSequence())
         {
-            LOG_TO_DEBUG("  Starting Item Pool: ")
+            LOG_TO_DEBUG("\tStarting Item Pool: ")
             for (const auto& item : world["random starting item pool"])
             {
                 const std::string itemName = item.as<std::string>();
@@ -142,7 +142,7 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
                     return PlandomizerError::BAD_STARTING_ITEM;
                 }
                 plandomizer.randomStartingItemPool.push_back(gameItem);
-                LOG_TO_DEBUG(std::string("    ") + itemName);
+                LOG_TO_DEBUG(std::string("\t\t") + itemName);
             }
         }
     }
