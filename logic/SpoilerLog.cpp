@@ -51,10 +51,10 @@ static std::string getSpoilerFormatLocation(Location* location, const size_t& lo
     return location->getName() + locWorldNumber + ":" + spaces + itemName;
 }
 
-static std::string getSpoilerFormatHint(Location* location)
+static std::string getSpoilerFormatHint(const Hint& hint)
 {
     // Get rid of commands in the hint text and then convert to UTF-8
-    std::u16string hintText = location->hint.text["English"];
+    std::u16string hintText = hint.text.at("English");
     for (const std::u16string& eraseText : {TEXT_COLOR_RED, TEXT_COLOR_BLUE, TEXT_COLOR_CYAN, TEXT_COLOR_DEFAULT, TEXT_COLOR_GREEN, TEXT_COLOR_GRAY, TEXT_COLOR_YELLOW})
     {
         auto pos = std::string::npos;
@@ -238,7 +238,7 @@ void generateSpoilerLog(WorldPool& worlds)
     for (auto& world : worlds)
     {
         // Don't print "Hints" if there are none
-        if (world.hohoHints.empty() && world.korlHints.empty() && world.bigOctoFairyHintLocation == nullptr && world.kreebHints.empty() && world.korlHyruleHints.empty())
+        if (world.hohoHints.empty() && world.korlHints.empty() && world.bigOctoFairyHint.location == nullptr && world.kreebHints.empty() && world.korlHyruleHints.empty())
         {
             continue;
         }
@@ -246,16 +246,16 @@ void generateSpoilerLog(WorldPool& worlds)
         spoilerLog << std::endl << (worlds.size() == 1 ? "Hints:" : "Hints for world " + std::to_string(world.getWorldId()) + ":") << std::endl;
         if (!world.hohoHints.empty())
         {
-            for (auto& [hohoLocation, hintLocations] : world.hohoHints)
+            for (auto& [hohoLocation, hints] : world.hohoHints)
             {
                 spoilerLog << "    " << hohoLocation->getName() << ":" << std::endl;
-                for (auto location : hintLocations)
+                for (auto& hint : hints)
                 {
-                    spoilerLog << "        " << getSpoilerFormatHint(location);
+                    spoilerLog << "        " << getSpoilerFormatHint(hint);
                     // Show what item/location was being referred to with each path hint
-                    if (location->hint.type == HintType::PATH) 
+                    if (hint.type == HintType::PATH) 
                     {
-                        spoilerLog << " (" << location->currentItem.getName() << " at " << location->getName() << ")";
+                        spoilerLog << " (" << hint.location->currentItem.getName() << " at " << hint.location->getName() << ")";
                     }
                     spoilerLog << std::endl;
                 }
@@ -265,13 +265,13 @@ void generateSpoilerLog(WorldPool& worlds)
         if (!world.korlHints.empty())
         {
             spoilerLog << "    KoRL Hints:" << std::endl;
-            for (auto location : world.korlHints)
+            for (auto& hint : world.korlHints)
             {
-                spoilerLog << "        " << getSpoilerFormatHint(location);
+                spoilerLog << "        " << getSpoilerFormatHint(hint);
                 // Show what item/location was being referred to with each path hint
-                if (location->hint.type == HintType::PATH) 
+                if (hint.type == HintType::PATH && hint.location) 
                 {
-                    spoilerLog << " (" << location->currentItem.getName() << " at " << location->getName() << ")";
+                    spoilerLog << " (" << hint.location->currentItem.getName() << " at " << hint.location->getName() << ")";
                 }
                 spoilerLog << std::endl;
             }
@@ -280,17 +280,17 @@ void generateSpoilerLog(WorldPool& worlds)
         if (!world.korlHyruleHints.empty())
         {
             spoilerLog << "    KoRL Hyrule Hints:" << std::endl;
-            for (auto location : world.korlHyruleHints)
+            for (auto& hint : world.korlHyruleHints)
             {
-                spoilerLog << "        " << getSpoilerFormatHint(location);
+                spoilerLog << "        " << getSpoilerFormatHint(hint);
                 spoilerLog << std::endl;
             }
         }
 
-        if (world.bigOctoFairyHintLocation != nullptr)
+        if (world.bigOctoFairyHint.location != nullptr)
         {
             spoilerLog << "    Big Octo Great Fairy:" << std::endl;
-            std::u16string hintText = world.bigOctoFairyHintLocation->hint.text["English"];
+            std::u16string hintText = world.bigOctoFairyHint.text["English"];
             for (const std::u16string& eraseText : {TEXT_COLOR_RED, TEXT_COLOR_BLUE, TEXT_COLOR_CYAN, TEXT_COLOR_DEFAULT, TEXT_COLOR_GREEN, TEXT_COLOR_GRAY, TEXT_COLOR_YELLOW})
             {
                 auto pos = std::string::npos;
@@ -305,9 +305,9 @@ void generateSpoilerLog(WorldPool& worlds)
         if (!world.kreebHints.empty())
         {
             spoilerLog << "    Kreeb Hints:" << std::endl;
-            for (auto location : world.kreebHints)
+            for (auto& hint : world.kreebHints)
             {
-                spoilerLog << "        " << getSpoilerFormatHint(location);
+                spoilerLog << "        " << getSpoilerFormatHint(hint);
                 spoilerLog << std::endl;
             }
         }

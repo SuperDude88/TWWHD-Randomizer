@@ -249,7 +249,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
     return HintError::NONE;
 }
 
-static HintError generatePathHintMessage(Location* location, Location* goalLocation)
+static HintError generatePathHintMessage(Location* location, Location* goalLocation, std::list<Hint>& hints)
 {
     std::u16string englishRegionText = u"";
     std::u16string spanishRegionText = u"";
@@ -294,14 +294,17 @@ static HintError generatePathHintMessage(Location* location, Location* goalLocat
     std::u16string spanishPlurality = (totalRegions == 1 && spanishRegionText.find(u"Ilas") == std::string::npos) ? u" dirige"s : u" dirigen"s;
     std::u16string frenchPlurality = (totalRegions == 1 && englishRegionText.find(u"Angular Isles") == std::string::npos && englishRegionText.find(u"Forbidden Woods") == std::string::npos) ? u" est"s : u" sont"s;
 
-    location->hint.text["English"] = HINT_PREFIX_ENGLISH + englishRegionText + englishPlurality + u" on the path to "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["English"]) + TEXT_COLOR_DEFAULT + u"."s;
-    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishRegionText + spanishPlurality + u" hacia el camino de "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["Spanish"]) + TEXT_COLOR_DEFAULT + u"."s;
-    location->hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchPlurality + u" sur le chemin de "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["French"]) + TEXT_COLOR_DEFAULT + u"."s;
-    location->hint.type = HintType::PATH;
+    Hint hint{};
+    hint.text["English"] = HINT_PREFIX_ENGLISH + englishRegionText + englishPlurality + u" on the path to "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["English"]) + TEXT_COLOR_DEFAULT + u"."s;
+    hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishRegionText + spanishPlurality + u" hacia el camino de "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["Spanish"]) + TEXT_COLOR_DEFAULT + u"."s;
+    hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchPlurality + u" sur le chemin de "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["French"]) + TEXT_COLOR_DEFAULT + u"."s;
+    hint.type = HintType::PATH;
+    hint.location = location;
+    hints.emplace_back(std::move(hint));
     return HintError::NONE;
 }
 
-static HintError generatePathHintLocations(World& world, std::vector<Location*>& pathHintLocations)
+static HintError generatePathHintLocations(World& world, std::list<Hint>& hints)
 {
     // Shuffle each pool of path locations so that their orders are random
     std::vector<Location*> goalLocations = {};
@@ -359,26 +362,26 @@ static HintError generatePathHintLocations(World& world, std::vector<Location*>&
             i--;
             continue;
         }
+        LOG_AND_RETURN_IF_ERR(generatePathHintMessage(hintLocation, goalLocation, hints));
         hintLocation->hasBeenHinted = true;
-        pathHintLocations.push_back(hintLocation);
         LOG_TO_DEBUG("Chose \"" + hintLocation->getName() + "\" as path hint for " + goalLocation->getName());
-        LOG_AND_RETURN_IF_ERR(generatePathHintMessage(hintLocation, goalLocation));
     }
 
     return HintError::NONE;
 }
 
-static HintError generateBarrenHintMessage(Location* location, const std::string& barrenRegion)
+static HintError generateBarrenHintMessage(const std::string& barrenRegion, std::list<Hint>& hints, World& world)
 {
-    auto world = location->world;
-    location->hint.text["English"] = HINT_PREFIX_ENGLISH u"visiting " + world->getUTF16HintRegion(barrenRegion, "English", Text::Type::PRETTY, Text::Color::BLUE) + u" is a foolish choice."s;
-    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH u"visitar " + world->getUTF16HintRegion(barrenRegion, "Spanish", Text::Type::PRETTY, Text::Color::BLUE) + u" es una idea imprudente."s;
-    location->hint.text["French"] = HINT_PREFIX_FRENCH u"visiter " + world->getUTF16HintRegion(barrenRegion, "French", Text::Type::PRETTY, Text::Color::BLUE) + u" est un choix imprudent."s;
-    location->hint.type = HintType::BARREN;
+    Hint hint{};
+    hint.text["English"] = HINT_PREFIX_ENGLISH u"visiting " + world.getUTF16HintRegion(barrenRegion, "English", Text::Type::PRETTY, Text::Color::BLUE) + u" is a foolish choice."s;
+    hint.text["Spanish"] = HINT_PREFIX_SPANISH u"visitar " + world.getUTF16HintRegion(barrenRegion, "Spanish", Text::Type::PRETTY, Text::Color::BLUE) + u" es una idea imprudente."s;
+    hint.text["French"] = HINT_PREFIX_FRENCH u"visiter " + world.getUTF16HintRegion(barrenRegion, "French", Text::Type::PRETTY, Text::Color::BLUE) + u" est un choix imprudent."s;
+    hint.type = HintType::BARREN;
+    hints.emplace_back(std::move(hint));
     return HintError::NONE;
 }
 
-static HintError generateBarrenHintLocations(World& world, std::vector<Location*>& barrenHintLocations)
+static HintError generateBarrenHintLocations(World& world, std::list<Hint>& hints)
 {
     std::vector<std::string> barrenPool = {};
     std::vector<double> barrenDistributions = {};
@@ -406,9 +409,9 @@ static HintError generateBarrenHintLocations(World& world, std::vector<Location*
         for (auto location : world.barrenRegions[barrenRegion])
         {
             location->hasBeenHinted = true;
-            LOG_AND_RETURN_IF_ERR(generateBarrenHintMessage(location, barrenRegion));
         }
-        barrenHintLocations.push_back(*world.barrenRegions[barrenRegion].begin());
+        LOG_AND_RETURN_IF_ERR(generateBarrenHintMessage(barrenRegion, hints, world));
+        hints.back().location = *world.barrenRegions[barrenRegion].begin();
         LOG_TO_DEBUG("Chose \"" + barrenRegion + "\" as a hinted barren region");
 
         // Erase any potential barren regions if any of their locations have already
@@ -435,7 +438,7 @@ static HintError generateBarrenHintLocations(World& world, std::vector<Location*
     return HintError::NONE;
 }
 
-static HintError generateItemHintMessage(Location* location)
+static HintError generateItemHintMessage(Location* location, std::list<Hint>& hints)
 {
     std::u16string englishRegionText = u"";
     std::u16string spanishRegionText = u"";
@@ -500,14 +503,17 @@ static HintError generateItemHintMessage(Location* location)
     // Angular Isles and Forbidden Woods should use the plural tense in French even if they're a single area being referred to
     std::u16string frenchPlurality = (totalRegions == 1 && englishRegionText.find(u"Angular Isles") == std::string::npos && englishRegionText.find(u"Forbidden Woods") == std::string::npos) ? u" détiendrait "s : u" détiendraient "s;
 
-    location->hint.text["English"] = HINT_PREFIX_ENGLISH + englishHintedItem + englishItemImportance + u" can be found at "s + englishRegionText + u"."s;
-    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishHintedItem + spanishItemImportance + u" se encuentra en "s + spanishRegionText + u"."s;
-    location->hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchPlurality + frenchHintedItem + frenchItemImportance + u"."s;
-    location->hint.type = HintType::ITEM;
+    Hint hint{};
+    hint.text["English"] = HINT_PREFIX_ENGLISH + englishHintedItem + englishItemImportance + u" can be found at "s + englishRegionText + u"."s;
+    hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishHintedItem + spanishItemImportance + u" se encuentra en "s + spanishRegionText + u"."s;
+    hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchPlurality + frenchHintedItem + frenchItemImportance + u"."s;
+    hint.type = HintType::ITEM;
+    hint.location = location;
+    hints.emplace_back(std::move(hint));
     return HintError::NONE;
 }
 
-static HintError generateItemHintLocations(World& world, std::vector<Location*>& itemHintLocations)
+static HintError generateItemHintLocations(World& world, std::list<Hint>& hints)
 {
     auto& settings = world.getSettings();
     // First, make a vector of possible item hint locations
@@ -536,34 +542,37 @@ static HintError generateItemHintLocations(World& world, std::vector<Location*>&
             break;
         }
         auto hintLocation = popRandomElement(possibleItemHintLocations);
+        LOG_AND_RETURN_IF_ERR(generateItemHintMessage(hintLocation, hints));
         hintLocation->hasBeenHinted = true;
-        itemHintLocations.push_back(hintLocation);
-        LOG_AND_RETURN_IF_ERR(generateItemHintMessage(hintLocation));
         LOG_TO_DEBUG("Chose \"" + hintLocation->getName() + "\" as item hint location");
     }
 
     // Choose one more potential item hint to give to the big octo great fairy.
     // This hint will always be chosen regardless of settings
     // Don't let the great fairy hint at itself
+    Location* octoFairyHintLocation = nullptr;
     filterAndEraseFromPool(possibleItemHintLocations, [](const Location* location){ return location->hintRegions.size() != 1 || location->getName() == "Two Eye Reef - Big Octo Great Fairy"; });
     if (!possibleItemHintLocations.empty())
     {
-        world.bigOctoFairyHintLocation = popRandomElement(possibleItemHintLocations);
-        LOG_AND_RETURN_IF_ERR(generateItemHintMessage(world.bigOctoFairyHintLocation));
-        LOG_TO_DEBUG("Chose \"" + world.bigOctoFairyHintLocation->getName() + "\" as item hint location for big octo fairy")
+        octoFairyHintLocation = popRandomElement(possibleItemHintLocations);
+        LOG_TO_DEBUG("Chose \"" + octoFairyHintLocation->getName() + "\" as item hint location for big octo fairy")
     }
     else
     {
         // This item may not be helpful but we need something to fill the text
         // And it mirrors her vanilla hint at the Fairy Queen in M&C
-        world.bigOctoFairyHintLocation = world.locationTable["Mother & Child Isles - Inside Mother Isle"].get();
+        octoFairyHintLocation = world.locationTable["Mother & Child Isles - Inside Mother Isle"].get();
         LOG_TO_DEBUG("No possible item hints for big octo fairy. Falling back to Mother & Child Isles - Inside Mother Isle")
     }
+
+    std::list<Hint> bigOctoFairyHints{};
+    LOG_AND_RETURN_IF_ERR(generateItemHintMessage(octoFairyHintLocation, bigOctoFairyHints));
+    world.bigOctoFairyHint = bigOctoFairyHints.back();
 
     return HintError::NONE;
 }
 
-static HintError generateLocationHintMessage(Location* location)
+static HintError generateLocationHintMessage(Location* location, std::list<Hint>& hints)
 {
     auto& item = location->currentItem;
 
@@ -581,14 +590,17 @@ static HintError generateLocationHintMessage(Location* location)
     auto spanishItemImportance = location->generateImportanceText("Spanish");
     auto frenchItemImportance = location->generateImportanceText("French");
 
-    location->hint.text["English"] = HINT_PREFIX_ENGLISH + TEXT_COLOR_RED + englishLocation + TEXT_COLOR_DEFAULT + u" rewards " + englishHintedItem + englishItemImportance + u"."s;
-    location->hint.text["Spanish"] = HINT_PREFIX_SPANISH + TEXT_COLOR_RED + spanishLocation + TEXT_COLOR_DEFAULT + u" otorgará " + spanishHintedItem + spanishItemImportance + u"."s;
-    location->hint.text["French"] = HINT_PREFIX_FRENCH + TEXT_COLOR_RED + frenchLocation + TEXT_COLOR_DEFAULT + u" aurait pour récompense " + frenchHintedItem + frenchItemImportance + u"."s;
-    location->hint.type = HintType::LOCATION;
+    Hint hint{};
+    hint.text["English"] = HINT_PREFIX_ENGLISH + TEXT_COLOR_RED + englishLocation + TEXT_COLOR_DEFAULT + u" rewards " + englishHintedItem + englishItemImportance + u"."s;
+    hint.text["Spanish"] = HINT_PREFIX_SPANISH + TEXT_COLOR_RED + spanishLocation + TEXT_COLOR_DEFAULT + u" otorgará " + spanishHintedItem + spanishItemImportance + u"."s;
+    hint.text["French"] = HINT_PREFIX_FRENCH + TEXT_COLOR_RED + frenchLocation + TEXT_COLOR_DEFAULT + u" aurait pour récompense " + frenchHintedItem + frenchItemImportance + u"."s;
+    hint.type = HintType::LOCATION;
+    hint.location = location;
+    hints.emplace_back(std::move(hint));
     return HintError::NONE;
 }
 
-static HintError generateAlwaysHints(World& world, std::vector<Location*>& alwaysHintLocations)
+static HintError generateAlwaysHints(World& world, std::list<Hint>& hints)
 {
     // Return early if we're not specifically generating always hints, or if we don't have any location hints
     if (!world.getSettings().use_always_hints || world.getSettings().location_hints == 0)
@@ -621,15 +633,15 @@ static HintError generateAlwaysHints(World& world, std::vector<Location*>& alway
         {
             break;
         }
-        alwaysHintLocations.push_back(hintLocation);
-        LOG_AND_RETURN_IF_ERR(generateLocationHintMessage(hintLocation));
+        LOG_AND_RETURN_IF_ERR(generateLocationHintMessage(hintLocation, hints));
+        hintLocation->hasBeenHinted = true;
         LOG_TO_DEBUG("Chose \"" + hintLocation->getName() + "\" as always hint location");
     }
 
     return HintError::NONE;
 }
 
-static HintError generateLocationHintLocations(World& world, std::vector<Location*>& locationHintLocations, uint8_t numLocationHints)
+static HintError generateLocationHintLocations(World& world, std::list<Hint>& hints, uint8_t numLocationHints)
 {
     std::vector<Location*> sometimesLocations = {};
 
@@ -656,15 +668,15 @@ static HintError generateLocationHintLocations(World& world, std::vector<Locatio
             break;
         }
         hintLocation = popRandomElement(sometimesLocations);
-        locationHintLocations.push_back(hintLocation);
-        LOG_AND_RETURN_IF_ERR(generateLocationHintMessage(hintLocation));
+        LOG_AND_RETURN_IF_ERR(generateLocationHintMessage(hintLocation, hints));
+        hintLocation->hasBeenHinted = true;
         LOG_TO_DEBUG("Chose \"" + hintLocation->getName() + "\" as location hint location");
     }
 
     return HintError::NONE;
 }
 
-static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Location*>& locations)
+static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Hint>& hints)
 {
     // If ho ho is hinting triforces, make those hints now
     if (world.getSettings().ho_ho_triforce_hints)
@@ -673,25 +685,24 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
         {
             if (location->currentItem.isTriforceShard() && !location->isRaceModeLocation)
             {
-                locations.push_back(location);
-                LOG_AND_RETURN_IF_ERR(generateItemHintMessage(location));
+                LOG_AND_RETURN_IF_ERR(generateItemHintMessage(location, hints));
             }
         }
     }
 
     // Shuffle the hints
-    std::vector<Location*> locationsVector (locations.begin(), locations.end());
-    shufflePool(locationsVector);
+    std::vector<Hint> hintsVector (hints.begin(), hints.end());
+    shufflePool(hintsVector);
     // Duplicate hints until we have a multiple of 10 so that each Ho Ho gets the same
     // number of hints
     size_t counter = 0;
-    while (locationsVector.size() % 10 != 0)
+    while (hintsVector.size() % 10 != 0)
     {
-        locationsVector.push_back(locationsVector[counter++]);
+        hintsVector.push_back(hintsVector[counter++]);
     }
 
-    locations.assign(locationsVector.begin(), locationsVector.end());
-    size_t hintsPerHoHo = locations.size() / 10;
+    hints.assign(hintsVector.begin(), hintsVector.end());
+    size_t hintsPerHoHo = hints.size() / 10;
 
     auto hohoLocations = world.getLocations();
     filterAndEraseFromPool(hohoLocations, [](const Location* location){ return !location->categories.contains(LocationCategory::HoHoHint); });
@@ -704,8 +715,9 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
         successfullyPlacedHoHoHints = true;
         LOG_TO_DEBUG("Clearing Ho Ho Hints");
         world.hohoHints.clear();
-        for (auto location : locations)
+        for (auto& hint : hints)
         {
+            auto location = hint.location;
             // Remove this item from the world and see which Ho Ho are available
             // to be hinted at
             auto itemAtLocation = location->currentItem;
@@ -719,7 +731,9 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
             location->currentItem = itemAtLocation;
 
             // Erase Ho Ho locations which already have the desired number of hints
-            filterAndEraseFromPool(accessibleHoHoLocations, [&](Location* hoho){return world.hohoHints[hoho].size() >= hintsPerHoHo || world.hohoHints[hoho].contains(location);});
+            filterAndEraseFromPool(accessibleHoHoLocations, [&](Location* hoho){
+                return world.hohoHints[hoho].size() >= hintsPerHoHo || std::ranges::any_of(world.hohoHints[hoho], [&](const Hint& h){return h.location == location;});
+            });
 
             if (accessibleHoHoLocations.empty())
             {
@@ -727,15 +741,15 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Loca
             }
 
             auto hohoLocation = RandomElement(accessibleHoHoLocations);
-            world.hohoHints[hohoLocation].insert(location);
+            world.hohoHints[hohoLocation].push_back(hint);
             LOG_TO_DEBUG("\"" + hohoLocation->getName() + "\" now hints to \"" + location->getName() + "\"");
         }
 
         // If we went through and couldn't place all the hints, flag a failure and
         // try again
-        for (auto& [hohoLocation, hintedLocations] : world.hohoHints)
+        for (auto& [hohoLocation, locationHints] : world.hohoHints)
         {
-            if (hintedLocations.size() != hintsPerHoHo)
+            if (locationHints.size() != hintsPerHoHo)
             {
                 successfullyPlacedHoHoHints = false;
                 break;
@@ -757,8 +771,7 @@ static HintError assignKreebHints(World& world, WorldPool& worlds)
     {
         if (location->currentItem.getGameItemId() == GameItem::ProgressiveBow)
         {
-            world.kreebHints.push_back(location);
-            LOG_AND_RETURN_IF_ERR(generateItemHintMessage(location));
+            LOG_AND_RETURN_IF_ERR(generateItemHintMessage(location, world.kreebHints));
         }
     }
     return HintError::NONE;
@@ -775,8 +788,7 @@ static HintError assignKorlSwordHints(World& world, WorldPool& worlds)
     {
         if (location->currentItem.getGameItemId() == GameItem::ProgressiveSword)
         {
-            world.korlHyruleHints.push_back(location);
-            LOG_AND_RETURN_IF_ERR(generateItemHintMessage(location));
+            LOG_AND_RETURN_IF_ERR(generateItemHintMessage(location, world.korlHyruleHints));
         }
     }
     return HintError::NONE;
@@ -789,33 +801,36 @@ HintError generateHints(WorldPool& worlds)
 
     for (auto& world : worlds)
     {
-        std::vector<Location*> hintLocations = {};
+        std::list<Hint> hints = {};
 
         // First, select always hints
-        LOG_AND_RETURN_IF_ERR(generateAlwaysHints(world, hintLocations));
+        LOG_AND_RETURN_IF_ERR(generateAlwaysHints(world, hints));
 
         // Then select path hint locations so that we don't hint at them during item and location hints
-        LOG_AND_RETURN_IF_ERR(generatePathHintLocations(world, hintLocations));
+        LOG_AND_RETURN_IF_ERR(generatePathHintLocations(world, hints));
 
         // Determine barren hint locations next so that we similarly don't hint at locations
         // in barren regions when generating item and location hints
-        LOG_AND_RETURN_IF_ERR(generateBarrenHintLocations(world, hintLocations));
+        LOG_AND_RETURN_IF_ERR(generateBarrenHintLocations(world, hints));
 
         // Next, select item hint locations
-        LOG_AND_RETURN_IF_ERR(generateItemHintLocations(world, hintLocations));
+        LOG_AND_RETURN_IF_ERR(generateItemHintLocations(world, hints));
 
         // Finally, select locations for location hints
         // If we weren't able to select as many hints as the player wanted for previous
         // types, then select more location hints to fill in the total number the player wanted
         auto& settings = world.getSettings();
         uint8_t totalNumHints = settings.path_hints + settings.barren_hints + settings.item_hints + settings.location_hints;
-        uint8_t totalMadeHints = hintLocations.size();
-        LOG_AND_RETURN_IF_ERR(generateLocationHintLocations(world, hintLocations, totalNumHints - totalMadeHints));
+        uint8_t totalMadeHints = hints.size();
+        LOG_AND_RETURN_IF_ERR(generateLocationHintLocations(world, hints, totalNumHints - totalMadeHints));
 
         // Sort hints by type
-        std::sort(hintLocations.begin(), hintLocations.end(), [](Location* l1, Location* l2){
-            return l1->hint.type < l2->hint.type;
+        // Need a vector to sort
+        std::vector<Hint> hintsVector (hints.begin(), hints.end());
+        std::ranges::sort(hintsVector, [](const Hint& h1, const Hint& h2){
+            return h1.type < h2.type;
         });
+        hints.assign(hintsVector.begin(), hintsVector.end());
 
         // Assign Kreeb Bow Hints if the setting is enabled
         if (settings.kreeb_bow_hints)
@@ -831,7 +846,7 @@ HintError generateHints(WorldPool& worlds)
 
         // Distribute hints evenly among the possible hint placement options
         std::vector<std::string> hintPlacementOptions = {};
-        std::unordered_map<std::string, std::list<Location*>> hintsForCategory = {};
+        std::unordered_map<std::string, std::list<Hint>> hintsForCategory = {};
         // Only include ho ho if he's not hinting triforces
         if (settings.ho_ho_hints && !settings.ho_ho_triforce_hints)
         {
@@ -848,20 +863,22 @@ HintError generateHints(WorldPool& worlds)
             return HintError::NONE;
         }
 
-        for (size_t i = 0; i < hintLocations.size(); i++)
+        size_t i = 0;
+        for (auto& hint : hints)
         {
             // iterate to the next placement option on each index of the hint locations
             std::string placementOption = hintPlacementOptions[i % hintPlacementOptions.size()];
             // add the hint location to that placement option
-            hintsForCategory[placementOption].push_back(hintLocations[i]);
-            LOG_TO_DEBUG("Hint for \"" + hintLocations[i]->getName() + "\" will be given to " + placementOption);
+            hintsForCategory[placementOption].push_back(hint);
+            LOG_TO_DEBUG("Hint \"" + hint.text["English"] + "\" will be given to " + placementOption);
+            ++i;
         }
 
         LOG_AND_RETURN_IF_ERR(assignHoHoHints(world, worlds, hintsForCategory["ho ho"]));
 
-        for (auto location : hintsForCategory["korl"])
+        for (auto& hint : hintsForCategory["korl"])
         {
-            world.korlHints.push_back(location);
+            world.korlHints.push_back(hint);
         }
     }
 
