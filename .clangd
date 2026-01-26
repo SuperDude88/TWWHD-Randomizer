@@ -1,0 +1,3 @@
+# Ensure clangd can find the compile_commands.json in the build dir.
+CompileFlags:
+  CompilationDatabase: "build"
