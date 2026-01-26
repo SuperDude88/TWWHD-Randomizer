@@ -13,6 +13,7 @@
 #include <logic/ItemPool.hpp>
 #include <logic/Dungeon.hpp>
 #include <logic/Entrance.hpp>
+#include <logic/Hints.hpp>
 #include <logic/Plandomizer.hpp>
 #include <logic/WorldPool.hpp>
 #include <utility/text.hpp>
@@ -127,11 +128,11 @@ public:
     LocationPool raceModeLocations = {};
     std::list<Location*> goalLocations = {};
     std::map<std::string, std::unordered_set<Location*>> barrenRegions = {};
-    std::list<Location*> korlHints = {};
-    std::list<Location*> korlHyruleHints = {};
-    std::list<Location*> kreebHints = {};
-    std::map<Location*, std::unordered_set<Location*>, PointerLess<Location>> hohoHints = {}; // map of Ho Ho Hint Location to hinted locations
-    Location* bigOctoFairyHintLocation = nullptr;
+    std::list<Hint> korlHints = {};
+    std::list<Hint> korlHyruleHints = {};
+    std::list<Hint> kreebHints = {};
+    std::map<Location*, std::list<Hint>> hohoHints = {}; // map of Ho Ho Hint Location to hints
+    Hint bigOctoFairyHint{};
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
     std::list<std::list<EventId>> eventSpheres = {};

@@ -1194,11 +1194,11 @@ TweakError update_korl_dialog(World& world) {
 
             std::vector<std::u16string> hintMessages = {u""};
             size_t curLine = 0;
-            for (auto location : world.korlHints) {
-                std::u16string hint = location->hint.text[language];
-                hint = Text::word_wrap_string(hint, 42); // wrap shorter lines, some edge cases are still too wide with 43
-                hint = Text::pad_str_4_lines(hint);
-                const size_t numLines = std::count(hint.begin(), hint.end(), u'\n'); // 4 for most hints, 8+ for long hints with multiple textboxes
+            for (auto& hint : world.korlHints) {
+                std::u16string hintText = hint.text[language];
+                hintText = Text::word_wrap_string(hintText, 42); // wrap shorter lines, some edge cases are still too wide with 43
+                hintText = Text::pad_str_4_lines(hintText);
+                const size_t numLines = std::count(hintText.begin(), hintText.end(), u'\n'); // 4 for most hints, 8+ for long hints with multiple textboxes
 
                 // if we would have >10 textboxes
                 if(curLine + numLines > 40) {
@@ -1207,7 +1207,7 @@ TweakError update_korl_dialog(World& world) {
                     curLine = 0; // restart line counter
                 }
 
-                hintMessages.back() += hint; // add hint to back of current message
+                hintMessages.back() += hintText; // add hint to back of current message
                 curLine += numLines; // add hint lines to count
             }
 
@@ -1253,13 +1253,13 @@ TweakError update_korl_dialog(World& world) {
         for (const auto& language : Text::supported_languages) {
             std::u16string hintLines = u"";
             size_t i = 0; // counter to know when to add null terminator
-            for (auto location : world.korlHyruleHints) {
-                std::u16string hint = Text::word_wrap_string(location->hint.text[language], 43);
+            for (auto& hint : world.korlHyruleHints) {
+                std::u16string hintText = Text::word_wrap_string(hint.text[language], 43);
                 ++i;
                 if (i == world.korlHyruleHints.size()) {
-                    hint += u'\0'; // add null terminator on last hint before padding
+                    hintText += u'\0'; // add null terminator on last hint before padding
                 }
-                hintLines += Text::pad_str_4_lines(hint);
+                hintLines += Text::pad_str_4_lines(hintText);
             }
 
             RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
@@ -1288,22 +1288,22 @@ TweakError update_ho_ho_dialog(World& world) {
         RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT");
         
         entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
-            for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
+            for (auto& [hohoLocation, hints] : world.hohoHints) {
                 std::u16string hintLines = u"";
                 size_t i = 0; // counter to know when to add null terminator
-                for (auto location : hintLocations) {
-                    std::u16string hint = u"";
+                for (auto& hint : hints) {
+                    std::u16string hintText = u"";
                     if (i == 0) {
-                        hint += SOUND(0x0103) u"Ho ho! "s;
+                        hintText += SOUND(0x0103) u"Ho ho! "s;
                     }
                     i++;
-                    hint += location->hint.text[language];
-                    hint = Text::word_wrap_string(hint, 43);
-                    if (i == hintLocations.size()) {
-                        hint += u'\0'; // add null terminator on last hint before padding
+                    hintText += hint.text[language];
+                    hintText = Text::word_wrap_string(hintText, 43);
+                    if (i == hints.size()) {
+                        hintText += u'\0'; // add null terminator on last hint before padding
                     }
-                    hint = Text::pad_str_4_lines(hint);
-                    hintLines += hint;
+                    hintText = Text::pad_str_4_lines(hintText);
+                    hintLines += hintText;
                 }
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
@@ -1327,16 +1327,16 @@ TweakError update_kreeb_dialog(World& world) {
         entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
             std::u16string hintLines = u"";
             size_t i = 0; // counter to know when to add null terminator
-            for (auto location : world.kreebHints) {
-                std::u16string hint = u"";
-                hint += location->hint.text[language];
-                hint = Text::word_wrap_string(hint, 43);
+            for (auto& hint : world.kreebHints) {
+                std::u16string hintText = u"";
+                hintText += hint.text[language];
+                hintText = Text::word_wrap_string(hintText, 43);
                 ++i;
                 if (i == world.kreebHints.size()) {
-                    hint += u'\0'; // add null terminator on last hint before padding
+                    hintText += u'\0'; // add null terminator on last hint before padding
                 }
-                hint = Text::pad_str_4_lines(hint);
-                hintLines += hint;
+                hintText = Text::pad_str_4_lines(hintText);
+                hintLines += hintText;
             }
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
@@ -1354,10 +1354,10 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
         return TweakError::NONE;
     }
 
-    for (auto& [hohoLocation, hintLocations] : world.hohoHints) {
+    for (auto& [hohoLocation, hints] : world.hohoHints) {
         std::string island = "";
-        for (auto location : hintLocations) {
-            for (auto region : location->hintRegions) {
+        for (auto& hint : hints) {
+            for (auto region : hint.location->hintRegions) {
                 // If this region is a dungeon, use the dungeon's island instead
                 if (world.dungeons.contains(region)) {
                     region = world.dungeons[region].islands.front();
@@ -1902,7 +1902,7 @@ TweakError remove_makar_kidnapping() {
 
         std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
 
-        ChunkEntry* switch_actor = nullptr; // initialization is just to make compiler happy
+        ChunkEntry* switch_actor = nullptr;
         for (ChunkEntry* actor : actors) {
             if (std::strncmp(&actor->data[0], "AND_SW2\x00", 8) == 0) switch_actor = actor;
         }

@@ -19,7 +19,7 @@ RUN pip3 install -r /scripts/requirements.txt
 # Install wut
 RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
     cd wut && \
-    git checkout 6cd63fe2b3b0d4632e7e474c9cfb48f19574d062 && \
+    git checkout 26ed8f3b391f7df5ce1a6337a6e0524a0bafc764 && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
@@ -28,7 +28,7 @@ RUN git clone https://github.com/devkitPro/wut wut --single-branch && \
 # Install libmocha
 RUN git clone --recursive https://github.com/wiiu-env/libmocha libmocha --single-branch && \
     cd libmocha && \
-    git checkout 89438aa9f3a9d471ff848422f9dc3db581726127 && \
+    git checkout 0317b390d2077895ed86d1d67f012a691e23652a && \
     make -j$(nproc) && \
     make install && \
     cd .. && \
@@ -37,7 +37,7 @@ RUN git clone --recursive https://github.com/wiiu-env/libmocha libmocha --single
 # Install librpxloader
 RUN git clone --recursive https://github.com/wiiu-env/librpxloader librpxloader --single-branch && \
     cd librpxloader && \
-    git checkout 64787ea63d5d8a8e693e1a37bd837a93b3edd005 && \
+    git checkout e342001ff03f3e7194d1471a64a44396c01dc517 && \
     make -j$(nproc) && \
     make install && \
     cd .. && \

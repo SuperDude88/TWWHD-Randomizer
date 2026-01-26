@@ -99,9 +99,6 @@ public:
     // Message Label if this is a hint location
     std::string messageLabel;
 
-    // Hint for this location
-    Hint hint;
-
     // goal names if this is a race mode location (one for each language)
     std::unordered_map<std::string, std::string> goalNames = {};
 
@@ -131,7 +128,6 @@ public:
         world(nullptr),
         hasBeenFound(false),
         messageLabel(""),
-        hint(Hint()),
         goalNames({}),
         marked(false)
     {}

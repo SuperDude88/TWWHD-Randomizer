@@ -61,8 +61,8 @@ TextReplacements generate_text_replacements(World& world)
   auto& beedle500          = world.locationTable["Rock Spire Isle - Beedle 500 Rupee Item"]->currentItem;
   auto& beedle950          = world.locationTable["Rock Spire Isle - Beedle 950 Rupee Item"]->currentItem;
   auto& beedle900          = world.locationTable["Rock Spire Isle - Beedle 900 Rupee Item"]->currentItem;
-  auto& octoFairyItem      = world.bigOctoFairyHintLocation->currentItem;
-  auto& octoFairyRegion    = world.bigOctoFairyHintLocation->hintRegions.front();
+  auto& octoFairyItem      = world.bigOctoFairyHint.location->currentItem;
+  auto& octoFairyRegion    = world.bigOctoFairyHint.location->hintRegions.front();
 
   LOG_TO_DEBUG("Calculating text replacement articles/pronouns");
   // Calculate articles for some replacements
@@ -133,9 +133,9 @@ TextReplacements generate_text_replacements(World& world)
   auto savageFloor50SpanishImportance = savageFloor50Loc->generateImportanceText("Spanish");
   auto savageFloor50FrenchImportance = savageFloor50Loc->generateImportanceText("French");
 
-  auto bigOctoFairyEnglishImportance = world.bigOctoFairyHintLocation->generateImportanceText("English");
-  auto bigOctoFairySpanishImportance = world.bigOctoFairyHintLocation->generateImportanceText("Spanish");
-  auto bigOctoFairyFrenchImportance = world.bigOctoFairyHintLocation->generateImportanceText("French");
+  auto bigOctoFairyEnglishImportance = world.bigOctoFairyHint.location->generateImportanceText("English");
+  auto bigOctoFairySpanishImportance = world.bigOctoFairyHint.location->generateImportanceText("Spanish");
+  auto bigOctoFairyFrenchImportance = world.bigOctoFairyHint.location->generateImportanceText("French");
 
   // Format for text replacements:
   // Message Label,
