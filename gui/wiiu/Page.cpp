@@ -1669,24 +1669,26 @@ MetaPage::MetaPage() {
     #ifdef USE_LIBRPXLOADER
         uint32_t version;
         if(const RPXLoaderStatus err = RPXLoader_GetVersion(&version); err != RPX_LOADER_RESULT_SUCCESS) {
-            LOG_TO_DEBUG("Displaying fallback save path, RPXLoader_GetVersion encountered error " + std::to_string(err));
+            LOG_TO_DEBUG("Displaying fallback save path, RPXLoader_GetVersion encountered error "s + RPXLoader_GetStatusStr(err));
             return;
         }
-        
+
+        LOG_TO_DEBUG("Found RPXLoadingModule version: " + std::to_string(version));
+
         if(version < 3) {
             LOG_TO_DEBUG("Displaying fallback save path, librpxloader is outdated.");
             return;
         }
 
         if(const RPXLoaderStatus err = RPXLoader_InitLibrary(); err != RPX_LOADER_RESULT_SUCCESS) {
-            LOG_TO_DEBUG("Displaying fallback save path, RPXLoader_InitLibrary encountered error " + std::to_string(err));
+            LOG_TO_DEBUG("Displaying fallback save path, RPXLoader_InitLibrary encountered error "s + RPXLoader_GetStatusStr(err));
             return;
         }
         rpxLoaderInit = true;
 
         std::array<char, 128> pathBuf{}; // probably bigger than necessary
         if(const RPXLoaderStatus err = RPXLoader_GetPathOfSaveRedirection(pathBuf.data(), pathBuf.size()); err != RPX_LOADER_RESULT_SUCCESS) {
-            LOG_TO_DEBUG("Displaying fallback save path, RPXLoader_GetPathOfSaveRedirection encountered error " + std::to_string(err));
+            LOG_TO_DEBUG("Displaying fallback save path, RPXLoader_GetPathOfSaveRedirection encountered error "s + RPXLoader_GetStatusStr(err));
             return;
         }
 

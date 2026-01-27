@@ -43,14 +43,20 @@ static bool flushVolume(const std::string& vol) {
     return true;
 }
 
-bool initMocha()
-{
+bool initMocha() {
     Utility::platformLog("Starting libmocha...");
     
     if(const MochaUtilsStatus status = Mocha_InitLibrary(); status != MOCHA_RESULT_SUCCESS) {
-        ErrorLog::getInstance().log(std::string("Mocha_InitLibrary() failed, error ") + Mocha_GetStatusStr(status));
+        ErrorLog::getInstance().log(std::string("Mocha_InitLibrary failed, error ") + Mocha_GetStatusStr(status));
         return false;
     }
+
+    uint32_t version;
+    if(const MochaUtilsStatus status = Mocha_CheckAPIVersion(&version); status != MOCHA_RESULT_SUCCESS) {
+        LOG_TO_DEBUG(std::string("Mocha_CheckAPIVersion encountered error ") + Mocha_GetStatusStr(status));
+        return false;
+    }
+    LOG_TO_DEBUG("Found Mocha version: " + std::to_string(version));
 
     Utility::platformLog("Mocha initialized");
     return true;
@@ -85,7 +91,7 @@ void closeMocha() {
     }
 
     if(const MochaUtilsStatus status = Mocha_DeInitLibrary(); status != MOCHA_RESULT_SUCCESS) {
-        ErrorLog::getInstance().log(std::string("Mocha_DeinitLibrary() failed, error ") + Mocha_GetStatusStr(status));
+        ErrorLog::getInstance().log(std::string("Mocha_DeinitLibrary failed, error ") + Mocha_GetStatusStr(status));
     }
 
     return;
