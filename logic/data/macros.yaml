@@ -47,6 +47,12 @@ Deluxe Picto Box: count(2, Progressive_Picto_Box)
 Magic: count(1, Progressive_Magic_Meter)
 Double Magic: count(2, Progressive_Magic_Meter) or (count(1, Progressive_Magic_Meter) and Progressive_Magic_Always_Double == true)
 All 8 Shards: Triforce_Shard_1 and Triforce_Shard_2 and Triforce_Shard_3 and Triforce_Shard_4 and Triforce_Shard_5 and Triforce_Shard_6 and Triforce_Shard_7 and Triforce_Shard_8
+All Required Bosses Defeated: ('Gohma_Defeated' or Gohma_Required == false) and 
+                              ('Kalle_Demos_Defeated' or Kalle_Demos_Required == false) and 
+                              ('Gohdan_Defeated' or Gohdan_Required == false) and 
+                              ('Helmaroc_King_Defeated' or Helmaroc_King_Required == false) and 
+                              ('Jalhalla_Defeated' or Jalhalla_Required == false) and 
+                              ('Molgera_Defeated' or Molgera_Required == false)
 Can Defeat Phantom Ganon: (Outside_Swordless_Mode and Master_Sword) or (In_Swordless_Mode and Skull_Hammer)
 Can Get Past Hyrule Barrier: In_Swordless_Mode or (Full_Power_Master_Sword and All_8_Shards)
 Can Defeat Puppet Ganon: health(3) and Light_Arrows and Boomerang

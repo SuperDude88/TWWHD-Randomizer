@@ -142,10 +142,10 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
 
     do
     {
-
         // push_back an empty sphere if we're generating the playthroughs
         if (searchMode == SearchMode::GeneratePlaythrough)
         {
+            worlds[0].eventSpheres.emplace_back();
             worlds[0].playthroughSpheres.emplace_back();
             worlds[0].entranceSpheres.emplace_back();
         }
@@ -155,60 +155,83 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
         newThingsFound = false;
         // Loop through and see if there are any events that we are now accessible.
         // Add them to the ownedEvents list if they are.
-        for (auto eventItr = eventsToTry.begin(); eventItr != eventsToTry.end(); )
+        std::set<EventId> accessibleEvents = {};
+        bool newEventsOrExits = false;
+        // Continuously loop through events and exits until no new events or exits are
+        // found. Since they can unlock each other, this is necessart for proper sphere calculations
+        do
         {
-            auto eventAccess = *eventItr;
-            if (ownedEvents.contains(eventAccess->event))
+            newEventsOrExits = false;
+            for (auto eventItr = eventsToTry.begin(); eventItr != eventsToTry.end(); )
             {
-                eventItr = eventsToTry.erase(eventItr);
-                continue;
-            }
-            if (evaluateRequirement(eventAccess->world, eventAccess->requirement, &ownedItems, &ownedEvents))
-            {
-                newThingsFound = true;
-                eventItr = eventsToTry.erase(eventItr);
-                ownedEvents.insert(eventAccess->event);
-            }
-            else
-            {
-                eventItr++; // Only increment if we don't erase
-            }
-        }
-
-        // Search each exit in the exitsToTry list and explore any new areas found as well.
-        // For any exits which we try and don't meet the requirements for, put them
-        // into exitsToTry for the next iteration. Any locations we come across will
-        // be added to locationsToTry.
-        for (auto exitItr = exitsToTry.begin(); exitItr != exitsToTry.end(); )
-        {
-            auto exit = *exitItr;
-            if (evaluateRequirement(exit->getWorld(), exit->getRequirement(), &ownedItems, &ownedEvents)) {
-                exit->setFound(true);
-                // Erase the exit from the list of exits if we've met its requirement
-                exitItr = exitsToTry.erase(exitItr);
-                if (exit->getConnectedArea() == nullptr)
+                auto eventAccess = *eventItr;
+                auto event = eventAccess->event;
+                if (ownedEvents.contains(event) || accessibleEvents.contains(event))
                 {
+                    eventItr = eventsToTry.erase(eventItr);
                     continue;
                 }
-                // If we're generating the playthrough, add it to the entranceSpheres if it's randomized
-                if (searchMode == SearchMode::GeneratePlaythrough && exit->isShuffled())
-                {
-                    worlds[0].entranceSpheres.back().push_back(exit);
-                }
-                // If this exit's connected region has not been explored yet, then explore it
-                auto connectedArea = exit->getConnectedArea();
-                if (!connectedArea->isAccessible)
+                if (evaluateRequirement(eventAccess->world, eventAccess->requirement, &ownedItems, &ownedEvents))
                 {
                     newThingsFound = true;
-                    connectedArea->isAccessible = true;
-                    explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry);
+                    newEventsOrExits = true;
+                    eventItr = eventsToTry.erase(eventItr);
+                    // If we're generating the playthrough, add it to the eventSpheres
+                    if (searchMode == SearchMode::GeneratePlaythrough && eventAccess->world->isSphereEvent(event))
+                    {
+                        worlds[0].eventSpheres.back().push_back(event);
+                        accessibleEvents.insert(event);
+                    }
+                    else
+                    {
+                        ownedEvents.insert(event);
+                    }
+                }
+                else
+                {
+                    eventItr++; // Only increment if we don't erase
                 }
             }
-            else
+
+            // Search each exit in the exitsToTry list and explore any new areas found as well.
+            // For any exits which we try and don't meet the requirements for, put them
+            // into exitsToTry for the next iteration. Any locations we come across will
+            // be added to locationsToTry.
+            for (auto exitItr = exitsToTry.begin(); exitItr != exitsToTry.end(); )
             {
-                exitItr++; // Only increment if we don't erase
+                auto exit = *exitItr;
+                if (evaluateRequirement(exit->getWorld(), exit->getRequirement(), &ownedItems, &ownedEvents)) {
+                    exit->setFound(true);
+                    // Erase the exit from the list of exits if we've met its requirement
+                    exitItr = exitsToTry.erase(exitItr);
+                    if (exit->getConnectedArea() == nullptr)
+                    {
+                        continue;
+                    }
+                    // If we're generating the playthrough, add it to the entranceSpheres if it's randomized
+                    if (searchMode == SearchMode::GeneratePlaythrough && exit->isShuffled())
+                    {
+                        worlds[0].entranceSpheres.back().push_back(exit);
+                    }
+                    // If this exit's connected region has not been explored yet, then explore it
+                    auto connectedArea = exit->getConnectedArea();
+                    if (!connectedArea->isAccessible)
+                    {
+                        newThingsFound = true;
+                        newEventsOrExits = true;
+                        connectedArea->isAccessible = true;
+                        explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry);
+                    }
+                }
+                else
+                {
+                    exitItr++; // Only increment if we don't erase
+                }
             }
-        }
+        } while (newEventsOrExits);
+        
+
+
         // Note which locations are now accessible on this iteration
         LocationPool accessibleThisIteration = {};
         for (auto locItr = locationsToTry.begin(); locItr != locationsToTry.end(); )
@@ -235,6 +258,12 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
             {
                 locItr++; // Only increment if we don't erase
             }
+        }
+
+        // Add events from this sphere to ownedEvents
+        for (auto event : accessibleEvents)
+        {
+            ownedEvents.insert(event);
         }
 
         // Now apply any effects of newly accessible locations for the next iteration.
@@ -286,7 +315,7 @@ bool gameBeatable(WorldPool& worlds)
 // for beating the game
 static void pareDownPlaythrough(WorldPool& worlds)
 {
-
+    auto& eventSpheres = worlds[0].eventSpheres;
     auto& playthroughSpheres = worlds[0].playthroughSpheres;
     auto& entranceSpheres = worlds[0].entranceSpheres;
     // Keep track of all locations we temporarily take items away from to give them back
@@ -334,6 +363,7 @@ static void pareDownPlaythrough(WorldPool& worlds)
 
     // Now regenerate the playthrough with only the required locations incase
     // some spheres were flattened by non-required locations having progress items
+    eventSpheres.clear();
     playthroughSpheres.clear();
     entranceSpheres.clear();
     ItemPool emptyItems = {};
@@ -375,21 +405,24 @@ static void pareDownPlaythrough(WorldPool& worlds)
         entrance->connect(area);
     }
 
-    // Get rid of any empty spheres in both the item playthrough and entrance playthrough
-    // based only on if the item playthrough has empty spheres. Both the playthroughs
+    // Get rid of any empty spheres in all playthroughs
+    // based only on if the item playthrough has empty spheres. All playthroughs
     // will have the same number of spheres, so we only need to conditionally
     // check one of them.
+    auto eventItr = eventSpheres.begin();
     auto itemItr = playthroughSpheres.begin();
     auto entranceItr = entranceSpheres.begin();
     while (itemItr != playthroughSpheres.end())
     {
-        if (itemItr->empty() && entranceItr->empty())
+        if (itemItr->empty() && entranceItr->empty() && eventItr->empty())
         {
+            eventItr = eventSpheres.erase(eventItr);
             itemItr = playthroughSpheres.erase(itemItr);
             entranceItr = entranceSpheres.erase(entranceItr);
         }
         else
         {
+            eventItr++;
             itemItr++;     // Only incremement if we don't erase
             entranceItr++;
         }

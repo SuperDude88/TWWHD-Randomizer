@@ -103,7 +103,13 @@ private:
     void load_locations();
 
     void initialize_tracker();
-    void initialize_tracker_world(Settings& settings, const GameItemPool& markedItems = {}, const std::vector<std::string>& markedLocations = {}, const std::unordered_map<std::string, std::string>& connectedEntrances = {}, const std::map<GameItem, uint8_t>& chartMappings = {});
+    void initialize_tracker_world(Settings& settings,
+                                  const GameItemPool& markedItems = {},
+                                  const std::vector<std::string>& markedLocations = {},
+                                  const std::unordered_map<std::string, std::string>& connectedEntrances = {},
+                                  const std::map<GameItem, uint8_t>& chartMappings = {},
+                                  const std::set<std::string>& requiredBosses = {},
+                                  bool fromAutosave = false);
     void calculate_own_dungeon_key_locations();
     void set_location_list_widget_background(const std::string& area);
     void clear_tracker_labels(QLayout* layout);
@@ -306,6 +312,7 @@ private slots:
     void on_view_all_entrances_button_clicked();
     void open_chart_mapping_list(uint8_t islandNum);
     void tracker_give_and_map_chart(TrackerLabel* label, GameItem chart);
+    void tracker_set_required_boss(const QString& bossName, Qt::CheckState checked);
 
 public:
     void update_items_color();
@@ -322,6 +329,16 @@ public:
     std::unordered_map<std::string, std::unordered_map<Area*, EntrancePath>> entrancePaths = {};
     // Maps each location to its shortest path
     std::unordered_map<Location*, EntrancePath> entrancePathsByLocation = {};
+    std::set<std::string> requiredBosses = {};
+    std::unordered_map<std::string, std::string> bossNamesToLocations = {
+        {"Gohma", "Dragon Roost Cavern - Gohma Heart Container"},
+        {"Kalle Demos", "Forbidden Woods - Kalle Demos Heart Container"},
+        {"Gohdan", "Tower of the Gods - Gohdan Heart Container"},
+        {"Helmaroc King", "Forsaken Fortress - Helmaroc King Heart Container"},
+        {"Jalhalla", "Earth Temple - Jalhalla Heart Container"},
+        {"Molgera", "Wind Temple - Molgera Heart Container"},
+    };
+
 private:
     LocationPool trackerLocations = {};
 

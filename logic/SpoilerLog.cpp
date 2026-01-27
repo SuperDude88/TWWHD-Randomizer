@@ -99,6 +99,7 @@ void generateSpoilerLog(WorldPool& worlds)
 
     // Playthroughs are stored in world 1 for the time being, regardless of how
     // many worlds there are.
+    auto& eventSpheres = worlds[0].eventSpheres;
     auto& playthroughSpheres = worlds[0].playthroughSpheres;
     auto& entranceSpheres = worlds[0].entranceSpheres;
 
@@ -153,14 +154,20 @@ void generateSpoilerLog(WorldPool& worlds)
     LOG_TO_DEBUG("Print Playthrough");
     spoilerLog << "Playthrough:" << std::endl;
     int sphere = 0;
-    for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++, sphere++)
+    auto eventItr = eventSpheres.begin();
+    for (auto sphereItr = playthroughSpheres.begin(); sphereItr != playthroughSpheres.end(); sphereItr++, eventItr++, sphere++)
     {
         spoilerLog << "    Sphere " << std::to_string(sphere) << ":" << std::endl;
+        auto& sphereEvents = *eventItr;
         auto& sphereLocations = *sphereItr;
         sphereLocations.sort(PointerLess<Location>());
         for (auto location : sphereLocations)
         {
             spoilerLog << "        " << getSpoilerFormatLocation(location, longestNameLength, worlds) << std::endl;
+        }
+        for (auto event : sphereEvents)
+        {
+            spoilerLog << "        " << worlds[0].reverseEventMap[event] << std::endl;
         }
     }
     spoilerLog << std::endl;

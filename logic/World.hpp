@@ -81,7 +81,6 @@ public:
     ItemPool& getStartingItemsReference();
     int getStartingHeartCount() const;
     LocationPool getLocations(bool onlyProgression = false);
-    LocationPool getRaceModeLocations() const;
     LocationPool getProgressionLocations();
     size_t getNumOverworldProgressionLocations();
     Area* getArea(const std::string& areaName);
@@ -107,6 +106,7 @@ public:
     void addLocation(const std::string& locationName);
     Item getItem(const std::string& itemName);
     void flattenLogicRequirements();
+    bool isSphereEvent(const EventId& event);
 
     // Stuff to help with debugging
     std::string errorToName(WorldLoadingError err);
@@ -135,6 +135,7 @@ public:
     Hint bigOctoFairyHint{};
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
+    std::list<std::list<EventId>> eventSpheres = {};
     std::map<uint8_t, GameItem> chartMappings = {};
     Settings originalSettings;
 
@@ -145,10 +146,8 @@ public:
 private:
 
     bool chartLeadsToSunkenTreasure(Location* location, const std::string& itemPrefix);
-
-
-    // WorldLoadingError parseRequirementString( const std::string& str, Requirement& req);
     RequirementError parseMacro(const std::string& macroLogicExpression, Requirement& reqOut);
+    WorldLoadingError reparseMacro(const std::string& macroName);
     WorldLoadingError loadExit(const std::string& connectedAreaName, const std::string& logicExpression, Entrance& loadedExit, const std::string& parentArea);
     WorldLoadingError loadLocation(const YAML::Node& locationObject);
     WorldLoadingError loadEventRequirement(const std::string& eventName, const std::string& logicExpression, EventAccess& eventAccess);

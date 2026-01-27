@@ -329,6 +329,7 @@
     French: Forteresse Maudite - Réceptacle de Cœur du Roi Cuirasse
   Original Item: Heart Container
   Race Mode Location: true
+  Stage ID: 2
   Goal Names:
     English: Helmaroc King
     Spanish: Kranos
@@ -3737,6 +3738,7 @@
     French: Caverne du Dragon - Réceptacle de Cœur de Gohma
   Original Item: Heart Container
   Race Mode Location: true
+  Stage ID: 3
   Goal Names:
     English: Gohma
     Spanish: Gohma
@@ -3979,6 +3981,7 @@
     French: Bois Défendus - Réceptacle de Cœur de Karle Demos
   Original Item: Heart Container
   Race Mode Location: true
+  Stage ID: 4
   Goal Names:
     English: Kalle Demos
     Spanish: Vilipendulia
@@ -4197,6 +4200,7 @@
     French: Tour des Dieux - Réceptacle de Cœur de Gordon
   Original Item: Heart Container
   Race Mode Location: true
+  Stage ID: 5
   Goal Names:
     English: Gohdan
     Spanish: Deus Probatur
@@ -4439,6 +4443,7 @@
     French: Temple de la Terre - Réceptacle de Cœur de Jay Harla
   Original Item: Heart Container
   Race Mode Location: true
+  Stage ID: 6
   Goal Names:
     English: Jalhalla
     Spanish: Fati Triputis
@@ -4657,6 +4662,7 @@
     French: Temple du Vent - Réceptacle de Cœur de Gayla
   Original Item: Heart Container
   Race Mode Location: true
+  Stage ID: 7
   Goal Names:
     English: Molgera
     Spanish: Verminus

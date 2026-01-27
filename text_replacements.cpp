@@ -201,6 +201,12 @@ TextReplacements generate_text_replacements(World& world)
       {"Spanish", u"No pasa nada. Abriré la puerta por ti.\0"s},
       {"French",  u"Ne t'inquiète pas, je vais te sortir de là.\0"s}}},
 
+     // Required bosses text
+     {"00851",
+     {{"English", u"You sense that this door will not open\nuntil the gigantic monsters lurking\nthroughout the world have been defeated...\0"s},
+      {"Spanish", u"You sense that this door will not open\nuntil the gigantic monsters lurking\nthroughout the world have been defeated...\0"s},
+      {"French",  u"You sense that this door will not open\nuntil the gigantic monsters lurking\nthroughout the world have been defeated...\0"s}}},
+
      // Swordless Text
      {"01128",
      {{"English", !world.getSettings().remove_swords ? u"" : (CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", you may not have the\nMaster Sword, but do not be afraid!\n\n\nThe hammer of the dead is all you\nneed to crush your foe...\n\n\n" +

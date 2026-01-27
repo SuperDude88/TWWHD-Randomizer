@@ -1118,6 +1118,30 @@ mtlr r0
 addi sp, sp, 0x10
 blr
 
+.global generic_is_dungeon_bit
+generic_is_dungeon_bit:
+stwu sp, -0x10 (sp)
+mflr r0
+stw r0, 0x14 (sp)
+
+mr r5, r3 ; Argument r3 to this func is the stage ID of the dungeon to add this item for
+mr r6, r4 ; Argument r4 to this func is the bit index to set
+
+lis r3, gameInfo_ptr@ha
+lwz r3, gameInfo_ptr@l(r3)
+addi r3,r3,0x3a0
+mulli r4, r5, 0x24 ; Use stage ID of the dungeon as the index, each entry in the list is 0x24 bytes long
+add r3, r3, r4
+
+; Now call isDungeonBit with argument r3 being the stage info that was determined above.
+mr r4, r6 ; Argument r4 is the bit index
+bl isDungeonItem
+
+lwz r0, 0x14 (sp)
+mtlr r0
+addi sp, sp, 0x10
+blr
+
 .global generic_small_key_item_get_func
 generic_small_key_item_get_func:
 stwu sp, -0x10 (sp)

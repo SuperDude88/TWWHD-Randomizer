@@ -218,6 +218,14 @@ enum struct Option {
     Gyroscope,
     UIDisplay,
 
+    // Required Bosses (not exposed to the user)
+    GohmaRequired,
+    KalleDemosRequired,
+    GohdanRequired,
+    HelmarocKingRequired,
+    JalhallaRequired,
+    MolgeraRequired,
+
     COUNT
 };
 
@@ -329,6 +337,13 @@ public:
 
     CustomModel selectedModel;
 
+    bool gohma_required;
+    bool kalle_demos_required;
+    bool gohdan_required;
+    bool helmaroc_king_required;
+    bool jalhalla_required;
+    bool molgera_required;
+
     Settings();
     void resetDefaultSettings();
     void resetDefaultPreferences(const bool& paths = false);
@@ -338,6 +353,9 @@ public:
     int evaluateOption(const std::string& optionStr) const;
 
     bool anyEntrancesShuffled() const;
+
+    void setRequiredBoss(const std::string& name, bool value);
+    bool isRequiredBoss(const std::string& name) const;
 };
 
 GameVersion nameToGameVersion(const std::string& name);
