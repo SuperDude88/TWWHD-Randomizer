@@ -29,34 +29,38 @@ const std::string& LogInfo::getSeedHash() {
 
 
 
-ErrorLog::ErrorLog() {
-    output.open(LOG_PATH);
-
+static void printBasicInfo(std::ostream& output) {
     output << "Program opened " << ProgramTime::getDateStr(); // time string ends with \n
 
     output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
 
     // Only list config stuff if a config has been set
-    if (LogInfo::getConfig().configSet)
-    {
+    if (LogInfo::getConfig().configSet) {
         output << "Seed: " << LogInfo::getConfig().seed << std::endl;
         output << "Selected options:" << std::endl << "\t";
-        for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
-        {
-            Option setting = static_cast<Option>(settingInt);
+        for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++) {
+            const Option setting = static_cast<Option>(settingInt);
         
-            if (setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
-            {
+            if (setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor) {
                 output << settingToName(setting) << ": " << std::to_string(LogInfo::getConfig().settings.getSetting(setting)) << ", ";
             }
-            else
-            {
-                output << (LogInfo::getConfig().settings.getSetting(setting) ? settingToName(setting) + ", " : "");
+            else if(LogInfo::getConfig().settings.getSetting(setting)) {
+                output << settingToName(setting) + ", ";
             }
         }
+
+        output << std::endl;
     }
 
-    output << std::endl << std::endl;
+    output << std::endl;
+}
+
+
+
+ErrorLog::ErrorLog() {
+    output.open(LOG_PATH);
+
+    printBasicInfo(output);
 }
 
 ErrorLog::~ErrorLog() {
@@ -98,29 +102,7 @@ void ErrorLog::clearLastErrors()
 DebugLog::DebugLog() {
     output.open(LOG_PATH);
 
-    output << "Program opened " << ProgramTime::getDateStr(); // time string ends with \n
-
-    output << "Wind Waker HD Randomizer Version " << RANDOMIZER_VERSION << std::endl;
-    if (LogInfo::getConfig().configSet)
-    {
-        output << "Seed: " << LogInfo::getConfig().seed << std::endl;
-        output << "Selected options:" << std::endl << "\t";
-        for (int settingInt = 1; settingInt < static_cast<int>(Option::COUNT); settingInt++)
-        {
-            Option setting = static_cast<Option>(settingInt);
-        
-            if (setting == Option::NumRequiredDungeons || setting == Option::DamageMultiplier || setting == Option::PigColor)
-            {
-                output << settingToName(setting) << ": " << std::to_string(LogInfo::getConfig().settings.getSetting(setting)) << ", ";
-            }
-            else
-            {
-                output << (LogInfo::getConfig().settings.getSetting(setting) ? settingToName(setting) + ", " : "");
-            }
-        }
-    }
-
-    output << std::endl << std::endl;
+    printBasicInfo(output);
 }
 
 DebugLog::~DebugLog() {
