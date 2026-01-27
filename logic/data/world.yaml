@@ -812,11 +812,11 @@
 - Name: Dragon Roost Pond
   Exits:
       Dragon Roost Rito Aerie: Nothing
-      Dragon Roost Pond Past Statues: Open_DRC == true or Bombs or Power_Bracelets or Empty_Bottle or Can_Fly_With_Deku_Leaf_Indoors
+      Dragon Roost Pond Past Statues: Open_DRC == true or Bombs or Power_Bracelets or Empty_Bottle or Can_Fly_With_Deku_Leaf_Outdoors # The changing wind disappears here if you have Din's pearl
 
 - Name: Dragon Roost Pond Past Statues
   Exits:
-      Dragon Roost Pond: Bombs or Can_Fly_With_Deku_Leaf_Indoors
+      Dragon Roost Pond: Bombs or Can_Fly_With_Deku_Leaf_Outdoors # The changing wind disappears here if you have Din's pearl
       DRC First Room: Nothing
 
 - Name: Dragon Roost Pond Upper Ledge
