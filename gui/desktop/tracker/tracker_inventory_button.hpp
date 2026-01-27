@@ -67,6 +67,8 @@ public:
     QPoint mouseEnterPosition = QPoint();
 
     void updateIcon();
+    bool isForTriforceChart() const;
+    bool isForTreasureChart() const;
 
 signals:
     void chart_map_button_pressed(uint8_t islandNum);
