@@ -165,7 +165,7 @@ void TrackerChartButton::updateIcon()
     std::string chartState = "treasure_chart_closed.png";
     if(mainWindow->trackerSettings.randomize_charts) {
         if(const GameItem chart = mainWindow->chartForIsland(islandNum); chart != GameItem::INVALID) {
-            if(chart == GameItem::TriforceChart1 || chart == GameItem::TriforceChart2 || chart == GameItem::TriforceChart3) {
+            if(this->isForTriforceChart()) {
                 chartState = "triforce_chart_open.png";
             }
             else {
@@ -174,7 +174,7 @@ void TrackerChartButton::updateIcon()
         }
     }
     else if(const GameItem chart = roomNumToDefaultChart(islandNum); elementInPool(Item(chart, &mainWindow->trackerWorlds[0]), mainWindow->trackerInventory)) {
-        if(chart == GameItem::TriforceChart1 || chart == GameItem::TriforceChart2 || chart == GameItem::TriforceChart3) {
+        if(this->isForTriforceChart()) {
             chartState = "triforce_chart_open.png";
         }
         else {
@@ -182,7 +182,7 @@ void TrackerChartButton::updateIcon()
         }
     }
     else {
-        if(chart == GameItem::TriforceChart1 || chart == GameItem::TriforceChart2 || chart == GameItem::TriforceChart3) {
+        if(this->isForTriforceChart()) {
             chartState = "triforce_chart_closed.png";
         }
     }
@@ -190,6 +190,17 @@ void TrackerChartButton::updateIcon()
     setStyleSheet("background-image: url(" + getTrackerAssetPath(chartState) + ");"
                 + "background-repeat: none;"
                 + "background-position: center;");
+}
+
+bool TrackerChartButton::isForTriforceChart() const
+{
+    const GameItem chart = roomNumToDefaultChart(islandNum);
+    return chart == GameItem::TriforceChart1 || chart == GameItem::TriforceChart2 || chart == GameItem::TriforceChart3;
+}
+
+bool TrackerChartButton::isForTreasureChart() const
+{
+    return !isForTriforceChart();
 }
 
 void TrackerChartButton::mouseReleaseEvent(QMouseEvent* e)

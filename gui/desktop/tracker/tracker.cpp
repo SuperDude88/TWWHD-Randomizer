@@ -48,6 +48,22 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     // Copy settings to modify them
     trackerSettings = settings;
 
+    // Show or hide chart tracker buttons depending on settings
+    for (auto chartButton : ui->tracker_tab->findChildren<TrackerChartButton*>())
+    {
+        // If charts are randomized, show all charts if either chart progression is enabled
+        if (trackerSettings.randomize_charts)
+        {
+            chartButton->setVisible(trackerSettings.progression_treasure_charts || trackerSettings.progression_triforce_charts);
+        }
+        // If charts aren't randomized, show chart only if their rerespective chart type is progression
+        else
+        {
+            chartButton->setVisible((trackerSettings.progression_treasure_charts && chartButton->isForTreasureChart()) ||
+                                    (trackerSettings.progression_triforce_charts && chartButton->isForTriforceChart()));
+        }
+    }
+
     selectedChartIsland = 0;
     if (settings.randomize_charts)
     {
