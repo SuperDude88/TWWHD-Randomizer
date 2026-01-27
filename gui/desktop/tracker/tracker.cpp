@@ -4,6 +4,7 @@
 #include <QMouseEvent>
 #include <QMessageBox>
 #include <QColorDialog>
+#include <QPainter>
 
 #include <../ui_mainwindow.h>
 
@@ -750,10 +751,10 @@ void MainWindow::initialize_tracker()
                                                    "background-position: center;"
                                                "}");
     ui->overworld_map_widget->setStyleSheet("QWidget#overworld_map_widget {background-image: url(" + getTrackerAssetPath("sea_chart.png") + ");}");
-    ui->chart_list_widget->setStyleSheet("QWidget#chart_list_widget {border-image: url(" + getTrackerAssetPath("area_empty.png") + ");}");
-    set_location_list_widget_background("empty");
-    ui->entrance_list_widget->setStyleSheet("QWidget#entrance_list_widget {border-image: url(" + getTrackerAssetPath("area_empty.png") + ");}");
-    ui->entrance_destination_widget->setStyleSheet("QWidget#entrance_destination_widget {border-image: url(" + getTrackerAssetPath("area_empty.png") + ");}");
+    ui->chart_list_widget->setStyleSheet("QWidget#chart_list_widget {border-image: url(" + getTrackerAssetPath("areas/Empty.png") + ");}");
+    set_location_list_widget_background("Empty");
+    ui->entrance_list_widget->setStyleSheet("QWidget#entrance_list_widget {border-image: url(" + getTrackerAssetPath("areas/Empty.png") + ");}");
+    ui->entrance_destination_widget->setStyleSheet("QWidget#entrance_destination_widget {border-image: url(" + getTrackerAssetPath("areas/Empty.png") + ");}");
     ui->other_areas_widget->setStyleSheet("QWidget#other_areas_widget {background-color: rgba(160, 160, 160, 0.85);}");
     ui->stat_box->setStyleSheet("QWidget#stat_box {background-color: rgba(79, 79, 79, 0.85);}");
 
@@ -1424,11 +1425,7 @@ void MainWindow::tracker_show_specific_area(const std::string& areaPrefix)
     ui->location_list_entrances_button->setVisible(!areaEntrances[areaPrefix].empty());
 
     // Update the image used for the background of the area location labels
-    // Currently this lags the tracker a little bit, so maybe revisit later
-    // std::replace(areaPrefix.begin(), areaPrefix.end(), ' ', '_');
-    // std::transform(areaPrefix.begin(), areaPrefix.end(), areaPrefix.begin(), [](char& c){return std::tolower(c);});
-    // std::erase(areaPrefix, '\'');
-    // set_location_list_widget_background(areaPrefix);
+    set_location_list_widget_background(areaPrefix);
 }
 
 void MainWindow::tracker_clear_specific_area(const std::string& areaPrefix)
@@ -1466,7 +1463,16 @@ void MainWindow::tracker_area_right_clicked(const std::string& areaPrefix)
 
 void MainWindow::set_location_list_widget_background(const std::string& area)
 {
-    ui->location_list_widget->setStyleSheet("QWidget#location_list_widget {border-image: url(" + getTrackerAssetPath("area_" + area + ".png") + ");}");
+    QPixmap island(getTrackerAssetPath("areas/" + area + ".png"));
+    QPainter painter(&island);
+    painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+    painter.fillRect(island.rect(), QColor(216, 186, 106, 179));
+    painter.end();
+
+    QPalette palette;
+    const int width = ui->location_list_widget->width(), height = ui->location_list_widget->height();
+    palette.setBrush(QPalette::Window, island.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    ui->location_list_widget->setPalette(palette);
 }
 
 void MainWindow::tracker_display_current_item_text(const std::string& currentItem)
