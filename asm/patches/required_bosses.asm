@@ -67,8 +67,8 @@ check_required_bosses_check_continue_loop:
   bne+ check_required_bosses_begin_loop
 
 ; If all required bosses are defeated, set the associated switch flag (0x25)
-  lis r3, 0x1020
-  lwz r3, -0x7b24(r3)
+  lis r3, gameInfo_ptr@ha
+  lwz r3, gameInfo_ptr@l(r3)
   addi r3, r3, 0x20 ; SaveData->mCurInfo
   li r4, 0x25 ; flag
   li r5, 0 ; current room number (which is 0)
