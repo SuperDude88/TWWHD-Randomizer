@@ -137,6 +137,7 @@ public:
     bool isIslandMappedToChart(uint8_t island);
     uint8_t islandForChart(GameItem chart);
     GameItem chartForIsland(uint8_t islandNum);
+    void tracker_update_chart_visibility();
 
 private slots:
     void show_error_dialog(const std::string& s, const std::string& title = "An error has occured!");

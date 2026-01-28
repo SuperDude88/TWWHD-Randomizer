@@ -10,6 +10,7 @@ struct TrackerPreferences {
     bool showNonProgressLocations = false;
     bool rightClickClearAll = true;
     bool clearAllIncludesDependentLocations = true;
+    bool showCharts = true;
     bool overrideItemsColor = false;
     bool overrideLocationsColor = false;
     bool overrideStatsColor = false;
