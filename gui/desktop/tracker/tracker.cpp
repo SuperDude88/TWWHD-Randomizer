@@ -48,33 +48,21 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     // Copy settings to modify them
     trackerSettings = settings;
 
-    // Show or hide chart tracker buttons depending on settings
-    for (auto chartButton : ui->tracker_tab->findChildren<TrackerChartButton*>())
-    {
-        // If charts are randomized, show all charts if either chart progression is enabled
-        if (trackerSettings.randomize_charts)
-        {
-            chartButton->setVisible(trackerSettings.progression_treasure_charts || trackerSettings.progression_triforce_charts);
-        }
-        // If charts aren't randomized, show chart only if their rerespective chart type is progression
-        else
-        {
-            chartButton->setVisible((trackerSettings.progression_treasure_charts && chartButton->isForTreasureChart()) ||
-                                    (trackerSettings.progression_triforce_charts && chartButton->isForTriforceChart()));
-        }
-    }
-
     selectedChartIsland = 0;
     if (settings.randomize_charts)
     {
         // With charts shuffled the required ones can be on any island
         // So for tracker purposes, treat all 49 charts as potentially progress
+        // Also force all charts to be shown on the map
         if (trackerSettings.progression_treasure_charts || trackerSettings.progression_triforce_charts)
         {
             trackerSettings.progression_treasure_charts = true;
             trackerSettings.progression_triforce_charts = true;
+            trackerPreferences.showCharts = true;
         }
     }
+
+    tracker_update_chart_visibility();
 
     // Give 3 hearts so that all heart checks pass logic
     trackerSettings.starting_hcs = 3;
@@ -459,6 +447,7 @@ bool MainWindow::autosave_current_tracker_preferences()
     pref["show_nonprogress_locations"] = trackerPreferences.showNonProgressLocations;
     pref["right_click_clear_all"] = trackerPreferences.rightClickClearAll;
     pref["clear_all_includes_dependent_locations"] = trackerPreferences.clearAllIncludesDependentLocations;
+    pref["show_charts"] = trackerPreferences.showCharts;
     pref["override_items_color"] = trackerPreferences.overrideItemsColor;
     pref["override_locations_color"] = trackerPreferences.overrideLocationsColor;
     pref["override_stats_color"] = trackerPreferences.overrideStatsColor;
@@ -560,6 +549,11 @@ void MainWindow::load_tracker_autosave()
     else if (pref["clear_all_includes_dungeon_mail"])
     {
         trackerPreferences.clearAllIncludesDependentLocations = pref["clear_all_includes_dungeon_mail"].as<bool>();
+    }
+
+    if (pref["show_charts"])
+    {
+        trackerPreferences.showCharts = pref["show_charts"].as<bool>();
     }
 
     if (!std::filesystem::exists(trackerPreferences.autosaveFilePath))
@@ -1979,4 +1973,16 @@ void MainWindow::tracker_set_required_boss(const QString& bossName, Qt::CheckSta
     }
 
     update_tracker();
+}
+
+void MainWindow::tracker_update_chart_visibility() {
+    // Show or hide chart buttons depending on the preference
+    for (auto chartButton : ui->tracker_tab->findChildren<TrackerChartButton*>())
+    {
+        // If charts are randomized and any are progression, showCharts is forced to be true
+        // If charts aren't randomized, show chart only if their respective chart type is progression
+        chartButton->setVisible(trackerPreferences.showCharts ||
+                                (trackerSettings.progression_treasure_charts && chartButton->isForTreasureChart()) ||
+                                (trackerSettings.progression_triforce_charts && chartButton->isForTriforceChart()));
+    }
 }

@@ -12,6 +12,11 @@ TrackerPreferencesDialog::TrackerPreferencesDialog(MainWindow* main_) : main(mai
     ui.show_nonprogress_locations->setChecked(main->trackerPreferences.showNonProgressLocations);
     ui.right_click_to_clear_all->setChecked(main->trackerPreferences.rightClickClearAll);
     ui.clear_all_includes_dependent_locations->setChecked(main->trackerPreferences.clearAllIncludesDependentLocations);
+    ui.show_charts->setChecked(main->trackerPreferences.showCharts);
+    if(main->trackerSettings.randomize_charts && (main->trackerSettings.progression_triforce_charts || main->trackerSettings.progression_treasure_charts)) {
+        ui.show_charts->setChecked(true);
+        ui.show_charts->setEnabled(false);
+    }
     ui.override_items_background_color->setChecked(main->trackerPreferences.overrideItemsColor);
     ui.override_locations_background_color->setChecked(main->trackerPreferences.overrideLocationsColor);
     ui.override_statistics_background_color->setChecked(main->trackerPreferences.overrideStatsColor);
@@ -61,6 +66,13 @@ void TrackerPreferencesDialog::on_right_click_to_clear_all_stateChanged(int arg1
 void TrackerPreferencesDialog::on_clear_all_includes_dependent_locations_stateChanged(int arg1)
 {
     main->trackerPreferences.clearAllIncludesDependentLocations = arg1;
+}
+
+
+void TrackerPreferencesDialog::on_show_charts_stateChanged(int arg1)
+{
+    main->trackerPreferences.showCharts = arg1;
+    main->tracker_update_chart_visibility();
 }
 
 
