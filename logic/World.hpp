@@ -131,7 +131,7 @@ public:
     std::list<Hint> korlHints = {};
     std::list<Hint> korlHyruleHints = {};
     std::list<Hint> kreebHints = {};
-    std::map<Location*, std::list<Hint>> hohoHints = {}; // map of Ho Ho Hint Location to hints
+    std::map<Location*, std::list<Hint>, PointerLess<Location>> hohoHints = {}; // map of Ho Ho Hint Location to hints
     Hint bigOctoFairyHint{};
     std::list<std::list<Location*>> playthroughSpheres = {};
     std::list<std::list<Entrance*>> entranceSpheres = {};
