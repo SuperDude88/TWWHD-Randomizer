@@ -5,6 +5,8 @@ import os
 import sys
 import argparse
 
+import xml.etree.cElementTree as ET
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("data_dir")
@@ -12,21 +14,20 @@ def main():
 
     data_root = args.data_dir
     individual_files = []
-    with open('data.qrc', 'w') as qrc:
-        qrc.write('<RCC>\n')
-        qrc.write('    <qresource prefix="/">\n')
-        for root, dirs, files in os.walk(data_root):
-            for file in files:
-                f = os.path.join(root, file)
-                if os.path.isfile(f):
-                    f = f.replace('\\', '/')
-                    individual_files.append(f)
 
-        for file in individual_files:
-            embed_path = file.replace(data_root, '')
-            qrc.write('        <file alias=\"' + embed_path + '\">' + file + '</file>\n')
+    rcc = ET.Element("RCC")
+    resources = ET.SubElement(rcc, "qresource", prefix="/")
+    for root, dirs, files in os.walk(data_root):
+        for file in files:
+            f = os.path.join(root, file)
+            if os.path.isfile(f):
+                f = f.replace('\\', '/')
+                individual_files.append(f)
 
-        qrc.write('    </qresource>\n')
-        qrc.write('</RCC>')
+    for file in individual_files:
+        embed_path = file.replace(data_root, '')
+        ET.SubElement(resources, "file", alias=embed_path).text = file
+
+    ET.ElementTree(rcc).write("data.qrc")
 
 main()
