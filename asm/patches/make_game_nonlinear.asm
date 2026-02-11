@@ -522,3 +522,19 @@ tag_photo_check_lenzo_flag_order:
   b 0x024B22F8
 skip_setting_pictograph_gallery_flag:
   b 0x024B2300 ; Return without setting the next flag
+
+
+
+; Change the wind in the pond area outside DRC to disappear once Gohma is defeated
+; Normally it checks for Din's Pearl
+.org 0x021B0BC0 ; in daKytag05_Create
+  li r3, 3 ; DRC stage ID
+  bl isStageBossEnemy
+; Also do the same for the quake (shake/vibration) triggers
+.org 0x02386BA0 ; in daObjQuake_c::_create
+  li r3, 3 ; DRC stage ID
+  bl isStageBossEnemy
+; Also do the same for the heat effect in the pond area
+.org 0x024EA7E8 ; in daYkgr_c::_create
+  li r3, 3 ; DRC stage ID
+  bl isStageBossEnemy
