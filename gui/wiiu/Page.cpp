@@ -1204,10 +1204,11 @@ void ColorPage::drawDRC() const {
 ColorPage::PresetsSubpage::PresetsSubpage(ColorPage& parent_) : 
     parent(parent_)
 {
-    toggles[0] = std::make_unique<ActionButton>("Casual Clothes", "Enable this if you want to wear your casual clothes instead of the Hero's Clothes.", &OptionCB::toggleCasualClothes, &OptionCB::isCasual);
-    toggles[1] = std::make_unique<ActionButton>("Randomize Colors Orderly", "", &OptionCB::randomizeColorsOrderly);
-    toggles[2] = std::make_unique<ActionButton>("Randomize Colors Chaotically", "", &OptionCB::randomizeColorsChaotically);
-    toggles[3] = std::make_unique<FunctionButton>("Select Colors Manually", "", std::bind(&ColorPage::setSubpage, &parent, Subpage::COLOR_PICKER));
+    toggles[0] = std::make_unique<ActionButton>("Link Model", "Select a model for Link. To install more, read https://github.com/mcy/TWWHD-Randomizer/tree/main/customizer/INSTALL.md", &OptionCB::toggleCustomModel, &OptionCB::customModel);
+    toggles[1] = std::make_unique<ActionButton>("Casual Clothes", "Enable this if you want to wear your casual clothes instead of the Hero's Clothes. Custom models will have their own variant of casual clothes", &OptionCB::toggleCasualClothes, &OptionCB::isCasual);
+    toggles[2] = std::make_unique<ActionButton>("Randomize Colors Orderly", "", &OptionCB::randomizeColorsOrderly);
+    toggles[3] = std::make_unique<ActionButton>("Randomize Colors Chaotically", "", &OptionCB::randomizeColorsChaotically);
+    toggles[4] = std::make_unique<FunctionButton>("Select Colors Manually", "", std::bind(&ColorPage::setSubpage, &parent, Subpage::COLOR_PICKER));
 }
 
 void ColorPage::PresetsSubpage::open() {
