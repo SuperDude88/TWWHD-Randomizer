@@ -277,6 +277,7 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     auto allShuffleableEntrances = trackerWorld.getShuffledEntrances(EntranceType::ALL, false);
 
     int currentPointSize = 12;
+    clear_layout(ui->entrance_scroll_layout);
     for (auto& entrance : shuffledEntrances)
     {
         // New Horizontal layout to add the label and the disconnect button
