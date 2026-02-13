@@ -336,6 +336,11 @@ void MainWindow::initialize_tracker_world(Settings& settings,
         }
         checkBox->blockSignals(false);
     }
+
+    // Make sure any old location labels are cleared
+    // This avoids a stale location pointer from staying when a new tracker starts
+    clear_tracker_labels(ui->specific_locations_right_layout);
+    clear_tracker_labels(ui->specific_locations_left_layout);
 }
 
 void MainWindow::on_start_tracker_button_clicked()
