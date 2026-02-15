@@ -10,7 +10,7 @@
 #include <command/Log.hpp>
 
 // Recursively explore new areas based on the given areaEntry
-void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, const EventSet& ownedEvents, Area* area, std::list<EventAccess*>& eventsToTry, std::list<Entrance*>& exitsToTry, std::list<LocationAccess*>& locationsToTry)
+void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet& ownedItems, const EventSet& ownedEvents, Area* area, std::list<EventAccess*>& eventsToTry, std::list<Entrance*>& exitsToTry, std::list<LocationAccess*>& locationsToTry, bool tracker)
 {
     for (auto& eventAccess : area->events)
     {
@@ -18,13 +18,13 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
     }
     for (auto& exit : area->exits)
     {
-        // If the exit is disconnected, then ignore it
+        // If the exit is disconnected, then ignore it unless we're searching for the tracker
         if (exit.getConnectedArea() == nullptr)
         {
             // Evaluate the exit still for tracker purposes
-            if (!exit.hasBeenFound() && evaluateRequirement(exit.getWorld(), exit.getRequirement(), &ownedItems, &ownedEvents))
+            if (tracker)
             {
-                exit.setFound(true);
+                exitsToTry.push_front(&exit);
             }
             continue;
         }
@@ -63,7 +63,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
             {
                 exit.setFound(true);
                 connectedArea->isAccessible = true;
-                explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry);
+                explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry, tracker);
             }
             else
             {
@@ -71,11 +71,6 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
                 // consider them until the next sphere of iteration
                 exitsToTry.push_front(&exit);
             }
-        }
-        // If this exit hasn't been found, but is now found, mark it as such (for the tracker)
-        else if (!exit.hasBeenFound() && evaluateRequirement(exit.getWorld(), exit.getRequirement(), &ownedItems, &ownedEvents))
-        {
-            exit.setFound(true);
         }
     }
     for (auto& locAccess : area->locations)
@@ -89,7 +84,7 @@ void explore(const SearchMode& searchMode, WorldPool& worlds, const ItemMultiSet
 // Argument 2 is a copy of the passed in ItemPool since we want to modify
 // it locally. If worldToSearch is not -1 then only the world with that worldId
 // will be searched.
-LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool items, int worldToSearch /* = -1 */)
+LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool items, int worldToSearch /* = -1 */, bool tracker /*= false*/)
 {
     // Add starting inventory items to the pool of items
     for (auto& world : worlds)
@@ -220,7 +215,7 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
                         newThingsFound = true;
                         newEventsOrExits = true;
                         connectedArea->isAccessible = true;
-                        explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry);
+                        explore(searchMode, worlds, ownedItems, ownedEvents, connectedArea, eventsToTry, exitsToTry, locationsToTry, tracker);
                     }
                 }
                 else
@@ -290,9 +285,9 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
     return accessibleLocations;
 }
 
-LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, LocationPool& allowedLocations, int worldToSearch /*= -1*/)
+LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, LocationPool& allowedLocations, int worldToSearch /*= -1*/, bool tracker /*= false*/)
 {
-    auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, items, worldToSearch);
+    auto accessibleLocations = search(SearchMode::AccessibleLocations, worlds, items, worldToSearch, tracker);
     // Filter to only those locations which are allowed
     return filterFromPool(accessibleLocations, [allowedLocations](Location* loc){return elementInPool(loc, allowedLocations) && loc->currentItem.getGameItemId() == GameItem::INVALID;});
 }

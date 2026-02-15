@@ -1046,7 +1046,7 @@ void MainWindow::check_special_accessibility_conditions()
 
 void MainWindow::update_tracker_areas_and_autosave()
 {
-    getAccessibleLocations(trackerWorlds, trackerInventory, trackerLocations);
+    getAccessibleLocations(trackerWorlds, trackerInventory, trackerLocations, -1, true);
     check_special_accessibility_conditions();
 
     // Apply any own dungeon items after we get the accessible locations
@@ -1078,7 +1078,7 @@ void MainWindow::update_tracker_areas_and_autosave()
 
         if (addedItems)
         {
-            getAccessibleLocations(trackerWorlds, trackerInventoryExtras, trackerLocations);
+            getAccessibleLocations(trackerWorlds, trackerInventoryExtras, trackerLocations, -1, true);
             check_special_accessibility_conditions();
         }
     }
@@ -1666,7 +1666,7 @@ void MainWindow::calculate_own_dungeon_key_locations()
         }
 
         // Find all possible locations for this key in the dungeon
-        auto accessibleLocations = getAccessibleLocations(trackerWorlds, itemPool, trackerLocations);
+        auto accessibleLocations = getAccessibleLocations(trackerWorlds, itemPool, trackerLocations, -1, true);
         auto potentialKeyLocations = filterFromPool(accessibleLocations, [&](Location* loc){return loc->getName().starts_with(dungeonName);});
 
         // Save the possible locations for this key
