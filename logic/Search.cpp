@@ -153,7 +153,7 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
         std::set<EventId> accessibleEvents = {};
         bool newEventsOrExits = false;
         // Continuously loop through events and exits until no new events or exits are
-        // found. Since they can unlock each other, this is necessart for proper sphere calculations
+        // found. Since they can unlock each other, this is necessary for proper sphere calculations
         do
         {
             newEventsOrExits = false;

@@ -617,6 +617,7 @@ AdvancedPage::AdvancedPage() {
     buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::CTMC));
     buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::Plandomizer));
     buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::RandomItemSlideItem));
+    buttonColumns[1].emplace_back(std::make_unique<BasicButton>(Option::RequiredBossItems));
 }
 
 void AdvancedPage::open() {
