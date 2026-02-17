@@ -451,6 +451,3 @@ g_profile_SwitchOperator:
     .byte 0 ; mCullType
     .byte 0
     .byte 0
-
-.org 0x101f4670
-    .long g_profile_SwitchOperator
