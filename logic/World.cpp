@@ -552,6 +552,7 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
             if (dungeon.isRequiredDungeon)
             {
                 settings.setRequiredBoss(dungeon.raceModeLocation->getName(), true);
+                dungeon.raceModeLocation->isRequiredRaceModeLocation = true;
             }
         }
     }

@@ -72,6 +72,7 @@ public:
     std::unordered_set<LocationCategory> categories;
     bool progression;
     bool isRaceModeLocation;
+    bool isRequiredRaceModeLocation;
     uint8_t stageId = 0;
     bool plandomized;
     bool hasBeenHinted;
@@ -112,6 +113,7 @@ public:
         categories({LocationCategory::INVALID}),
         progression(false),
         isRaceModeLocation(false),
+        isRequiredRaceModeLocation(false),
         stageId(0),
         plandomized(false),
         hasBeenHinted(false),
@@ -141,6 +143,7 @@ public:
     std::string getName() const;
     std::u16string generateImportanceText(const std::string& language);
     bool currentItemCanBeBarren() const;
+    bool isBarrenAsChainLocation() const;
 };
 
 using LocationSet = std::set<Location*, PointerLess<Location>>;

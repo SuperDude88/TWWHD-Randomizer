@@ -146,8 +146,8 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 auto chainLocations = location->currentItem.getChainLocations();
                 if (!chainLocations.empty())
                 {
-                    // If all of this item's chain locations' items can be in barren regions (or are nonprogression locations), then this item is junk
-                    if (std::ranges::all_of(chainLocations, [](const Location* loc){ return !loc->progression || loc->currentItemCanBeBarren(); }))
+                    // If all of this item's chain locations' are barren as chain locations, then this item is barren too.
+                    if (std::ranges::all_of(chainLocations, [](const Location* loc){ return loc->isBarrenAsChainLocation(); }))
                     {
                         location->currentItem.setAsJunkItem();
                         LOG_TO_DEBUG(location->currentItem.getName() + " is now junk.");
@@ -176,7 +176,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
             newJunkItems = false;
             for (Item* item : potentiallyJunkItems)
             {
-                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](const Location* loc){ return !loc->progression || loc->currentItemCanBeBarren(); }))
+                if (!item->isJunkItem() && std::ranges::all_of(item->getChainLocations(), [](const Location* loc){ return loc->isBarrenAsChainLocation(); }))
                 {
                     newJunkItems = true;
                     item->setAsJunkItem();
@@ -222,7 +222,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                                 for (auto outsideLoc : location->outsideDependentLocations)
                                 {
                                     // If an outside dependent location is not barren, remove the region from being barren
-                                    if (!outsideLoc->currentItemCanBeBarren())
+                                    if (!outsideLoc->isBarrenAsChainLocation())
                                     {
                                         LOG_TO_DEBUG("Removed " + hintRegion + " from barren pool due to item " + outsideLoc->currentItem.getName() + " at location " + outsideLoc->getName() + " which is dependent on " + location->getName());
                                         world.barrenRegions.erase(hintRegion);
