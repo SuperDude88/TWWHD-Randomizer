@@ -170,16 +170,24 @@ bool Location::currentItemCanBeBarren() const
         }
     }
 
-    // If any of the remaining chain locations have an item which can't be barren, then this location's item isn't barren either
+    // If any of the remaining chain locations have an item which can't be barren, or the location is a required race mode location, 
+    // then this location's item isn't barren.
     for (auto& location : chainLocations)
     {
-        if (!location->currentItem.canBeInBarrenRegion())
+        if (!location->isBarrenAsChainLocation())
         {
             return false;
         }
     }
 
     return true;
+}
+
+// When a location is being checked for barreness as a chain location, it should not be considered barren
+// if it's a required race mode location
+bool Location::isBarrenAsChainLocation() const
+{
+    return !progression || (currentItem.canBeInBarrenRegion() && !isRequiredRaceModeLocation);
 }
 
 std::u16string Location::generateImportanceText(const std::string& language)
