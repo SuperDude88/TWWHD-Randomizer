@@ -9,14 +9,12 @@ namespace Utility::Str {
     std::string toUTF8(const std::u16string& str) {
         if(str.empty()) return "";
 
-        std::string ret;
-        ret.resize(str.size());
+        std::string ret(str.size(), '\0');
         char* pszNext;
         const char16_t* pwszNext;
         std::mbstate_t state = {0}; // zero-initialization represents the initial conversion state for mbstate_t
-        std::locale loc("C");
-        int res = std::use_facet<std::codecvt<char16_t, char, mbstate_t>>(loc).out(state, str.c_str(), &str[str.size()], pwszNext,
-        &ret[0], &ret[ret.size()], pszNext);
+        const std::codecvt_base::result& res = std::use_facet<std::codecvt<char16_t, char, mbstate_t>>(std::locale::classic()).out(
+            state, str.data(), str.data() + str.size(), pwszNext, ret.data(), ret.data() + ret.size(), pszNext);
 
         if(res == std::codecvt_base::error) return "";
         return ret;
@@ -26,20 +24,18 @@ namespace Utility::Str {
     {
         if(str.empty()) return u"";
 
-        std::u16string ret;
-        ret.resize(str.size());
+        std::u16string ret(str.size(), u'\0');
         const char* pszNext;
         char16_t* pwszNext;
         std::mbstate_t state = {0}; // zero-initialization represents the initial conversion state for mbstate_t
-        std::locale loc("C");
-        int res = std::use_facet<std::codecvt<char16_t, char, mbstate_t>>(loc).in(state, str.c_str(), &str[str.size()], pszNext,
-        &ret[0], &ret[ret.size()], pwszNext);
+        const std::codecvt_base::result& res = std::use_facet<std::codecvt<char16_t, char, mbstate_t>>(std::locale::classic()).in(
+            state, str.data(), str.data() + str.size(), pszNext, ret.data(), ret.data() + ret.size(), pwszNext);
 
         if(res == std::codecvt_base::error) return u"";
 
         // Remove extra null terminators that may have been created from multi-byte
         // UTF-8 characters
-        while(ret.size() > 0 && ret[ret.size() - 1] == u'\0')
+        while(ret.ends_with(u'\0'))
         {
             ret.pop_back();
         }

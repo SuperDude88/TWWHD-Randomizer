@@ -69,7 +69,7 @@
            <string notr="true"/>
           </property>
           <property name="currentIndex">
-           <number>6</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="getting_started_tab">
            <attribute name="title">
@@ -2462,12 +2462,15 @@ color: lightgray</string>
               </property>
               <property name="minimumSize">
                <size>
-                <width>364</width>
+                <width>346</width>
                 <height>346</height>
                </size>
               </property>
               <property name="cursor">
                <cursorShape>ArrowCursor</cursorShape>
+              </property>
+              <property name="autoFillBackground">
+               <bool>true</bool>
               </property>
               <property name="styleSheet">
                <string notr="true"/>

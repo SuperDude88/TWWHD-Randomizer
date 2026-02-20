@@ -12,8 +12,8 @@ enum struct SearchMode
     GeneratePlaythrough,
 };
 
-LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool items, int worldToSearch = -1);
-LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, LocationPool& allowedLocations, int worldToSearch = -1);
+LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool items, int worldToSearch = -1, bool tracker = false);
+LocationPool getAccessibleLocations(WorldPool& worlds, ItemPool& items, LocationPool& allowedLocations, int worldToSearch = -1, bool tracker = false);
 void runGeneralSearch(WorldPool& worlds, int worldToSearch = -1);
 bool gameBeatable(WorldPool& worlds);
 void generatePlaythrough(WorldPool& worlds);
