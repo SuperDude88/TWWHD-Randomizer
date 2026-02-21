@@ -128,6 +128,7 @@ enum struct Option {
     // Additional Randomization Options
     RemoveSwords,
     NumRequiredDungeons,
+    RequiredBossItems,
     RandomCharts,
     CTMC,
 
@@ -298,6 +299,7 @@ public:
     bool add_shortcut_warps_between_dungeons;
     bool do_not_generate_spoiler_log;
     bool remove_swords;
+    bool required_boss_items;
     bool skip_rematch_bosses;
     bool invert_sea_compass_x_axis;
     uint8_t num_required_dungeons;

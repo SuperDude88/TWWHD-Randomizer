@@ -187,6 +187,7 @@ private slots:
     void on_chest_type_matches_contents_stateChanged(int arg1);
     void on_damage_multiplier_valueChanged(int multiplier);
     void on_num_required_dungeons_currentIndexChanged(int index);
+    void on_required_boss_items_stateChanged(int arg1);
 
     // Convenience Tweaks
     void on_invert_sea_compass_x_axis_stateChanged(int arg1);

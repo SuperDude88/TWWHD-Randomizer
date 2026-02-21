@@ -471,6 +471,11 @@ namespace OptionCB {
         return fromBool(conf.settings.remove_swords);
     }
 
+    std::string toggleBossItems() {
+        conf.settings.required_boss_items = !conf.settings.required_boss_items;
+        return fromBool(conf.settings.required_boss_items);
+    }
+
     std::string toggleTrials() {
         conf.settings.skip_rematch_bosses = !conf.settings.skip_rematch_bosses;
         return fromBool(conf.settings.skip_rematch_bosses);
@@ -1032,6 +1037,8 @@ std::string getValue(const Option& option) {
             return fromBool(conf.settings.do_not_generate_spoiler_log);
         case Option::RemoveSwords:
             return fromBool(conf.settings.remove_swords);
+        case Option::RequiredBossItems:
+            return fromBool(conf.settings.required_boss_items);
         case Option::SkipRefights:
             return fromBool(conf.settings.skip_rematch_bosses);
         case Option::InvertCompass:
@@ -1250,6 +1257,8 @@ TriggerCallback getCallback(const Option& option) {
             return &toggleSpoilerLog;
         case Option::RemoveSwords:
             return &toggleSwords;
+        case Option::RequiredBossItems:
+            return &toggleBossItems;
         case Option::SkipRefights:
             return &toggleTrials;
         case Option::InvertCompass:
@@ -1350,6 +1359,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
 
         {RemoveSwords,                {"Remove Swords",                       "Controls whether swords will be placed throughout the game."}},
         {NumRequiredDungeons,         {"Number of Required Bosses",           "Select the number of randomly-chosen bosses that are required. The door to Puppet Ganon will not unlock until you've defeated all of these bosses. Sectors with required bosses will be marked on the map. Applies to \"Standard\" and \"Race Mode\" dungeons."}},
+        {RequiredBossItems,           {"Require Boss Items",                  "Required dungeon bosses will drop required items (e.g. Triforce Shards). Applies to \"Standard\" and \"Race Mode\" dungeons."}},
         {RandomCharts,                {"Randomize Charts",                    "Randomizes which sector is drawn on each Triforce/Treasure Chart."}},
         {CTMC,                        {"Chest Type Matches Contents",         "Changes the chest type to reflect its contents. A metal chest has a progress item, a key chest has a dungeon key, and a wooden chest has a non-progress item or a consumable.\nKey chests are dark wood chests that use a custom texture based on Big Key Chests. Keys for non-required dungeons in race mode will be in wooden chests."}},
 

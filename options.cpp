@@ -82,6 +82,7 @@ void Settings::resetDefaultSettings() {
     add_shortcut_warps_between_dungeons = false;
     do_not_generate_spoiler_log = false;
     remove_swords = false;
+    required_boss_items = false;
     skip_rematch_bosses = true;
     invert_sea_compass_x_axis = false;
     num_required_dungeons = 0;
@@ -356,6 +357,8 @@ uint8_t Settings::getSetting(const Option& option) const {
             return jalhalla_required;
         case Option::MolgeraRequired:
             return molgera_required;
+        case Option::RequiredBossItems:
+            return required_boss_items;
         default:
             return 0;
     }
@@ -563,6 +566,8 @@ void Settings::setSetting(const Option& option, const size_t& value) {
             jalhalla_required = value; return;
         case Option::MolgeraRequired:
             molgera_required = value; return;
+        case Option::RequiredBossItems:
+            required_boss_items = value; return;
         default:
             return;
     }
