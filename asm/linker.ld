@@ -86,6 +86,7 @@ dStage_changeScene = 0x025c3748;
 sqrtf = 0x028f4384;
 daKnob_00_setEventPrm = 0x021a4318;
 /* dSv_restart_c_setRoom = 0x025b9810; */
+fopAcM_delete = 0x025de1b8;
 
 getEventIdx = 0x02543f10;
 endCheck = 0x025440c8;

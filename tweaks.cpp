@@ -2217,35 +2217,24 @@ TweakError update_starting_gear(const Settings& settings) {
 }
 
 TweakError update_required_bosses(const World& world) {
-    if(custom_symbols.count("required_bosses") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-    const uint32_t required_bosses_array_addr = custom_symbols.at("required_bosses");
+    // Set a bunch of things in the final staircase room
+    RandoSession::CacheEntry& final_staircase = g_session.openGameFile(getRoomDzrPath("GanonL", 0));
 
-    std::unordered_set<uint8_t> requiredBossStageIds = {};
-    for (const auto& [dungeonName, dungeon] : world.dungeons)
-    {
-        if (dungeon.isRequiredDungeon)
-        {
-            requiredBossStageIds.insert(dungeon.raceModeLocation->stageId);
+    uint16_t required_boss_stages_bitset = 0x0000;
+    for (const auto& [dungeonName, dungeon] : world.dungeons) {
+        if (dungeon.isRequiredDungeon) {
+            required_boss_stages_bitset |= (1 << dungeon.raceModeLocation->stageId);
         }
     }
 
-    g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
-        CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
-
-        size_t i = 0;
-        for (auto stageId : requiredBossStageIds)
-        {
-            RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, required_bosses_array_addr + i), stageId));
-            ++i;
-        }
-        RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, required_bosses_array_addr + i), 0xFF));
-        return true;
-    });
-    
-    // Set a bunch of things in the final staircase room
-    RandoSession::CacheEntry& final_staircase = g_session.openGameFile(getRoomDzrPath("GanonL", 0));
-    final_staircase.addAction([](RandoSession* session, FileType* data) -> int {
+    final_staircase.addAction([required_boss_stages_bitset](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
+        // Add a custom actor to check if the bosses are dead and set a switch when they are
+        // Sets flag 0x25 (unused in vanilla)
+        ChunkEntry& dngSw = dzr.add_entity("ACTR");
+        dngSw.data = "DngSw\x00\x00\x00\x03\x00\x00\x25\x44\xE1\x00\x00\x44\xFA\x00\x00\xC6\x96\x00\x00\x00\xFF\x00\x00\x00\x00\xFF\xFF"s;
+        const uint16_t bossBitsBE = Utility::Endian::toPlatform(eType::Big, required_boss_stages_bitset);
+        *reinterpret_cast<uint16_t*>(dngSw.data.data() + 9) = bossBitsBE;
 
         // Change ALLdie to instead set flag 0x26 (unused in vanilla) instead of flag 0x19 (originally opened door)
         const std::vector<ChunkEntry*> actors = dzr.entries_by_type("ACTR");
@@ -2253,6 +2242,19 @@ TweakError update_required_bosses(const World& world) {
         {
             if (actor->data.substr(0, 6) == "ALLdie") {
                 actor->data = "ALLdie\x00\x00\xFF\xFF\x26\xFF\xC4\xBB\x80\x00\x45\x75\x34\x23\xC6\xA8\xC0\x00\x00\x00\x00\x00\x00\x00\xFF\xFF"s;
+                break;
+            }
+        }
+        
+        // The enemies in this room only spawn when switch 0x1A is set
+        // This switch is turned on by a SWC00 when you spawn into the room
+        // Normally, a second SWC00 will toggle switch 0x1A off if switch 0x19 is set,
+        // preventing the enemies from respawning once they have all been defeated once
+        // Change this second switch to check our new "enemies defeated" switch (0x26) instead
+        std::vector<ChunkEntry*> scobs = dzr.entries_by_type("SCOB");
+        for (ChunkEntry* scob : scobs) {
+            if (std::strncmp(&scob->data[0], "SW_C00\0\0", 8) == 0 && scob->data[0xA] == 0x19) { // Switch trigger with enable switch 0x19
+                scob->data[0xA] = 0x26; // params & 0x0000FF00
                 break;
             }
         }
@@ -4174,6 +4176,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(updateCodeSize());
 
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/custom_funcs_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/custom_actors_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/make_game_nonlinear_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/make_all_figurines_obtainable_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/remove_cutscenes_diff.yaml"));
@@ -4182,7 +4185,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/flexible_item_locations_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/fix_vanilla_bugs_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/misc_rando_features_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/required_bosses_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/switch_dungeon_flag_diff.yaml"));
     LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/switch_op_diff.yaml"));
 
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
