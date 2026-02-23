@@ -2245,6 +2245,19 @@ TweakError update_required_bosses(const World& world) {
                 break;
             }
         }
+        
+        // The enemies in this room only spawn when switch 0x1A is set
+        // This switch is turned on by a SWC00 when you spawn into the room
+        // Normally, a second SWC00 will toggle switch 0x1A off if switch 0x19 is set,
+        // preventing the enemies from respawning once they have all been defeated once
+        // Change this second switch to check our new "enemies defeated" switch (0x26) instead
+        std::vector<ChunkEntry*> scobs = dzr.entries_by_type("SCOB");
+        for (ChunkEntry* scob : scobs) {
+            if (std::strncmp(&scob->data[0], "SW_C00\0\0", 8) == 0 && scob->data[0xA] == 0x19) { // Switch trigger with enable switch 0x19
+                scob->data[0xA] = 0x26; // params & 0x0000FF00
+                break;
+            }
+        }
 
         // Add a switch operator that checks that both 0x25 (all required bosses are defeated) and 0x26 (all enemies are dead)
         // and then sets 0x19 to unlock the door.
