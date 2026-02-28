@@ -48,6 +48,21 @@
         update_permalink_and_seed_hash();                               \
     }
 
+void clear_layout(QLayout* layout) {
+    // Recursively clear child layouts
+    for (auto nestedLayout : layout->findChildren<QLayout*>())
+    {
+        clear_layout(nestedLayout);
+    }
+
+    while (QLayoutItem* item = layout->takeAt(0))
+    {
+        if (QWidget* widget = item->widget())
+            widget->deleteLater();
+        delete item;
+    }
+}
+
 void delete_and_create_default_config()
 {
     std::filesystem::remove(Utility::get_app_save_path() / "config.yaml");
@@ -132,22 +147,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     if (err != ConfigError:: NONE)
     {
         show_error_dialog("Settings could not be saved\nCode: " + ConfigErrorGetName(err));
-    }
-}
-
-void MainWindow::clear_layout(QLayout* layout) {
-
-    // Recursively clear child layouts
-    for (auto nestedLayout : layout->findChildren<QLayout*>())
-    {
-        clear_layout(nestedLayout);
-    }
-
-    while (QLayoutItem* item = layout->takeAt(0))
-    {
-        if (QWidget* widget = item->widget())
-            widget->deleteLater();
-        delete item;
     }
 }
 
@@ -1378,4 +1377,3 @@ void MainWindow::on_paste_permalink_clicked()
     auto permalink = QGuiApplication::clipboard()->text();
     on_permalink_textEdited(permalink);
 }
-

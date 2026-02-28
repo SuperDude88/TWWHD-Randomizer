@@ -22,6 +22,7 @@
 #include <gui/desktop/tracker/tracker_label.hpp>
 #include <gui/desktop/tracker/tracker_area_widget.hpp>
 
+void clear_layout(QLayout* layout);
 void delete_and_create_default_config();
 QString prettyTrackerName(Item& item, const int& count, MainWindow* mainWindow);
 
@@ -83,7 +84,6 @@ private:
 
     void closeEvent(QCloseEvent *event) override;
     std::tuple<std::string, std::string> get_option_name_and_color_name_from_sender_object_name();
-    void clear_layout(QLayout* layout);
     void load_config_into_ui();
     void setup_gear_menus();
     void setup_location_menus();
@@ -112,7 +112,6 @@ private:
                                   bool fromAutosave = false);
     void calculate_own_dungeon_key_locations();
     void set_location_list_widget_background(const std::string& area);
-    void clear_tracker_labels(QLayout* layout);
 
 public:
     void set_areas_locations();

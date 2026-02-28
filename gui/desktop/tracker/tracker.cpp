@@ -28,6 +28,27 @@
 #include <utility/string.hpp>
 #include <utility/color.hpp>
 
+static void clear_tracker_labels(QLayout* layout)
+{
+    clear_layout(layout);
+}
+
+static void clear_tracker_labels_immediately(QLayout* layout)
+{
+    // Recursively clear child layouts
+    for (auto nestedLayout : layout->findChildren<QLayout*>())
+    {
+        clear_tracker_labels_immediately(nestedLayout);
+    }
+
+    while (QLayoutItem* item = layout->takeAt(0))
+    {
+        if (QWidget* widget = item->widget())
+            delete widget;
+        delete item;
+    }
+}
+
 void MainWindow::initialize_tracker_world(Settings& settings,
                                           const GameItemPool& markedItems,
                                           const std::vector<std::string>& markedLocations,
@@ -36,13 +57,21 @@ void MainWindow::initialize_tracker_world(Settings& settings,
                                           const std::set<std::string>& requiredBosses_,
                                           bool fromAutosave)
 {
+    // Make sure any old labels are cleared
+    // This avoids stale pointers from staying when a new tracker starts
+    clear_tracker_labels_immediately(ui->specific_locations_right_layout);
+    clear_tracker_labels_immediately(ui->specific_locations_left_layout);
+    clear_tracker_labels_immediately(ui->entrance_scroll_layout);
+
+    // Clear out some old tracker info
+    trackerLocations.clear();
+    trackerInventory.clear();
+    mappedCharts.clear();
+
     trackerStarted = true;
 
     // Build the world used for the tracker
     auto& trackerWorld = trackerWorlds[0];
-    trackerLocations.clear();
-    trackerInventory.clear();
-
     trackerWorld = World();
     trackerWorld.setWorldId(0);
 
@@ -91,7 +120,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
 
     trackerWorld.determineChartMappings();
     // Use loaded chart mappings
-    mappedCharts.clear();
     if(trackerSettings.randomize_charts) {
         for(const auto& [chart, island] : chartMappings) {
             mapChart(chart, island);
@@ -277,7 +305,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     auto allShuffleableEntrances = trackerWorld.getShuffledEntrances(EntranceType::ALL, false);
 
     int currentPointSize = 12;
-    clear_layout(ui->entrance_scroll_layout);
     for (auto& entrance : shuffledEntrances)
     {
         // New Horizontal layout to add the label and the disconnect button
@@ -337,11 +364,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
         }
         checkBox->blockSignals(false);
     }
-
-    // Make sure any old location labels are cleared
-    // This avoids a stale location pointer from staying when a new tracker starts
-    clear_tracker_labels(ui->specific_locations_right_layout);
-    clear_tracker_labels(ui->specific_locations_left_layout);
 }
 
 void MainWindow::on_start_tracker_button_clicked()
@@ -1553,8 +1575,7 @@ void MainWindow::tracker_show_available_target_entrances(Entrance* entrance)
 
     ui->where_did_lead_to_label->setText(std::string("Where did " + entranceName + " lead to?").c_str());
 
-    auto entrance_destination_list_layout = ui->entrance_destination_list_layout;
-    clear_tracker_labels(entrance_destination_list_layout);
+    clear_tracker_labels(ui->entrance_destination_list_layout);
     clear_tracker_labels(ui->entrance_targets_scroll_layout);
 
     int currentPointSize = 12;
@@ -1860,11 +1881,6 @@ void MainWindow::calculate_entrance_paths()
             }
         }
     }
-}
-
-void MainWindow::clear_tracker_labels(QLayout* layout)
-{
-    clear_layout(layout);
 }
 
 QString prettyTrackerName(Item& item, const int& count, MainWindow* mainWindow)
