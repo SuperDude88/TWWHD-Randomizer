@@ -999,7 +999,7 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
         LOG_ERR_AND_RETURN(PermalinkError::INVALID_VERSION);
     }
 
-    const std::vector<char> bytes(optionsBytes.begin(), optionsBytes.end());
+    const std::vector<uint8_t> bytes(optionsBytes.begin(), optionsBytes.end());
     PackedBitsReader bitsReader(bytes);
 
     for(const Option& option : PERMALINK_OPTIONS) {
@@ -1048,7 +1048,7 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
         }
     }
 
-    if (bitsReader.current_byte_index != bitsReader.bytes.size() - 1) {
+    if (!bitsReader.reachedLastByte()) {
         LOG_ERR_AND_RETURN(PermalinkError::INCORRECT_LENGTH);
     }
 
@@ -1109,7 +1109,7 @@ std::string Config::getPermalink(const bool& internal /* = false */) const {
 
     // Add the packed bits to the permalink
     bitsWriter.flush();
-    for (const auto& byte : bitsWriter.bytes) {
+    for (const auto& byte : bitsWriter.getBytes()) {
         permalink += byte;
     }
 

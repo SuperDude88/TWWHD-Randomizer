@@ -539,7 +539,7 @@ skip_setting_pictograph_gallery_flag:
   li r3, 3 ; DRC stage ID
   bl isStageBossEnemy
 ; The cloud around DRI normally sets an event bit when it fades away (in the cutscene after warping out of DRC)
-; Change this to check for defeating Gohma too
+; Change this to check for defeating Gohma instead
 .org 0x02387500 ; in daObjRcloud_c::_create
   li r3, 3 ; DRC stage ID
   bl isStageBossEnemy

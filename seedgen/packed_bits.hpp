@@ -1,15 +1,19 @@
 #pragma once
 
+#include <cstdint>
+#include <vector>
+
 // Packed Bits classes copied from the original Wind Waker Randomizer
 class PackedBitsWriter
 {
+private:
+    size_t bits_left_in_byte = 8;
+    uint8_t current_byte = 0;
+    std::vector<uint8_t> bytes = {};
+
 public:
     PackedBitsWriter() = default;
     ~PackedBitsWriter() = default;
-
-    uint8_t bits_left_in_byte = 8;
-    size_t current_byte = 0;
-    std::vector<char> bytes = {};
 
     template <typename T>
     void write(T value, size_t length)
@@ -49,17 +53,21 @@ public:
         bits_left_in_byte = 8;
     }
 
+    const std::vector<uint8_t>& getBytes() const {
+        return bytes;
+    }
 };
 
 class PackedBitsReader
 {
-public:
-    PackedBitsReader(const std::vector<char>& bytes_) : bytes(bytes_) {}
-    ~PackedBitsReader() = default;
-
+private:
     size_t current_bit_index = 0;
     size_t current_byte_index = 0;
-    std::vector<char> bytes = {};
+    std::vector<uint8_t> bytes = {};
+
+public:
+    PackedBitsReader(const std::vector<uint8_t>& bytes_) : bytes(bytes_) {}
+    ~PackedBitsReader() = default;
 
     size_t read(size_t length)
     {
@@ -102,5 +110,9 @@ public:
         }
 
         return value;
+    }
+
+    bool reachedLastByte() const {
+        return current_byte_index == bytes.size() - 1;
     }
 };

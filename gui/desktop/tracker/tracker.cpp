@@ -68,8 +68,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     trackerInventory.clear();
     mappedCharts.clear();
 
-    trackerStarted = true;
-
     // Build the world used for the tracker
     auto& trackerWorld = trackerWorlds[0];
     trackerWorld = World();
@@ -302,8 +300,6 @@ void MainWindow::initialize_tracker_world(Settings& settings,
     set_areas_entrances();
 
     // Setup the display of randomized entrances
-    auto allShuffleableEntrances = trackerWorld.getShuffledEntrances(EntranceType::ALL, false);
-
     int currentPointSize = 12;
     for (auto& entrance : shuffledEntrances)
     {
@@ -364,6 +360,8 @@ void MainWindow::initialize_tracker_world(Settings& settings,
         }
         checkBox->blockSignals(false);
     }
+
+    trackerStarted = true;
 }
 
 void MainWindow::on_start_tracker_button_clicked()
