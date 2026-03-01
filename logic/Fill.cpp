@@ -586,6 +586,81 @@ static FillError handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
     return FillError::NONE;
 }
 
+static void generateRaceModeItems(const LocationPool& raceModeLocations, ItemPool& raceModeItems, ItemPool& itemsToChooseFrom, ItemPool& mainItemPool)
+{
+    shufflePool(itemsToChooseFrom);
+    while (!itemsToChooseFrom.empty() && raceModeItems.size() < raceModeLocations.size())
+    {
+        raceModeItems.push_back(popRandomElement(itemsToChooseFrom));
+    }
+    // Add back any unused elements
+    addElementsToPool(mainItemPool, itemsToChooseFrom);
+}
+
+// Place progression items in specific locations at the end of dungeons to require the player
+// to beat those dungeons.
+static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& allLocations)
+{
+    LocationPool raceModeLocations;
+    ItemPool raceModeItems;
+    for (auto& world : worlds)
+    {
+        if(world.getSettings().required_boss_items) {
+            for (auto& [name, dungeon] : world.dungeons)
+            {
+                if (dungeon.isRequiredDungeon)
+                {
+                    auto raceModeLocation = dungeon.raceModeLocation;
+                    // If this location already has an item placed at it, then skip it
+                    if (raceModeLocation->currentItem.getGameItemId() != GameItem::INVALID)
+                    {
+                        continue;
+                    }
+                    raceModeLocations.push_back(raceModeLocation);
+                }
+            }
+        }
+    }
+
+    // Build up the list of race mode items starting with triforce shards...
+    auto triforceShards = filterAndEraseFromPool(itemPool, [](const Item& item){return item.isTriforceShard();});
+    generateRaceModeItems(raceModeLocations, raceModeItems,  triforceShards, itemPool);
+
+    // Then swords...
+    auto swords = filterAndEraseFromPool(itemPool, [](const Item& item){return item.getGameItemId() == GameItem::ProgressiveSword;});
+    generateRaceModeItems(raceModeLocations, raceModeItems, swords, itemPool);
+
+    // Then bows...
+    auto bows = filterAndEraseFromPool(itemPool, [](const Item& item){return item.getGameItemId() == GameItem::ProgressiveBow;});
+    generateRaceModeItems(raceModeLocations, raceModeItems, bows, itemPool);
+
+    // Then the rest of the major items if necessary.
+    auto majorItems = filterAndEraseFromPool(itemPool, [](const Item& item){return item.isMajorItem();});
+    generateRaceModeItems(raceModeLocations, raceModeItems, majorItems, itemPool);
+
+    // logItemPool("raceModeItems", raceModeItems);
+
+    if (raceModeItems.size() < raceModeLocations.size())
+    {
+        Utility::platformLog("WARNING: Not enough major items to place at race mode locations.");
+    }
+
+    // Then place the items in the race mode locations
+    FillError err;
+    FILL_ERROR_CHECK(assumedFill(worlds, raceModeItems, itemPool, raceModeLocations));
+
+    // Set race mode locations which had items placed at them as having expected items
+    for (auto raceModeLoc : raceModeLocations)
+    {
+        raceModeLoc->hasExpectedItem = true;
+    }
+
+    // Recalculate major items since new items may now be required depending on
+    // what items were placed at race mode locations
+    determineMajorItems(worlds, itemPool, allLocations);
+    return FillError::NONE;
+}
+
 static FillError placeNonProgressLocationPlandomizerItems(WorldPool& worlds, ItemPool& itemPool)
 {
     LOG_TO_DEBUG("Placing Non-Progress Plandomizer Items");
@@ -671,9 +746,10 @@ FillError fill(WorldPool& worlds)
 
     determineMajorItems(worlds, itemPool, allLocations);
     FILL_ERROR_CHECK(placeNonProgressLocationPlandomizerItems(worlds, itemPool));
-    // Handle dungeon items first if necessary. Generally
+    // Handle dungeon items and race mode dungeons first if necessary. Generally
     // we need to place items that go into more restrictive location pools first before
     // we can place other items.
+    FILL_ERROR_CHECK(placeRaceModeItems(worlds, itemPool, allLocations));
     FILL_ERROR_CHECK(handleDungeonItems(worlds, itemPool));
 
     // Recalculate major items again since new items may now be required depending on

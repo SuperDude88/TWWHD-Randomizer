@@ -124,6 +124,10 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
       "Select the number of randomly-chosen bosses that are required. The door to Puppet Ganon will not unlock until you've defeated all of these bosses. Sectors with required bosses will be marked on the map.",
     },
     {
+      "required_boss_items",
+      "Required dungeon bosses will drop required items (e.g. Triforce Shards). Applies to \"Standard\" and \"Race Mode\" dungeons.",
+    },
+    {
       "randomize_charts",
       "Randomizes which sector is drawn on each Triforce/Treasure Chart."
     },

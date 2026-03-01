@@ -217,6 +217,7 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
     GET_FIELD(root, "damage_multiplier", settings.damage_multiplier);
     GET_FIELD(root, "chest_type_matches_contents", settings.chest_type_matches_contents)
     GET_FIELD(root, "remove_swords", settings.remove_swords)
+    GET_FIELD(root, "required_boss_items", settings.required_boss_items)
 
     GET_FIELD(root, "starting_pohs", settings.starting_pohs)
     GET_FIELD(root, "starting_hcs", settings.starting_hcs)
@@ -551,6 +552,7 @@ YAML::Node Config::settingsToYaml() const {
     SET_FIELD(root, "damage_multiplier", settings.damage_multiplier)
     SET_FIELD(root, "chest_type_matches_contents", settings.chest_type_matches_contents)
     SET_FIELD(root, "remove_swords", settings.remove_swords)
+    SET_FIELD(root, "required_boss_items", settings.required_boss_items)
 
     SET_FIELD(root, "starting_pohs", settings.starting_pohs)
     SET_FIELD(root, "starting_hcs", settings.starting_hcs)
@@ -771,6 +773,7 @@ static const std::vector<Option> PERMALINK_OPTIONS {
     Option::DungeonBigKeys,
     Option::DungeonMapsAndCompasses,
     Option::NumRequiredDungeons,
+    Option::RequiredBossItems,
     Option::RandomCharts,
     Option::CTMC,
     Option::DamageMultiplier,
@@ -893,6 +896,7 @@ static size_t getOptionBitCount(const Option& option) {
         case Option::ProgressDungeonSecrets:
         case Option::ProgressObscure:
         case Option::RemoveSwords:
+        case Option::RequiredBossItems:
         case Option::RandomCharts:
         case Option::CTMC:
         case Option::InstantText:
