@@ -61,37 +61,14 @@ namespace Text {
         size_t curr_word_len = 0;
         size_t len_curr_line = 0;
 
-        while (index_in_str < string.length()) { // length is weird because its utf-16
-            char16_t character = string[index_in_str];
+        while (index_in_str < string.length()) {
+            const char16_t& character = string[index_in_str];
 
-            if (character == u'\x0E') { // need to parse the commands, only implementing a few necessary ones for now (will break with other commands)
-                std::u16string substr;
-                size_t code_len = 0;
-                if (string[index_in_str + 1] == u'\x00') {
-                    if (string[index_in_str + 2] == u'\x03') { // color command
-                        if (string[index_in_str + 4] == u'\xFFFF') { // text color white, weird length
-                        code_len = 10;
-                        }
-                        else {
-                        code_len = 5;
-                        }
-                    }
-                }
-                else if (string[index_in_str + 1] == u'\x01') { // all implemented commands in this group have length 4
-                    code_len = 4;
-                }
-                else if (string[index_in_str + 1] == u'\x02') { // all implemented commands in this group have length 4
-                    code_len = 4;
-                }
-                else if (string[index_in_str + 1] == u'\x03') { // all implemented commands in this group have length 4
-                    code_len = 4;
-                }
-                else if (string[index_in_str + 1] == u'\x04') { // all implemented commands in this group have length 4. Only used for Ho Ho sound
-                    code_len = 4;
-                }
-
-                substr = string.substr(index_in_str, code_len);
-                current_word += substr;
+            if (character == u'\x0E') {
+                // Text tags have '\x0E' followed by 1 char16_t for group, 1 index, 1 for parameter size (in bytes)
+                // So we need to skip 4 characters + (parameter size / 2)
+                const size_t code_len = 4 + (string[index_in_str + 3] / 2);
+                current_word += string.substr(index_in_str, code_len);
                 index_in_str += code_len;
             }
             else if (character == u'\n') {
