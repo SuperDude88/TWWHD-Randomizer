@@ -3642,6 +3642,50 @@ TweakError fix_vanilla_text() {
     return TweakError::NONE;
 }
 
+TweakError make_item_get_text_dynamic() {
+    for (const auto& language : Text::supported_languages) {
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+        entry.addAction([=](RandoSession* session, FileType* data) -> int {
+            CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
+
+            // The item get message for arrows normally says you can carry up to 30
+            // Change it to use your maximum arrow count
+            {
+                static const std::unordered_map<std::string, std::u16string> word_to_replace = {
+                    {"English", u"30 arrows"s},
+                    {"Spanish", u"30 flechas"s},
+                    {"French", u"30 flèches"s},
+                };
+
+                std::u16string& message = msbt.messages_by_label["00140"].text.message;
+                const std::u16string& replace = word_to_replace.at(language);
+                message.replace(message.find(replace), replace.size(), REPLACE(ReplaceTags::ARROW_MAX));
+            }
+
+            // The item get message for bombs normally says you can carry up to 30
+            // Change it to use your maximum bomb count
+            // IMPROVEMENT: the vanilla text command for bomb capacity always includes " bombs" after the number
+            // English and Spanish have a unitless number in the vanilla text, so the text would be more faithful if it left off the unit
+            {
+                // Replacing just "30" without color commands would leave French with redundant unit text
+                static const std::unordered_map<std::string, std::u16string> word_to_replace = {
+                    {"English", TEXT_COLOR_RED u"30"s TEXT_COLOR_DEFAULT},
+                    {"Spanish", TEXT_COLOR_RED u"30"s TEXT_COLOR_DEFAULT},
+                    {"French", TEXT_COLOR_RED u"30 "s TEXT_COLOR_DEFAULT u"bombes"s},
+                };
+
+                std::u16string& message = msbt.messages_by_label["00150"].text.message;
+                const std::u16string& replace = word_to_replace.at(language);
+                message.replace(message.find(replace), replace.size(), TEXT_COLOR_RED REPLACE(ReplaceTags::BOMB_MAX) TEXT_COLOR_DEFAULT);
+            }
+
+            return true;
+        });
+    }
+    
+    return TweakError::NONE;
+}
+
 TweakError allow_nonlinear_servants_of_the_towers() {
     // Allow the sections of Tower of the Gods where you bring three Servants of the Tower into the hub room to be done nonlinearly, so you can return the servants in any order.
     // We change it so the Command Melody tablet appears when any one of the three servants is returned (originally it would only appear when returning the east servant).
@@ -4292,6 +4336,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     TWEAK_ERR_CHECK(add_ff_warp_button());
     TWEAK_ERR_CHECK(fix_entrance_params());
     TWEAK_ERR_CHECK(fix_vanilla_text());
+    TWEAK_ERR_CHECK(make_item_get_text_dynamic());
     TWEAK_ERR_CHECK(make_dungeon_joy_pendants_flexible());
     TWEAK_ERR_CHECK(prevent_fairy_island_softlocks());
     TWEAK_ERR_CHECK(give_fairy_fountains_distinct_colors());
