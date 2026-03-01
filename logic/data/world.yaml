@@ -1374,7 +1374,7 @@
 - Name: Five Eye Reef
   Island: Five Eye Reef
   Locations:
-      Five Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
+      Five Eye Reef - Destroy Cannons: Can_Fly_With_Deku_Leaf_Outdoors and Can_Destroy_Cannons
       Five Eye Reef - Sunken Treasure: Chart_For_Island_37 and Grappling_Hook and Can_Destroy_Cannons
   Exits:
       Five Eye Reef Lookout Platform: Can_Sail_Away
