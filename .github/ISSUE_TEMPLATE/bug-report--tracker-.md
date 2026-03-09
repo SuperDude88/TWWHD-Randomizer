@@ -12,6 +12,7 @@ A clear and concise description of what the bug is.
 
 **Spoiler Log**
 The spoiler log for the seed. If you do not have the spoiler log, provide the non-spoiler log instead (it also contains the config for the seed).
+If a plandomizer file was used, include that too.
 
 **To Reproduce**
 Steps to reproduce the behavior:

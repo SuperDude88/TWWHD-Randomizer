@@ -1,5 +1,4 @@
 # TWWHD-Randomizer
-As this is a new randomizer, there may still be bugs until it is more thoroughly tested. Some of the information below may change with time.
 
 * [Information](#Information)
   * [Getting Stuck](#Getting-Stuck)
@@ -8,12 +7,14 @@ As this is a new randomizer, there may still be bugs until it is more thoroughly
   * [On Console](#On-Console)
   * [On Emulator](#On-Emulator)
   * [Building](#Building)
+* [Mod Compatibility](#Mod-Compatibility)
+* [Item Tracking](#Item-Tracking)
 * [Credits](#Credits)
 
 ## Information
 A Randomizer for *The Legend of Zelda: The Wind Waker HD*.
 
-It shuffles all the items, makes the world open from the start, removes most cutscenes, and adds other tweaks to speed up mundane tasks. While most features from the [original Wind Waker Randomizer](https://github.com/LagoLunatic/wwrando) are present, some are yet to be ported due to the remake's changes.
+It shuffles all the items, makes the world open from the start, removes most cutscenes, and adds other tweaks to speed up mundane tasks.
 
 ### Getting Stuck
 If you can not find anywhere to progress, you should first check the spoiler log. The spoiler log is generated in the randomizer's save directory (`sd:/wiiu/apps/save/<8 hex digits> (TWWHD Randomizer)` on console) and contains information on everything in the seed.
@@ -65,6 +66,12 @@ The randomizer program (wuhb) will be placed in the build folder.
 
 #### The Desktop Application
 To build the Desktop Application, download and install the latest version of [Qt](https://www.qt.io/download-qt-installer-oss). Make sure to install the correct kit for your platform. After opening up Qt Creator, select `Open Project` and select the `CMakeLists.txt` file in the repo root. When prompted to select a kit, select the one you installed earlier. Define `QT_GUI` in the project's CMake configuation, then press the green play button in the bottom left of the application to build and run the project.
+
+## Mod Compatibility
+The randomizer does not currently support other mods, and compatibility issues are beyond the scope of randomizer support. This includes custom player models, which are often incompatible with the randomizer, especially if they change text or other UI elements. If you are using any other mods and encounter an issue, try disabling those mods and test if the issue persists.
+
+## Item Tracking
+A tracker with accurate logic for TWWHDR is included as part of the PC application. No tracker is currently available on the Wii U console itself, nor is there a web tracker. The web tracker for the original Wind Waker Randomizer has several differences in logic and available settings, so it is not recommended for use with TWWHDR.
 
 ## Credits
 All of this was made possible thanks to tremendous help from [csunday95](https://github.com/csunday95) and [gymnast86](https://github.com/gymnast86), along with bugfixing assistance from the devs at [ForTheUsers](https://fortheusers.org/). Translations were done by azer67 (French), Cithiel (Spanish), and Nacho (Spanish). Much of the work here was based on the research and code already written by the [original randomizer team](https://github.com/LagoLunatic/wwrando#credits).
