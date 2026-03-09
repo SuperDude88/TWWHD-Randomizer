@@ -1763,7 +1763,7 @@ TweakError add_cross_dungeon_warps() {
         CAST_ENTRY_TO_FILETYPE(drc, FileTypes::JPC, data)
 
         for (const uint16_t particle_id : {0x8161, 0x8162, 0x8165, 0x8166, 0x8112}) {
-            const Particle& particle = drc.particles[drc.particle_index_by_id[particle_id]];
+            const Particle& particle = drc.getParticleByID(particle_id);
 
             totg.addAction([particle](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(totg, FileTypes::JPC, data)
@@ -2830,7 +2830,7 @@ TweakError show_dungeon_markers_on_chart(World& world) {
                 text->fontColorTop = RGBA8(255, 255, 255, 255);
                 text->fontColorBottom = RGBA8(255, 255, 255, 255);
                 text->alpha = 200;
-                
+
                 // Set the material index to be the current size of the vector of materials since we're going to create
                 // a new one for these numbers
                 text->matIndex = map.materials.value().materials.size();
@@ -3338,7 +3338,7 @@ TweakError add_shortcut_warps_into_dungeons(World& world) {
         fh_jpc.addAction([&dri_jpc](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(fh, FileTypes::JPC, data)
 
-            const Particle& particle = fh.particles[fh.particle_index_by_id[0x8225]];
+            const Particle& particle = fh.getParticleByID(0x8225);
 
             dri_jpc.addAction([particle](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(dri, FileTypes::JPC, data)

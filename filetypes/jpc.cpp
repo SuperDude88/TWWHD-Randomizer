@@ -46,17 +46,12 @@ void writeColorTable(std::ostream& out, const std::vector<JParticle::ColorAnimat
 namespace JParticle {
     JPCError BEM1::read(std::istream& jpc) {
         if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        if (std::strncmp(magic, "BEM1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
+
         if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         jpc.seekg(4, std::ios::cur);
 
-        if (std::strncmp(magic, "BEM1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
-
         if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        Utility::Endian::toPlatform_inplace(eType::Big, flags);
-
-        volumeType = static_cast<VolumeType>((flags >> 8) & 0x07);
 
         if (!jpc.read(reinterpret_cast<char*>(&volumeSweep), sizeof(volumeSweep))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&volumeMinRad), sizeof(volumeMinRad))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
@@ -87,50 +82,13 @@ namespace JParticle {
         if (!jpc.read(reinterpret_cast<char*>(&accel), sizeof(accel))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&accelRndm), sizeof(accelRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-        Utility::Endian::toPlatform_inplace(eType::Big, volumeSweep);
-        Utility::Endian::toPlatform_inplace(eType::Big, volumeMinRad);
-        Utility::Endian::toPlatform_inplace(eType::Big, volumeSize);
-        Utility::Endian::toPlatform_inplace(eType::Big, divNumber);
-        Utility::Endian::toPlatform_inplace(eType::Big, rate);
-        Utility::Endian::toPlatform_inplace(eType::Big, rateRndm);
-        Utility::Endian::toPlatform_inplace(eType::Big, maxFrame);
-        Utility::Endian::toPlatform_inplace(eType::Big, startFrame);
-        Utility::Endian::toPlatform_inplace(eType::Big, lifeTime);
-        Utility::Endian::toPlatform_inplace(eType::Big, lifeTime);
-        Utility::Endian::toPlatform_inplace(eType::Big, initialVelOmni);
-        Utility::Endian::toPlatform_inplace(eType::Big, initialVelAxis);
-        Utility::Endian::toPlatform_inplace(eType::Big, initialVelRndm);
-        Utility::Endian::toPlatform_inplace(eType::Big, initialVelDir);
-        Utility::Endian::toPlatform_inplace(eType::Big, initialVelRatio);
-        Utility::Endian::toPlatform_inplace(eType::Big, spread);
-        Utility::Endian::toPlatform_inplace(eType::Big, airResist);
-        Utility::Endian::toPlatform_inplace(eType::Big, airResistRndm);
-        Utility::Endian::toPlatform_inplace(eType::Big, moment);
-        Utility::Endian::toPlatform_inplace(eType::Big, momentRndm);
-        Utility::Endian::toPlatform_inplace(eType::Big, accel);
-        Utility::Endian::toPlatform_inplace(eType::Big, accelRndm);
-
         if (!readVec3(jpc, jpc.tellg(), emitterScale)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!readVec3(jpc, jpc.tellg(), emitterTrans)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!readVec3(jpc, jpc.tellg(), emitterDir)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!readVec3(jpc, jpc.tellg(), emitterRot)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-        return JPCError::NONE;
-    }
-
-    JPCError BEM1::save_changes(std::ostream& out) {
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
-
-        out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldn't need to update?
-        Utility::seek(out, 4, std::ios::cur);
-
-        flags &= ~0x700;
-        flags |= (static_cast<uint8_t>(volumeType) & 0x07) << 8;
-
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
-        out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
-
         Utility::Endian::toPlatform_inplace(eType::Big, volumeSweep);
         Utility::Endian::toPlatform_inplace(eType::Big, volumeMinRad);
         Utility::Endian::toPlatform_inplace(eType::Big, volumeSize);
@@ -154,6 +112,57 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, accel);
         Utility::Endian::toPlatform_inplace(eType::Big, accelRndm);
 
+        volumeType = static_cast<VolumeType>((flags >> 8) & 0x07);
+        fixedDensity = flags & 0x1;
+        fixedInterval = flags & 0x2;
+        inheritScale = flags & 0x4;
+        followEmtr = flags & 0x8;
+        followEmtrChild = flags & 0x10;
+
+        return JPCError::NONE;
+    }
+
+    JPCError BEM1::save_changes(std::ostream& out) {
+        sectionSize = 0xA0;
+
+        flags = 0;
+
+        flags |= (static_cast<uint32_t>(fixedDensity) & 0x1);
+        flags |= (static_cast<uint32_t>(fixedInterval) & 0x1) << 1;
+        flags |= (static_cast<uint32_t>(inheritScale) & 0x1) << 2;
+        flags |= (static_cast<uint32_t>(followEmtr) & 0x1) << 3;
+        flags |= (static_cast<uint32_t>(followEmtrChild) & 0x1) << 4;
+        flags |= (static_cast<uint32_t>(volumeType) & 0x7) << 0x8;
+
+        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, flags);
+        Utility::Endian::toPlatform_inplace(eType::Big, volumeSweep);
+        Utility::Endian::toPlatform_inplace(eType::Big, volumeMinRad);
+        Utility::Endian::toPlatform_inplace(eType::Big, volumeSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, divNumber);
+        Utility::Endian::toPlatform_inplace(eType::Big, rate);
+        Utility::Endian::toPlatform_inplace(eType::Big, rateRndm);
+        Utility::Endian::toPlatform_inplace(eType::Big, maxFrame);
+        Utility::Endian::toPlatform_inplace(eType::Big, startFrame);
+        Utility::Endian::toPlatform_inplace(eType::Big, lifeTime);
+        Utility::Endian::toPlatform_inplace(eType::Big, lifeTime);
+        Utility::Endian::toPlatform_inplace(eType::Big, initialVelOmni);
+        Utility::Endian::toPlatform_inplace(eType::Big, initialVelAxis);
+        Utility::Endian::toPlatform_inplace(eType::Big, initialVelRndm);
+        Utility::Endian::toPlatform_inplace(eType::Big, initialVelDir);
+        Utility::Endian::toPlatform_inplace(eType::Big, initialVelRatio);
+        Utility::Endian::toPlatform_inplace(eType::Big, spread);
+        Utility::Endian::toPlatform_inplace(eType::Big, airResist);
+        Utility::Endian::toPlatform_inplace(eType::Big, airResistRndm);
+        Utility::Endian::toPlatform_inplace(eType::Big, moment);
+        Utility::Endian::toPlatform_inplace(eType::Big, momentRndm);
+        Utility::Endian::toPlatform_inplace(eType::Big, accel);
+        Utility::Endian::toPlatform_inplace(eType::Big, accelRndm);
+
+        out.write(magic, 4);
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
+        Utility::seek(out, 4, std::ios::cur);
+        out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
         out.write(reinterpret_cast<const char*>(&volumeSweep), sizeof(volumeSweep));
         out.write(reinterpret_cast<const char*>(&volumeMinRad), sizeof(volumeMinRad));
         out.write(reinterpret_cast<const char*>(&volumeSize), sizeof(volumeSize));
@@ -196,217 +205,243 @@ namespace JParticle {
         const std::streamoff sectionStart = jpc.tellg();
 
         if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        jpc.seekg(4, std::ios::cur);
-
         if (std::strncmp(magic, "BSP1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
-        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        int16_t colorPrmAnmDataOff;
+        int16_t colorEnvAnmDataOff;
+        uint8_t texAnmKeyNum;
+        uint8_t colorPrmAnmKeyNum;
+        uint8_t colorEnvAnmKeyNum;
 
+        if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        jpc.seekg(4, std::ios::cur);
         if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        Utility::Endian::toPlatform_inplace(eType::Big, flags);
-
-        shapeType = static_cast<ShapeType>(flags & 0xF);
-        dirType = static_cast<DirType>((flags >> 0x4) & 0x7);
-        rotType = static_cast<RotType>((flags >> 0x7) & 0x7);
-        planeType = static_cast<PlaneType>((flags >> 0xA) & 0x1);
-        if (shapeType == ShapeType::DIRECTION_CROSS || shapeType == ShapeType::ROTATION_CROSS) {
-            planeType = PlaneType::X;
-        }
-
-        colorInSelect = (flags >> 0xF) & 0x07;
-        alphaInSelect = (flags >> 0x12) & 0x1;
-        isEnableTexScrollAnm = flags & 0x01000000;
-        childOrder = flags & 0x00400000;
-        listOrder = flags & 0x00200000;
-        isEnableProjection = flags & 0x00100000;
-        isGlblTexAnm = flags & 0x00004000;
-        isGlblClrAnm = flags & 0x00001000;
-
-        uint16_t colorPrmAnimDataOff;
-        uint16_t colorEnvAnimDataOff;
-        if (!jpc.read(reinterpret_cast<char*>(&colorPrmAnimDataOff), sizeof(colorPrmAnimDataOff))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        if (!jpc.read(reinterpret_cast<char*>(&colorEnvAnimDataOff), sizeof(colorEnvAnimDataOff))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        Utility::Endian::toPlatform_inplace(eType::Big, colorPrmAnimDataOff);
-        Utility::Endian::toPlatform_inplace(eType::Big, colorEnvAnimDataOff);
-
+        if (!jpc.read(reinterpret_cast<char*>(&colorPrmAnmDataOff), sizeof(colorPrmAnmDataOff))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        if (!jpc.read(reinterpret_cast<char*>(&colorEnvAnmDataOff), sizeof(colorEnvAnmDataOff))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!readVec2(jpc, jpc.tellg(), baseSize)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-
-        if (!jpc.read(reinterpret_cast<char*>(&anmRndm), sizeof(anmRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, anmRndm);
-
-        colorLoopOffset = (flags & 0x00000800) ? 0xFFFF : 0;
-        texLoopOffset = (flags & 0x00002000) ? 0xFFFF : 0;
-
-        uint8_t texIdxAnimCount;
-        uint8_t colorPrmAnimDataCount;
-        uint8_t colorEnvAnimDataCount;
+        if (!jpc.read(reinterpret_cast<char*>(&loopOffset), sizeof(loopOffset))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&blendModeFlags), sizeof(blendModeFlags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&alphaCompareFlags), sizeof(alphaCompareFlags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&alphaRef0), sizeof(alphaRef0))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&alphaRef1), sizeof(alphaRef1))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&zModeFlags), sizeof(zModeFlags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&texFlags), sizeof(texFlags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        if (!jpc.read(reinterpret_cast<char*>(&texIdxAnimCount), sizeof(texIdxAnimCount))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        if (!jpc.read(reinterpret_cast<char*>(&texAnmKeyNum), sizeof(texAnmKeyNum))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&texIdx), sizeof(texIdx))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&colorFlags), sizeof(colorFlags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        if (!jpc.read(reinterpret_cast<char*>(&colorPrmAnimDataCount), sizeof(colorPrmAnimDataCount))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        if (!jpc.read(reinterpret_cast<char*>(&colorEnvAnimDataCount), sizeof(colorEnvAnimDataCount))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        if (!jpc.read(reinterpret_cast<char*>(&colorAnimMaxFrm), sizeof(colorAnimMaxFrm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, blendModeFlags);
-        Utility::Endian::toPlatform_inplace(eType::Big, colorAnimMaxFrm);
-
+        if (!jpc.read(reinterpret_cast<char*>(&colorPrmAnmKeyNum), sizeof(colorPrmAnmKeyNum))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        if (!jpc.read(reinterpret_cast<char*>(&colorEnvAnmKeyNum), sizeof(colorEnvAnmKeyNum))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        if (!jpc.read(reinterpret_cast<char*>(&colorRegAnmMaxFrm), sizeof(colorRegAnmMaxFrm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!readRGBA(jpc, jpc.tellg(), colorPrm)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!readRGBA(jpc, jpc.tellg(), colorEnv)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-
-        colorCalcIdxType = static_cast<CalcIdxType>((colorFlags >> 4) & 0x07);
-
         if (!jpc.read(reinterpret_cast<char*>(&tilingS), sizeof(tilingS))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&tilingT), sizeof(tilingT))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, tilingS);
-        Utility::Endian::toPlatform_inplace(eType::Big, tilingT);
-
-        texCalcIdxType = static_cast<CalcIdxType>((texFlags >> 2) & 0x07);
-
         if (!readVec2(jpc, jpc.tellg(), texInitTrans)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!readVec2(jpc, jpc.tellg(), texInitScale)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!readVec2(jpc, jpc.tellg(), texIncTrans)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!readVec2(jpc, jpc.tellg(), texIncScale)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&texIncRot), sizeof(texIncRot))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
+        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, flags);
+        Utility::Endian::toPlatform_inplace(eType::Big, colorPrmAnmDataOff);
+        Utility::Endian::toPlatform_inplace(eType::Big, colorEnvAnmDataOff);
+        Utility::Endian::toPlatform_inplace(eType::Big, loopOffset);
+        Utility::Endian::toPlatform_inplace(eType::Big, blendModeFlags);
+        Utility::Endian::toPlatform_inplace(eType::Big, colorRegAnmMaxFrm);
+        Utility::Endian::toPlatform_inplace(eType::Big, tilingS);
+        Utility::Endian::toPlatform_inplace(eType::Big, tilingT);
         Utility::Endian::toPlatform_inplace(eType::Big, texIncRot);
 
+        // The values here are placed right at the end of the normal block
         if (texFlags & 0x00000001) {
-            for (uint8_t i = 0; i < texIdxAnimCount; i++) {
-                uint8_t& val = texIdxAnimData.emplace_back();
+            for (uint8_t i = 0; i < texAnmKeyNum; i++) {
+                uint8_t& val = texIdxAnmData.emplace_back();
                 if (!jpc.read(reinterpret_cast<char*>(&val), sizeof(val))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
             }
         }
 
-        isEnableTexture = texFlags & 0x00000002;
+        texAnmType = static_cast<CalcType>((texFlags >> 2) & 0x07);
+        isTextureEmpty = texFlags & 0x00000002;
+
+        type = static_cast<ShapeType>(flags & 0xF);
+        dirType = static_cast<DirType>((flags >> 0x4) & 0x7);
+        rotType = static_cast<RotType>((flags >> 0x7) & 0x7);
+        planeType = static_cast<PlaneType>((flags >> 0xA) & 0x1);
+        tevColorArg = (flags >> 0xF) & 0x07;
+        tevAlphaArg = (flags >> 0x12) & 0x1;
+        enableTexScrollAnm = flags & 0x01000000;
+        childOrder = flags & 0x00400000;
+        listOrder = flags & 0x00200000;
+        enableProjection = flags & 0x00100000;
+        enableAnmTone = flags & 0x00080000;
+        isClipOn = flags & 0x00800000;
+        isGlobalTexAnm = flags & 0x00004000;
+        isGlobalColAnm = flags & 0x00001000;
+        colorLoopOffset = (flags & 0x00000800) ? 0xFFFF : 0;
+        texLoopOffset = (flags & 0x00002000) ? 0xFFFF : 0;
+
+        colorRegAnmType = static_cast<CalcType>((colorFlags >> 4) & 0x07);
+        enablePrm = colorFlags & 0x01;
+        enableEnv = colorFlags & 0x04;
 
         if (colorFlags & 0x02) {
-            if (colorPrmAnimData = readColorTable(jpc, sectionStart + colorPrmAnimDataOff, colorPrmAnimDataCount); colorPrmAnimData.empty()) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+            if (colorPrmAnmData = readColorTable(jpc, sectionStart + colorPrmAnmDataOff, colorPrmAnmKeyNum); colorPrmAnmData.empty()) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         }
 
         if (colorFlags & 0x08) {
-            if (colorEnvAnimData = readColorTable(jpc, sectionStart + colorEnvAnimDataOff, colorEnvAnimDataCount); colorEnvAnimData.empty()) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+            if (colorEnvAnmData = readColorTable(jpc, sectionStart + colorEnvAnmDataOff, colorEnvAnmKeyNum); colorEnvAnmData.empty()) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         }
+
+        blendMode1 = blendModeFlags & 0x03;
+        srcBlendFactor1 = (blendModeFlags >> 0x2) & 0x0F;
+        dstBlendFactor1 = (blendModeFlags >> 0x6) & 0x0F;
+        blendOp1 = (blendModeFlags >> 0xA) & 0x0F;
+        enableAlphaUpdate = (blendModeFlags >> 0xE) & 0x01;
+
+        alphaCmpComp0 = alphaCompareFlags & 0x07;
+        alphaCmpComp1 = (alphaCompareFlags >> 0x5) & 0x07;
+        alphaCmpOp = (alphaCompareFlags >> 0x3) & 0x03;
+
+        enableZCmp = zModeFlags & 0x01;
+        zCmpFunction = (zModeFlags >> 0x1) & 0x07;
+        enableZCmpUpdate = (zModeFlags >> 0x4) & 0x01;
+        zCompLoc = (zModeFlags >> 0x5) & 0x01;
 
         return JPCError::NONE;
     }
 
     JPCError BSP1::save_changes(std::ostream& out) {
+        uint8_t texAnmKeyNum = texIdxAnmData.size();
+        uint8_t colorPrmAnmKeyNum = colorPrmAnmData.size();
+        uint8_t colorEnvAnmKeyNum = colorEnvAnmData.size();
+
+        int16_t dataOffs = 0x60 + texAnmKeyNum * 0x1;
+        int16_t colorPrmAnmDataOff = 0;
+        int16_t colorEnvAnmDataOff = 0;
+        if (!colorPrmAnmData.empty()) {
+            dataOffs = roundUp<int16_t>(dataOffs, 4);
+            colorPrmAnmDataOff = dataOffs;
+            dataOffs += colorPrmAnmKeyNum * 0x6;
+        }
+        if (!colorEnvAnmData.empty()) {
+            dataOffs = roundUp<int16_t>(dataOffs, 4);
+            colorEnvAnmDataOff = dataOffs;
+            dataOffs += colorEnvAnmKeyNum * 0x6;
+        }
+        sectionSize = roundUp<uint32_t>(dataOffs, 0x20);
+
+        flags = 0;
+        texFlags = 0;
+        colorFlags = 0;
+        alphaCompareFlags = 0;
+        zModeFlags = 0;
+        blendModeFlags = 0;
+
+        flags |= (static_cast<uint32_t>(type) & 0xF);
+        flags |= (static_cast<uint32_t>(dirType) & 0x7) << 0x4;
+        flags |= (static_cast<uint32_t>(rotType) & 0x7) << 0x7;
+        flags |= (static_cast<uint32_t>(planeType) & 0x1) << 0xA;
+        flags |= (static_cast<uint32_t>(tevColorArg) & 0x7) << 0xF;
+        flags |= (static_cast<uint32_t>(tevAlphaArg) & 0x1) << 0x12;
+        flags |= (static_cast<uint32_t>(enableTexScrollAnm) & 0x1) << 0x18;
+        flags |= (static_cast<uint32_t>(childOrder) & 0x1) << 0x16;
+        flags |= (static_cast<uint32_t>(listOrder) & 0x1) << 0x15;
+        flags |= (static_cast<uint32_t>(enableProjection) & 0x1) << 0x14;
+        flags |= (static_cast<uint32_t>(enableAnmTone) & 0x1) << 0x13;
+        flags |= (static_cast<uint32_t>(isClipOn) & 0x1) << 0x17;
+        flags |= (static_cast<uint32_t>(isGlobalTexAnm) & 0x1) << 0xE;
+        flags |= (static_cast<uint32_t>(isGlobalColAnm) & 0x1) << 0xC;
+        if(colorLoopOffset != 0) {
+            flags |= 0x800;
+        }
+        if(texLoopOffset != 0) {
+            flags |= 0x2000;
+        }
+
+        if(!texIdxAnmData.empty()) {
+            texFlags |= 0x1;
+        }
+        if(isTextureEmpty) {
+            texFlags |= 0x02;
+        }
+        texFlags |= (static_cast<uint8_t>(texAnmType) & 0x07) << 0x2;
+
+        colorFlags |= (static_cast<uint8_t>(colorRegAnmType) & 0x7) << 0x4;
+        colorFlags |= (static_cast<uint8_t>(enablePrm) & 0x1);
+        colorFlags |= (static_cast<uint8_t>(enableEnv) & 0x1) << 0x2;
+        if(!colorPrmAnmData.empty()) {
+            colorFlags |= 0x02;
+        }
+        if(!colorEnvAnmData.empty()) {
+            colorFlags |= 0x08;
+        }
+
+        blendModeFlags |= (static_cast<uint16_t>(blendMode1) & 0x3);
+        blendModeFlags |= (static_cast<uint16_t>(srcBlendFactor1) & 0xF) << 0x2;
+        blendModeFlags |= (static_cast<uint16_t>(dstBlendFactor1) & 0xF) << 0x6;
+        blendModeFlags |= (static_cast<uint16_t>(blendOp1) & 0xF) << 0xA;
+        blendModeFlags |= (static_cast<uint16_t>(enableAlphaUpdate) & 0x1) << 0xE;
+
+        alphaCompareFlags |= (static_cast<uint8_t>(alphaCmpComp0) & 0x7);
+        alphaCompareFlags |= (static_cast<uint8_t>(alphaCmpComp1) & 0x7) << 0x5;
+        alphaCompareFlags |= (static_cast<uint8_t>(alphaCmpOp) & 0x3) << 0x3;
+
+        zModeFlags |= (static_cast<uint8_t>(enableZCmp) & 0x1);
+        zModeFlags |= (static_cast<uint8_t>(zCmpFunction) & 0x7) << 0x1;
+        zModeFlags |= (static_cast<uint8_t>(enableZCmpUpdate) & 0x1) << 0x4;
+        zModeFlags |= (static_cast<uint8_t>(zCompLoc) & 0x1) << 0x5;
+
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, flags);
+        Utility::Endian::toPlatform_inplace(eType::Big, colorPrmAnmDataOff);
+        Utility::Endian::toPlatform_inplace(eType::Big, colorEnvAnmDataOff);
+        Utility::Endian::toPlatform_inplace(eType::Big, loopOffset);
+        Utility::Endian::toPlatform_inplace(eType::Big, blendModeFlags);
+        Utility::Endian::toPlatform_inplace(eType::Big, colorRegAnmMaxFrm);
+        Utility::Endian::toPlatform_inplace(eType::Big, tilingS);
+        Utility::Endian::toPlatform_inplace(eType::Big, tilingT);
+        Utility::Endian::toPlatform_inplace(eType::Big, texIncRot);
 
         out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
         Utility::seek(out, 4, std::ios::cur);
-
-        // reset all the flags we are about to set
-        flags &= ~(0x0177FFFF); // = ~(0x38000 | 0x40000 | 0x1000000 | 0x400000 | 0x200000 | 0x100000 | 0x4000 | 0x1000 | 0x800 | 0x2000 | 0xF | 0x70 | 0x380 | 0x400)
-        flags |= (colorInSelect & 0x7) << 0xF;
-        flags |= (alphaInSelect & 0x1) << 0x12;
-        if(isEnableTexScrollAnm) flags |= 0x01000000;
-        if(childOrder) flags |= 0x00400000;
-        if(listOrder) flags |= 0x00200000;
-        if(isEnableProjection) flags |= 0x00100000;
-        if(isGlblTexAnm) flags |= 0x00004000;
-        if(isGlblClrAnm) flags |= 0x00001000;
-        if(colorLoopOffset != 0) flags |= 0x00000800;
-        if(texLoopOffset != 0) flags |= 0x00002000;
-
-        flags |= static_cast<uint8_t>(shapeType) & 0xF;
-        flags |= (static_cast<uint8_t>(dirType) & 0x7) << 0x4;
-        flags |= (static_cast<uint8_t>(rotType) & 0x7) << 0x7;
-        flags |= (static_cast<uint8_t>(planeType) & 0x1) << 0xA;
-
-        Utility::Endian::toPlatform_inplace(eType::Big, flags);
-
         out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
-
-        uint16_t colorPrmAnimDataOff = 0;
-        uint16_t colorEnvAnimDataOff = 0;
-
-        if (!colorPrmAnimData.empty()) colorPrmAnimDataOff = roundUp<uint16_t>(0x60 + texIdxAnimData.size(), 4);
-        if (!colorEnvAnimData.empty()) colorEnvAnimDataOff = roundUp<uint16_t>(colorPrmAnimDataOff + colorPrmAnimData.size() * 0x6, 4);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, colorPrmAnimDataOff);
-        Utility::Endian::toPlatform_inplace(eType::Big, colorEnvAnimDataOff);
-
-        out.write(reinterpret_cast<const char*>(&colorPrmAnimDataOff), sizeof(colorPrmAnimDataOff));
-        out.write(reinterpret_cast<const char*>(&colorEnvAnimDataOff), sizeof(colorEnvAnimDataOff));
-
+        out.write(reinterpret_cast<const char*>(&colorPrmAnmDataOff), sizeof(colorPrmAnmDataOff));
+        out.write(reinterpret_cast<const char*>(&colorEnvAnmDataOff), sizeof(colorEnvAnmDataOff));
         writeVec2(out, baseSize);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, anmRndm);
-
-        out.write(reinterpret_cast<const char*>(&anmRndm), sizeof(anmRndm));
-
-
-        uint8_t texIdxAnimCount = texIdxAnimData.size();
-        uint8_t colorPrmAnimDataCount = colorPrmAnimData.size();
-        uint8_t colorEnvAnimDataCount = colorEnvAnimData.size();
-
-        Utility::Endian::toPlatform_inplace(eType::Big, blendModeFlags);
-        Utility::Endian::toPlatform_inplace(eType::Big, colorAnimMaxFrm);
-
-        colorFlags &= ~0x0000007A; // = ~(0x70 | 0x8 | 0x2)
-        colorFlags |= (static_cast<uint8_t>(colorCalcIdxType) & 0x07) << 4;
-        if (!colorPrmAnimData.empty()) colorFlags |= 0x2;
-        if (!colorEnvAnimData.empty()) colorFlags |= 0x8;
-
-        texFlags &= ~0x1F; // = ~(0x1C | 0x2 | 0x1)
-        texFlags |=(static_cast<uint8_t>(texCalcIdxType) & 0x07) << 2;
-        if (!texIdxAnimData.empty()) texFlags |= 0x1;
-    	if (isEnableTexture) texFlags |= 0x2;
-
+        out.write(reinterpret_cast<const char*>(&loopOffset), sizeof(loopOffset));
         out.write(reinterpret_cast<const char*>(&blendModeFlags), sizeof(blendModeFlags));
         out.write(reinterpret_cast<const char*>(&alphaCompareFlags), sizeof(alphaCompareFlags));
         out.write(reinterpret_cast<const char*>(&alphaRef0), sizeof(alphaRef0));
         out.write(reinterpret_cast<const char*>(&alphaRef1), sizeof(alphaRef1));
         out.write(reinterpret_cast<const char*>(&zModeFlags), sizeof(zModeFlags));
         out.write(reinterpret_cast<const char*>(&texFlags), sizeof(texFlags));
-        out.write(reinterpret_cast<const char*>(&texIdxAnimCount), sizeof(texIdxAnimCount));
+        out.write(reinterpret_cast<const char*>(&texAnmKeyNum), sizeof(texAnmKeyNum));
         out.write(reinterpret_cast<const char*>(&texIdx), sizeof(texIdx));
         out.write(reinterpret_cast<const char*>(&colorFlags), sizeof(colorFlags));
-        out.write(reinterpret_cast<const char*>(&colorPrmAnimDataCount), sizeof(colorPrmAnimDataCount));
-        out.write(reinterpret_cast<const char*>(&colorEnvAnimDataCount), sizeof(colorEnvAnimDataCount));
-        out.write(reinterpret_cast<const char*>(&colorAnimMaxFrm), sizeof(colorAnimMaxFrm));
-
+        out.write(reinterpret_cast<const char*>(&colorPrmAnmKeyNum), sizeof(colorPrmAnmKeyNum));
+        out.write(reinterpret_cast<const char*>(&colorEnvAnmKeyNum), sizeof(colorEnvAnmKeyNum));
+        out.write(reinterpret_cast<const char*>(&colorRegAnmMaxFrm), sizeof(colorRegAnmMaxFrm));
         writeRGBA(out, colorPrm);
         writeRGBA(out, colorEnv);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, tilingS);
-        Utility::Endian::toPlatform_inplace(eType::Big, tilingT);
-
         out.write(reinterpret_cast<const char*>(&tilingS), sizeof(tilingS));
         out.write(reinterpret_cast<const char*>(&tilingT), sizeof(tilingT));
-
         writeVec2(out, texInitTrans);
         writeVec2(out, texInitScale);
         writeVec2(out, texIncTrans);
         writeVec2(out, texIncScale);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, texIncRot);
-
         out.write(reinterpret_cast<const char*>(&texIncRot), sizeof(texIncRot));
-
-        for (const uint8_t& val : texIdxAnimData) {
+        for (const uint8_t& val : texIdxAnmData) {
             out.write(reinterpret_cast<const char*>(&val), sizeof(val));
         }
         padToLen(out, 4);
-
         if (colorFlags & 0x02) {
-            writeColorTable(out, colorPrmAnimData);
+            writeColorTable(out, colorPrmAnmData);
         }
         padToLen(out, 4);
-
         if (colorFlags & 0x08) {
-            writeColorTable(out, colorEnvAnimData);
+            writeColorTable(out, colorEnvAnmData);
         }
 
         return JPCError::NONE;
@@ -415,33 +450,11 @@ namespace JParticle {
 
     JPCError ESP1::read(std::istream& jpc) {
         if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        jpc.seekg(4, std::ios::cur);
-
         if (std::strncmp(magic, "ESP1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
-        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
-
+        if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        jpc.seekg(4, std::ios::cur);
         if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        Utility::Endian::toPlatform_inplace(eType::Big, flags);
-
-        isEnableScale = flags & 0x00000100;
-        isDiffXY = flags & 0x00000200;
-        isEnableScaleAnmY = flags & 0x00000400;
-        isEnableScaleAnmX = flags & 0x00000800;
-        isEnableScaleBySpeedY = flags & 0x00001000;
-        isEnableScaleBySpeedX = flags & 0x00002000;
-        isEnableAlpha = flags & 0x00000001;
-        isEnableSinWave = flags & 0x00000002;
-        isEnableRotate = flags & 0x01000000;
-
-        alphaWaveType = static_cast<CalcAlphaWaveType>((flags >> 0x02) & 0x03);
-
-        anmTypeX = (flags >> 0x12) & 0x01;
-        anmTypeY = (flags >> 0x13) & 0x01;
-        pivotX = (flags >> 0x0E) & 0x03;
-        pivotY = (flags >> 0x10) & 0x03;
-
         jpc.seekg(4, std::ios::cur);
 
         if (!jpc.read(reinterpret_cast<char*>(&alphaInTiming), sizeof(alphaInTiming))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
@@ -470,6 +483,9 @@ namespace JParticle {
         if (!jpc.read(reinterpret_cast<char*>(&rotateSpeedRandom), sizeof(rotateSpeedRandom))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&rotateDirection), sizeof(rotateDirection))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
+        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, flags);
+
         Utility::Endian::toPlatform_inplace(eType::Big, alphaInTiming);
         Utility::Endian::toPlatform_inplace(eType::Big, alphaOutTiming);
         Utility::Endian::toPlatform_inplace(eType::Big, alphaInValue);
@@ -495,17 +511,31 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, rotateSpeedRandom);
         Utility::Endian::toPlatform_inplace(eType::Big, rotateDirection);
 
+        isEnableScale = flags & 0x00000100;
+        isDiffXY = flags & 0x00000200;
+        isEnableScaleAnmY = flags & 0x00000400;
+        isEnableScaleAnmX = flags & 0x00000800;
+        isEnableScaleBySpeedY = flags & 0x00001000;
+        isEnableScaleBySpeedX = flags & 0x00002000;
+        isEnableAlpha = flags & 0x00000001;
+        isEnableSinWave = flags & 0x00000002;
+        isEnableRotate = flags & 0x01000000;
+
+        alphaWaveType = static_cast<CalcAlphaWaveType>((flags >> 0x02) & 0x03);
+
+        anmTypeX = (flags >> 0x12) & 0x01;
+        anmTypeY = (flags >> 0x13) & 0x01;
+        pivotX = (flags >> 0x0E) & 0x03;
+        pivotY = (flags >> 0x10) & 0x03;
+
         return JPCError::NONE;
     }
 
     JPCError ESP1::save_changes(std::ostream& out) {
-        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        sectionSize = 0x80;
 
-        out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
-        Utility::seek(out, 4, std::ios::cur);
+        flags = 0;
 
-        flags &= ~(0x010FFF0F); // = ~(0x100 | 0x200 | 0x400 | 0x800 | 0x40000 | 0x80000 | 0x1000 | 0x2000 | 0x1 | 0x2 | 0x1000000 | 0xC | 0xC000 | 0x30000)
         if(isEnableScale) flags |= 0x00000100;
         if(isDiffXY) flags |= 0x00000200;
         if(isEnableScaleAnmY) flags |= 0x00000400;
@@ -521,11 +551,8 @@ namespace JParticle {
         flags |= (pivotX & 0x3) << 0x0E;
         flags |= (pivotY & 0x3) << 0x10;
 
+        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
-
-        out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
-
-        Utility::seek(out, 4, std::ios::cur);
 
         Utility::Endian::toPlatform_inplace(eType::Big, alphaInTiming);
         Utility::Endian::toPlatform_inplace(eType::Big, alphaOutTiming);
@@ -551,6 +578,13 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, rotateAngleRandom);
         Utility::Endian::toPlatform_inplace(eType::Big, rotateSpeedRandom);
         Utility::Endian::toPlatform_inplace(eType::Big, rotateDirection);
+
+        out.write(magic, 4);
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
+        Utility::seek(out, 4, std::ios::cur);
+
+        out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
+        Utility::seek(out, 4, std::ios::cur);
 
         out.write(reinterpret_cast<const char*>(&alphaInTiming), sizeof(alphaInTiming));
         out.write(reinterpret_cast<const char*>(&alphaOutTiming), sizeof(alphaOutTiming));
@@ -584,15 +618,12 @@ namespace JParticle {
 
     JPCError ETX1::read(std::istream& jpc) {
         if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        if (std::strncmp(magic, "ETX1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
+
         if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         jpc.seekg(4, std::ios::cur);
 
-        if (std::strncmp(magic, "ETX1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
-
         if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        Utility::Endian::toPlatform_inplace(eType::Big, flags);
 
         if (!jpc.read(reinterpret_cast<char*>(&p00), sizeof(p00))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&p01), sizeof(p01))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
@@ -602,6 +633,12 @@ namespace JParticle {
         if (!jpc.read(reinterpret_cast<char*>(&p12), sizeof(p12))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&scale), sizeof(scale))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
+        if (!jpc.read(reinterpret_cast<char*>(&indTextureID), sizeof(indTextureID))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        if (!jpc.read(reinterpret_cast<char*>(&subTextureID), sizeof(subTextureID))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        if (!jpc.read(reinterpret_cast<char*>(&secondTextureIndex), sizeof(secondTextureIndex))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+
+        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, flags);
         Utility::Endian::toPlatform_inplace(eType::Big, p00);
         Utility::Endian::toPlatform_inplace(eType::Big, p01);
         Utility::Endian::toPlatform_inplace(eType::Big, p02);
@@ -611,30 +648,22 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, scale);
 
         indTextureMode = static_cast<IndTextureMode>(flags & 0x03);
-        if (!jpc.read(reinterpret_cast<char*>(&indTextureID), sizeof(indTextureID))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        if (!jpc.read(reinterpret_cast<char*>(&subTextureID), sizeof(subTextureID))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        if (!jpc.read(reinterpret_cast<char*>(&secondTextureIndex), sizeof(secondTextureIndex))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-
-        useSecondTex = flags & 0x00000100;
+        indTexMtxId = (flags >> 0x2) & 0x03;
+        useSecondTex = flags & 0x100;
 
         return JPCError::NONE;
     }
 
     JPCError ETX1::save_changes(std::ostream& out) {
-        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        sectionSize = 0x40;
 
-        out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
-        Utility::seek(out, 4, std::ios::cur);
-
-        flags &= ~0x103; // = ~(0x100 | 0x3)
-        flags |= static_cast<uint8_t>(indTextureMode) & 0x00000003;
+        flags = 0;
+        flags |= static_cast<uint8_t>(indTextureMode) & 0x3;
+        flags |= (indTexMtxId & 0x3) << 0x2;
         if(useSecondTex) flags |= 0x100;
 
+        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
-
-        out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
-
         Utility::Endian::toPlatform_inplace(eType::Big, p00);
         Utility::Endian::toPlatform_inplace(eType::Big, p01);
         Utility::Endian::toPlatform_inplace(eType::Big, p02);
@@ -642,6 +671,11 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, p11);
         Utility::Endian::toPlatform_inplace(eType::Big, p12);
         Utility::Endian::toPlatform_inplace(eType::Big, scale);
+
+        out.write(magic, 4);
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
+        Utility::seek(out, 4, std::ios::cur);
+        out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
 
         out.write(reinterpret_cast<const char*>(&p00), sizeof(p00));
         out.write(reinterpret_cast<const char*>(&p01), sizeof(p01));
@@ -662,25 +696,12 @@ namespace JParticle {
 
     JPCError SSP1::read(std::istream& jpc) {
         if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        if (std::strncmp(magic, "SSP1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
+
         if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         jpc.seekg(4, std::ios::cur);
 
-        if (std::strncmp(magic, "SSP1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
-
-        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
-
         if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        Utility::Endian::toPlatform_inplace(eType::Big, flags);
-
-        shapeType = static_cast<ShapeType>(flags & 0xF);
-        dirType = static_cast<DirType>((flags >> 0x4) & 0x7);
-        rotType = static_cast<RotType>((flags >> 0x7) & 0x7);
-        planeType = static_cast<PlaneType>((flags >> 0xA) & 0x1);
-        if (shapeType == ShapeType::DIRECTION_CROSS || shapeType == ShapeType::ROTATION_CROSS) {
-            planeType = PlaneType::X;
-        }
-
-        isDrawParent = flags & 0x00080000;
 
         if (!jpc.read(reinterpret_cast<char*>(&posRndm), sizeof(posRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&baseVel), sizeof(baseVel))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
@@ -696,14 +717,6 @@ namespace JParticle {
 
         if (!jpc.read(reinterpret_cast<char*>(&rotateSpeed), sizeof(rotateSpeed))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
-        isEnableRotate = flags & 0x01000000;
-        isEnableAlphaOut = flags & 0x00800000;
-        isEnableScaleOut = flags & 0x00400000;
-        isEnableField = flags & 0x00200000;
-        isInheritedRGB = flags & 0x00040000;
-        isInheritedAlpha = flags & 0x00020000;
-        isInheritedScale = flags & 0x00010000;
-
         if (!jpc.read(reinterpret_cast<char*>(&inheritScale), sizeof(inheritScale))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&inheritAlpha), sizeof(inheritAlpha))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&inheritRGB), sizeof(inheritRGB))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
@@ -711,6 +724,8 @@ namespace JParticle {
         if (!readRGBA(jpc, jpc.tellg(), colorEnv)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&texIdx), sizeof(texIdx))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
+        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, flags);
         Utility::Endian::toPlatform_inplace(eType::Big, posRndm);
         Utility::Endian::toPlatform_inplace(eType::Big, baseVel);
         Utility::Endian::toPlatform_inplace(eType::Big, baseVelRndm);
@@ -725,17 +740,29 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, inheritAlpha);
         Utility::Endian::toPlatform_inplace(eType::Big, inheritRGB);
 
+        shapeType = static_cast<ShapeType>(flags & 0xF);
+        dirType = static_cast<DirType>((flags >> 0x4) & 0x7);
+        rotType = static_cast<RotType>((flags >> 0x7) & 0x7);
+        planeType = static_cast<PlaneType>((flags >> 0xA) & 0x1);
+        isDrawParent = flags & 0x00080000;
+
+        isEnableRotate = flags & 0x01000000;
+        isEnableAlphaOut = flags & 0x00800000;
+        isEnableScaleOut = flags & 0x00400000;
+        isEnableField = flags & 0x00200000;
+        isInheritedRGB = flags & 0x00040000;
+        isInheritedAlpha = flags & 0x00020000;
+        isInheritedScale = flags & 0x00010000;
+        isClipOn = flags & 0x00100000;
+
         return JPCError::NONE;
     }
 
     JPCError SSP1::save_changes(std::ostream& out) {
-        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        sectionSize = 0x60;
 
-        out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
-        Utility::seek(out, 4, std::ios::cur);
+        flags = 0;
 
-        flags &= ~0x01EF07FF; // ~(0x1000000 | 0x800000 | 0x400000 | 0x200000 | 0x80000 | 0x40000 | 0x20000 | 0x10000 | 0xF | 0x70 | 0x380 | 0x400)
         if(isEnableRotate) flags |= 0x1000000;
         if(isEnableAlphaOut) flags |= 0x800000;
         if(isEnableScaleOut) flags |= 0x400000;
@@ -744,16 +771,15 @@ namespace JParticle {
         if(isInheritedRGB) flags |= 0x40000;
         if(isInheritedAlpha) flags |= 0x20000;
         if(isInheritedScale) flags |= 0x10000;
+        if(isClipOn) flags |= 0x100000;
 
         flags |= static_cast<uint8_t>(shapeType) & 0xF;
         flags |= (static_cast<uint8_t>(dirType) & 0x7) << 0x4;
         flags |= (static_cast<uint8_t>(rotType) & 0x7) << 0x7;
         flags |= (static_cast<uint8_t>(planeType) & 0x1) << 0xA;
 
-
+        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
-
-        out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
 
         Utility::Endian::toPlatform_inplace(eType::Big, posRndm);
         Utility::Endian::toPlatform_inplace(eType::Big, baseVel);
@@ -768,6 +794,11 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, inheritRGB);
         Utility::Endian::toPlatform_inplace(eType::Big, inheritAlpha);
         Utility::Endian::toPlatform_inplace(eType::Big, inheritRGB);
+
+        out.write(magic, 4);
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
+        Utility::seek(out, 4, std::ios::cur);
+        out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
 
         out.write(reinterpret_cast<const char*>(&posRndm), sizeof(posRndm));
         out.write(reinterpret_cast<const char*>(&baseVel), sizeof(baseVel));
@@ -796,19 +827,11 @@ namespace JParticle {
 
     JPCError FLD1::read(std::istream& jpc) {
         if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        jpc.seekg(4, std::ios::cur);
-
         if (std::strncmp(magic, "FLD1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
-        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
-
+        if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        jpc.seekg(4, std::ios::cur);
         if (!jpc.read(reinterpret_cast<char*>(&flags), sizeof(flags))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        Utility::Endian::toPlatform_inplace(eType::Big, flags);
-
-        statusFlag = static_cast<FieldStatusFlag>(flags >> 0x10);
-        type = static_cast<FieldType>(flags & 0xF);
-        addType = static_cast<FieldAddType>((flags >> 8) & 0x03);
 
         if (!jpc.read(reinterpret_cast<char*>(&mag), sizeof(mag))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&magRndm), sizeof(magRndm))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
@@ -828,6 +851,8 @@ namespace JParticle {
         if (!jpc.read(reinterpret_cast<char*>(&cycle), sizeof(cycle))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&unk1), sizeof(unk1))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 
+        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        Utility::Endian::toPlatform_inplace(eType::Big, flags);
         Utility::Endian::toPlatform_inplace(eType::Big, mag);
         Utility::Endian::toPlatform_inplace(eType::Big, magRndm);
         Utility::Endian::toPlatform_inplace(eType::Big, maxDist);
@@ -839,46 +864,23 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, enTime);
         Utility::Endian::toPlatform_inplace(eType::Big, disTime);
 
-        //refDistance = -1.0f;
-        //innerSpeed = -1.0f;
-        //outerSpeed = -1.0f;
-
-        //if (type == FieldType::NEWTON) {
-        //    refDistance = pow(param1, 2);
-        //}
-        //else if (type == FieldType::VORTEX) {
-        //    innerSpeed = mag;
-        //    outerSpeed = magRndm;
-        //}
-        //else if (type == FieldType::AIR) {
-        //    refDistance = magRndm;
-        //}
-        //else if (type == FieldType::CONVECTION) {
-        //    refDistance = param2;
-        //}
-        //else if (type == FieldType::SPIN) {
-        //    innerSpeed = mag;
-        //}
+        statusFlag = static_cast<FieldStatusFlag>(flags >> 0x10);
+        type = static_cast<FieldType>(flags & 0xF);
+        addType = static_cast<FieldAddType>((flags >> 8) & 0x03);
 
         return JPCError::NONE;
     }
 
     JPCError FLD1::save_changes(std::ostream& out) {
-        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        sectionSize = 0x60;
 
-        out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
-        Utility::seek(out, 4, std::ios::cur);
-
-        flags &= ~0x00FF030F; // = ~(0xFF0000 | 0x300 | 0xF)
-        flags |= static_cast<uint8_t>(statusFlag) << 0x10;
+        flags = 0;
+        flags |= static_cast<uint16_t>(statusFlag) << 0x10;
         flags |= (static_cast<uint8_t>(addType) & 0x3) << 0x8;
         flags |= static_cast<uint8_t>(type) & 0xF;
 
+        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
         Utility::Endian::toPlatform_inplace(eType::Big, flags);
-
-        out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
-
         Utility::Endian::toPlatform_inplace(eType::Big, mag);
         Utility::Endian::toPlatform_inplace(eType::Big, magRndm);
         Utility::Endian::toPlatform_inplace(eType::Big, maxDist);
@@ -889,6 +891,11 @@ namespace JParticle {
         Utility::Endian::toPlatform_inplace(eType::Big, fadeOut);
         Utility::Endian::toPlatform_inplace(eType::Big, enTime);
         Utility::Endian::toPlatform_inplace(eType::Big, disTime);
+
+        out.write(magic, 4);
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
+        Utility::seek(out, 4, std::ios::cur);
+        out.write(reinterpret_cast<const char*>(&flags), sizeof(flags));
 
         out.write(reinterpret_cast<const char*>(&mag), sizeof(mag));
         out.write(reinterpret_cast<const char*>(&magRndm), sizeof(magRndm));
@@ -913,24 +920,23 @@ namespace JParticle {
 
     JPCError KFA1::read(std::istream& jpc) {
         if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-        jpc.seekg(4, std::ios::cur);
-
         if (std::strncmp(magic, "KFA1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
-        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+        if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        jpc.seekg(4, std::ios::cur);
 
         if (!jpc.read(reinterpret_cast<char*>(&keyType), sizeof(keyType))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         jpc.seekg(3, std::ios::cur);
         uint8_t keyCount;
         if (!jpc.read(reinterpret_cast<char*>(&keyCount), sizeof(keyCount))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-
+        if (!jpc.read(reinterpret_cast<char*>(&unk1), sizeof(unk1))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         if (!jpc.read(reinterpret_cast<char*>(&isLoopEnable), 1)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        jpc.seekg(0xD, std::ios::cur);
+
+        Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
+
         isLoopEnable = isLoopEnable != 0;
 
-        if (!jpc.read(reinterpret_cast<char*>(&unk1), sizeof(unk1))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
-
-        jpc.seekg(0xD, std::ios::cur);
         for (uint8_t i = 0; i < keyCount; i++) {
             CurveKeyframe& keyframe = keys.emplace_back();
             if (!jpc.read(reinterpret_cast<char*>(&keyframe.time), sizeof(keyframe.time))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
@@ -948,21 +954,23 @@ namespace JParticle {
     }
 
     JPCError KFA1::save_changes(std::ostream& out) {
+        const uint8_t keyCount = keys.size();
+
+        sectionSize = roundUp<uint32_t>(0x20 + keyCount * 0x10, 0x20);
+
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
         out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
         Utility::seek(out, 4, std::ios::cur);
 
         out.write(reinterpret_cast<const char*>(&keyType), sizeof(keyType));
         Utility::seek(out, 3, std::ios::cur);
-        uint8_t keyCount = keys.size();
         out.write(reinterpret_cast<const char*>(&keyCount), sizeof(keyCount));
-
-        out.write(reinterpret_cast<const char*>(&isLoopEnable), 1);
         out.write(reinterpret_cast<const char*>(&unk1), sizeof(unk1));
-
+        out.write(reinterpret_cast<const char*>(&isLoopEnable), 1);
         Utility::seek(out, 0xD, std::ios::cur);
+
         for (CurveKeyframe& keyframe : keys) {
             Utility::Endian::toPlatform_inplace(eType::Big, keyframe.time);
             Utility::Endian::toPlatform_inplace(eType::Big, keyframe.value);
@@ -981,10 +989,10 @@ namespace JParticle {
 
     JPCError TDB1::read(std::istream& jpc, const uint8_t texCount) {
         if (!jpc.read(magic, 4)) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
+        if (std::strncmp(magic, "TDB1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
+
         if (!jpc.read(reinterpret_cast<char*>(&sectionSize), sizeof(sectionSize))) LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
         jpc.seekg(4, std::ios::cur);
-
-        if (std::strncmp(magic, "TDB1", 4) != 0) LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
@@ -1008,10 +1016,12 @@ namespace JParticle {
     }
 
     JPCError TDB1::save_changes(std::ostream& out, const std::unordered_map<std::string, size_t>& textures) {
+        sectionSize = roundUp<uint32_t>(0xC + texFilenames.size() * 0x2, 0x20);
+
         Utility::Endian::toPlatform_inplace(eType::Big, sectionSize);
 
         out.write(magic, 4);
-        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize)); // isnt used, shouldnt need to update?
+        out.write(reinterpret_cast<const char*>(&sectionSize), sizeof(sectionSize));
         Utility::seek(out, 4, std::ios::cur);
 
         texIDs.clear();
@@ -1033,6 +1043,9 @@ namespace JParticle {
 }
 
 JPCError Particle::read(std::istream& jpc) {
+    uint32_t num_chunks = 0;
+    uint8_t num_kfa1_chunks = 0, num_fld1_chunks = 0, num_textures = 0;
+
     if (!jpc.read(magicJEFF, 8)) {
         LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
     }
@@ -1129,9 +1142,7 @@ JPCError Particle::read(std::istream& jpc) {
 }
 
 JPCError Particle::save_changes(std::ostream& out, const std::unordered_map<std::string, size_t>& textures) {
-	out.write(magicJEFF, 8);
-
-	num_chunks = 3;
+	uint32_t num_chunks = 3;
 	if (!emitter.has_value()) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
 	if (!baseShape.has_value()) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
 	if (extraShape.has_value()) num_chunks += 1;
@@ -1141,16 +1152,16 @@ JPCError Particle::save_changes(std::ostream& out, const std::unordered_map<std:
 	num_chunks += curves.size();
 	if (!texDatabase.has_value()) LOG_ERR_AND_RETURN(JPCError::MISSING_CHUNK);
 
-	num_kfa1_chunks = curves.size();
-	num_fld1_chunks = fields.size();
-
-	num_textures = texDatabase.value().texFilenames.size();
+	uint8_t num_kfa1_chunks = curves.size();
+	uint8_t num_fld1_chunks = fields.size();
+	uint8_t num_textures = texDatabase.value().texFilenames.size();
 
 	Utility::Endian::toPlatform_inplace(eType::Big, unknown_1);
 	Utility::Endian::toPlatform_inplace(eType::Big, num_chunks);
 	Utility::Endian::toPlatform_inplace(eType::Big, size); // not always accurate, shouldnt need to update?
 	Utility::Endian::toPlatform_inplace(eType::Big, particle_id);
 
+	out.write(magicJEFF, 8);
 	out.write(reinterpret_cast<const char*>(&unknown_1), sizeof(unknown_1));
 	out.write(reinterpret_cast<const char*>(&num_chunks), sizeof(num_chunks));
 	out.write(reinterpret_cast<const char*>(&size), sizeof(size));
@@ -1236,8 +1247,6 @@ namespace FileTypes {
 
 	void JPC::initNew() {
 		memcpy(magicJPAC, "JPAC1-00", 8);
-		num_particles = 0;
-		num_textures = 0;
 
 		particle_index_by_id = {};
 		particles = {};
@@ -1252,6 +1261,7 @@ namespace FileTypes {
 	}
 
 	JPCError JPC::loadFromBinary(std::istream& jpc) {
+        uint16_t num_particles = 0, num_textures = 0;
 		if (!jpc.read(magicJPAC, 8)) {
 			LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 		}
@@ -1288,9 +1298,9 @@ namespace FileTypes {
 				LOG_ERR_AND_RETURN(JPCError::UNKNOWN_CHUNK);
 			}
 
-			jpc.seekg(8, std::ios::cur); // ignore section size, its not accurate anyway, also skip 4 unused bytes
+			jpc.seekg(8, std::ios::cur); // ignore section size (it's inaccurate) + 4 more unused bytes
 			std::string filename(0x14, '\0');
-			if (!jpc.read(&filename[0], 0x14)) {
+			if (!jpc.read(filename.data(), 0x14)) {
 				LOG_ERR_AND_RETURN(JPCError::REACHED_EOF);
 			}
 
@@ -1313,6 +1323,10 @@ namespace FileTypes {
 			LOG_ERR_AND_RETURN(JPCError::COULD_NOT_OPEN);
 		}
 		return loadFromBinary(file);
+	}
+
+	Particle& JPC::getParticleByID(const uint16_t& id) {
+		return particles[particle_index_by_id[id]];
 	}
 
 	JPCError JPC::addParticle(const Particle& particle) {
@@ -1345,8 +1359,8 @@ namespace FileTypes {
 	JPCError JPC::writeToStream(std::ostream& out) {
 		out.write(magicJPAC, 8);
 
-		num_particles = particles.size();
-		num_textures = textures.size();
+		uint16_t num_particles = particles.size();
+		uint16_t num_textures = textures.size();
 
 		Utility::Endian::toPlatform_inplace(eType::Big, num_particles);
 		Utility::Endian::toPlatform_inplace(eType::Big, num_textures);
@@ -1367,7 +1381,7 @@ namespace FileTypes {
 			out.write("TEX1", 4);
 
 			out.write("\x00\x00\x00\x20\x00\x00\x00\x00", 8);
-			out.write(&filename[0], 0x14);
+			out.write(filename.data(), 0x14);
 		}
 
 		return JPCError::NONE;

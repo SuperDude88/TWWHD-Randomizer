@@ -43,14 +43,6 @@ namespace JParticle {
         LINE
     };
 
-    enum struct EmitFlags : uint8_t {
-        FIXED_DENSITY = 0x1,
-        FIXED_INTERVAL,
-        INHERIT_SCALE = 0x4,
-        FOLLOW_EMITTER = 0x8,
-        FOLLOW_EMITTER_CHILD = 0x10
-    };
-
     enum struct ShapeType : uint8_t {
         POINT = 0,
         LINE,
@@ -69,7 +61,7 @@ namespace JParticle {
         VEL = 0,
         POS,
         POS_INV,
-        EMTR_DIT,
+        EMTR_DIR,
         PREV_PCTL
     };
 
@@ -83,11 +75,10 @@ namespace JParticle {
 
     enum struct PlaneType : uint8_t {
         XY = 0,
-        XZ,
-        X
+        XZ
     };
 
-    enum struct CalcIdxType : uint8_t {
+    enum struct CalcType : uint8_t {
         NORMAL = 0,
         REPEAT,
         REVERSE,
@@ -95,17 +86,11 @@ namespace JParticle {
         RANDOM
     };
 
-    enum struct CalcScaleAnmType : uint8_t {
-        NORMAL = 0,
-        REPEAT,
-        REVERSE
-    };
-
     enum struct CalcAlphaWaveType : int8_t {
         NONE = -1,
-        NRM_SIN = 0,
-        ADD_SIN,
-        MULT_SIN
+        NRM = 0,
+        ADD,
+        MULT
     };
 
     enum struct IndTextureMode : uint8_t {
@@ -132,7 +117,7 @@ namespace JParticle {
         FIELD_VELOCITY
     };
 
-    enum struct FieldStatusFlag : uint8_t {
+    enum struct FieldStatusFlag : uint16_t {
         NO_INHERIT_ROTATE = 0x2,
         AIR_DRAG = 0x4,
 
@@ -143,6 +128,8 @@ namespace JParticle {
         FADE_FLAG_MASK = (FADE_USE_EN_TIME | FADE_USE_DIS_TIME | FADE_USE_FADE_IN | FADE_USE_FADE_OUT),
 
         USE_MAX_DIST = 0x80
+
+        // 0x100 also exists but I don't know what to call it
     };
 
     enum struct KeyType : uint8_t {
@@ -160,7 +147,7 @@ namespace JParticle {
     };
 
     struct ColorAnimationKeyframe {
-        uint16_t time;
+        int16_t time;
         RGBA8 color;
     };
 
@@ -212,7 +199,12 @@ namespace JParticle {
         vec3<float> emitterDir;
         vec3<int16_t> emitterRot;
 
-
+        // https://github.com/zeldaret/tww/blob/256b4eeb37caccb3fc3a62bb40b69e7b4907c9a1/include/JSystem/JParticle/JPADynamicsBlock.h#L38
+        bool fixedDensity;
+        bool fixedInterval;
+        bool inheritScale;
+        bool followEmtr;
+        bool followEmtrChild;
 
         JPCError read(std::istream& jpc);
         JPCError save_changes(std::ostream& out);
@@ -225,10 +217,13 @@ namespace JParticle {
         uint32_t flags;
         uint8_t colorFlags;
         uint8_t texFlags;
+        uint16_t blendModeFlags;
+        uint8_t alphaCompareFlags;
+        uint8_t zModeFlags;
 
     public:
         // https://github.com/zeldaret/tww/blob/af61ba5f0a7826ad3e8f8da16441188266b79cdb/include/JSystem/JParticle/JPABaseShape.h#L137
-        JParticle::ShapeType shapeType;
+        JParticle::ShapeType type;
         JParticle::DirType dirType;
         JParticle::RotType rotType;
         JParticle::PlaneType planeType;
@@ -239,44 +234,61 @@ namespace JParticle {
         bool childOrder;
 
         // TEV / PE Settings
-        uint8_t colorInSelect;
-        uint8_t alphaInSelect;
-        uint16_t blendModeFlags;
-        uint8_t alphaCompareFlags;
+        uint8_t tevColorArg;
+        uint8_t tevAlphaArg;
         uint8_t alphaRef0;
         uint8_t alphaRef1;
-        uint8_t zModeFlags;
-        int16_t anmRndm;
+        int16_t loopOffset;
 
         // Texture palette animation
-        bool isEnableTexture;
-        bool isGlblTexAnm;
-        JParticle::CalcIdxType texCalcIdxType;
+        bool isTextureEmpty;
+        bool isGlobalTexAnm;
+        JParticle::CalcType texAnmType;
         uint8_t texIdx;
-        std::vector<uint8_t> texIdxAnimData;
+        std::vector<uint8_t> texIdxAnmData;
         int16_t texLoopOffset;
 
         // Texture coordinate animation
-        bool isEnableProjection;
-        bool isEnableTexScrollAnm;
+        bool enableProjection;
+        bool enableTexScrollAnm;
         vec2<float> texInitTrans;
         vec2<float> texInitScale;
-        //float texInitRot        not a thing until JPA2?
         vec2<float> texIncTrans;
         vec2<float> texIncScale;
         float texIncRot;
 
         // Color animation settings
-        bool isGlblClrAnm;
-        JParticle::CalcIdxType colorCalcIdxType;
+        bool isGlobalColAnm;
+        JParticle::CalcType colorRegAnmType;
+        bool enablePrm;
+        bool enableEnv;
         RGBA8 colorPrm;
         RGBA8 colorEnv;
-        std::vector<ColorAnimationKeyframe> colorPrmAnimData; // something with durations?
-        std::vector<ColorAnimationKeyframe> colorEnvAnimData; // something with durations?
-        uint16_t colorAnimMaxFrm;
+        std::vector<ColorAnimationKeyframe> colorPrmAnmData;
+        std::vector<ColorAnimationKeyframe> colorEnvAnmData;
+        int16_t colorRegAnmMaxFrm;
         int16_t colorLoopOffset;
 
+        // Blend mode settings
+        uint8_t blendMode1;
+        uint8_t srcBlendFactor1;
+        uint8_t dstBlendFactor1;
+        uint8_t blendOp1;
+        bool enableAlphaUpdate;
 
+        // Alpha settings
+        uint8_t alphaCmpComp0;
+        uint8_t alphaCmpComp1;
+        uint8_t alphaCmpOp;
+
+        // Depth settings
+        bool enableZCmp;
+        uint8_t zCmpFunction;
+        bool enableZCmpUpdate;
+        bool zCompLoc;
+
+        bool enableAnmTone;
+        bool isClipOn;
 
         JPCError read(std::istream& jpc);
         JPCError save_changes(std::ostream& out);
@@ -338,6 +350,7 @@ namespace JParticle {
 
     public:
         JParticle::IndTextureMode indTextureMode;
+        uint32_t indTexMtxId;
         float p00, p01, p02, p10, p11, p12, scale;
         //std::array<float, 8> indTextureMtx;
         uint8_t indTextureID;
@@ -363,6 +376,7 @@ namespace JParticle {
         bool isEnableField;
         bool isEnableRotate;
         bool isEnableScaleOut;
+        bool isClipOn;
 
         bool isDrawParent;
 
@@ -428,8 +442,6 @@ namespace JParticle {
         // Used by Vortex
         //float outerSpeed;
 
-
-
         JPCError read(std::istream& jpc);
         JPCError save_changes(std::ostream& out);
     };
@@ -442,8 +454,8 @@ namespace JParticle {
     public:
         JParticle::KeyType keyType;
         std::vector<CurveKeyframe> keys;
-        bool isLoopEnable;
         uint8_t unk1;
+        bool isLoopEnable;
 
         JPCError read(std::istream& jpc);
         JPCError save_changes(std::ostream& out);
@@ -467,19 +479,14 @@ namespace JParticle {
 
 
 class Particle {
-public:
+private:
     char magicJEFF[8];
-    uint32_t unknown_1;
-    uint32_t num_chunks;
     uint32_t size; // sometimes inaccurate
 
-    uint8_t num_kfa1_chunks;
-    uint8_t num_fld1_chunks;
-    uint8_t num_textures;
+public:
+    uint32_t unknown_1;
     uint8_t unknown_5;
-
     uint16_t particle_id;
-
     uint8_t unknown_6[6];
 
     std::optional<JParticle::BEM1> emitter = std::nullopt;
@@ -500,20 +507,20 @@ namespace FileTypes {
     const char* JPCErrorGetName(JPCError err);
 
     class JPC final : public FileType {
-    public:
+    private:
         char magicJPAC[8];
-        uint16_t num_particles;
-        uint16_t num_textures;
 
         std::unordered_map<uint16_t, size_t> particle_index_by_id;
-        std::vector<Particle> particles;
 
+    public:
+        std::vector<Particle> particles;
         std::unordered_map<std::string, size_t> textures; // store index to preserve original order
 
         JPC() = default;
         static JPC createNew();
         JPCError loadFromBinary(std::istream& jpc);
         JPCError loadFromFile(const fspath& filePath);
+        Particle& getParticleByID(const uint16_t& id);
         JPCError addParticle(const Particle& particle);
         JPCError replaceParticle(const Particle& particle);
         JPCError addTexture(const std::string& filename);
