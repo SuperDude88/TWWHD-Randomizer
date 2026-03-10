@@ -10,6 +10,7 @@ Can Play EGL: Earth_Gods_Lyric and Wind_Waker
 Can Play WGA: Wind_Gods_Aria and Wind_Waker
 Can Play SoP: Song_of_Passing and Wind_Waker
 Can Sail Away: (Can_Play_WR and Boats_Sail) or Swift_Sail
+Can Salvage Sunken Treasure: Grappling_Hook
 Can Fan With Deku Leaf: Deku_Leaf
 Can Fly With Deku Leaf Indoors: Deku_Leaf and Magic
 Can Fly With Deku Leaf Outdoors: Deku_Leaf and Magic and Can_Play_WR
@@ -115,6 +116,7 @@ Can Defeat Saltwater Octoroks: Heros_Bow or Hookshot or Boomerang
 Can Defeat Beamos: Nothing
 Can Defeat Gyorgs: Heros_Bow or Hookshot or Boomerang
 Can Defeat Seahats: Heros_Bow or Hookshot or Bombs or Boomerang
+Can Defeat Gunboats: Bombs
 Can Defeat Gohma: Grappling_Hook
 Can Defeat Kalle Demos: Boomerang
 Can Defeat Gohdan: Bombs and (Hookshot or Heros_Bow)

@@ -118,7 +118,7 @@
 - Name: Forsaken Fortress Sector
   Island: Forsaken Fortress Sector
   Locations:
-      Forsaken Fortress Sector - Sunken Treasure: Grappling_Hook and Chart_For_Island_1
+      Forsaken Fortress Sector - Sunken Treasure: Chart_For_Island_1 and Can_Salvage_Sunken_Treasure
       Forsaken Fortress Sector - Old Man Ho Ho: Nothing
   Exits:
       Forsaken Fortress Inner Courtyard: Bombs
@@ -371,7 +371,7 @@
   Island: Star Island
   Locations:
       Star Island - Blue Chu Chu: Can_Move_Boulders and Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Star Island - Sunken Treasure: Chart_For_Island_2 and Grappling_Hook
+      Star Island - Sunken Treasure: Chart_For_Island_2 and Can_Salvage_Sunken_Treasure
   Exits:
       Star Island Cave: Can_Move_Boulders
       The Great Sea: Nothing
@@ -394,7 +394,7 @@
   Island: Northern Fairy Island
   Locations:
       Northern Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Northern Fairy Island - Sunken Treasure: Chart_For_Island_3 and Grappling_Hook
+      Northern Fairy Island - Sunken Treasure: Chart_For_Island_3 and Can_Salvage_Sunken_Treasure
       Northern Fairy Island - Old Man Ho Ho: Nothing
   Exits:
       Northern Fairy Island - Great Fairy Fountain: Nothing
@@ -425,7 +425,7 @@
 - Name: Gale Isle
   Island: Gale Isle
   Locations:
-      Gale Isle - Sunken Treasure: Chart_For_Island_4 and Grappling_Hook
+      Gale Isle - Sunken Treasure: Chart_For_Island_4 and Can_Salvage_Sunken_Treasure
   Exits:
       The Great Sea: Nothing
       Gale Isle Interior: Skull_Hammer and Iron_Boots
@@ -441,7 +441,7 @@
       Crescent Moon Island - Chest on Island: Nothing
       Crescent Moon Island - Blue Chu Chu North: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
       Crescent Moon Island - Blue Chu Chu South: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Crescent Moon Island - Sunken Treasure: Chart_For_Island_5 and Grappling_Hook
+      Crescent Moon Island - Sunken Treasure: Chart_For_Island_5 and Can_Salvage_Sunken_Treasure
       Crescent Moon Island - Old Man Ho Ho: Nothing
   Exits:
       Crescent Moon Submarine Exterior: Can_Sail_Away
@@ -462,8 +462,8 @@
 - Name: Seven Star Isles
   Island: Seven Star Isles
   Locations:
-      Seven Star Isles - Big Octo: Can_Defeat_12_Eye_Big_Octos and Grappling_Hook
-      Seven Star Isles - Sunken Treasure: Chart_For_Island_6 and Grappling_Hook and Bombs
+      Seven Star Isles - Big Octo: Can_Defeat_12_Eye_Big_Octos and Can_Salvage_Sunken_Treasure
+      Seven Star Isles - Sunken Treasure: Chart_For_Island_6 and Can_Salvage_Sunken_Treasure and Can_Defeat_Gunboats
   Exits:
       Seven Star Lookout Platforms: Can_Sail_Away
       The Great Sea: Nothing
@@ -480,7 +480,7 @@
 - Name: Overlook Island
   Island: Overlook Island
   Locations:
-      Overlook Island - Sunken Treasure: Chart_For_Island_7 and Grappling_Hook
+      Overlook Island - Sunken Treasure: Chart_For_Island_7 and Can_Salvage_Sunken_Treasure
   Exits:
       The Great Sea: Nothing
       Overlook Island Upper Isles: Hookshot
@@ -516,8 +516,8 @@
 - Name: Four Eye Reef
   Island: Four Eye Reef
   Locations:
-      Four Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
-      Four Eye Reef - Sunken Treasure: Chart_For_Island_8 and Grappling_Hook and Bombs
+      Four Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Can_Defeat_Gunboats
+      Four Eye Reef - Sunken Treasure: Chart_For_Island_8 and Can_Salvage_Sunken_Treasure and Can_Defeat_Gunboats
   Exits:
       The Great Sea: Nothing
 
@@ -525,7 +525,7 @@
   Island: Mother & Child Isles
   Locations:
       Mother & Child Isles - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Mother & Child Isles - Sunken Treasure: Chart_For_Island_9 and Grappling_Hook
+      Mother & Child Isles - Sunken Treasure: Chart_For_Island_9 and Can_Salvage_Sunken_Treasure
   Exits:
       The Great Sea: Nothing
 
@@ -544,7 +544,7 @@
       Spectacle Island - Barrel Shooting First Prize: Nothing
       Spectacle Island - Barrel Shooting Second Prize: Nothing
       Spectacle Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Spectacle Island - Sunken Treasure: Chart_For_Island_10 and Grappling_Hook
+      Spectacle Island - Sunken Treasure: Chart_For_Island_10 and Can_Salvage_Sunken_Treasure
   Exits:
       Spectacle Beedle Shop: Nothing
       Mailbox Checks: Nothing
@@ -580,7 +580,7 @@
       Windfall Island - Pompie & Vera Secret Meeting Photo: can_access(Windfall Lenzo's House Upper) and 'Can_Start_Lenzo_Quest'
       Windfall Island - Kamo Full Moon Picture: Deluxe_Picto_Box and Can_Play_SoP
       Windfall Island - Minenco Miss Windfall Picture: Deluxe_Picto_Box
-      Windfall Island - Sunken Treasure: Chart_For_Island_11 and Grappling_Hook
+      Windfall Island - Sunken Treasure: Chart_For_Island_11 and Can_Salvage_Sunken_Treasure
   Exits:
       Windfall Island Riding Ferris Wheel: "'Activate_Ferris_Wheel' and (Can_Fly_With_Deku_Leaf_Outdoors or Heros_Sword or Skull_Hammer)" # can fly from the area with the ferris wheel switch
       Windfall Jail: Nothing
@@ -735,7 +735,7 @@
   Island: Pawprint Isle
   Locations:
       Pawprint Isle - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Pawprint Isle - Sunken Treasure: Chart_For_Island_12 and Grappling_Hook
+      Pawprint Isle - Sunken Treasure: Chart_For_Island_12 and Can_Salvage_Sunken_Treasure
   Exits:
       Pawprint Chu Chu Cave: Nothing
       Pawprint Wizzrobe Cave Isle: Hookshot
@@ -790,7 +790,7 @@
   Locations:
       Dragon Roost Island - Wind Shrine: Wind_Waker
       Dragon Roost Island - Boulder Chest: Heros_Bow or Bombs or Boomerang or (Bait_Bag and 'Can_Buy_Hyoi_Pears')
-      Dragon Roost Island - Sunken Treasure: Chart_For_Island_13 and Grappling_Hook
+      Dragon Roost Island - Sunken Treasure: Chart_For_Island_13 and Can_Salvage_Sunken_Treasure
   Exits:
       Dragon Roost Rito Aerie: Nothing
       Dragon Roost Island Cave: Can_Move_Boulders
@@ -855,7 +855,7 @@
   Island: Flight Control Platform
   Locations:
       Flight Control Platform - First Prize: Can_Fly_With_Deku_Leaf_Outdoors and Double_Magic
-      Flight Control Platform - Sunken Treasure: Chart_For_Island_14 and Grappling_Hook
+      Flight Control Platform - Sunken Treasure: Chart_For_Island_14 and Can_Salvage_Sunken_Treasure
       Flight Control Platform - Old Man Ho Ho: Nothing
   Exits:
       Flight Control Platform Submarine Exterior: Can_Sail_Away
@@ -880,7 +880,7 @@
   Island: Western Fairy Island
   Locations:
       Western Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Western Fairy Island - Sunken Treasure: Chart_For_Island_15 and Grappling_Hook
+      Western Fairy Island - Sunken Treasure: Chart_For_Island_15 and Can_Salvage_Sunken_Treasure
   Exits:
       Western Fairy Island Past Flames: Skull_Hammer
       Western Fairy Lookout Platform: Can_Sail_Away
@@ -910,8 +910,8 @@
 - Name: Rock Spire Isle
   Island: Rock Spire Isle
   Locations:
-      Rock Spire Isle - Defeat Southeast Gunboat: Bombs and Grappling_Hook
-      Rock Spire Isle - Sunken Treasure: Chart_For_Island_16 and Grappling_Hook
+      Rock Spire Isle - Defeat Southeast Gunboat: Can_Defeat_Gunboats and Can_Salvage_Sunken_Treasure
+      Rock Spire Isle - Sunken Treasure: Chart_For_Island_16 and Can_Salvage_Sunken_Treasure
   Exits:
       Rock Spire Beedle Shop: Nothing
       Rock Spire Upper Ledges: Bombs
@@ -953,8 +953,8 @@
   Locations:
       Tingle Island - Ankle All Statues Reward: Dragon_Tingle_Statue and Forbidden_Tingle_Statue and Goddess_Tingle_Statue and Earth_Tingle_Statue and Wind_Tingle_Statue and 'Rescued_Tingle'
       Tingle Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Tingle Island - Big Octo: Can_Defeat_12_Eye_Big_Octos and Grappling_Hook
-      Tingle Island - Sunken Treasure: Chart_For_Island_17 and Grappling_Hook
+      Tingle Island - Big Octo: Can_Defeat_12_Eye_Big_Octos and Can_Salvage_Sunken_Treasure
+      Tingle Island - Sunken Treasure: Chart_For_Island_17 and Can_Salvage_Sunken_Treasure
   Exits:
       Mailbox Checks: Nothing
       The Great Sea: Nothing
@@ -962,7 +962,7 @@
 - Name: Northern Triangle Island
   Island: Northern Triangle Island
   Locations:
-      Northern Triangle Island - Sunken Treasure: Chart_For_Island_18 and Grappling_Hook
+      Northern Triangle Island - Sunken Treasure: Chart_For_Island_18 and Can_Salvage_Sunken_Treasure
   Exits:
       The Great Sea: Nothing
 
@@ -970,7 +970,7 @@
   Island: Eastern Fairy Island
   Locations:
       Eastern Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Eastern Fairy Island - Sunken Treasure: Chart_For_Island_19 and Grappling_Hook
+      Eastern Fairy Island - Sunken Treasure: Chart_For_Island_19 and Can_Salvage_Sunken_Treasure
   Exits:
       Eastern Fairy Island Past Boulder: Can_Move_Boulders
       Eastern Fairy Lookout Platform: Can_Sail_Away
@@ -1001,8 +1001,8 @@
 - Name: Fire Mountain
   Island: Fire Mountain
   Locations:
-      Fire Mountain - Big Octo: Can_Defeat_Big_Octos and Grappling_Hook
-      Fire Mountain - Sunken Treasure: Chart_For_Island_20 and Grappling_Hook
+      Fire Mountain - Big Octo: Can_Defeat_Big_Octos and Can_Salvage_Sunken_Treasure
+      Fire Mountain - Sunken Treasure: Chart_For_Island_20 and Can_Salvage_Sunken_Treasure
   Exits:
       Fire Mountain Interior: Ice_Arrows
       Fire Mountain Lookout Platform: Can_Sail_Away
@@ -1025,7 +1025,7 @@
 - Name: Star Belt Archipelago
   Island: Star Belt Archipelago
   Locations:
-      Star Belt Archipelago - Sunken Treasure: Chart_For_Island_21 and Grappling_Hook
+      Star Belt Archipelago - Sunken Treasure: Chart_For_Island_21 and Can_Salvage_Sunken_Treasure
   Exits:
       Star Belt Lookout Platform: Can_Sail_Away
       The Great Sea: Nothing
@@ -1040,8 +1040,8 @@
 - Name: Three Eye Reef
   Island: Three Eye Reef
   Locations:
-      Three Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
-      Three Eye Reef - Sunken Treasure: Chart_For_Island_22 and Grappling_Hook
+      Three Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Can_Defeat_Gunboats
+      Three Eye Reef - Sunken Treasure: Chart_For_Island_22 and Can_Salvage_Sunken_Treasure
   Exits:
       The Great Sea: Nothing
 
@@ -1049,7 +1049,7 @@
   Island: Greatfish Isle
   Locations:
       Greatfish Isle - Hidden Chest: Can_Fly_With_Deku_Leaf_Outdoors
-      Greatfish Isle - Sunken Treasure: Chart_For_Island_23 and Grappling_Hook
+      Greatfish Isle - Sunken Treasure: Chart_For_Island_23 and Can_Salvage_Sunken_Treasure
   Exits:
       Greatfish Beedle Shop: Nothing
       The Great Sea: Nothing
@@ -1062,8 +1062,8 @@
 - Name: Cyclops Reef
   Island: Cyclops Reef
   Locations:
-      Cyclops Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
-      Cyclops Reef - Sunken Treasure: Chart_For_Island_24 and Grappling_Hook and Bombs
+      Cyclops Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Can_Defeat_Gunboats
+      Cyclops Reef - Sunken Treasure: Chart_For_Island_24 and Can_Salvage_Sunken_Treasure and Can_Defeat_Gunboats
   Exits:
       Cyclops Reef Lookout Platform: Can_Sail_Away
       The Great Sea: Nothing
@@ -1078,8 +1078,8 @@
 - Name: Six Eye Reef
   Island: Six Eye Reef
   Locations:
-      Six Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Bombs
-      Six Eye Reef - Sunken Treasure: Chart_For_Island_25 and Grappling_Hook and Bombs
+      Six Eye Reef - Destroy Cannons and Gunboats: Can_Fly_With_Deku_Leaf_Outdoors and Can_Defeat_Gunboats
+      Six Eye Reef - Sunken Treasure: Chart_For_Island_25 and Can_Salvage_Sunken_Treasure and Can_Defeat_Gunboats
   Exits:
       Six Eye Reef Submarine Exterior: Can_Sail_Away
       Six Eye Reef Lookout Platform: Can_Sail_Away
@@ -1107,7 +1107,7 @@
 - Name: Tower of the Gods Sector
   Island: Tower of the Gods Sector
   Locations:
-      Tower of the Gods Sector - Sunken Treasure: Chart_For_Island_26 and Grappling_Hook
+      Tower of the Gods Sector - Sunken Treasure: Chart_For_Island_26 and Can_Salvage_Sunken_Treasure
   Exits:
       TOTG Entrance Room: Dins_Pearl and Farores_Pearl and Nayrus_Pearl
       Hyrule Castle Front: All_8_Shards
@@ -1122,7 +1122,7 @@
 - Name: Eastern Triangle Island
   Island: Eastern Triangle Island
   Locations:
-      Eastern Triangle Island - Sunken Treasure: Chart_For_Island_27 and Grappling_Hook
+      Eastern Triangle Island - Sunken Treasure: Chart_For_Island_27 and Can_Salvage_Sunken_Treasure
   Exits:
       Eastern Triangle Beedle Shop: Nothing
       The Great Sea: Nothing
@@ -1141,7 +1141,7 @@
   Island: Thorned Fairy Island
   Locations:
       Thorned Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Thorned Fairy Island - Sunken Treasure: Chart_For_Island_28 and Grappling_Hook
+      Thorned Fairy Island - Sunken Treasure: Chart_For_Island_28 and Can_Salvage_Sunken_Treasure
   Exits:
       Thorned Fairy Island Past Tentacles: Skull_Hammer
       Thorned Fairy Lookout Platforms: Can_Sail_Away
@@ -1174,8 +1174,8 @@
   Locations:
       Needle Rock Isle - Chest: Bait_Bag and 'Can_Buy_Hyoi_Pears'
       Needle Rock Isle - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Needle Rock Isle - Golden Gunboat: Bombs and Grappling_Hook
-      Needle Rock Isle - Sunken Treasure: Chart_For_Island_29 and Grappling_Hook
+      Needle Rock Isle - Golden Gunboat: Can_Defeat_Gunboats and Can_Salvage_Sunken_Treasure
+      Needle Rock Isle - Sunken Treasure: Chart_For_Island_29 and Can_Salvage_Sunken_Treasure
   Exits:
       Needle Rock Cave: Fire_Arrows
       Mailbox Checks: Nothing
@@ -1190,9 +1190,9 @@
 - Name: Islet of Steel
   Island: Islet of Steel
   Locations:
-      Islet of Steel - Sunken Treasure: Chart_For_Island_30 and Grappling_Hook
+      Islet of Steel - Sunken Treasure: Chart_For_Island_30 and Can_Salvage_Sunken_Treasure
   Exits:
-      Islet of Steel Interior: Bombs
+      Islet of Steel Interior: Can_Defeat_Gunboats
       Islet of Steel Lookout Platform: Can_Sail_Away
       The Great Sea: Nothing
 
@@ -1215,7 +1215,7 @@
   Island: Stone Watcher Island
   Locations:
       Stone Watcher Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Stone Watcher Island - Sunken Treasure: Chart_For_Island_31 and Grappling_Hook
+      Stone Watcher Island - Sunken Treasure: Chart_For_Island_31 and Can_Salvage_Sunken_Treasure
       Stone Watcher Island - Old Man Ho Ho: Nothing
   Exits:
       Stone Watcher Cave: Power_Bracelets
@@ -1243,7 +1243,7 @@
 - Name: Southern Triangle Island
   Island: Southern Triangle Island
   Locations:
-      Southern Triangle Island - Sunken Treasure: Chart_For_Island_32 and Grappling_Hook and Can_Defeat_Seahats
+      Southern Triangle Island - Sunken Treasure: Chart_For_Island_32 and Can_Salvage_Sunken_Treasure and Can_Defeat_Seahats
   Exits:
       Southern Triangle Beedle Shop: Nothing
       The Great Sea: Nothing
@@ -1262,8 +1262,8 @@
   Island: Private Oasis
   Locations:
       Private Oasis - Top of Waterfall Chest: Can_Fly_With_Deku_Leaf_Outdoors or Hookshot
-      Private Oasis - Big Octo: Can_Defeat_Big_Octos and Grappling_Hook
-      Private Oasis - Sunken Treasure: Chart_For_Island_33 and Grappling_Hook
+      Private Oasis - Big Octo: Can_Defeat_Big_Octos and Can_Salvage_Sunken_Treasure
+      Private Oasis - Sunken Treasure: Chart_For_Island_33 and Can_Salvage_Sunken_Treasure
       Private Oasis - Old Man Ho Ho: Nothing
   Exits:
       The Cabana: Delivery_Bag and Cabana_Deed
@@ -1285,7 +1285,7 @@
 - Name: Bomb Island
   Island: Bomb Island
   Locations:
-      Bomb Island - Sunken Treasure: Chart_For_Island_34 and Grappling_Hook
+      Bomb Island - Sunken Treasure: Chart_For_Island_34 and Can_Salvage_Sunken_Treasure
       Bomb Island - Old Man Ho Ho: Nothing
   Exits:
       Bomb Island Cave: Can_Move_Boulders
@@ -1322,7 +1322,7 @@
 - Name: Birds Peak Rock
   Island: Birds Peak Rock
   Locations:
-      Birds Peak Rock - Sunken Treasure: Chart_For_Island_35 and Grappling_Hook
+      Birds Peak Rock - Sunken Treasure: Chart_For_Island_35 and Can_Salvage_Sunken_Treasure
   Exits:
       Birds Peak Rock Behind Bars: Bait_Bag and 'Can_Buy_Hyoi_Pears'
       Birds Peak Rock Upper Isle: Grappling_Hook
@@ -1350,8 +1350,8 @@
 - Name: Diamond Steppe Island
   Island: Diamond Steppe Island
   Locations:
-      Diamond Steppe Island - Big Octo: Can_Defeat_Big_Octos and Grappling_Hook
-      Diamond Steppe Island - Sunken Treasure: Chart_For_Island_36 and Grappling_Hook
+      Diamond Steppe Island - Big Octo: Can_Defeat_Big_Octos and Can_Salvage_Sunken_Treasure
+      Diamond Steppe Island - Sunken Treasure: Chart_For_Island_36 and Can_Salvage_Sunken_Treasure
   Exits:
       Diamond Steppe Upper Island: Hookshot
       The Great Sea: Nothing
@@ -1375,7 +1375,7 @@
   Island: Five Eye Reef
   Locations:
       Five Eye Reef - Destroy Cannons: Can_Fly_With_Deku_Leaf_Outdoors and Can_Destroy_Cannons
-      Five Eye Reef - Sunken Treasure: Chart_For_Island_37 and Grappling_Hook and Can_Destroy_Cannons
+      Five Eye Reef - Sunken Treasure: Chart_For_Island_37 and Can_Salvage_Sunken_Treasure and Can_Destroy_Cannons
   Exits:
       Five Eye Reef Lookout Platform: Can_Sail_Away
       The Great Sea: Nothing
@@ -1390,7 +1390,7 @@
 - Name: Shark Island
   Island: Shark Island
   Locations:
-      Shark Island - Sunken Treasure: Chart_For_Island_38 and Grappling_Hook
+      Shark Island - Sunken Treasure: Chart_For_Island_38 and Can_Salvage_Sunken_Treasure
   Exits:
       Shark Island Cave: Skull_Hammer and Iron_Boots
       Shark Island Upper Isle: Skull_Hammer and Iron_Boots and Can_Fly_With_Deku_Leaf_Outdoors
@@ -1419,7 +1419,7 @@
   Island: Southern Fairy Island
   Locations:
       Southern Fairy Island - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Southern Fairy Island - Sunken Treasure: Chart_For_Island_39 and Grappling_Hook
+      Southern Fairy Island - Sunken Treasure: Chart_For_Island_39 and Can_Salvage_Sunken_Treasure
   Exits:
       Southern Fairy Island Behind Wooden Barrier: Can_Destroy_Wooden_Barriers
       Southern Fairy Lookout Platforms: Can_Sail_Away
@@ -1451,7 +1451,7 @@
   Island: Ice Ring Isle
   Locations:
       Ice Ring Isle - Frozen Chest: Fire_Arrows
-      Ice Ring Isle - Sunken Treasure: Chart_For_Island_40 and Grappling_Hook
+      Ice Ring Isle - Sunken Treasure: Chart_For_Island_40 and Can_Salvage_Sunken_Treasure
   Exits:
       The Great Sea: Nothing
       Ice Ring Interior: Fire_Arrows
@@ -1474,7 +1474,7 @@
 - Name: Forest Haven
   Island: Forest Haven
   Locations:
-      Forest Haven - Sunken Treasure: Chart_For_Island_41 and Grappling_Hook
+      Forest Haven - Sunken Treasure: Chart_For_Island_41 and Can_Salvage_Sunken_Treasure
   Exits:
       Forest Haven Interior: Grappling_Hook or Can_Fly_With_Deku_Leaf_Outdoors
       Forest Haven Waterfall Cave: Grappling_Hook or Can_Fly_With_Deku_Leaf_Outdoors
@@ -1587,7 +1587,7 @@
 - Name: Cliff Plateau Isles
   Island: Cliff Plateau Isles
   Locations:
-      Cliff Plateau Isles - Sunken Treasure: Chart_For_Island_42 and Grappling_Hook
+      Cliff Plateau Isles - Sunken Treasure: Chart_For_Island_42 and Can_Salvage_Sunken_Treasure
   Exits:
       Cliff Plateau Cave: Nothing
       Cliff Plateau Lookout Platform: Can_Sail_Away
@@ -1625,7 +1625,7 @@
 - Name: Horseshoe Island
   Island: Horseshoe Island
   Locations:
-      Horseshoe Island - Sunken Treasure: Chart_For_Island_43 and Grappling_Hook
+      Horseshoe Island - Sunken Treasure: Chart_For_Island_43 and Can_Salvage_Sunken_Treasure
   Exits:
       Horseshoe Island Past Tentacles: Can_Fan_With_Deku_Leaf
       Horseshoe Lookout Platforms: Can_Sail_Away
@@ -1659,7 +1659,7 @@
   Island: Outset Island
   Locations:
       Outset Island - Dig up Black Soil: Power_Bracelets and Bait_Bag and 'Can_Buy_Bait'
-      Outset Island - Sunken Treasure: Chart_For_Island_44 and Grappling_Hook
+      Outset Island - Sunken Treasure: Chart_For_Island_44 and Can_Salvage_Sunken_Treasure
   Exits:
       Outset Link's House: Nothing
       Outset Under Link's House: Nothing
@@ -1825,7 +1825,7 @@
   Island: Headstone Island
   Locations:
       Headstone Island - Top of Island: Bait_Bag and 'Can_Buy_Hyoi_Pears'
-      Headstone Island - Sunken Treasure: Chart_For_Island_45 and Grappling_Hook
+      Headstone Island - Sunken Treasure: Chart_For_Island_45 and Can_Salvage_Sunken_Treasure
   Exits:
       Headstone Island Interior: Power_Bracelets
       Headstone Island Submarine Exterior: Can_Sail_Away
@@ -1851,9 +1851,9 @@
 - Name: Two Eye Reef
   Island: Two Eye Reef
   Locations:
-      Two Eye Reef - Destroy Cannons and Gunboats: Bombs and Can_Fly_With_Deku_Leaf_Outdoors
+      Two Eye Reef - Destroy Cannons and Gunboats: Can_Defeat_Gunboats and Can_Fly_With_Deku_Leaf_Outdoors
       Two Eye Reef - Big Octo Great Fairy: Can_Defeat_Big_Octos
-      Two Eye Reef - Sunken Treasure: Chart_For_Island_46 and Grappling_Hook and Bombs
+      Two Eye Reef - Sunken Treasure: Chart_For_Island_46 and Can_Salvage_Sunken_Treasure and Can_Defeat_Gunboats
       Two Eye Reef - Old Man Ho Ho: Nothing
   Exits:
       Two Eye Reef Lookout Platform: Can_Sail_Away
@@ -1871,7 +1871,7 @@
   Locations:
       Angular Isles - Peak Chest: Nothing
       Angular Isles - Blue Chu Chu: Can_Get_Blue_Chu_Jelly_From_Blue_Chu_Chus
-      Angular Isles - Sunken Treasure: Chart_For_Island_47 and Grappling_Hook
+      Angular Isles - Sunken Treasure: Chart_For_Island_47 and Can_Salvage_Sunken_Treasure
   Exits:
       Angular Isles Small Isle: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
       The Great Sea: Nothing
@@ -1892,7 +1892,7 @@
   Island: Boating Course
   Locations:
       Boating Course - Raft Chest: Nothing
-      Boating Course - Sunken Treasure: Chart_For_Island_48 and Grappling_Hook
+      Boating Course - Sunken Treasure: Chart_For_Island_48 and Can_Salvage_Sunken_Treasure
   Exits:
       Boating Course Small Isle: Hookshot or Can_Fly_With_Deku_Leaf_Outdoors
       The Great Sea: Nothing
@@ -1914,7 +1914,7 @@
 - Name: Five Star Isles
   Island: Five Star Isles
   Locations:
-      Five Star Isles - Sunken Treasure: Chart_For_Island_49 and Grappling_Hook
+      Five Star Isles - Sunken Treasure: Chart_For_Island_49 and Can_Salvage_Sunken_Treasure
   Exits:
       Five Star Submarine Exterior: Can_Sail_Away
       Five Star Lookout Platform: Can_Sail_Away
@@ -2048,8 +2048,6 @@
   Dungeon: Dragon Roost Cavern
   Events:
       Can Open DRC Blue Pot: Nothing # bomb flower
-#   Locations:
-#       Dragon Roost Cavern - Hub Room Tingle Chest: Bombs
   Exits:
       DRC Dark Room Past Wooden Barrier: Nothing
       DRC Triple Bokoblin Room: Nothing
