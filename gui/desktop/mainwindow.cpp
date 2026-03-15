@@ -540,6 +540,7 @@ void MainWindow::apply_config_settings()
     APPLY_COMBOBOX_SETTING(config, ui, dungeon_small_keys);
     APPLY_COMBOBOX_SETTING(config, ui, dungeon_big_keys);
     APPLY_COMBOBOX_SETTING(config, ui, dungeon_maps_compasses);
+    APPLY_CHECKBOX_SETTING(config, ui, required_boss_items);
 
     APPLY_SPINBOX_SETTING(config, ui, damage_multiplier, float(2.0f), float(MAXIMUM_DAMAGE_MULTIPLIER));
 
@@ -860,6 +861,7 @@ void MainWindow::on_remove_swords_stateChanged(int arg1)
 
 DEFINE_STATE_CHANGE_FUNCTION(randomize_charts)
 DEFINE_STATE_CHANGE_FUNCTION(chest_type_matches_contents)
+DEFINE_STATE_CHANGE_FUNCTION(required_boss_items)
 
 void MainWindow::on_damage_multiplier_valueChanged(int multiplier)
 {

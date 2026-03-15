@@ -77,6 +77,7 @@ namespace OptionCB {
     std::string toggleDungeonWarps();
     std::string toggleSpoilerLog();
     std::string toggleSwords();
+    std::string toggleBossItems();
     std::string toggleTrials();
     std::string toggleInvertCompass();
     std::string cycleNumDungeons();

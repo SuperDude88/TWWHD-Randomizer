@@ -188,6 +188,7 @@ void runLogicTests(Config& newConfig)
     TEST(settings1, settings1.hint_importance, "hint importance");
     TEST(settings1, settings1.open_drc, "open_drc");
     TEST(settings1, settings1.randomize_charts, "randomize charts");
+    TEST(settings1, settings1.required_boss_items, "required_boss_items");
     TEST(settings1, settings1.randomize_starting_island, "random starting island");
     TEST(settings1, settings1.randomize_dungeon_entrances, "randomize dungeon entrances");
     settings1.randomize_cave_entrances = ShuffleCaveEntrances::Disabled;
@@ -219,8 +220,9 @@ void runLogicTests(Config& newConfig)
     TEST(settings2, dummy, "randomize cave entrances");
     TEST(settings2, settings2.randomize_dungeon_entrances, "randomize dungeon entrances");
     TEST(settings2, settings2.randomize_starting_island, "randomize starting island");
-    TEST(settings2, settings2.open_drc, "open_drc");
+    TEST(settings1, settings1.required_boss_items, "required_boss_items");
     TEST(settings2, settings2.randomize_charts, "randomize charts");
+    TEST(settings2, settings2.open_drc, "open_drc");
     TEST(settings2, settings2.hint_importance, "hint importance");
     TEST(settings2, settings2.clearer_hints, "clearer hints");
     TEST(settings2, settings2.use_always_hints, "use always hints");

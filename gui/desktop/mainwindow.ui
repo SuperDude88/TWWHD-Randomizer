@@ -1746,6 +1746,13 @@
               </property>
               <layout class="QGridLayout" name="gridLayout_7">
                <item row="1" column="0">
+                <widget class="QCheckBox" name="performance">
+                 <property name="text">
+                  <string>Performance</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
                 <widget class="QCheckBox" name="do_not_generate_spoiler_log">
                  <property name="text">
                   <string>Do Not Generate Spoiler Log</string>
@@ -1753,49 +1760,52 @@
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QCheckBox" name="fix_rng">
-                 <property name="text">
-                  <string>Fix RNG</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
                 <widget class="QCheckBox" name="random_item_slide_item">
                  <property name="text">
                   <string>Start With Random Item Sliding Item</string>
                  </property>
                 </widget>
                </item>
-               <item row="6" column="0" colspan="2">
-                <layout class="QGridLayout" name="plandomizer_file_layout">
+               <item row="0" column="1">
+                <widget class="QCheckBox" name="classic_mode">
+                 <property name="text">
+                  <string>Classic Mode</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="fix_rng">
+                 <property name="text">
+                  <string>Fix RNG</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QCheckBox" name="required_boss_items">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Require Boss Items</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QCheckBox" name="start_with_random_item">
+                 <property name="text">
+                  <string>Start With Random Item</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0" colspan="2">
+                <layout class="QHBoxLayout" name="horizontalLayout_33">
                  <property name="sizeConstraint">
                   <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
                  </property>
-                 <item row="0" column="1">
-                  <widget class="QLabel" name="plandomizer_label">
-                   <property name="text">
-                    <string>Plandomizer File</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="3">
-                  <widget class="QPushButton" name="plandomizer_path_browse_button">
-                   <property name="text">
-                    <string>Browse</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QLineEdit" name="plandomizer_path">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
+                 <item>
                   <widget class="QCheckBox" name="plandomizer">
                    <property name="minimumSize">
                     <size>
@@ -1808,28 +1818,31 @@
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QLabel" name="plandomizer_label">
+                   <property name="text">
+                    <string>Plandomizer File</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="plandomizer_path">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="plandomizer_path_browse_button">
+                   <property name="text">
+                    <string>Browse</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
-               </item>
-               <item row="2" column="0">
-                <widget class="QCheckBox" name="performance">
-                 <property name="text">
-                  <string>Performance</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="classic_mode">
-                 <property name="text">
-                  <string>Classic Mode</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QCheckBox" name="start_with_random_item">
-                 <property name="text">
-                  <string>Start With Random Item</string>
-                 </property>
-                </widget>
                </item>
               </layout>
              </widget>
@@ -2108,13 +2121,6 @@
                <string>Logic Tweaks</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_9">
-               <item row="0" column="0">
-                <widget class="QCheckBox" name="open_drc">
-                 <property name="text">
-                  <string>Open DRC</string>
-                 </property>
-                </widget>
-               </item>
                <item row="0" column="1">
                 <widget class="QCheckBox" name="progressive_magic_always_double">
                  <property name="text">
@@ -2129,6 +2135,13 @@
                  </property>
                 </widget>
                </item>
+               <item row="0" column="0">
+                <widget class="QCheckBox" name="open_drc">
+                 <property name="text">
+                  <string>Open DRC</string>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </widget>
             </item>
@@ -2137,8 +2150,108 @@
               <property name="title">
                <string>In-Game Preferences</string>
               </property>
-              <layout class="QGridLayout" name="gridLayout_11">
-               <item row="0" column="3">
+              <layout class="QHBoxLayout" name="horizontalLayout_34">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_28">
+                 <item>
+                  <widget class="QLabel" name="label_for_ui_display">
+                   <property name="text">
+                    <string>UI Display</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="ui_display">
+                   <item>
+                    <property name="text">
+                     <string>On</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Off</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_24">
+                 <item>
+                  <widget class="QLabel" name="label_for_target_type">
+                   <property name="text">
+                    <string>Target Type</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="target_type">
+                   <item>
+                    <property name="text">
+                     <string>Hold</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Switch</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_25">
+                 <item>
+                  <widget class="QLabel" name="label_for_camera">
+                   <property name="text">
+                    <string>Camera</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="camera">
+                   <item>
+                    <property name="text">
+                     <string>Standard</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Reverse Left/Right</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_26">
+                 <item>
+                  <widget class="QLabel" name="label_for_first_person_camera">
+                   <property name="text">
+                    <string>First-Person Camera</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="first_person_camera">
+                   <item>
+                    <property name="text">
+                     <string>Standard</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Reverse Up/Down</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_27">
                  <item>
                   <widget class="QLabel" name="label_for_gyroscope">
@@ -2166,111 +2279,8 @@
                  </item>
                 </layout>
                </item>
-               <item row="0" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_24">
-                 <item>
-                  <widget class="QLabel" name="label_for_target_type">
-                   <property name="text">
-                    <string>Target Type</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="target_type">
-                   <item>
-                    <property name="text">
-                     <string>Hold</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Switch</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="0" column="2">
-                <layout class="QHBoxLayout" name="horizontalLayout_26">
-                 <item>
-                  <widget class="QLabel" name="label_for_first_person_camera">
-                   <property name="text">
-                    <string>First-Person Camera</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="first_person_camera">
-                   <item>
-                    <property name="text">
-                     <string>Standard</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Reverse Up/Down</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="0" column="1">
-                <layout class="QHBoxLayout" name="horizontalLayout_25">
-                 <item>
-                  <widget class="QLabel" name="label_for_camera">
-                   <property name="text">
-                    <string>Camera</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="camera">
-                   <item>
-                    <property name="text">
-                     <string>Standard</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Reverse Left/Right</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="1" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_28">
-                 <item>
-                  <widget class="QLabel" name="label_for_ui_display">
-                   <property name="text">
-                    <string>UI Display</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="ui_display">
-                   <item>
-                    <property name="text">
-                     <string>On</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Off</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
               </layout>
              </widget>
-            </item>
-            <item>
-             <widget class="QWidget" name="widget_2" native="true"/>
             </item>
            </layout>
           </widget>
@@ -2470,7 +2480,7 @@ color: lightgray</string>
                <cursorShape>ArrowCursor</cursorShape>
               </property>
               <property name="autoFillBackground">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="styleSheet">
                <string notr="true"/>
