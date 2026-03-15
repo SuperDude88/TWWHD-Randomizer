@@ -420,7 +420,7 @@ public:
     Item(GameItem gameItemId_, World* world_);
     Item(std::string itemName_, World* world_);
 
-    World* getWorld();
+    World* getWorld() const;
     int getWorldId() const;
     void setGameItemId(GameItem newGameItemId);
     GameItem getGameItemId() const;

@@ -141,33 +141,30 @@ ModificationError ModifyChest::writeLocation(const Item& item) {
 }
 
 ModificationError ModifyChest::setCTMCType(ACTR& chest, const Item& item) {
-    // If any of this item's chain locations are progression, then put the item
-    // into a spiky chest
-    if(std::ranges::any_of(item.getChainLocations(), [](auto location){return location->progression;}) && 
-      !gameItemToName(item.getGameItemId()).ends_with("Key")) {
-        LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(2))) // Metal chests for progress items (excluding keys)
-        return ModificationError::NONE;
-    }
-
-    if(gameItemToName(item.getGameItemId()).ends_with("Key")) {
-        // In race mode, only put the dungeon keys for required dungeons in dark wood chests.
-        // The other keys go into light wood chests.
-
-        // In some extreme entrance rando situations, traversing through unrequired dungeons may still
-        // be required, so put small/big keys which appear in the playthrough in dark wood chests also
-        if(raceMode) {
-            if(std::any_of(dungeons.begin(), dungeons.end(), [&item](auto& dungeon){return dungeon.second.isRequiredDungeon && (dungeon.second.smallKey == item || dungeon.second.bigKey == item);}) ||
-              (std::any_of(playthroughLocations.begin(), playthroughLocations.end(), [&item](Location* loc){return loc->currentItem.getGameItemId() == item.getGameItemId();}))){
+    if(item.isSmallKey() || item.isBigKey()) {
+        if(item.getWorld()->getSettings().progression_dungeons == ProgressionDungeons::RaceMode) {
+            // In race mode, only put keys for required dungeons in dark wood chests (the other keys go in light wood chests).
+            // In some extreme entrance rando situations, traversing through unrequired dungeons may still
+            // be required, so put small/big keys that unlock progression locations in dark wood chests also
+            // TODO: put all keys for an unrequired dungeon in dark wood chests if you need to traverse through it, instead of
+            // only the required ones. The current setup should match the old behavior, but it might make more sense
+            // if all the keys are in the same type of chest.
+            if(std::ranges::any_of(item.getWorld()->dungeons, [&item](const auto& dungeon){ return dungeon.second.isRequiredDungeon && (dungeon.second.smallKey == item || dungeon.second.bigKey == item); }) ||
+              std::ranges::any_of(item.getChainLocations(), [](const auto& location){ return location->progression; })){
                 LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(1))) // Dark wood chest for Small and Big Keys
                 return ModificationError::NONE;
             }
-            else {
-                LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(0))) // Light wood chests for keys for empty dungeons (in race mode)
-                return ModificationError::NONE;
-            }
+
+            LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(0))) // Light wood chests for unrequired keys for empty dungeons
+            return ModificationError::NONE;
         }
 
         LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(1))) // Dark wood chest for Small and Big Keys
+        return ModificationError::NONE;
+    }
+    else if(std::ranges::any_of(item.getChainLocations(), [](const auto& location){ return location->progression; })) {
+        // If any of this item's chain locations are progression, then put the item in a spiky chest
+        LOG_AND_RETURN_IF_ERR(setParam(chest, 0x00F00000, uint8_t(2))) // Metal chests for progress items (excluding keys)
         return ModificationError::NONE;
     }
 
@@ -494,17 +491,7 @@ bool writeLocations(WorldPool& worlds) {
     UPDATE_DIALOG_VALUE(40);
     UPDATE_DIALOG_LABEL("Saving items...");
 
-    // Flatten the playthrough into a single list
-    // so that chests can check it for CTMC
-    std::list<Location*> playthroughLocations = {};
-    for (const auto& sphere : worlds[0].playthroughSpheres) {
-        for (auto loc : sphere) {
-            playthroughLocations.push_back(loc);
-        }
-    }
-
-    const Settings& settings = worlds[0].getSettings();
-    ModifyChest::setCTMC(settings.chest_type_matches_contents, settings.progression_dungeons == ProgressionDungeons::RaceMode, worlds[0].dungeons, playthroughLocations);
+    ModifyChest::setCTMC(worlds[0].getSettings().chest_type_matches_contents);
 
     for (auto& [name, location] : worlds[0].locationTable) {
         if (const ModificationError err = location->method->writeLocation(location->currentItem); err != ModificationError::NONE) {

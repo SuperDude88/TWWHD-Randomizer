@@ -45,9 +45,6 @@ public:
 class ModifyChest final : public LocationModification {
 private:
     inline static bool isCTMC = false;
-    inline static bool raceMode = false;
-    inline static std::map<std::string, Dungeon> dungeons = {};
-    inline static std::list<Location*> playthroughLocations = {};
 
     fspath filePath;
     std::vector<uint32_t> offsets;
@@ -65,7 +62,7 @@ public:
     std::unique_ptr<LocationModification> duplicate() const override { return std::make_unique<ModifyChest>(*this); }
     ModificationError parseArgs(const YAML::Node& locationObject) override;
     ModificationError writeLocation(const Item& item) override;
-    static void setCTMC(const bool& isCTMC_, const bool& raceMode_, const std::map<std::string, Dungeon>& dungeons_, const std::list<Location*>& playthroughLocations_) { isCTMC = isCTMC_; raceMode = raceMode_; dungeons = dungeons_; playthroughLocations = playthroughLocations_;}
+    static void setCTMC(const bool& isCTMC_) { isCTMC = isCTMC_; }
 };
 
 class ModifyActor final : public LocationModification {
