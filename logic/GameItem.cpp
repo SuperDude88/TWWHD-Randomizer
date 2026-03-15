@@ -797,7 +797,7 @@ Item::Item(std::string itemName_, World* world_) :
 
 }
 
-World* Item::getWorld()
+World* Item::getWorld() const
 {
     return world;
 }
