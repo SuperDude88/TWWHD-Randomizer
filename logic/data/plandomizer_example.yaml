@@ -41,13 +41,13 @@ Earth Temple - Stalfos Mini Boss: Progressive Bow
 # If you place major items in more dungeons than you have set as the number of
 # dungeons for race mode, you'll get a Plandomizer Error and the seed won't generate.
 #
-# Additionally, since race mode dungeons are required to have a progress item at their
-# boss check, placing a junk item at the boss heart container will force the dungeon
+# Additionally, if race mode dungeons must have a major item at their
+# boss check (with "Require Boss Items"), placing a junk item at the boss heart container will force the dungeon
 # to *NOT* be one of the selected race mode dungeons.
 #
 # In the event that you place a progress item in the dungeon AND a junk item on the
 # boss heart container, you'll get a Plandomizer Error and the seed won't generate
-# if race mode is turned on.
+# if race mode and required boss items are turned on.
 
 # ENTRANCES
 # All plandomized entrances are defined under an "entrances" element and consist
