@@ -683,7 +683,7 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Hint
     {
         for (auto location : world.getLocations(/*onlyProgression =*/ true))
         {
-            if (location->currentItem.isTriforceShard() && !(world.getSettings().required_boss_items && location->isRaceModeLocation))
+            if (location->currentItem.isTriforceShard())
             {
                 LOG_AND_RETURN_IF_ERR(generateItemHintMessage(location, hints));
             }

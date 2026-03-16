@@ -125,7 +125,7 @@ static std::unordered_map<std::string, std::string> optionDescriptions = {
     },
     {
       "required_boss_items",
-      "Required dungeon bosses will drop required items (e.g. Triforce Shards). Applies to \"Standard\" and \"Race Mode\" dungeons.",
+      "Required dungeon bosses will drop major items. Applies to \"Standard\" and \"Race Mode\" dungeons.",
     },
     {
       "randomize_charts",

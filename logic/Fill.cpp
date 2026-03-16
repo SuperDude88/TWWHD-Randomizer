@@ -622,19 +622,7 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
         }
     }
 
-    // Build up the list of race mode items starting with triforce shards...
-    auto triforceShards = filterAndEraseFromPool(itemPool, [](const Item& item){return item.isTriforceShard();});
-    generateRaceModeItems(raceModeLocations, raceModeItems,  triforceShards, itemPool);
-
-    // Then swords...
-    auto swords = filterAndEraseFromPool(itemPool, [](const Item& item){return item.getGameItemId() == GameItem::ProgressiveSword;});
-    generateRaceModeItems(raceModeLocations, raceModeItems, swords, itemPool);
-
-    // Then bows...
-    auto bows = filterAndEraseFromPool(itemPool, [](const Item& item){return item.getGameItemId() == GameItem::ProgressiveBow;});
-    generateRaceModeItems(raceModeLocations, raceModeItems, bows, itemPool);
-
-    // Then the rest of the major items if necessary.
+    // Build up the list of boss items with major items.
     auto majorItems = filterAndEraseFromPool(itemPool, [](const Item& item){return item.isMajorItem();});
     generateRaceModeItems(raceModeLocations, raceModeItems, majorItems, itemPool);
 

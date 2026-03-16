@@ -1359,7 +1359,7 @@ std::pair<std::string, std::string> getNameDesc(const Option& option) {
 
         {RemoveSwords,                {"Remove Swords",                       "Controls whether swords will be placed throughout the game."}},
         {NumRequiredDungeons,         {"Number of Required Bosses",           "Select the number of randomly-chosen bosses that are required. The door to Puppet Ganon will not unlock until you've defeated all of these bosses. Sectors with required bosses will be marked on the map. Applies to \"Standard\" and \"Race Mode\" dungeons."}},
-        {RequiredBossItems,           {"Require Boss Items",                  "Required dungeon bosses will drop required items (e.g. Triforce Shards). Applies to \"Standard\" and \"Race Mode\" dungeons."}},
+        {RequiredBossItems,           {"Require Boss Items",                  "Required dungeon bosses will drop major items. Applies to \"Standard\" and \"Race Mode\" dungeons."}},
         {RandomCharts,                {"Randomize Charts",                    "Randomizes which sector is drawn on each Triforce/Treasure Chart."}},
         {CTMC,                        {"Chest Type Matches Contents",         "Changes the chest type to reflect its contents. A metal chest has a progress item, a key chest has a dungeon key, and a wooden chest has a non-progress item or a consumable.\nKey chests are dark wood chests that use a custom texture based on Big Key Chests. Keys for non-required dungeons in race mode will be in wooden chests."}},
 
