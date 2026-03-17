@@ -371,11 +371,11 @@ World::WorldLoadingError World::determineProgressionLocations()
 }
 
 // Properly set the dungeons for boss room locations
-// for race mode incase boss/miniboss entrances are randomized
+// in case boss/miniboss entrances are randomized
 World::WorldLoadingError World::setDungeonLocations(WorldPool& worlds)
 {
-    // Keep track of any unassigned race mode locations
-    LocationPool unassignedRaceModeLocations = {};
+    // Keep track of any unassigned boss locations
+    LocationPool unassignedBossLocations = {};
 
     for (auto& [areaName, area] : areaTable)
     {
@@ -392,79 +392,79 @@ World::WorldLoadingError World::setDungeonLocations(WorldPool& worlds)
                     auto& dungeon = getDungeon(dungeonName);
 
                     LOG_TO_DEBUG(loc->getName() + " has been assigned to dungeon " + dungeonName);
-                    if (loc->isRaceModeLocation)
+                    if (loc->isBossLocation)
                     {
-                        if (dungeon.raceModeLocation == nullptr) 
+                        if (dungeon.bossLocation == nullptr) 
                         {
-                            dungeon.raceModeLocation = loc;
-                            dungeon.hasNaturalRaceModeLocation = true;
+                            dungeon.bossLocation = loc;
+                            dungeon.hasNaturalBossLocation = true;
                         }
                         else
                         {
-                            unassignedRaceModeLocations.push_back(loc);
+                            unassignedBossLocations.push_back(loc);
                         }
                     }
                     dungeon.locations.emplace_back(loc);
                     loc->hintRegions.push_back(dungeonName);
                     area->dungeon = dungeonName;
                 } 
-                // If the race mode location doesn't have a dungeon, it's unassigned
-                else if (loc->isRaceModeLocation)
+                // If the boss location doesn't have a dungeon, it's unassigned
+                else if (loc->isBossLocation)
                 {
-                    unassignedRaceModeLocations.push_back(loc);
+                    unassignedBossLocations.push_back(loc);
                 }
             }
         }
     }
 
-    // For any unassigned race mode locations, randomly 
+    // For any unassigned boss locations, randomly 
     // assign them to dungeons that don't have one,
     // but don't list them in the dungeon's locations
     for (auto& [dungeonName, dungeon] : dungeons)
     {
         dungeon.name = dungeonName; // Also make sure the name is set
 
-        if (dungeon.raceModeLocation == nullptr)
+        if (dungeon.bossLocation == nullptr)
         {
-            dungeon.raceModeLocation = popRandomElement(unassignedRaceModeLocations);
-            LOG_TO_DEBUG("Unconnected race mode location " + dungeon.raceModeLocation->getName() + " has been assigned to dungeon " + dungeonName);
+            dungeon.bossLocation = popRandomElement(unassignedBossLocations);
+            LOG_TO_DEBUG("Unconnected boss location " + dungeon.bossLocation->getName() + " has been assigned to dungeon " + dungeonName);
         }
     }
 
     return WorldLoadingError::NONE;
 }
 
-World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
+World::WorldLoadingError World::determineRequiredDungeons(WorldPool& worlds)
 {
     if (settings.progression_dungeons != ProgressionDungeons::Disabled)
     {
         std::vector<Dungeon> dungeonPool = {};
         for (auto& [name, dungeon] : dungeons)
         {
-            // Verify that each dungeon has a race mode location
-            if (dungeon.raceModeLocation == nullptr)
+            // Verify that each dungeon has a boss location
+            if (dungeon.bossLocation == nullptr)
             {
-                ErrorLog::getInstance().log("Dungeon \"" + dungeon.name + "\" has no set race mode location");
-                LOG_ERR_AND_RETURN(WorldLoadingError::DUNGEON_HAS_NO_RACE_MODE_LOCATION);
+                ErrorLog::getInstance().log("Dungeon \"" + dungeon.name + "\" has no set boss location");
+                LOG_ERR_AND_RETURN(WorldLoadingError::DUNGEON_HAS_NO_BOSS_LOCATION);
             }
 
             dungeonPool.push_back(dungeon);
         }
 
         LocationPool nonProgressRollbacks = {};
-        bool successfullyChoseRaceModeDungeons = false;
+        bool successfullyChoseDungeons = false;
         // If the user only selects dungeons as their progression category, then
-        // we might need to reselect race mode dungeons a few times until we select
+        // we might need to reselect required dungeons a few times until we select
         // a combination that has sphere 0 locations open.
         do
         {
             shufflePool(dungeonPool);
-            size_t setRaceModeDungeons = 0;
-            // Loop through all the dungeons and see if any of them have items plandomized
-            // within them (or within their dependent locations). If they have major items
-            // plandomized, then select those dungeons as race mode dungeons
+            size_t setDungeons = 0;
             if (settings.plandomizer && settings.progression_dungeons == ProgressionDungeons::RaceMode)
             {
+                // Loop through all the dungeons and see if any of them have items plandomized
+                // within them (or within their dependent locations). If they have major items
+                // plandomized, then select those dungeons as race mode dungeons
                 for (const Dungeon& dungeon : dungeonPool)
                 {
                     auto allDungeonLocations = dungeon.locations;
@@ -476,37 +476,37 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                         if (plandomizer.locations.contains(dungeonLocation) && !plandomizer.locations[dungeonLocation].isJunkItem())
                         {
                             if(settings.required_boss_items) {
-                                // However, if the dungeon's naturally assigned race mode location is supposed to have a progress item and 
+                                // However, if the dungeon's naturally assigned boss location is supposed to have a progress item and 
                                 // it is plandomized junk or excluded then that's an error on the user's part.
-                                Location* raceModeLocation = dungeon.raceModeLocation;
-                                bool raceModeLocationIsAcceptable = raceModeLocation->progression && (!plandomizer.locations.contains(raceModeLocation) || !plandomizer.locations[raceModeLocation].isJunkItem());
-                                if (dungeon.hasNaturalRaceModeLocation && !raceModeLocationIsAcceptable)
+                                Location* bossLocation = dungeon.bossLocation;
+                                bool bossLocationIsAcceptable = bossLocation->progression && (!plandomizer.locations.contains(bossLocation) || !plandomizer.locations[bossLocation].isJunkItem());
+                                if (dungeon.hasNaturalBossLocation && !bossLocationIsAcceptable)
                                 {
-                                    ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at race mode location in dungeon \"" + dungeon.name + "\" with potentially major item");
+                                    ErrorLog::getInstance().log("Plandomizer Error: Junk item placed at boss location in dungeon \"" + dungeon.name + "\" with potentially major item");
                                     LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
                                 }
                             }
 
                             LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
                             dungeons[dungeon.name].isRequiredDungeon = true;
-                            setRaceModeDungeons++;
+                            setDungeons++;
                             break;
                         }
                     }
                 }
+
+                // If too many are set, return an error
+                if (setDungeons > settings.num_required_dungeons)
+                {
+                    ErrorLog::getInstance().log("Plandomizer Error: Too many dungeons set with potentially major items");
+                    ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(setDungeons));
+                    ErrorLog::getInstance().log("Maximum number of race mode dungeons: " + std::to_string(settings.num_required_dungeons));
+                    LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
+                }
             }
 
-            // If too many are set, return an error
-            if (setRaceModeDungeons > settings.num_required_dungeons)
-            {
-                ErrorLog::getInstance().log("Plandomizer Error: Too many dungeons set with potentially major items");
-                ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(setRaceModeDungeons));
-                ErrorLog::getInstance().log("Maximum set race mode dungeons: " + std::to_string(settings.num_required_dungeons));
-                LOG_ERR_AND_RETURN(WorldLoadingError::PLANDOMIZER_ERROR);
-            }
-
-            // Now check again and fill in any more dungeons that may be necessary
-            // Also set non-race mode dungeons locations as non-progress
+            // Now check again and choose any more dungeons that may be necessary
+            // Also set non-race mode dungeons' locations as non-progress
             for (const auto& dungeon : dungeonPool)
             {
                 // If this dungeon was already selected, then skip it
@@ -514,35 +514,35 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
                 {
                     continue;
                 }
-                // If this dungeon's race mode location is (excluded) or (bosses have required items 
-                // and this dungeon has junk placed at its race mode location), then skip it
-                auto raceModeLocation = dungeon.raceModeLocation;
-                bool raceModeLocationIsAcceptable = raceModeLocation->progression && (!settings.required_boss_items || (!plandomizer.locations.contains(raceModeLocation) || !plandomizer.locations[raceModeLocation].isJunkItem()));
-                if (raceModeLocationIsAcceptable && setRaceModeDungeons < settings.num_required_dungeons)
+                // If this dungeon's boss location is (excluded) or (bosses have required items
+                // and this dungeon has junk placed at its boss location), then skip it
+                auto bossLocation = dungeon.bossLocation;
+                bool bossLocationIsAcceptable = bossLocation->progression && (!settings.required_boss_items || (!plandomizer.locations.contains(bossLocation) || !plandomizer.locations[bossLocation].isJunkItem()));
+                if (bossLocationIsAcceptable && setDungeons < settings.num_required_dungeons)
                 {
-                    LOG_TO_DEBUG("Chose race mode dungeon : " + dungeon.name);
+                    LOG_TO_DEBUG("Chose required dungeon : " + dungeon.name);
                     dungeons[dungeon.name].isRequiredDungeon = true;
-                    setRaceModeDungeons++;
+                    setDungeons++;
                 }
                 else if (settings.progression_dungeons == ProgressionDungeons::RaceMode)
                 {
-                    // If we've already chosen our race mode dungeons, then set all
-                    // the other dungeons' locations as non-progression. If dungeons
-                    // are set as progression locations, we already set them all as
-                    // progression previously, so here we unset those which aren't
-                    // progression dungeons.
+                    // If we haven't chosen this dungeon as a race mode dungeon,
+                    // then set all of its locations as non-progression.
+                    // Because dungeons were enabled, we already set their locations as
+                    // progression previously, so we need to unset those which aren't in
+                    // the selected dungeons.
                     for (auto location : dungeon.locations)
                     {
                         location->progression = false;
                         nonProgressRollbacks.push_back(location);
                     }
 
-                    // Dungeons without a naturally assigned race mode location won't
-                    // have their race mode location in their list of locations, so
+                    // Dungeons without a naturally assigned boss location won't
+                    // have their boss location in their list of locations, so
                     // manually add it to the non-progress checks
-                    if (!dungeon.hasNaturalRaceModeLocation)
+                    if (!dungeon.hasNaturalBossLocation)
                     {
-                        nonProgressRollbacks.push_back(dungeon.raceModeLocation);
+                        nonProgressRollbacks.push_back(dungeon.bossLocation);
                     }
 
                     // Also set any progress locations outside the dungeon which
@@ -564,20 +564,20 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
             // If we have locations available, flag a successful choosing
             if (!getAccessibleLocations(worlds, noItems, allowedLocations).empty())
             {
-                successfullyChoseRaceModeDungeons = true;
+                successfullyChoseDungeons = true;
 
-                if (setRaceModeDungeons < settings.num_required_dungeons)
+                if (setDungeons < settings.num_required_dungeons)
                 {
-                    ErrorLog::getInstance().log("Not enough race mode locations for set number of race mode dungeons");
-                    ErrorLog::getInstance().log("Possible race mode locations: " + std::to_string(setRaceModeDungeons));
-                    ErrorLog::getInstance().log("Set number of race mode dungeons: " + std::to_string(settings.num_required_dungeons));
-                    LOG_ERR_AND_RETURN(WorldLoadingError::NOT_ENOUGH_RACE_MODE_LOCATIONS);
+                    ErrorLog::getInstance().log("Not enough boss locations for set number of required dungeons");
+                    ErrorLog::getInstance().log("Possible boss locations: " + std::to_string(setDungeons));
+                    ErrorLog::getInstance().log("Set number of required dungeons: " + std::to_string(settings.num_required_dungeons));
+                    LOG_ERR_AND_RETURN(WorldLoadingError::NOT_ENOUGH_BOSS_LOCATIONS);
                 }
             }
             // Otherwise, set all dungeon locations as progression and try again
             else
             {
-                LOG_TO_DEBUG("No sphere 0 progression locations with chosen race mode dungeon set");
+                LOG_TO_DEBUG("No sphere 0 progression locations with chosen dungeon set");
                 for (auto location : nonProgressRollbacks)
                 {
                     location->progression = true;
@@ -589,15 +589,15 @@ World::WorldLoadingError World::determineRaceModeDungeons(WorldPool& worlds)
 
                 nonProgressRollbacks.clear();
             }
-        } while (!successfullyChoseRaceModeDungeons);
+        } while (!successfullyChoseDungeons);
 
         // Set setting variables for required bosses
         for (const auto& [dungeonName, dungeon] : dungeons)
         {
             if (dungeon.isRequiredDungeon)
             {
-                settings.setRequiredBoss(dungeon.raceModeLocation->getName(), true);
-                dungeon.raceModeLocation->isRequiredRaceModeLocation = true;
+                settings.setRequiredBoss(dungeon.bossLocation->getName(), true);
+                dungeon.bossLocation->isRequiredBossLocation = true;
             }
         }
     }
@@ -753,10 +753,10 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
     const std::string& hintPriority = locationObject["Hint Priority"].as<std::string>();
     location->hintPriority = hintPriority;
 
-    if (locationObject["Race Mode Location"])
+    if (locationObject["Boss Location"])
     {
-        location->isRaceModeLocation = true;
-        raceModeLocations.push_back(location);
+        location->isBossLocation = true;
+        bossLocations.push_back(location);
     }
 
     if(locationObject["Stage ID"])
@@ -881,7 +881,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
     }
 
     // Check to see if this area is the first one in a dungeon. This is important
-    // for later finding which island leads to this dungeon in race mode
+    // for later finding which island leads to this dungeon.
     if (areaObject["Dungeon Starting Room"])
     {
         const auto dungeon = areaObject["Dungeon Starting Room"].as<std::string>();
@@ -1573,10 +1573,10 @@ std::string World::errorToName(WorldLoadingError err)
         return "BAD_REQUIREMENT";
     case WorldLoadingError::PLANDOMIZER_ERROR:
         return "PLANDOMIZER_ERROR";
-    case WorldLoadingError::DUNGEON_HAS_NO_RACE_MODE_LOCATION:
-        return "DUNGEON_HAS_NO_RACE_MODE_LOCATION";
-    case WorldLoadingError::NOT_ENOUGH_RACE_MODE_LOCATIONS:
-        return "NOT_ENOUGH_RACE_MODE_LOCATIONS";
+    case WorldLoadingError::DUNGEON_HAS_NO_BOSS_LOCATION:
+        return "DUNGEON_HAS_NO_BOSS_LOCATION";
+    case WorldLoadingError::NOT_ENOUGH_BOSS_LOCATIONS:
+        return "NOT_ENOUGH_BOSS_LOCATIONS";
     case WorldLoadingError::INVALID_DUNGEON_NAME:
         return "INVALID_DUNGEON_NAME";
     case WorldLoadingError::DATA_FILE_ERROR:

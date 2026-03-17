@@ -187,7 +187,7 @@ bool Location::currentItemCanBeBarren() const
 // if it's a required race mode location
 bool Location::isBarrenAsChainLocation() const
 {
-    return !progression || (currentItem.canBeInBarrenRegion() && !isRequiredRaceModeLocation);
+    return !progression || (currentItem.canBeInBarrenRegion() && !isRequiredBossLocation);
 }
 
 std::u16string Location::generateImportanceText(const std::string& language)

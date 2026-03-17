@@ -33,10 +33,10 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
         world.goalLocations.push_back(world.locationTable["Ganon's Tower - Defeat Ganondorf"].get());
         for (auto& [name, dungeon] : world.dungeons)
         {
-            // Race mode locations are also goal locations
+            // Boss locations are also goal locations
             if (dungeon.isRequiredDungeon)
             {
-                world.goalLocations.push_back(dungeon.raceModeLocation);
+                world.goalLocations.push_back(dungeon.bossLocation);
             }
         }
 
@@ -311,7 +311,7 @@ static HintError generatePathHintLocations(World& world, std::list<Hint>& hints)
     for (auto& goalLocation : world.goalLocations)
     {
         shufflePool(goalLocation->pathLocations);
-        // Initially we want to pull path hints from race mode dungeons before pulling from Ganondorf
+        // Initially we want to pull path hints from required dungeons before pulling from Ganondorf
         if (goalLocation->getName() != "Ganon's Tower - Defeat Ganondorf")
         {
             goalLocations.push_back(goalLocation);
@@ -321,7 +321,7 @@ static HintError generatePathHintLocations(World& world, std::list<Hint>& hints)
     bool addedGanonPathLocation = false;
     for (uint8_t i = 0; i < world.getSettings().path_hints; i++)
     {
-        // Try to get at least one hint for each race mode dungeon first
+        // Try to get at least one hint for each required dungeon first
         Location* goalLocation = nullptr;
         if (i < goalLocations.size())
         {
@@ -329,7 +329,7 @@ static HintError generatePathHintLocations(World& world, std::list<Hint>& hints)
         }
         else
         {
-            // Once we've pulled from all race mode dungeons, then add Ganondorf to the list
+            // Once we've pulled from all required dungeons, then add Ganondorf to the list
             // and choose randomly
             if (i == goalLocations.size() && !addedGanonPathLocation)
             {
@@ -650,7 +650,7 @@ static HintError generateLocationHintLocations(World& world, std::list<Hint>& hi
     {
         if (location->progression && 
            !location->hasBeenHinted && 
-           !location->isRaceModeLocation && 
+           !location->isBossLocation && 
             location->hintPriority == "Sometimes" && 
            !(world.getSettings().ho_ho_triforce_hints && location->currentItem.isTriforceShard()))
             {

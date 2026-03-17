@@ -323,8 +323,7 @@ void placeVanillaItems(WorldPool& worlds)
 // Determine which items are major items. A major item is any item required
 // for access to any progression location and/or game beatability. This function
 // is called multiple times during the fill algorithm as the items required for
-// beatability may change depending on which items are placed in race mode locations
-// and/or plandomized
+// beatability may change depending on which items are placed in boss locations and/or plandomized
 void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& allLocations)
 {
     LOG_TO_DEBUG("Determining Major Items");
@@ -405,7 +404,7 @@ static FillError randomizeOwnDungeon(WorldPool& worlds, ItemPool& itemPool)
         {
             // Filter to only the dungeons locations which are progression locations
             // If dungeons are not progression locations, or if race mode is on
-            // and this isn't a race mode dungeon, then take all locations in
+            // and this isn't a required dungeon, then take all locations in
             // the dungeon since none of them are progression anyway
             auto worldLocations = world.getLocations();
             auto dungeonLocations = filterFromPool(worldLocations, [&dungeon = dungeon, &settings = settings](const Location* loc){
@@ -586,12 +585,12 @@ static FillError handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
     return FillError::NONE;
 }
 
-static void generateRaceModeItems(const LocationPool& raceModeLocations, ItemPool& raceModeItems, ItemPool& itemsToChooseFrom, ItemPool& mainItemPool)
+static void generateBossItems(const LocationPool& bossLocations, ItemPool& chosenItems, ItemPool& itemsToChooseFrom, ItemPool& mainItemPool)
 {
     shufflePool(itemsToChooseFrom);
-    while (!itemsToChooseFrom.empty() && raceModeItems.size() < raceModeLocations.size())
+    while (!itemsToChooseFrom.empty() && chosenItems.size() < bossLocations.size())
     {
-        raceModeItems.push_back(popRandomElement(itemsToChooseFrom));
+        chosenItems.push_back(popRandomElement(itemsToChooseFrom));
     }
     // Add back any unused elements
     addElementsToPool(mainItemPool, itemsToChooseFrom);
@@ -599,10 +598,10 @@ static void generateRaceModeItems(const LocationPool& raceModeLocations, ItemPoo
 
 // Place progression items in specific locations at the end of dungeons to require the player
 // to beat those dungeons.
-static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& allLocations)
+static FillError placeBossItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& allLocations)
 {
-    LocationPool raceModeLocations;
-    ItemPool raceModeItems;
+    LocationPool bossLocations;
+    ItemPool bossItems;
     for (auto& world : worlds)
     {
         if(world.getSettings().required_boss_items) {
@@ -610,13 +609,13 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
             {
                 if (dungeon.isRequiredDungeon)
                 {
-                    auto raceModeLocation = dungeon.raceModeLocation;
+                    auto bossLocation = dungeon.bossLocation;
                     // If this location already has an item placed at it, then skip it
-                    if (raceModeLocation->currentItem.getGameItemId() != GameItem::INVALID)
+                    if (bossLocation->currentItem.getGameItemId() != GameItem::INVALID)
                     {
                         continue;
                     }
-                    raceModeLocations.push_back(raceModeLocation);
+                    bossLocations.push_back(bossLocation);
                 }
             }
         }
@@ -624,28 +623,29 @@ static FillError placeRaceModeItems(WorldPool& worlds, ItemPool& itemPool, Locat
 
     // Build up the list of boss items with major items.
     auto majorItems = filterAndEraseFromPool(itemPool, [](const Item& item){return item.isMajorItem();});
-    generateRaceModeItems(raceModeLocations, raceModeItems, majorItems, itemPool);
+    generateBossItems(bossLocations, bossItems, majorItems, itemPool);
 
-    // logItemPool("raceModeItems", raceModeItems);
+    logItemPool("Boss Items", bossItems);
 
-    if (raceModeItems.size() < raceModeLocations.size())
+    if (bossItems.size() < bossLocations.size())
     {
-        Utility::platformLog("WARNING: Not enough major items to place at race mode locations.");
+        Utility::platformLog("WARNING: Not enough major items to place at boss locations.");
     }
 
-    // Then place the items in the race mode locations
+    // Then place the items in the boss locations
     FillError err;
-    FILL_ERROR_CHECK(assumedFill(worlds, raceModeItems, itemPool, raceModeLocations));
+    FILL_ERROR_CHECK(assumedFill(worlds, bossItems, itemPool, bossLocations));
 
-    // Set race mode locations which had items placed at them as having expected items
-    for (auto raceModeLoc : raceModeLocations)
+    // Set boss locations which had items placed at them as having expected items
+    for (auto loc : bossLocations)
     {
-        raceModeLoc->hasExpectedItem = true;
+        loc->hasExpectedItem = true;
     }
 
     // Recalculate major items since new items may now be required depending on
-    // what items were placed at race mode locations
+    // what items were placed at boss locations
     determineMajorItems(worlds, itemPool, allLocations);
+
     return FillError::NONE;
 }
 
@@ -734,10 +734,10 @@ FillError fill(WorldPool& worlds)
 
     determineMajorItems(worlds, itemPool, allLocations);
     FILL_ERROR_CHECK(placeNonProgressLocationPlandomizerItems(worlds, itemPool));
-    // Handle dungeon items and race mode dungeons first if necessary. Generally
+    // Handle dungeon and/or boss items first if necessary. Generally
     // we need to place items that go into more restrictive location pools first before
     // we can place other items.
-    FILL_ERROR_CHECK(placeRaceModeItems(worlds, itemPool, allLocations));
+    FILL_ERROR_CHECK(placeBossItems(worlds, itemPool, allLocations));
     FILL_ERROR_CHECK(handleDungeonItems(worlds, itemPool));
 
     // Recalculate major items again since new items may now be required depending on

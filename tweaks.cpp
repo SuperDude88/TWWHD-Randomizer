@@ -2223,7 +2223,7 @@ TweakError update_required_bosses(const World& world) {
     uint16_t required_boss_stages_bitset = 0x0000;
     for (const auto& [dungeonName, dungeon] : world.dungeons) {
         if (dungeon.isRequiredDungeon) {
-            required_boss_stages_bitset |= (1 << dungeon.raceModeLocation->stageId);
+            required_boss_stages_bitset |= (1 << dungeon.bossLocation->stageId);
         }
     }
 
@@ -2762,8 +2762,8 @@ TweakError show_dungeon_markers_on_chart(World& world) {
         if (dungeon.isRequiredDungeon)
         {
             // Get island of associated boss room
-            auto raceModeArea = dungeon.raceModeLocation->accessPoints.front()->area;
-            auto bossIslands = raceModeArea->findIslands();
+            const auto& bossArea = dungeon.bossLocation->accessPoints.front()->area;
+            const auto& bossIslands = bossArea->findIslands();
 
             const std::string& islandName = bossIslands.front();
             room_numbers.emplace(islandNameToRoomNum(islandName));

@@ -545,7 +545,7 @@ void MainWindow::apply_config_settings()
     APPLY_SPINBOX_SETTING(config, ui, damage_multiplier, float(2.0f), float(MAXIMUM_DAMAGE_MULTIPLIER));
 
     auto& num_required_dungeons = config.settings.num_required_dungeons;
-    // Race mode dungeons must be between 1 and 6 if race mode is enabled
+    // Required dungeons must be between 1 and 6 if race mode is enabled
     if (config.settings.progression_dungeons == ProgressionDungeons::RaceMode)
     {
         num_required_dungeons = std::clamp(num_required_dungeons, uint8_t(1), uint8_t(MAXIMUM_NUM_DUNGEONS));
@@ -771,7 +771,7 @@ DEFINE_STATE_CHANGE_FUNCTION(progression_combat_secret_caves)
 void MainWindow::on_progression_dungeons_currentTextChanged(const QString &arg1)
 {
     config.settings.progression_dungeons = nameToProgressionDungeons(arg1.toStdString());
-    // Grey out the race mode dungeons combobox if race mode/standard is not selected
+    // Grey out the required dungeons combobox if dungeons are disabled
     if (config.settings.progression_dungeons == ProgressionDungeons::RaceMode)
     {
         ui->num_required_dungeons->setEnabled(true);
