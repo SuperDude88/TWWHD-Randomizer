@@ -71,8 +71,8 @@ public:
     std::unordered_map<std::string, std::string> names = {};
     std::unordered_set<LocationCategory> categories;
     bool progression;
-    bool isRaceModeLocation;
-    bool isRequiredRaceModeLocation;
+    bool isBossLocation;
+    bool isRequiredBossLocation;
     uint8_t stageId = 0;
     bool plandomized;
     bool hasBeenHinted;
@@ -100,7 +100,7 @@ public:
     // Message Label if this is a hint location
     std::string messageLabel;
 
-    // goal names if this is a race mode location (one for each language)
+    // goal names if this is a boss location (one for each language)
     std::unordered_map<std::string, std::string> goalNames = {};
 
     // Tracker properties
@@ -112,8 +112,8 @@ public:
         names({}),
         categories({LocationCategory::INVALID}),
         progression(false),
-        isRaceModeLocation(false),
-        isRequiredRaceModeLocation(false),
+        isBossLocation(false),
+        isRequiredBossLocation(false),
         stageId(0),
         plandomized(false),
         hasBeenHinted(false),

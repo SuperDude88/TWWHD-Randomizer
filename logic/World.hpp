@@ -20,7 +20,7 @@
 
 #define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}
 #define GET_COMPLETE_PROGRESSION_LOCATION_POOL(locationPool, worlds) for (auto& world : worlds) {addElementsToPool(locationPool, world.getProgressionLocations());}
-#define ANY_WORLD_HAS_RACE_MODE(worlds) std::any_of(worlds.begin(), worlds.end(), [](World& world){return world.getSettings().progression_dungeons == ProgressionDungeons::RaceMode;})
+#define ANY_WORLD_HAS_RACE_MODE(worlds) std::ranges::any_of(worlds, [](const World& world){return world.getSettings().progression_dungeons == ProgressionDungeons::RaceMode;})
 
 using LocationPool = std::vector<Location*>;
 using EntrancePool = std::vector<Entrance*>;
@@ -57,8 +57,8 @@ public:
         INVALID_GAME_ITEM,
         BAD_REQUIREMENT,
         PLANDOMIZER_ERROR,
-        DUNGEON_HAS_NO_RACE_MODE_LOCATION,
-        NOT_ENOUGH_RACE_MODE_LOCATIONS,
+        DUNGEON_HAS_NO_BOSS_LOCATION,
+        NOT_ENOUGH_BOSS_LOCATIONS,
         INVALID_DUNGEON_NAME,
         DATA_FILE_ERROR,
         UNKNOWN,
@@ -91,7 +91,7 @@ public:
     void determineChartMappings();
     WorldLoadingError determineProgressionLocations();
     WorldLoadingError setDungeonLocations(WorldPool& worlds);
-    WorldLoadingError determineRaceModeDungeons(WorldPool& worlds);
+    WorldLoadingError determineRequiredDungeons(WorldPool& worlds);
     int loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, const fspath& locationDataPath, const fspath& itemDataPath, const fspath& areaDataPath);
     Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);
     Entrance* getEntrance(Area* parentArea, Area* connectedArea);
@@ -125,7 +125,7 @@ public:
     std::unordered_map<std::string, EventId> eventMap = {};
     std::unordered_map<EventId, std::string> reverseEventMap = {};
     std::map<std::string, Dungeon> dungeons = {};
-    LocationPool raceModeLocations = {};
+    LocationPool bossLocations = {};
     std::list<Location*> goalLocations = {};
     std::map<std::string, std::unordered_set<Location*>> barrenRegions = {};
     std::list<Hint> korlHints = {};

@@ -306,25 +306,24 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, const Entrance* ent
 
     for (auto& world : worlds)
     {
-        // Ensure that all race mode bosses are assigned to a single island
+        // Ensure that all required bosses are assigned to a single island
         auto& settings = world.getSettings();
         if (settings.progression_dungeons != ProgressionDungeons::Disabled && settings.num_required_dungeons > 0)
         {
-            std::unordered_set<std::string> raceModeIslands = {};
-            for (auto loc : world.raceModeLocations)
+            for (auto loc : world.bossLocations)
             {
-                auto bossIslands = loc->accessPoints.front()->area->findIslands();
+                const auto& bossIslands = loc->accessPoints.front()->area->findIslands();
 
                 if (bossIslands.size() > 1)
                 {
                     #ifdef ENABLE_DEBUG
-                        LOG_TO_DEBUG("Error: More than 1 island leading to race mode boss room " + loc->accessPoints.front()->area->name);
+                        LOG_TO_DEBUG("Error: More than 1 island leading to required boss room " + loc->accessPoints.front()->area->name);
                         for (auto& island : bossIslands)
                         {
                             LOG_TO_DEBUG("\t" + island);
                         }
                     #endif
-                    return EntranceShuffleError::AMBIGUOUS_RACE_MODE_ISLAND;
+                    return EntranceShuffleError::AMBIGUOUS_BOSS_ISLAND;
                 }
             }
         }
@@ -952,7 +951,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
             }
         }
 
-        // Now set the islands the race mode dungeons are in
+        // Now set the islands the dungeons are in
         for (auto& [name, dungeon] : world.dungeons)
         {
             dungeon.islands = dungeon.startingArea->findIslands();
@@ -982,12 +981,8 @@ const std::string errorToName(EntranceShuffleError err)
             return "NO_MORE_VALID_ENTRANCES";
         case EntranceShuffleError::ALL_LOCATIONS_NOT_REACHABLE:
             return "ALL_LOCATIONS_NOT_REACHABLE";
-        case EntranceShuffleError::AMBIGUOUS_RACE_MODE_ISLAND:
-            return "AMBIGUOUS_RACE_MODE_ISLAND";
-        case EntranceShuffleError::AMBIGUOUS_RACE_MODE_DUNGEON:
-            return "AMBIGUOUS_RACE_MODE_DUNGEON";
-        case EntranceShuffleError::NO_RACE_MODE_ISLAND:
-            return "NO_RACE_MODE_ISLAND";
+        case EntranceShuffleError::AMBIGUOUS_BOSS_ISLAND:
+            return "AMBIGUOUS_BOSS_ISLAND";
         case EntranceShuffleError::NOT_ENOUGH_SPHERE_ZERO_LOCATIONS:
             return "NOT_ENOUGH_SPHERE_ZERO_LOCATIONS";
         case EntranceShuffleError::ATTEMPTED_SELF_CONNECTION:

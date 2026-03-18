@@ -328,7 +328,7 @@
     Spanish: Isla del Diablo - Contenedor de corazón de Kranos
     French: Forteresse Maudite - Réceptacle de Cœur du Roi Cuirasse
   Original Item: Heart Container
-  Race Mode Location: true
+  Boss Location: true
   Stage ID: 2
   Goal Names:
     English: Helmaroc King
@@ -3737,7 +3737,7 @@
     Spanish: Cueva del Dragón - Contenedor de Corazón de Gohma
     French: Caverne du Dragon - Réceptacle de Cœur de Gohma
   Original Item: Heart Container
-  Race Mode Location: true
+  Boss Location: true
   Stage ID: 3
   Goal Names:
     English: Gohma
@@ -3980,7 +3980,7 @@
     Spanish: Bosque Prohibido - Contenedor de Corazón de Vilipendulia
     French: Bois Défendus - Réceptacle de Cœur de Karle Demos
   Original Item: Heart Container
-  Race Mode Location: true
+  Boss Location: true
   Stage ID: 4
   Goal Names:
     English: Kalle Demos
@@ -4199,7 +4199,7 @@
     Spanish: Torre de los Dioses - Contenedor de Corazón de Deus Probatur
     French: Tour des Dieux - Réceptacle de Cœur de Gordon
   Original Item: Heart Container
-  Race Mode Location: true
+  Boss Location: true
   Stage ID: 5
   Goal Names:
     English: Gohdan
@@ -4442,7 +4442,7 @@
     Spanish: Templo de la Tierra - Contenedor de Corazón de Fati Triputis
     French: Temple de la Terre - Réceptacle de Cœur de Jay Harla
   Original Item: Heart Container
-  Race Mode Location: true
+  Boss Location: true
   Stage ID: 6
   Goal Names:
     English: Jalhalla
@@ -4661,7 +4661,7 @@
     Spanish: Templo del Viento - Contenedor de Corazón de Verminus
     French: Temple du Vent - Réceptacle de Cœur de Gayla
   Original Item: Heart Container
-  Race Mode Location: true
+  Boss Location: true
   Stage ID: 7
   Goal Names:
     English: Molgera
