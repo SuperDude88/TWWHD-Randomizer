@@ -11,7 +11,7 @@
 #include <utility/platform.hpp>
 #include <utility/time.hpp>
 
-#define FILL_ERROR_CHECK(func) err = func; if (err != FillError::NONE) {return err;}
+#define FILL_ERROR_CHECK(func) if (const FillError err = func; err != FillError::NONE) { return err; }
 
 static void logItemsAndLocations(ItemPool& items, LocationPool& locations)
 {
@@ -53,7 +53,6 @@ static FillError fastFill(ItemPool& items, LocationPool& locations)
 
 static FillError fillTheRest(WorldPool& worlds, ItemPool& items, LocationPool& locations)
 {
-    FillError err;
     // First place the non consumable junk already in the pool
     // Filter out the consumable junk to place afterwards
     auto consumableJunk = filterAndEraseFromPool(items, [](const Item& i){return i.isConsumableJunkItem();});
@@ -390,7 +389,6 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
 // Randomize any approrpiate dungeon items into their own dungeons
 static FillError randomizeOwnDungeon(WorldPool& worlds, ItemPool& itemPool)
 {
-    FillError err;
     for (auto& world : worlds)
     {
         const auto& settings = world.getSettings();
@@ -475,7 +473,6 @@ static FillError randomizeOwnDungeon(WorldPool& worlds, ItemPool& itemPool)
 // Randomize any appropriate dungeon items into any dungeon or overworld
 static FillError randomizeRestrictedDungeonItems(WorldPool& worlds, ItemPool& itemPool)
 {
-    FillError err;
     for (auto& world : worlds)
     {
         auto& settings = world.getSettings();
@@ -635,7 +632,6 @@ static FillError placeBossItems(WorldPool& worlds, ItemPool& itemPool, LocationP
     }
 
     // Then place the items in the boss locations
-    FillError err;
     FILL_ERROR_CHECK(assumedFill(worlds, bossItems, itemPool, bossLocations));
 
     // Set boss locations which had items placed at them as having expected items
@@ -720,7 +716,7 @@ FillError fill(WorldPool& worlds)
     #ifdef ENABLE_TIMING
         ScopedTimer<"Fill took ", std::chrono::milliseconds> timer;
     #endif
-    FillError err;
+
     ItemPool itemPool;
     LocationPool allLocations;
 

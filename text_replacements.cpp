@@ -4,16 +4,15 @@
 #include <utility/string.hpp>
 #include <utility/text.hpp>
 
-#define IS_PLURAL(item, language) world.itemTranslations[item.getGameItemId()][language].plurality == Plurality::PLURAL
-#define IS_SINGULAR(item, language) world.itemTranslations[item.getGameItemId()][language].plurality == Plurality::SINGULAR
-#define IS_MALE(item, language) world.itemTranslations[item.getGameItemId()][language].gender == Gender::MALE
-#define IS_FEMALE(item, language) world.itemTranslations[item.getGameItemId()][language].gender == Gender::FEMALE
+#define IS_PLURAL(item, language) item.getWorld()->itemTranslations[item.getGameItemId()][language].plurality == Plurality::PLURAL
+#define IS_SINGULAR(item, language) item.getWorld()->itemTranslations[item.getGameItemId()][language].plurality == Plurality::SINGULAR
+#define IS_MALE(item, language) item.getWorld()->itemTranslations[item.getGameItemId()][language].gender == Gender::MALE
+#define IS_FEMALE(item, language) item.getWorld()->itemTranslations[item.getGameItemId()][language].gender == Gender::FEMALE
 
 using namespace Text;
 
 static std::u16string get_spanish_demonstrative_pronoun(const Item& item)
 {
-    auto& world = *item.getWorld();
     if (IS_MALE(item, "Spanish") && IS_SINGULAR(item, "Spanish"))
     {
         return u"este ";
@@ -35,13 +34,11 @@ static std::u16string get_spanish_demonstrative_pronoun(const Item& item)
 
 static std::u16string get_english_demonstrative_pronoun(const Item& item)
 {
-    auto& world = *item.getWorld();
     return IS_PLURAL(item, "English") ? u"These " : u"This ";
 }
 
 static std::u16string get_english_conjugation(const Item& item)
 {
-    auto& world = *item.getWorld();
     return IS_PLURAL(item, "English") ? u" are " : u" is ";
 }
 

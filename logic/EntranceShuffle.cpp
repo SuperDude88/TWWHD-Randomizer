@@ -13,7 +13,7 @@
 #include <command/Log.hpp>
 #include <libs/yaml.hpp>
 
-#define ENTRANCE_SHUFFLE_ERROR_CHECK(err) if (err != EntranceShuffleError::NONE) {LOG_TO_DEBUG("Error: " + errorToName(err)); return err;}
+#define ENTRANCE_SHUFFLE_ERROR_CHECK(func) if (const EntranceShuffleError err = func; err != EntranceShuffleError::NONE) {LOG_TO_DEBUG("Error: " + errorToName(err)); return err;}
 #define CHECK_MIXED_POOL(name, type) if (name) { poolsToMix.insert(type); if (settings.decouple_entrances) { poolsToMix.insert(type##_REVERSE); } }
 
 // The entrance randomization algorithm used here is heavily inspired by the entrance
@@ -358,14 +358,11 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, const Entrance* ent
 static EntranceShuffleError replaceEntrance(WorldPool& worlds, Entrance* entrance, Entrance* target, std::vector<EntrancePair>& rollbacks, ItemPool& itemPool)
 {
     LOG_TO_DEBUG("Attempting to Connect " + entrance->getOriginalName() + " To " + target->getReplaces()->getOriginalName());
-    EntranceShuffleError err = EntranceShuffleError::NONE;
-    err = checkEntrancesCompatibility(entrance, target, rollbacks);
-    ENTRANCE_SHUFFLE_ERROR_CHECK(err);
+    ENTRANCE_SHUFFLE_ERROR_CHECK(checkEntrancesCompatibility(entrance, target, rollbacks));
     changeConnections(entrance, target);
-    err = validateWorld(worlds, entrance, itemPool);
     // If the attempted replacement produces an invalid world graph, then undo
     // the attempted connection and try again with a different target.
-    if (err != EntranceShuffleError::NONE)
+    if (const EntranceShuffleError err = validateWorld(worlds, entrance, itemPool); err != EntranceShuffleError::NONE)
     {
         if (entrance->getConnectedArea())
         {
@@ -438,15 +435,12 @@ static EntranceShuffleError shuffleEntrances(WorldPool& worlds, EntrancePool& en
 // in hopes that a complete failure with valid settings is exceedingly rare.
 static EntranceShuffleError shuffleEntrancePool(World& world, WorldPool& worlds, EntrancePool& entrancePool, EntrancePool& targetEntrances, int retryCount = 20)
 {
-    EntranceShuffleError err = EntranceShuffleError::NONE;
-
     while (retryCount > 0)
     {
         retryCount--;
         std::vector<EntrancePair> rollbacks = {};
 
-        err = shuffleEntrances(worlds, entrancePool, targetEntrances, rollbacks);
-        if (err != EntranceShuffleError::NONE)
+        if (const EntranceShuffleError err = shuffleEntrances(worlds, entrancePool, targetEntrances, rollbacks); err != EntranceShuffleError::NONE)
         {
             LOG_TO_DEBUG("Failed to place all entrances in a pool for world " + std::to_string(world.getWorldId() + 1) + ". Will retry " + std::to_string(retryCount) + " more times.");
             LOG_TO_DEBUG("Last Error: " + errorToName(err));
@@ -582,7 +576,7 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
                 if (targetToConnect == targetEntrance->getReplaces())
                 {
                     std::vector<EntrancePair> dummyRollbacks = {};
-                    EntranceShuffleError err = replaceEntrance(worlds, entranceToConnect, targetEntrance, dummyRollbacks, completeItemPool);
+                    const EntranceShuffleError err = replaceEntrance(worlds, entranceToConnect, targetEntrance, dummyRollbacks, completeItemPool);
                     if (err != EntranceShuffleError::NONE)
                     {
                         ErrorLog::getInstance().log("Plandomizer Error when attempting to connect " + fullConnectionName + ": " + errorToName(err));
@@ -914,12 +908,10 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
         }
 
         // Set entrance data for all entrances, even those we aren't shuffling
-        err = setAllEntrancesData(world);
-        ENTRANCE_SHUFFLE_ERROR_CHECK(err);
+        ENTRANCE_SHUFFLE_ERROR_CHECK(setAllEntrancesData(world));
 
         // Process plandomizer entrance data (but don't place plandomzier entrances yet)
-        err = processPlandomizerEntrances(world);
-        ENTRANCE_SHUFFLE_ERROR_CHECK(err);
+        ENTRANCE_SHUFFLE_ERROR_CHECK(processPlandomizerEntrances(world));
 
         // This algorithm works similarly to the assumed fill algorithm used to
         // place items within the world. First, we disconnect all the entrances
@@ -959,8 +951,7 @@ EntranceShuffleError randomizeEntrances(WorldPool& worlds)
     }
 
     // Validate the worlds one last time to ensure everything went okay
-    err = validateWorld(worlds, nullptr, completeItemPool);
-    ENTRANCE_SHUFFLE_ERROR_CHECK(err);
+    ENTRANCE_SHUFFLE_ERROR_CHECK(validateWorld(worlds, nullptr, completeItemPool));
 
     return EntranceShuffleError::NONE;
 }
