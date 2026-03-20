@@ -10,8 +10,6 @@
 
 using eType = Utility::Endian::Type;
 
-#define WIIU_BLOCK_SIZE 0x8000
-
 static SHA256 sha256;
 
 

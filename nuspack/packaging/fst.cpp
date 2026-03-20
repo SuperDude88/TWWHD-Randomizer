@@ -6,8 +6,6 @@
 
 using eType = Utility::Endian::Type;
 
-#define WIIU_BLOCK_SIZE 0x8000
-
 
 
 namespace FileTypes {

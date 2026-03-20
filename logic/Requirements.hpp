@@ -30,7 +30,10 @@ enum struct RequirementError
 {
     NONE = 0,
     EXTRA_OR_MISSING_PARENTHESIS,
+    INCORRECT_ARGUMENT_COUNT,
     LOGIC_SYMBOL_DOES_NOT_EXIST,
+    OPTION_DOES_NOT_EXIST,
+    OPTION_VALUE_DOES_NOT_EXIST,
     SAME_NESTING_LEVEL,
     COULD_NOT_DETERMINE_TYPE,
 };
@@ -39,7 +42,6 @@ using MacroIndex = size_t;
 using EventId = size_t;
 using ItemMultiSet = std::unordered_multiset<Item>;
 using EventSet = std::unordered_set<EventId>;
-struct Requirement;
 
 struct Requirement
 {

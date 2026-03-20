@@ -35,26 +35,17 @@ public:
         NONE = 0,
         DUPLICATE_MACRO_NAME,
         MACRO_DOES_NOT_EXIST,
-        REQUIREMENT_TYPE_DOES_NOT_EXIST,
-        MAPPING_MISMATCH,
         GAME_ITEM_DOES_NOT_EXIST,
         AREA_DOES_NOT_EXIST,
         LOCATION_DOES_NOT_EXIST,
-        EXIT_MISSING_KEY,
-        OPTION_DOES_NOT_EXIST,
-        INCORRECT_ARG_COUNT,
         AREA_MISSING_KEY,
         LOCATION_MISSING_KEY,
         LOCATION_MISSING_VAL,
-        MACRO_MISSING_KEY,
-        MACRO_MISSING_VAL,
         ITEM_MISSING_KEY,
         DUNGEON_MISSING_KEY,
-        REQUIREMENT_MISSING_KEY,
         INVALID_LOCATION_CATEGORY,
         INVALID_MODIFICATION_TYPE,
         INVALID_OFFSET_VALUE,
-        INVALID_GAME_ITEM,
         BAD_REQUIREMENT,
         PLANDOMIZER_ERROR,
         DUNGEON_HAS_NO_BOSS_LOCATION,
@@ -115,7 +106,6 @@ public:
 
     std::unordered_map<std::string, MacroIndex> macroNameMap;
     std::vector<Requirement> macros;
-    std::unordered_map<MacroIndex, std::string> macroNames;
     std::unordered_map<std::string, std::string> macroStrings;
     std::map<std::string, Item> itemTable = {};
     std::map<std::string, std::unique_ptr<Area>> areaTable = {};

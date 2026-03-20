@@ -197,7 +197,6 @@ std::string printRequirement(const Requirement& req, World* world, int nestingLe
 // later is a lot faster. An example of a logic expression string is: "Grappling_Hook and (Deku_Leaf or Hookshot)"
 RequirementError parseRequirementString(const std::string& str, Requirement& req, World* world)
 {
-    RequirementError err;
     std::string logicStr (str);
 
     // First, we make sure that the expression has no missing or extra parenthesis
@@ -322,24 +321,31 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
             bool equalComparison = argStr.find("==") != std::string::npos;
 
             // Split up the comparison using the second comparison character (which will always be '=')
-            auto compPos = argStr.rfind('=');
-            std::string comparedOptionStr (argStr.begin() + (compPos + 1), argStr.end());
-            std::string settingName (argStr.begin(), argStr.begin() + (compPos - 1));
+            const auto compPos = argStr.rfind('=');
+            const std::string comparedOptionStr (argStr.begin() + (compPos + 1), argStr.end());
+            const std::string settingName (argStr.begin(), argStr.begin() + (compPos - 1));
+
+            if (world->getSettings().evaluateOption(settingName) == -1)
+            {
+                ErrorLog::getInstance().log("Unknown option name: \"" + settingName + "\"");
+                return RequirementError::OPTION_DOES_NOT_EXIST;
+            }
+
+            const int actualOption = world->getSettings().evaluateOption(settingName);
 
             int comparedOption = -1;
-            int actualOption = -1;
-            Option setting;
-
-            if (world->getSettings().evaluateOption(settingName) != -1)
-            {
-                actualOption = world->getSettings().evaluateOption(settingName);
-                comparedOption = comparedOptionStr == "true" ? 1 : 0;
+            if(comparedOptionStr == "true") {
+                comparedOption = 1;
             }
-            else
-            {
-                comparedOption = nameToSettingInt(comparedOptionStr);
-                setting = nameToSetting(settingName);
-                actualOption = world->getSettings().getSetting(setting);
+            else if(comparedOptionStr == "false") {
+                comparedOption = 0;
+            }
+            else if(const int value = nameToSettingInt(comparedOptionStr); value != -1) {
+                comparedOption = value;
+            }
+            else {
+                ErrorLog::getInstance().log("Unknown value \"" + comparedOptionStr + "\"" + " for option \"" + settingName + "\"");
+                return RequirementError::OPTION_VALUE_DOES_NOT_EXIST;
             }
 
             // If the comparison is true
@@ -375,9 +381,14 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
             }
             splitLogicStr.push_back(countArgs);
 
+            if(splitLogicStr.size() != 2) {
+                ErrorLog::getInstance().log("Incorrect number of arguments for \"count\" expression: expected 2, got " + std::to_string(splitLogicStr.size()));
+                return RequirementError::INCORRECT_ARGUMENT_COUNT;
+            }
+
             // Get the arguments
-            int count = std::stoi(splitLogicStr[0]);
-            std::string itemName = splitLogicStr[1];
+            const int& count = std::stoi(splitLogicStr[0]);
+            const std::string& itemName = splitLogicStr[1];
             req.args.emplace_back(count);
             req.args.emplace_back(world->getItem(itemName));
             return RequirementError::NONE;
@@ -388,7 +399,7 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
         {
             req.type = RequirementType::HEALTH;
             std::string numHeartsStr (argStr.begin() + argStr.find('(') + 1, argStr.end() - 1);
-            int numHearts = std::stoi(numHeartsStr);
+            const int& numHearts = std::stoi(numHeartsStr);
             req.args.emplace_back(numHearts);
             return RequirementError::NONE;
         }
@@ -453,13 +464,15 @@ RequirementError parseRequirementString(const std::string& str, Requirement& req
         // Requirement
         for (auto& reqStr : splitLogicStr)
         {
-            req.args.emplace_back(Requirement());
             // Get rid of parenthesis surrounding each deeper expression
             if (reqStr[0] == '(')
             {
                 reqStr = reqStr.substr(1, reqStr.length() - 2);
             }
-            if ((err = parseRequirementString(reqStr, std::get<Requirement>(req.args.back()), world)) != RequirementError::NONE) return err;
+            Requirement& arg = std::get<Requirement>(req.args.emplace_back(Requirement()));
+            if (const RequirementError err = parseRequirementString(reqStr, arg, world); err != RequirementError::NONE) {
+                return err;
+            }
         }
     }
 
@@ -569,8 +582,14 @@ std::string errorToName(const RequirementError& err)
             return "NONE";
         case RequirementError::EXTRA_OR_MISSING_PARENTHESIS:
             return "EXTRA_OR_MISSING_PARENTHESIS";
+        case RequirementError::INCORRECT_ARGUMENT_COUNT:
+            return "INCORRECT_ARGUMENT_COUNT";
         case RequirementError::LOGIC_SYMBOL_DOES_NOT_EXIST:
             return "LOGIC_SYMBOL_DOES_NOT_EXIST";
+        case RequirementError::OPTION_DOES_NOT_EXIST:
+            return "OPTION_DOES_NOT_EXIST";
+        case RequirementError::OPTION_VALUE_DOES_NOT_EXIST:
+            return "OPTION_VALUE_DOES_NOT_EXIST";
         case RequirementError::SAME_NESTING_LEVEL:
             return "SAME_NESTING_LEVEL";
         case RequirementError::COULD_NOT_DETERMINE_TYPE:

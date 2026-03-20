@@ -15,8 +15,6 @@
 
     #include <mocha/mocha.h>
 
-    #define PRINTF_BUFFER_LENGTH 2048
-
     static bool mochaOpen = false;
     static bool MLCMounted = false;
     static bool USBMounted = false;

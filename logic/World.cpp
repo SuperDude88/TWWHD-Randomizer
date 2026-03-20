@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <cstdlib>
 #include <vector>
-#include <random>
 #include <iostream>
 
 #include <logic/Requirements.hpp>
@@ -23,14 +22,11 @@ static std::stringstream lastError;
 
 // some error checking macros for brevity and since we can't use exceptions
 #define YAML_FIELD_CHECK(ref, key, err) if(!ref[key]) {lastError << "Unable to find key: \"" << key << '"'; return err;}
-#define MAPPING_CHECK(str1, str2) if (str1 != str2) {lastError << "\"" << str1 << "\" does not equal" << std::endl << "\"" << str2 << "\""; LOG_ERR_AND_RETURN(WorldLoadingError::MAPPING_MISMATCH);}
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << msg; LOG_ERR_AND_RETURN(err);}
-#define EVENT_CHECK(eventName) if (!eventMap.contains(eventName)) {eventMap[eventName] = eventMap.size(); reverseEventMap[eventMap[eventName]] = eventName;}
 #define ITEM_VALID_CHECK(item, msg) VALID_CHECK(item, GameItem::INVALID, msg, WorldLoadingError::GAME_ITEM_DOES_NOT_EXIST)
 #define AREA_VALID_CHECK(area, msg) VALID_CHECK(0, areaTable.count(area), msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
 #define REGION_VALID_CHECK(region, msg) VALID_CHECK(0, hintRegions.count(region), msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
 #define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(0, locationTable.count(loc), msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
-#define OPTION_VALID_CHECK(opt, msg) VALID_CHECK(opt, Option::INVALID, msg, WorldLoadingError::OPTION_DOES_NOT_EXIST)
 #define VALID_DUNGEON_CHECK(dungeon) if (!isValidDungeon(dungeon)) {ErrorLog::getInstance().log("Unrecognized dungeon name: \"" + dungeon + "\""); LOG_ERR_AND_RETURN(WorldLoadingError::INVALID_DUNGEON_NAME)};
 
 int World::eventCounter = 0;
@@ -607,21 +603,25 @@ World::WorldLoadingError World::determineRequiredDungeons(WorldPool& worlds)
 
 RequirementError World::parseMacro(const std::string& macroLogicExpression, Requirement& reqOut)
 {
-    // readd prechecks?
     if (const RequirementError err = parseRequirementString(macroLogicExpression, reqOut, this); err != RequirementError::NONE) return err;
     return RequirementError::NONE;
 }
 
 World::WorldLoadingError World::loadMacros(const YAML::Node& macroListTree)
 {
-    uint32_t macroCount = 0;
+    MacroIndex macroCount = 0;
 
     // first pass to get all macro names
     for (const auto& macro : macroListTree)
     {
-        macroStrings.emplace(macro.first.as<std::string>(), macro.second.as<std::string>());
-        macroNameMap.emplace(macro.first.as<std::string>(), macroCount);
-        macroNames.emplace(macroCount, macro.first.as<std::string>());
+        const std::string& name = macro.first.as<std::string>();
+        if(macroNameMap.contains(name)) {
+            lastError << "Macro of name " << name << " has been redefined";
+            return WorldLoadingError::DUPLICATE_MACRO_NAME;
+        }
+
+        macroStrings.emplace(name, macro.second.as<std::string>());
+        macroNameMap.emplace(name, macroCount);
         macroCount++;
     }
     for (const auto& macro : macroListTree)
@@ -1531,44 +1531,28 @@ std::string World::errorToName(WorldLoadingError err)
         return "DUPLICATE_MACRO_NAME";
     case WorldLoadingError::MACRO_DOES_NOT_EXIST:
         return "MACRO_DOES_NOT_EXIST";
-    case WorldLoadingError::REQUIREMENT_TYPE_DOES_NOT_EXIST:
-        return "REQUIREMENT_TYPE_DOES_NOT_EXIST";
-    case WorldLoadingError::MAPPING_MISMATCH:
-        return "MAPPING MISMATCH";
     case WorldLoadingError::GAME_ITEM_DOES_NOT_EXIST:
         return "GAME_ITEM_DOES_NOT_EXIST";
     case WorldLoadingError::AREA_DOES_NOT_EXIST:
         return "AREA_DOES_NOT_EXIST";
     case WorldLoadingError::LOCATION_DOES_NOT_EXIST:
         return "LOCATION_DOES_NOT_EXIST";
-    case WorldLoadingError::EXIT_MISSING_KEY:
-        return "EXIT_MISSING_KEY";
-    case WorldLoadingError::OPTION_DOES_NOT_EXIST:
-        return "OPTION_DOES_NOT_EXIST";
-    case WorldLoadingError::INCORRECT_ARG_COUNT:
-        return "INCORRECT_ARG_COUNT";
     case WorldLoadingError::AREA_MISSING_KEY:
         return "AREA_MISSING_KEY";
     case WorldLoadingError::LOCATION_MISSING_KEY:
         return "LOCATION_MISSING_KEY";
-    case WorldLoadingError::MACRO_MISSING_KEY:
-        return "MACRO_MISSING_KEY";
-    case WorldLoadingError::MACRO_MISSING_VAL:
-        return "MACRO_MISSING_VAL";
+    case WorldLoadingError::LOCATION_MISSING_VAL:
+        return "LOCATION_MISSING_VAL";
     case WorldLoadingError::ITEM_MISSING_KEY:
         return "ITEM_MISSING_KEY";
     case WorldLoadingError::DUNGEON_MISSING_KEY:
         return "DUNGEON_MISSING_KEY";
-    case WorldLoadingError::REQUIREMENT_MISSING_KEY:
-        return "REQUIREMENT_MISSING_KEY";
     case WorldLoadingError::INVALID_LOCATION_CATEGORY:
         return "INVALID_LOCATION_CATEGORY";
     case WorldLoadingError::INVALID_MODIFICATION_TYPE:
         return "INVALID_MODIFICATION_TYPE";
     case WorldLoadingError::INVALID_OFFSET_VALUE:
         return "INVALID_OFFSET_VALUE";
-    case WorldLoadingError::INVALID_GAME_ITEM:
-        return "INVALID_GAME_ITEM";
     case WorldLoadingError::BAD_REQUIREMENT:
         return "BAD_REQUIREMENT";
     case WorldLoadingError::PLANDOMIZER_ERROR:
