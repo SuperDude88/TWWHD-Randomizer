@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <map>
 
 #include <libs/yaml.hpp>
 
@@ -156,7 +155,7 @@ public:
 
 class ModifyBoss final : public LocationModification {
 private:
-    std::vector<std::pair<fspath, uint32_t>> offsetsWithPath;
+    std::vector<std::pair<fspath, std::vector<uint32_t>>> offsetsByPath;
 
 public:
     ModifyBoss() = default;

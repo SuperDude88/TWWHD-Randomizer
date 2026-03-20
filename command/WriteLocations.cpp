@@ -318,7 +318,7 @@ ModificationError ModifyEvent::writeLocation(const Item& item) {
         name.resize(0x20);
 
         stream.seekp(nameOffset, std::ios::beg);
-        stream.write(&name[0], 0x20);
+        stream.write(name.data(), 0x20);
 
         stream.seekp(offset, std::ios::beg);
         stream.write(reinterpret_cast<const char*>(&itemID), 1);
@@ -343,7 +343,7 @@ ModificationError ModifyRPX::parseArgs(const YAML::Node& locationObject) {
 }
 
 ModificationError ModifyRPX::writeLocation(const Item& item) {
-    uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
+    const uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
     RandoSession::CacheEntry& file = g_session.openGameFile("code/cking.rpx@RPX@ELF");
     file.addAction([this, itemID](RandoSession* session, FileType* data) -> int {
@@ -379,7 +379,7 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
 
     for(const auto& symbol : symbolNames) {
         uint32_t address;
-        uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
+        const uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
         if (symbol[0] == '@') { // support hardcoding addresses for checks like zunari (where a symbol and address are needed)
             const std::string offsetStr = symbol.substr(1);
@@ -414,26 +414,37 @@ ModificationError ModifyBoss::parseArgs(const YAML::Node& locationObject) {
         LOG_ERR_AND_RETURN(ModificationError::MISSING_KEY);
     }
 
-    offsetsWithPath.reserve(locationObject["Paths"].size());
-    for (auto path_pair : locationObject["Paths"])
+    offsetsByPath.reserve(locationObject["Paths"].size());
+    for (const auto& path_pair : locationObject["Paths"])
     {
-        offsetsWithPath.emplace_back(path_pair.first.as<std::string>(), path_pair.second.as<uint32_t>());
+        if(!path_pair.second.IsSequence()) {
+            LOG_ERR_AND_RETURN(ModificationError::MISSING_VALUE);
+        }
+
+        auto& [path, offsets] = offsetsByPath.emplace_back(path_pair.first.as<std::string>(), std::vector<uint32_t>{});
+        offsets.reserve(path_pair.second.size());
+        for (const auto& offset : path_pair.second)
+        {
+            offsets.emplace_back(offset.as<uint32_t>());
+        }
     }
 
     return ModificationError::NONE;
 }
 
 ModificationError ModifyBoss::writeLocation(const Item& item) {
-    for (const auto& [path, offset] : offsetsWithPath) {
-        uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
+    for (const auto& [path, offsets] : offsetsByPath) {
+        const uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
         if (path == "code/cking.rpx@RPX@ELF") {
             RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
-            rpx.addAction([offset = offset, itemID](RandoSession* session, FileType* data) -> int {
+            rpx.addAction([offsets = offsets, itemID](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-                if(const auto& err = elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, offset), itemID); err != ELFError::NONE) {
-                    LOG_ERR_AND_RETURN_BOOL(ModificationError::RPX_ERROR);
+                for(const uint32_t& offset : offsets) {
+                    if(const auto& err = elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, offset), itemID); err != ELFError::NONE) {
+                        LOG_ERR_AND_RETURN_BOOL(ModificationError::RPX_ERROR);
+                    }
                 }
 
                 return true;
@@ -443,17 +454,19 @@ ModificationError ModifyBoss::writeLocation(const Item& item) {
         }
         else {
             RandoSession::CacheEntry& file = g_session.openGameFile(path);
-            file.addAction([offset = offset, itemID](RandoSession* session, FileType* data) -> int {
+            file.addAction([offsets = offsets, itemID](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(generic, RawFile, data)
                 std::stringstream& stream = generic.data;
-                
-                stream.seekg(offset, std::ios::beg);
-                ACTR actor = WWHDStructs::readACTR(stream);
 
-                LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), itemID))
+                for(const uint32_t& offset : offsets) {
+                    stream.seekg(offset, std::ios::beg);
+                    ACTR actor = WWHDStructs::readACTR(stream);
 
-                stream.seekp(offset, std::ios::beg);
-                WWHDStructs::writeACTR(stream, actor);
+                    LOG_AND_RETURN_BOOL_IF_ERR(setParam(actor, item_id_mask_by_actor_name.at(actor.name), itemID))
+
+                    stream.seekp(offset, std::ios::beg);
+                    WWHDStructs::writeACTR(stream, actor);
+                }
 
                 return true;
             });
