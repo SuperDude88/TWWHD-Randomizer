@@ -45,7 +45,7 @@ static std::string getSpoilerFormatLocation(Location* location, const size_t& lo
     std::string spaces (numSpaces, ' ');
 
     // Don't say which player the item is for if there's only 1 world
-    std::string itemWorldNumber = worlds.size() > 1 ? " [W" + std::to_string(location->currentItem.getWorld()->getWorldId() + 1) + "]" : "";
+    std::string itemWorldNumber = worlds.size() > 1 ? " [W" + std::to_string(location->currentItem.getWorldId() + 1) + "]" : "";
     std::string itemName = location->currentItem.getName() + (worlds.size() > 1 ? itemWorldNumber : "");
 
     return location->getName() + locWorldNumber + ":" + spaces + itemName;

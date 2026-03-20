@@ -295,26 +295,28 @@ void placeVanillaItems(WorldPool& worlds)
         // Place vanilla items depending on settings and remove placed vanilla items from the item pool
         for (auto location : world.getLocations())
         {
-            auto vanillaItem = location->originalItem.getName();
-            auto locationName = location->getName();
-            std::string dungeonItemName = locationName.substr(0, locationName.find('-')) + vanillaItem;
+            const auto vanillaItem = location->originalItem;
+            const auto& vanillaItemName = vanillaItem.getName();
+            const auto locationName = location->getName();
 
-            if ((settings.dungeon_small_keys     == PlacementOption::Vanilla &&  vanillaItem == "Small Key")  ||
-                (settings.dungeon_big_keys       == PlacementOption::Vanilla &&  vanillaItem == "Big Key")    ||
-                (settings.dungeon_maps_compasses == PlacementOption::Vanilla && (vanillaItem == "Dungeon Map" || vanillaItem == "Compass")))
-                {
-                    location->currentItem = world.getItem(dungeonItemName);
-                    location->hasKnownVanillaItem = true;
-                    removeElementFromPool(world.getItemPoolReference(), location->currentItem);
-                    LOG_TO_DEBUG("Placed item " + dungeonItemName + " at vanilla location " + locationName);
-                }
-
-            if (vanillaItem == "Blue Chu Jelly" /*&& settings.progression_blue_chus*/)
+            if ((settings.dungeon_small_keys     == PlacementOption::Vanilla &&  vanillaItem.isSmallKey()) ||
+                (settings.dungeon_big_keys       == PlacementOption::Vanilla &&  vanillaItem.isBigKey())   ||
+                (settings.dungeon_maps_compasses == PlacementOption::Vanilla && (vanillaItem.isMap()       || vanillaItem.isCompass())))
             {
-                location->currentItem = world.getItem(vanillaItem);
+                const std::string dungeonItemName = locationName.substr(0, locationName.find('-')) + vanillaItemName;
+
+                location->currentItem = world.getItem(dungeonItemName);
                 location->hasKnownVanillaItem = true;
                 removeElementFromPool(world.getItemPoolReference(), location->currentItem);
-                LOG_TO_DEBUG("Placed item " + vanillaItem + " at vanilla location " + locationName);
+                LOG_TO_DEBUG("Placed item " + dungeonItemName + " at vanilla location " + locationName);
+            }
+
+            if (vanillaItem.getGameItemId() == GameItem::BlueChuJelly /*&& settings.progression_blue_chus*/)
+            {
+                location->currentItem = world.getItem(vanillaItemName);
+                location->hasKnownVanillaItem = true;
+                removeElementFromPool(world.getItemPoolReference(), location->currentItem);
+                LOG_TO_DEBUG("Placed item " + vanillaItemName + " at vanilla location " + locationName);
             }
         }
     }
@@ -354,7 +356,7 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
         if (!item->isJunkItem())
         {
             // Temporarily take this item out of the pool
-            auto gameItemId = item->getGameItemId();
+            const auto gameItemId = item->getGameItemId();
             item->setGameItemId(GameItem::NOTHING);
 
             // If all progress locations are not reachable,

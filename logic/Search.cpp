@@ -266,10 +266,10 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
         for (auto location : accessibleThisIteration)
         {
             accessibleLocations.push_back(location);
-            auto& item = location->currentItem; 
+            const auto& item = location->currentItem; 
             if (item.getGameItemId() != GameItem::INVALID && !item.isJunkItem())
             {
-                ownedItems.emplace(item.getGameItemId(), item.getWorld());
+                ownedItems.emplace(item);
                 // Only add progression locations to the playthrough if they don't have known vanilla items
                 // Also add in dungeon locations which have small/big keys if mixed bosses is on
                 if (searchMode == SearchMode::GeneratePlaythrough && ((location->progression && (!location->hasKnownVanillaItem || item.getGameItemId() == GameItem::GameBeatable)) ||

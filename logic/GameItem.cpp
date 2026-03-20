@@ -5,11 +5,11 @@
 
 #include <logic/World.hpp>
 #include <logic/PoolFunctions.hpp>
-#include <command/Log.hpp>
 #include <utility/string.hpp>
+
 GameItem nameToGameItem(const std::string& name)
 {
-    static std::unordered_map<std::string, GameItem> nameItemMap = {
+    static const std::unordered_map<std::string, GameItem> nameItemMap = {
         {"Heart Drop", GameItem::HeartDrop},
         {"Green Rupee", GameItem::GreenRupee},
         {"Blue Rupee", GameItem::BlueRupee},
@@ -240,7 +240,7 @@ GameItem nameToGameItem(const std::string& name)
         {"Triforce Chart 1", GameItem::TriforceChart1},
         {"Game Beatable", GameItem::GameBeatable},
         {"Nothing", GameItem::NOTHING},
-        // Extra mappings for names that normally have apostraphes
+        // Extra mappings for names that normally have apostrophes
         {"Maggies Letter", GameItem::MaggiesLetter},
         {"Moblins Letter", GameItem::MoblinsLetter},
         {"Heros Charm", GameItem::HerosCharm},
@@ -262,7 +262,7 @@ GameItem nameToGameItem(const std::string& name)
 
 std::string gameItemToName(GameItem item)
 {
-    static std::unordered_map<GameItem, std::string> itemNameMap = {
+    static const std::unordered_map<GameItem, std::string> itemNameMap = {
         {GameItem::HeartDrop, "Heart Drop"},
         {GameItem::GreenRupee, "Green Rupee"},
         {GameItem::BlueRupee, "Blue Rupee"},
@@ -732,7 +732,8 @@ std::unordered_multiset<GameItem> getSupportedStartingItems()
     };
 }
 
-static std::set<GameItem> dungeonMaps = {
+static const std::set<GameItem> dungeonMaps = {
+        GameItem::DungeonMap,
         GameItem::DRCDungeonMap,
         GameItem::FWDungeonMap,
         GameItem::TotGDungeonMap,
@@ -741,7 +742,8 @@ static std::set<GameItem> dungeonMaps = {
         GameItem::WTDungeonMap,
 };
 
-static std::set<GameItem> compasses = {
+static const std::set<GameItem> compasses = {
+        GameItem::Compass,
         GameItem::DRCCompass,
         GameItem::FWCompass,
         GameItem::TotGCompass,
@@ -750,7 +752,8 @@ static std::set<GameItem> compasses = {
         GameItem::WTCompass,
 };
 
-static std::set<GameItem> smallKeys = {
+static const std::set<GameItem> smallKeys = {
+        GameItem::SmallKey,
         GameItem::DRCSmallKey,
         GameItem::FWSmallKey,
         GameItem::TotGSmallKey,
@@ -758,7 +761,8 @@ static std::set<GameItem> smallKeys = {
         GameItem::WTSmallKey,
 };
 
-static std::set<GameItem> bigKeys = {
+static const std::set<GameItem> bigKeys = {
+        GameItem::BigKey,
         GameItem::DRCBigKey,
         GameItem::FWBigKey,
         GameItem::TotGBigKey,

@@ -84,14 +84,11 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
                 // Get location name
                 const std::string locationName = locationObject.first.as<std::string>();
 
-                // Sanitize item name incase the user missed an apostraphe
-                itemName = gameItemToName(nameToGameItem(itemName));
-
                 // Get GameItem
-                auto gameItem = nameToGameItem(itemName);
+                const GameItem& gameItem = nameToGameItem(itemName);
 
                 plandomizer.locationsStr.insert({locationName, {gameItem, plandoWorldId}});
-                LOG_TO_DEBUG("\tPlandomizing " +  itemName + " [W" + std::to_string(plandoWorldId + 1) + "] to " + locationName + " [W" + std::to_string(i + 1) + "]");
+                LOG_TO_DEBUG("\tPlandomizing " +  gameItemToName(gameItem) + " [W" + std::to_string(plandoWorldId + 1) + "] to " + locationName + " [W" + std::to_string(i + 1) + "]");
             }
         }
 

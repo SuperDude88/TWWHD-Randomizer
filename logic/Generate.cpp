@@ -111,11 +111,11 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
               const size_t numOverworldLocations = world.getNumOverworldProgressionLocations();
               if (settings.dungeon_small_keys == PlacementOption::Overworld)
               {
-                  neededOverworldLocations += filterFromPool(world.getItemPoolReference(), [](const Item& item){return Utility::Str::contains(item.getName(), "Small Key");}).size();
+                  neededOverworldLocations += filterFromPool(world.getItemPoolReference(), [](const Item& item){ return item.isSmallKey(); }).size();
               }
               if (settings.dungeon_big_keys == PlacementOption::Overworld)
               {
-                  neededOverworldLocations += filterFromPool(world.getItemPoolReference(), [](const Item& item){return Utility::Str::contains(item.getName(), "Big Key");}).size();
+                  neededOverworldLocations += filterFromPool(world.getItemPoolReference(), [](const Item& item){ return item.isBigKey(); }).size();
               }
 
               if (numOverworldLocations < neededOverworldLocations)
