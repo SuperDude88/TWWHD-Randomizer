@@ -256,8 +256,8 @@ static HintError generatePathHintMessage(Location* location, Location* goalLocat
     std::u16string frenchRegionText = u"";
 
     size_t totalRegions = 0;
-    auto world = location->world;
-    for (auto& hintRegion : location->hintRegions)
+    const auto world = location->world;
+    for (const auto& hintRegion : location->hintRegions)
     {
         // Change the formatting depending on how many regions lead to the location
         if (totalRegions == 0)
@@ -266,19 +266,19 @@ static HintError generatePathHintMessage(Location* location, Location* goalLocat
             spanishRegionText += world->getUTF16HintRegion(hintRegion, "Spanish", Text::Type::PRETTY, Text::Color::CYAN);
             frenchRegionText += world->getUTF16HintRegion(hintRegion, "French", Text::Type::PRETTY, Text::Color::CYAN);
         }
-        else if (totalRegions == location->hintRegions.size() - 1 && location->hintRegions.size() == 2)
-        {
-            englishRegionText += u" and "s + world->getUTF16HintRegion(hintRegion, "English", Text::Type::PRETTY, Text::Color::CYAN);
-            auto spanishRegion = world->getUTF16HintRegion(hintRegion, "Spanish", Text::Type::PRETTY, Text::Color::CYAN);
-            spanishRegionText += ((spanishRegion[0] == u'I' || spanishRegion[0] == u'i') ? u" y " : u" e ") + spanishRegion;
-            frenchRegionText += u" et "s + world->getUTF16HintRegion(hintRegion, "French", Text::Type::PRETTY, Text::Color::CYAN);
-        }
         else if (totalRegions == location->hintRegions.size() - 1)
         {
-            englishRegionText += u", and "s + world->getUTF16HintRegion(hintRegion, "English", Text::Type::PRETTY, Text::Color::CYAN);
-            auto spanishRegion = world->getUTF16HintRegion(hintRegion, "Spanish", Text::Type::PRETTY, Text::Color::CYAN);
-            spanishRegionText += ((spanishRegion[0] == u'I' || spanishRegion[0] == u'i') ? u", y " : u", e ") + spanishRegion;
-            frenchRegionText += u", et "s + world->getUTF16HintRegion(hintRegion, "French", Text::Type::PRETTY, Text::Color::CYAN);
+            // Only include a comma if there was a longer list of items (more than 2)
+            if(location->hintRegions.size() > 2) {
+                englishRegionText += u","s;
+                spanishRegionText += u",";
+                frenchRegionText += u","s;
+            }
+
+            englishRegionText += u" and "s + world->getUTF16HintRegion(hintRegion, "English", Text::Type::PRETTY, Text::Color::CYAN);
+            const std::u16string& spanishRegion = world->getUTF16HintRegion(hintRegion, "Spanish", Text::Type::PRETTY, Text::Color::CYAN);
+            spanishRegionText += (std::tolower(spanishRegion[0]) == u'i' ? u" y " : u" e ") + spanishRegion;
+            frenchRegionText += u" et "s + world->getUTF16HintRegion(hintRegion, "French", Text::Type::PRETTY, Text::Color::CYAN);
         }
         else
         {
@@ -290,17 +290,18 @@ static HintError generatePathHintMessage(Location* location, Location* goalLocat
         totalRegions++;
     }
 
-    std::u16string englishPlurality = totalRegions == 1 ? u" is"s : u" are"s;
-    std::u16string spanishPlurality = (totalRegions == 1 && spanishRegionText.find(u"Ilas") == std::string::npos) ? u" dirige"s : u" dirigen"s;
-    std::u16string frenchPlurality = (totalRegions == 1 && englishRegionText.find(u"Angular Isles") == std::string::npos && englishRegionText.find(u"Forbidden Woods") == std::string::npos) ? u" est"s : u" sont"s;
+    // English conjugation of "to be" / Spanish conjugation of "dirigir" / French conjugation of "être"
+    const std::u16string englishConjugation = totalRegions == 1 ? u" is"s : u" are"s;
+    const std::u16string spanishConjugation = (totalRegions == 1 && spanishRegionText.find(u"Ilas") == std::string::npos) ? u" dirige"s : u" dirigen"s;
+    const std::u16string frenchConjugation = (totalRegions == 1 && englishRegionText.find(u"Angular Isles") == std::string::npos && englishRegionText.find(u"Forbidden Woods") == std::string::npos) ? u" est"s : u" sont"s;
 
-    Hint hint{};
-    hint.text["English"] = HINT_PREFIX_ENGLISH + englishRegionText + englishPlurality + u" on the path to "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["English"]) + TEXT_COLOR_DEFAULT + u"."s;
-    hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishRegionText + spanishPlurality + u" hacia el camino de "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["Spanish"]) + TEXT_COLOR_DEFAULT + u"."s;
-    hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchPlurality + u" sur le chemin de "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["French"]) + TEXT_COLOR_DEFAULT + u"."s;
+    Hint& hint = hints.emplace_back();
+    hint.text["English"] = HINT_PREFIX_ENGLISH + englishRegionText + englishConjugation + u" on the path to "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["English"]) + TEXT_COLOR_DEFAULT + u"."s;
+    hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishRegionText + spanishConjugation + u" hacia el camino de "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["Spanish"]) + TEXT_COLOR_DEFAULT + u"."s;
+    hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchConjugation + u" sur le chemin de "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["French"]) + TEXT_COLOR_DEFAULT + u"."s;
     hint.type = HintType::PATH;
     hint.location = location;
-    hints.emplace_back(std::move(hint));
+
     return HintError::NONE;
 }
 
@@ -372,12 +373,12 @@ static HintError generatePathHintLocations(World& world, std::list<Hint>& hints)
 
 static HintError generateBarrenHintMessage(const std::string& barrenRegion, std::list<Hint>& hints, World& world)
 {
-    Hint hint{};
+    Hint& hint = hints.emplace_back();
     hint.text["English"] = HINT_PREFIX_ENGLISH u"visiting " + world.getUTF16HintRegion(barrenRegion, "English", Text::Type::PRETTY, Text::Color::BLUE) + u" is a foolish choice."s;
     hint.text["Spanish"] = HINT_PREFIX_SPANISH u"visitar " + world.getUTF16HintRegion(barrenRegion, "Spanish", Text::Type::PRETTY, Text::Color::BLUE) + u" es una idea imprudente."s;
     hint.text["French"] = HINT_PREFIX_FRENCH u"visiter " + world.getUTF16HintRegion(barrenRegion, "French", Text::Type::PRETTY, Text::Color::BLUE) + u" est un choix imprudent."s;
     hint.type = HintType::BARREN;
-    hints.emplace_back(std::move(hint));
+
     return HintError::NONE;
 }
 
@@ -463,19 +464,19 @@ static HintError generateItemHintMessage(Location* location, std::list<Hint>& hi
             spanishRegionText += world->getUTF16HintRegion(hintRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED);
             frenchRegionText += world->getUTF16HintRegion(hintRegion, "French", Text::Type::PRETTY, Text::Color::RED);
         }
-        else if (totalRegions == hintRegions.size() - 1 && hintRegions.size() == 2)
-        {
-            englishRegionText += u" and "s + world->getUTF16HintRegion(hintRegion, "English", Text::Type::PRETTY, Text::Color::RED);
-            auto spanishRegion = world->getUTF16HintRegion(hintRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED);
-            spanishRegionText += ((spanishRegion[0] == u'I' || spanishRegion[0] == u'i') ? u" y " : u" e ") + spanishRegion;
-            frenchRegionText += u" et "s + world->getUTF16HintRegion(hintRegion, "French", Text::Type::PRETTY, Text::Color::RED);
-        }
         else if (totalRegions == hintRegions.size() - 1)
         {
-            englishRegionText += u", and "s + world->getUTF16HintRegion(hintRegion, "English", Text::Type::PRETTY, Text::Color::RED);
-            auto spanishRegion = world->getUTF16HintRegion(hintRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED);
-            spanishRegionText += ((spanishRegion[0] == u'I' || spanishRegion[0] == u'i') ? u", y " : u", e ") + spanishRegion;
-            frenchRegionText += u", et "s + world->getUTF16HintRegion(hintRegion, "French", Text::Type::PRETTY, Text::Color::RED);
+            // Only include a comma if there was a longer list of items (more than 2)
+            if(hintRegions.size() > 2) {
+                englishRegionText += u","s;
+                spanishRegionText += u",";
+                frenchRegionText += u","s;
+            }
+
+            englishRegionText += u" and "s + world->getUTF16HintRegion(hintRegion, "English", Text::Type::PRETTY, Text::Color::RED);
+            const std::u16string& spanishRegion = world->getUTF16HintRegion(hintRegion, "Spanish", Text::Type::PRETTY, Text::Color::RED);
+            spanishRegionText += (std::tolower(spanishRegion[0]) == u'i' ? u" y " : u" e ") + spanishRegion;
+            frenchRegionText += u" et "s + world->getUTF16HintRegion(hintRegion, "French", Text::Type::PRETTY, Text::Color::RED);
         }
         else
         {
@@ -489,27 +490,27 @@ static HintError generateItemHintMessage(Location* location, std::list<Hint>& hi
     }
 
     // Determine if the item's direct name or the cryptic text should be used
-    auto textType = world->getSettings().clearer_hints ? Text::Type::PRETTY : Text::Type::CRYPTIC;
-    auto& item = location->currentItem;
+    const Text::Type& textType = world->getSettings().clearer_hints ? Text::Type::PRETTY : Text::Type::CRYPTIC;
+    const Item& item = location->currentItem;
 
-    auto englishHintedItem = item.getUTF16Name("English", textType, Text::Color::CYAN);
-    auto spanishHintedItem = item.getUTF16Name("Spanish", textType, Text::Color::CYAN);
-    auto frenchHintedItem = item.getUTF16Name("French", textType, Text::Color::CYAN);
+    const std::u16string englishHintedItem = item.getUTF16Name("English", textType, Text::Color::CYAN);
+    const std::u16string spanishHintedItem = item.getUTF16Name("Spanish", textType, Text::Color::CYAN);
+    const std::u16string frenchHintedItem = item.getUTF16Name("French", textType, Text::Color::CYAN);
 
-    auto englishItemImportance = location->generateImportanceText("English");
-    auto spanishItemImportance = location->generateImportanceText("Spanish");
-    auto frenchItemImportance = location->generateImportanceText("French");
+    const std::u16string englishItemImportance = location->generateImportanceText("English");
+    const std::u16string spanishItemImportance = location->generateImportanceText("Spanish");
+    const std::u16string frenchItemImportance = location->generateImportanceText("French");
 
-    // Angular Isles and Forbidden Woods should use the plural tense in French even if they're a single area being referred to
-    std::u16string frenchPlurality = (totalRegions == 1 && englishRegionText.find(u"Angular Isles") == std::string::npos && englishRegionText.find(u"Forbidden Woods") == std::string::npos) ? u" détiendrait "s : u" détiendraient "s;
+    // Angular Isles and Forbidden Woods should use the plural conjugation of "détenir" in French even if they're a single area being referred to
+    const std::u16string frenchConjugation = (totalRegions == 1 && englishRegionText.find(u"Angular Isles") == std::string::npos && englishRegionText.find(u"Forbidden Woods") == std::string::npos) ? u" détiendrait "s : u" détiendraient "s;
 
-    Hint hint{};
+    Hint& hint = hints.emplace_back();
     hint.text["English"] = HINT_PREFIX_ENGLISH + englishHintedItem + englishItemImportance + u" can be found at "s + englishRegionText + u"."s;
     hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishHintedItem + spanishItemImportance + u" se encuentra en "s + spanishRegionText + u"."s;
-    hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchPlurality + frenchHintedItem + frenchItemImportance + u"."s;
+    hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchConjugation + frenchHintedItem + frenchItemImportance + u"."s;
     hint.type = HintType::ITEM;
     hint.location = location;
-    hints.emplace_back(std::move(hint));
+
     return HintError::NONE;
 }
 
@@ -574,29 +575,29 @@ static HintError generateItemHintLocations(World& world, std::list<Hint>& hints)
 
 static HintError generateLocationHintMessage(Location* location, std::list<Hint>& hints)
 {
-    auto& item = location->currentItem;
+    const Item& item = location->currentItem;
 
-    auto englishLocation = Utility::Str::toUTF16(location->names["English"]);
-    auto spanishLocation = Utility::Str::toUTF16(location->names["Spanish"]);
-    auto frenchLocation = Utility::Str::toUTF16(location->names["French"]);
+    const std::u16string englishLocation = Utility::Str::toUTF16(location->names["English"]);
+    const std::u16string spanishLocation = Utility::Str::toUTF16(location->names["Spanish"]);
+    const std::u16string frenchLocation = Utility::Str::toUTF16(location->names["French"]);
 
     // Determine if the item's direct name or the cryptic text should be used
-    auto textType = location->world->getSettings().clearer_hints ? Text::Type::PRETTY : Text::Type::CRYPTIC;
-    auto englishHintedItem = item.getUTF16Name("English", textType, Text::Color::RED);
-    auto spanishHintedItem = item.getUTF16Name("Spanish", textType, Text::Color::RED);
-    auto frenchHintedItem = item.getUTF16Name("French", textType, Text::Color::RED);
+    const Text::Type& textType = location->world->getSettings().clearer_hints ? Text::Type::PRETTY : Text::Type::CRYPTIC;
+    const std::u16string englishHintedItem = item.getUTF16Name("English", textType, Text::Color::RED);
+    const std::u16string spanishHintedItem = item.getUTF16Name("Spanish", textType, Text::Color::RED);
+    const std::u16string frenchHintedItem = item.getUTF16Name("French", textType, Text::Color::RED);
 
-    auto englishItemImportance = location->generateImportanceText("English");
-    auto spanishItemImportance = location->generateImportanceText("Spanish");
-    auto frenchItemImportance = location->generateImportanceText("French");
+    const std::u16string englishItemImportance = location->generateImportanceText("English");
+    const std::u16string spanishItemImportance = location->generateImportanceText("Spanish");
+    const std::u16string frenchItemImportance = location->generateImportanceText("French");
 
-    Hint hint{};
+    Hint& hint = hints.emplace_back();
     hint.text["English"] = HINT_PREFIX_ENGLISH + TEXT_COLOR_RED + englishLocation + TEXT_COLOR_DEFAULT + u" rewards " + englishHintedItem + englishItemImportance + u"."s;
     hint.text["Spanish"] = HINT_PREFIX_SPANISH + TEXT_COLOR_RED + spanishLocation + TEXT_COLOR_DEFAULT + u" otorgará " + spanishHintedItem + spanishItemImportance + u"."s;
     hint.text["French"] = HINT_PREFIX_FRENCH + TEXT_COLOR_RED + frenchLocation + TEXT_COLOR_DEFAULT + u" aurait pour récompense " + frenchHintedItem + frenchItemImportance + u"."s;
     hint.type = HintType::LOCATION;
     hint.location = location;
-    hints.emplace_back(std::move(hint));
+
     return HintError::NONE;
 }
 
