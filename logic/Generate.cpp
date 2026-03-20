@@ -37,7 +37,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
   {
       for (size_t i = 0; i < worlds.size(); i++)
       {
-          LOG_TO_DEBUG("Building World " + std::to_string(i));
+          LOG_TO_DEBUG("Building World " + std::to_string(i + 1));
           worlds[i] = World();
           worlds[i].setWorldId(i);
           worlds[i].setSettings(settingsVector[i]);

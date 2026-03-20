@@ -205,7 +205,7 @@ void generateSpoilerLog(WorldPool& worlds)
             continue;
         }
 
-        spoilerLog << "Entrances for world " << std::to_string(world.getWorldId()) << ":" << std::endl;
+        spoilerLog << "Entrances for world " << std::to_string(world.getWorldId() + 1) << ":" << std::endl;
         std::ranges::sort(entrances, [](auto lhs, auto rhs){return lhs->getOriginalName() < rhs->getOriginalName();});
         for (auto entrance : entrances)
         {
@@ -250,7 +250,7 @@ void generateSpoilerLog(WorldPool& worlds)
             continue;
         }
 
-        spoilerLog << std::endl << (worlds.size() == 1 ? "Hints:" : "Hints for world " + std::to_string(world.getWorldId()) + ":") << std::endl;
+        spoilerLog << std::endl << (worlds.size() == 1 ? "Hints:" : "Hints for world " + std::to_string(world.getWorldId() + 1) + ":") << std::endl;
         if (!world.hohoHints.empty())
         {
             for (auto& [hohoLocation, hints] : world.hohoHints)

@@ -25,7 +25,7 @@ static void logItemsAndLocations(ItemPool& items, LocationPool& locations)
         LOG_TO_DEBUG("Locations:");
         for (auto location : locations)
         {
-            LOG_TO_DEBUG("\t" + location->getName() + " in world " + std::to_string(location->world->getWorldId()));
+            LOG_TO_DEBUG("\t" + location->getName() + " in world " + std::to_string(location->world->getWorldId() + 1));
         }
     #endif
 }

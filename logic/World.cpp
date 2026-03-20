@@ -182,7 +182,7 @@ World::WorldLoadingError World::setItemPools()
         itemPool.push_back(getItem(item));
     }
     #ifdef ENABLE_DEBUG
-        logItemPool("Items for world " + std::to_string(worldId), itemPool);
+        logItemPool("Items for world " + std::to_string(worldId + 1), itemPool);
     #endif
     return WorldLoadingError::NONE;
 }
@@ -1224,7 +1224,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     }
     if (const WorldLoadingError err = loadMacros(macroListTree); err != WorldLoadingError::NONE)
     {
-        ErrorLog::getInstance().log("Got error loading macros for world " + std::to_string(worldId) + ": " + errorToName(err));
+        ErrorLog::getInstance().log("Got error loading macros for world " + std::to_string(worldId + 1) + ": " + errorToName(err));
         ErrorLog::getInstance().log(getLastErrorDetails());
         return 1;
     }
@@ -1250,7 +1250,7 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
     {
         if (const WorldLoadingError err = loadArea(area); err != WorldLoadingError::NONE)
         {
-            ErrorLog::getInstance().log("Got error loading area for world " + std::to_string(worldId) + ": " + errorToName(err));
+            ErrorLog::getInstance().log("Got error loading area for world " + std::to_string(worldId + 1) + ": " + errorToName(err));
             ErrorLog::getInstance().log(getLastErrorDetails());
             return 1;
         }
