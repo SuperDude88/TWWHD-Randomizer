@@ -266,7 +266,7 @@ LocationPool search(const SearchMode& searchMode, WorldPool& worlds, ItemPool it
         for (auto location : accessibleThisIteration)
         {
             accessibleLocations.push_back(location);
-            const auto& item = location->currentItem; 
+            const Item& item = location->currentItem; 
             if (item.getGameItemId() != GameItem::INVALID && !item.isJunkItem())
             {
                 ownedItems.emplace(item);
@@ -335,23 +335,23 @@ static void pareDownPlaythrough(WorldPool& worlds)
 
     for (auto& sphere : playthroughSpheres)
     {
-        for (auto loc = sphere.begin(); loc != sphere.end(); )
+        for (auto locIt = sphere.begin(); locIt != sphere.end(); )
         {
             // Remove the item at the current location and check if the game is still beatable
-            auto location = *loc;
-            auto itemAtLocation = location->currentItem;
+            auto location = *locIt;
+            const Item itemAtLocation = location->currentItem;
             location->currentItem = {GameItem::INVALID, location->world};
             if (gameBeatable(worlds))
             {
                 // If the game is still beatable, then this location is not required
                 // and we can erase it from the playthrough
-                loc = sphere.erase(loc);
+                locIt = sphere.erase(locIt);
                 nonRequiredLocations.insert({location, itemAtLocation});
             }
             else
             {
                 location->currentItem = itemAtLocation;
-                loc++; // Only increment if we don't erase
+                locIt++; // Only increment if we don't erase
             }
         }
     }

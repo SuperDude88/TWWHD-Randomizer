@@ -56,7 +56,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
     {
         for (auto& potentialPathLocation : world.getLocations(true))
         {
-            auto itemAtLocation = potentialPathLocation->currentItem;
+            const Item itemAtLocation = potentialPathLocation->currentItem;
             if (itemAtLocation.isJunkItem())
             {
                 continue;
@@ -143,7 +143,7 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 // For the purposes of barren hints, if a major item cannot possibly lead to any
                 // required items, then it will not block the region it's in from being considered
                 // barren.
-                auto chainLocations = location->currentItem.getChainLocations();
+                const auto& chainLocations = location->currentItem.getChainLocations();
                 if (!chainLocations.empty())
                 {
                     // If all of this item's chain locations' are barren as chain locations, then this item is barren too.
@@ -199,8 +199,8 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
                 for (auto& locAccess : location->accessPoints)
                 {
                     auto area = locAccess->area;
-                    auto generalHintRegions = area->findHintRegions(/*onlyNonIslands = */true);
-                    auto islands = area->findIslands();
+                    const auto& generalHintRegions = area->findHintRegions(/*onlyNonIslands = */true);
+                    const auto& islands = area->findIslands();
                     for (auto hintRegions : {generalHintRegions, islands})
                     {
                         for (auto& hintRegion : hintRegions)
@@ -351,8 +351,7 @@ static HintError generatePathHintLocations(World& world, std::list<Hint>& hints)
 
         // Filter out known vanilla items, and expected items, and triforce shards if Ho Ho is hinting them
         filterAndEraseFromPool(possiblePathLocations, [settings = world.getSettings()](auto location){
-            auto& item = location->currentItem;
-            return (location->hasKnownVanillaItem || location->hasExpectedItem || (settings.ho_ho_triforce_hints && item.isTriforceShard()));
+            return (location->hasKnownVanillaItem || location->hasExpectedItem || (settings.ho_ho_triforce_hints && location->currentItem.isTriforceShard()));
         });
 
         auto hintLocation = getHintableLocation(possiblePathLocations);
@@ -721,7 +720,7 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Hint
             auto location = hint.location;
             // Remove this item from the world and see which Ho Ho are available
             // to be hinted at
-            auto itemAtLocation = location->currentItem;
+            const Item itemAtLocation = location->currentItem;
             location->currentItem = Item(GameItem::INVALID, &world);
 
             // Find all accessible locations without the item

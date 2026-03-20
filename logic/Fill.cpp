@@ -42,7 +42,7 @@ static FillError fastFill(ItemPool& items, LocationPool& locations)
 
     while (!items.empty() && !locations.empty())
     {
-        auto item = popRandomElement(items);
+        Item item = popRandomElement(items);
         auto location = popRandomElement(locations);
         location->currentItem = item;
         LOG_TO_DEBUG("Placed " + item.getName() + " at " + location->getName() + " in world " + std::to_string(location->world->getWorldId() + 1));
@@ -294,9 +294,9 @@ void placeVanillaItems(WorldPool& worlds)
         // Place vanilla items depending on settings and remove placed vanilla items from the item pool
         for (auto location : world.getLocations())
         {
-            const auto vanillaItem = location->originalItem;
-            const auto& vanillaItemName = vanillaItem.getName();
-            const auto locationName = location->getName();
+            const Item& vanillaItem = location->originalItem;
+            const std::string& vanillaItemName = vanillaItem.getName();
+            const std::string& locationName = location->getName();
 
             if ((settings.dungeon_small_keys     == PlacementOption::Vanilla &&  vanillaItem.isSmallKey()) ||
                 (settings.dungeon_big_keys       == PlacementOption::Vanilla &&  vanillaItem.isBigKey())   ||

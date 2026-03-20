@@ -192,7 +192,7 @@ bool Location::isBarrenAsChainLocation() const
 
 std::u16string Location::generateImportanceText(const std::string& language)
 {
-    auto& item = currentItem;
+    const Item& item = currentItem;
 
     std::u16string required = u"required";
     std::u16string possiblyRequired = u"possibly required";
@@ -230,7 +230,7 @@ std::u16string Location::generateImportanceText(const std::string& language)
     }
 
     // If this item is on the path to Ganondorf, then it is required
-    auto& requiredLocations = world->locationTable["Ganon's Tower - Defeat Ganondorf"]->pathLocations;
+    const auto& requiredLocations = world->locationTable["Ganon's Tower - Defeat Ganondorf"]->pathLocations;
     if (elementInPool(this, requiredLocations))
     {
         return u" (" + TEXT_COLOR_GREEN + required + TEXT_COLOR_DEFAULT + u")";
