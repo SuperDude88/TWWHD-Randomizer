@@ -271,7 +271,7 @@ static HintError generatePathHintMessage(Location* location, Location* goalLocat
             // Only include a comma if there was a longer list of items (more than 2)
             if(location->hintRegions.size() > 2) {
                 englishRegionText += u","s;
-                spanishRegionText += u",";
+                spanishRegionText += u","s;
                 frenchRegionText += u","s;
             }
 
@@ -469,7 +469,7 @@ static HintError generateItemHintMessage(Location* location, std::list<Hint>& hi
             // Only include a comma if there was a longer list of items (more than 2)
             if(hintRegions.size() > 2) {
                 englishRegionText += u","s;
-                spanishRegionText += u",";
+                spanishRegionText += u","s;
                 frenchRegionText += u","s;
             }
 
