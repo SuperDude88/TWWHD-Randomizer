@@ -10,7 +10,7 @@
 #include <algorithm>
 
 
-static std::unordered_map<std::string, RequirementType> nameToTypeMap = {
+static const std::unordered_map<std::string, RequirementType> nameToTypeMap = {
     {"or", RequirementType::OR},
     {"and", RequirementType::AND},
     {"has_item", RequirementType::HAS_ITEM},
@@ -20,7 +20,7 @@ static std::unordered_map<std::string, RequirementType> nameToTypeMap = {
     {"macro", RequirementType::MACRO}
 };
 
-static std::unordered_map<RequirementType, std::string> typeToNameMap = {
+static const std::unordered_map<RequirementType, std::string> typeToNameMap = {
     {RequirementType::OR, "or"},
     {RequirementType::AND, "and"},
     {RequirementType::HAS_ITEM, "has_item"},
@@ -98,12 +98,7 @@ bool evaluateRequirement(World* world, const Requirement& req, const ItemMultiSe
 
 static std::string tabs(int numTabs)
 {
-    std::string returnStr = "";
-    for (int i = 0; i < numTabs; i++)
-    {
-        returnStr += "\t";
-    }
-    return returnStr;
+    return std::string(numTabs, '\t');
 }
 
 std::string printRequirement(const Requirement& req, World* world, int nestingLevel /*= 0*/)

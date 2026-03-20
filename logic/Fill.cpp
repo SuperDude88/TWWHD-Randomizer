@@ -393,15 +393,15 @@ static FillError randomizeOwnDungeon(WorldPool& worlds, ItemPool& itemPool)
     FillError err;
     for (auto& world : worlds)
     {
-        auto& settings = world.getSettings();
+        const auto& settings = world.getSettings();
         // Continue if none of these settings are enabled
         if (settings.dungeon_small_keys     != PlacementOption::OwnDungeon &&
             settings.dungeon_big_keys       != PlacementOption::OwnDungeon &&
             settings.dungeon_maps_compasses != PlacementOption::OwnDungeon)
-            {
-                continue;
-            }
-        auto worldId = world.getWorldId();
+        {
+            continue;
+        }
+        const auto& worldId = world.getWorldId();
         for (auto& [name, dungeon] : world.dungeons)
         {
             // Filter to only the dungeons locations which are progression locations

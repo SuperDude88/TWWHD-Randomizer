@@ -624,16 +624,16 @@ World::WorldLoadingError World::loadMacros(const YAML::Node& macroListTree)
         macroNameMap.emplace(name, macroCount);
         macroCount++;
     }
-    for (const auto& macro : macroListTree)
+    macros.resize(macroNameMap.size());
+    for (const auto& [name, index] : macroNameMap)
     {
-        macros.emplace_back();
-
-        if (const RequirementError err = parseMacro(macro.second.as<std::string>(), macros.back()); err != RequirementError::NONE)
+        if (const RequirementError err = parseMacro(macroStrings.at(name), macros[index]); err != RequirementError::NONE)
         {
-            lastError << " | Encountered parsing macro of name " << macro.first.as<std::string>();
+            lastError << " | Encountered parsing macro of name " << name;
             return WorldLoadingError::BAD_REQUIREMENT;
         }
     }
+
     return WorldLoadingError::NONE;
 }
 

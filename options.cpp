@@ -574,9 +574,9 @@ void Settings::setSetting(const Option& option, const size_t& value) {
 }
 
 int Settings::evaluateOption(const std::string& optionStr) const {
-    if (nameToSetting(optionStr) != Option::INVALID)
+    if (const Option& option = nameToSetting(optionStr); option != Option::INVALID)
     {
-        return getSetting(nameToSetting(optionStr));
+        return getSetting(option);
     }
 
     // -1 means that the setting doesn't exist
@@ -952,7 +952,7 @@ int nameToSettingInt(const std::string& name) {
         return static_cast<std::underlying_type_t<UIDisplayPreference>>(nameUIDisplayPreferenceMap.at(name));
     }
 
-    return 0;
+    return -1;
 }
 
 Option nameToSetting(const std::string& name) {

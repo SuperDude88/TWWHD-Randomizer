@@ -445,7 +445,6 @@ ConfigError Config::loadFromFile(const fspath& filePath, const fspath& preferenc
 
     // spoils
     settings.starting_joy_pendants = std::clamp<uint16_t>(settings.starting_joy_pendants, 0, MAXIMUM_STARTING_JOY_PENDANTS);
-    settings.starting_joy_pendants = std::clamp<uint16_t>(settings.starting_joy_pendants, 0, MAXIMUM_STARTING_JOY_PENDANTS);
     settings.starting_skull_necklaces = std::clamp<uint16_t>(settings.starting_skull_necklaces, 0, MAXIMUM_STARTING_SKULL_NECKLACES);
     settings.starting_boko_baba_seeds = std::clamp<uint16_t>(settings.starting_boko_baba_seeds, 0, MAXIMUM_STARTING_BOKO_BABA_SEEDS);
     settings.starting_golden_feathers = std::clamp<uint16_t>(settings.starting_golden_feathers, 0, MAXIMUM_STARTING_GOLDEN_FEATHERS);
