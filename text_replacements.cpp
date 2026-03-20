@@ -11,7 +11,7 @@
 
 using namespace Text;
 
-static std::u16string get_spanish_conjugation(Item& item)
+static std::u16string get_spanish_demonstrative_pronoun(const Item& item)
 {
     auto& world = *item.getWorld();
     if (IS_MALE(item, "Spanish") && IS_SINGULAR(item, "Spanish"))
@@ -33,13 +33,13 @@ static std::u16string get_spanish_conjugation(Item& item)
     return u"";
 }
 
-static std::u16string get_english_pronoun(Item& item)
+static std::u16string get_english_demonstrative_pronoun(const Item& item)
 {
     auto& world = *item.getWorld();
     return IS_PLURAL(item, "English") ? u"These " : u"This ";
 }
 
-static std::u16string get_english_plurality(Item& item)
+static std::u16string get_english_conjugation(const Item& item)
 {
     auto& world = *item.getWorld();
     return IS_PLURAL(item, "English") ? u" are " : u" is ";
@@ -48,25 +48,26 @@ static std::u16string get_english_plurality(Item& item)
 TextReplacements generate_text_replacements(World& world)
 {
   // Get all relevant items/locations
-  auto& auction5           = world.locationTable["Windfall Island - Auction 5 Rupee"]->currentItem;
-  auto& auction40          = world.locationTable["Windfall Island - Auction 40 Rupee"]->currentItem;
-  auto& auction60          = world.locationTable["Windfall Island - Auction 60 Rupee"]->currentItem;
-  auto& auction80          = world.locationTable["Windfall Island - Auction 80 Rupee"]->currentItem;
-  auto& auction100         = world.locationTable["Windfall Island - Auction 100 Rupee"]->currentItem;
-  auto& splooshFirstPrize  = world.locationTable["Windfall Island - Battle Squid First Prize"]->currentItem;
-  auto& splooshSecondPrize = world.locationTable["Windfall Island - Battle Squid Second Prize"]->currentItem;
-  auto& savageFloor30      = world.locationTable["Outset Island - Savage Labyrinth Floor 30"]->currentItem;
-  auto& savageFloor50      = world.locationTable["Outset Island - Savage Labyrinth Floor 50"]->currentItem;
-  auto& beedle20           = world.locationTable["Great Sea - Beedle Shop 20 Rupee Item"]->currentItem;
-  auto& beedle500          = world.locationTable["Rock Spire Isle - Beedle 500 Rupee Item"]->currentItem;
-  auto& beedle950          = world.locationTable["Rock Spire Isle - Beedle 950 Rupee Item"]->currentItem;
-  auto& beedle900          = world.locationTable["Rock Spire Isle - Beedle 900 Rupee Item"]->currentItem;
-  auto& octoFairyItem      = world.bigOctoFairyHint.location->currentItem;
-  auto& octoFairyRegion    = world.bigOctoFairyHint.location->hintRegions.front();
+  const Item& auction5           = world.locationTable["Windfall Island - Auction 5 Rupee"]->currentItem;
+  const Item& auction40          = world.locationTable["Windfall Island - Auction 40 Rupee"]->currentItem;
+  const Item& auction60          = world.locationTable["Windfall Island - Auction 60 Rupee"]->currentItem;
+  const Item& auction80          = world.locationTable["Windfall Island - Auction 80 Rupee"]->currentItem;
+  const Item& auction100         = world.locationTable["Windfall Island - Auction 100 Rupee"]->currentItem;
+  const Item& splooshFirstPrize  = world.locationTable["Windfall Island - Battle Squid First Prize"]->currentItem;
+  const Item& splooshSecondPrize = world.locationTable["Windfall Island - Battle Squid Second Prize"]->currentItem;
+  const Item& savageFloor30      = world.locationTable["Outset Island - Savage Labyrinth Floor 30"]->currentItem;
+  const Item& savageFloor50      = world.locationTable["Outset Island - Savage Labyrinth Floor 50"]->currentItem;
+  const Item& beedle20           = world.locationTable["Great Sea - Beedle Shop 20 Rupee Item"]->currentItem;
+  const Item& beedle500          = world.locationTable["Rock Spire Isle - Beedle 500 Rupee Item"]->currentItem;
+  const Item& beedle950          = world.locationTable["Rock Spire Isle - Beedle 950 Rupee Item"]->currentItem;
+  const Item& beedle900          = world.locationTable["Rock Spire Isle - Beedle 900 Rupee Item"]->currentItem;
+  const Item& octoFairyItem      = world.bigOctoFairyHint.location->currentItem;
+  const std::string& octoFairyRegion    = world.bigOctoFairyHint.location->hintRegions.front();
 
-  LOG_TO_DEBUG("Calculating text replacement articles/pronouns");
   // Calculate articles for some replacements
-  std::set<char16_t> vowels = {
+  LOG_TO_DEBUG("Calculating text replacement articles/pronouns");
+
+  static const std::set<char16_t> frenchVowels = {
     u'a',
     u'e',
     u'i',
@@ -87,55 +88,55 @@ TextReplacements generate_text_replacements(World& world)
     u'û',
     u'ü',
   };
-
   // If the French Pretty Name starts with a vowel, use "d'", otherwise "de "
-  std::u16string beedle500FrenchArticle = vowels.contains(beedle500.getUTF16Name("French", Type::PRETTY, Color::NONE)[0]) ? u"d'" : u"de ";
-  std::u16string beedle950FrenchArticle = vowels.contains(beedle950.getUTF16Name("French", Type::PRETTY, Color::NONE)[0]) ? u"d'" : u"de ";
-  std::u16string beedle900FrenchArticle = vowels.contains(beedle900.getUTF16Name("French", Type::PRETTY, Color::NONE)[0]) ? u"d'" : u"de ";
+  const std::u16string beedle500FrenchPreposition = frenchVowels.contains(beedle500.getUTF16Name("French", Type::PRETTY, Color::NONE)[0]) ? u"d'" : u"de ";
+  const std::u16string beedle950FrenchPreposition = frenchVowels.contains(beedle950.getUTF16Name("French", Type::PRETTY, Color::NONE)[0]) ? u"d'" : u"de ";
+  const std::u16string beedle900FrenchPreposition = frenchVowels.contains(beedle900.getUTF16Name("French", Type::PRETTY, Color::NONE)[0]) ? u"d'" : u"de ";
 
   // If the beedle item is a plural in English, it should say "These <item> are" instead of "This <item> is"
-  std::u16string beedle500EnglishPronoun   = get_english_pronoun(beedle500);
-  std::u16string beedle500EnglishPlurality = get_english_plurality(beedle500);
-  std::u16string beedle950EnglishPronoun   = get_english_pronoun(beedle950);
-  std::u16string beedle950EnglishPlurality = get_english_plurality(beedle950);
-  std::u16string beedle900EnglishPronoun   = get_english_pronoun(beedle900);
-  std::u16string beedle900EnglishPlurality = get_english_plurality(beedle900);
+  const std::u16string beedle500EnglishPronoun   = get_english_demonstrative_pronoun(beedle500);
+  const std::u16string beedle500EnglishConjugation = get_english_conjugation(beedle500);
+  const std::u16string beedle950EnglishPronoun   = get_english_demonstrative_pronoun(beedle950);
+  const std::u16string beedle950EnglishConjugation = get_english_conjugation(beedle950);
+  const std::u16string beedle900EnglishPronoun   = get_english_demonstrative_pronoun(beedle900);
+  const std::u16string beedle900EnglishConjugation = get_english_conjugation(beedle900);
 
   // If the last item in a list in spanish with an 'i' change the and conjunction to 'e' instead of 'y'
-  auto auction100Spanish = auction60.getUTF16Name("Spanish", Type::PRETTY, Color::NONE);
-  std::u16string spanishAuctionFlyerConjunction = auction100Spanish[0] == u'i' || auction100Spanish[0] == u'I' ? u"e " : u"y ";
+  const std::u16string auction100Spanish = auction60.getUTF16Name("Spanish", Type::PRETTY, Color::NONE);
+  const std::u16string spanishAuctionFlyerConjunction = std::tolower(auction100Spanish[0]) == u'i' ? u"e " : u"y ";
 
-  auto savageFloor50Spanish = savageFloor50.getUTF16Name("Spanish", Type::CRYPTIC, Color::NONE);
-  std::u16string spanishSavageConjunction = savageFloor50Spanish[0] == u'i' || savageFloor50Spanish[0] == u'I' ? u" e " : u" y ";
+  const std::u16string savageFloor50Spanish = savageFloor50.getUTF16Name("Spanish", Type::CRYPTIC, Color::NONE);
+  const std::u16string spanishSavageConjunction = std::tolower(savageFloor50Spanish[0]) == u'i' ? u" e " : u" y ";
 
-  // French plurality for Big Octo Fairy Hint
-  auto bigOctoFrenchPlurality = IS_SINGULAR(octoFairyItem, "French") ? u"t'aidera" : u"t'aideront";
+  // French conjugation (of "aider") for Big Octo Fairy Hint
+  const std::u16string bigOctoFrenchConjugation = IS_SINGULAR(octoFairyItem, "French") ? u"t'aidera" : u"t'aideront";
 
-  // Spanish conjugations for sploosh and beedle items
-  std::u16string splooshFirstSpanishConjugation = get_spanish_conjugation(splooshFirstPrize);
-  std::u16string splooshSecondSpanishConjugation = get_spanish_conjugation(splooshSecondPrize);
-  std::u16string beedle500SpanishConjugation = get_spanish_conjugation(beedle500);
-  std::u16string beedle950SpanishConjugation = get_spanish_conjugation(beedle950);
-  std::u16string beedle900SpanishConjugation = get_spanish_conjugation(beedle900);
+  // Spanish demonstrative pronouns for sploosh and Beedle items
+  const std::u16string splooshFirstSpanishPronoun = get_spanish_demonstrative_pronoun(splooshFirstPrize);
+  const std::u16string splooshSecondSpanishPronoun = get_spanish_demonstrative_pronoun(splooshSecondPrize);
+  const std::u16string beedle500SpanishPronoun = get_spanish_demonstrative_pronoun(beedle500);
+  const std::u16string beedle950SpanishPronoun = get_spanish_demonstrative_pronoun(beedle950);
+  const std::u16string beedle900SpanishPronoun = get_spanish_demonstrative_pronoun(beedle900);
 
-  std::u16string beedle950SpanishPlurality = IS_SINGULAR(beedle950, "Spanish") ? u" cuesta " : u" cuestan ";
-  std::u16string beedle900SpanishPlurality = IS_SINGULAR(beedle900, "Spanish") ? u" cuesta " : u" cuestan ";
+  // Spanish conjugation (of "costar") for Beedle items
+  const std::u16string beedle950SpanishConjugation = IS_SINGULAR(beedle950, "Spanish") ? u" cuesta " : u" cuestan ";
+  const std::u16string beedle900SpanishConjugation = IS_SINGULAR(beedle900, "Spanish") ? u" cuesta " : u" cuestan ";
 
   // Hint Importance for Savage Labyrinth and Big Octo Fairy items
-  auto& savageFloor30Loc = world.locationTable["Outset Island - Savage Labyrinth Floor 30"];
-  auto& savageFloor50Loc = world.locationTable["Outset Island - Savage Labyrinth Floor 50"];
+  const auto& savageFloor30Loc = world.locationTable["Outset Island - Savage Labyrinth Floor 30"];
+  const auto& savageFloor50Loc = world.locationTable["Outset Island - Savage Labyrinth Floor 50"];
 
-  auto savageFloor30EnglishImportance = savageFloor30Loc->generateImportanceText("English");
-  auto savageFloor30SpanishImportance = savageFloor30Loc->generateImportanceText("Spanish");
-  auto savageFloor30FrenchImportance = savageFloor30Loc->generateImportanceText("French");
+  const std::u16string savageFloor30EnglishImportance = savageFloor30Loc->generateImportanceText("English");
+  const std::u16string savageFloor30SpanishImportance = savageFloor30Loc->generateImportanceText("Spanish");
+  const std::u16string savageFloor30FrenchImportance = savageFloor30Loc->generateImportanceText("French");
 
-  auto savageFloor50EnglishImportance = savageFloor50Loc->generateImportanceText("English");
-  auto savageFloor50SpanishImportance = savageFloor50Loc->generateImportanceText("Spanish");
-  auto savageFloor50FrenchImportance = savageFloor50Loc->generateImportanceText("French");
+  const std::u16string savageFloor50EnglishImportance = savageFloor50Loc->generateImportanceText("English");
+  const std::u16string savageFloor50SpanishImportance = savageFloor50Loc->generateImportanceText("Spanish");
+  const std::u16string savageFloor50FrenchImportance = savageFloor50Loc->generateImportanceText("French");
 
-  auto bigOctoFairyEnglishImportance = world.bigOctoFairyHint.location->generateImportanceText("English");
-  auto bigOctoFairySpanishImportance = world.bigOctoFairyHint.location->generateImportanceText("Spanish");
-  auto bigOctoFairyFrenchImportance = world.bigOctoFairyHint.location->generateImportanceText("French");
+  const std::u16string bigOctoFairyEnglishImportance = world.bigOctoFairyHint.location->generateImportanceText("English");
+  const std::u16string bigOctoFairySpanishImportance = world.bigOctoFairyHint.location->generateImportanceText("Spanish");
+  const std::u16string bigOctoFairyFrenchImportance = world.bigOctoFairyHint.location->generateImportanceText("French");
 
   // Format for text replacements:
   // Message Label,
@@ -252,8 +253,8 @@ TextReplacements generate_text_replacements(World& world)
                   u"\n\n  Tres artículos de gran valor, a precios\n  de promoción.\n\n\n  * Solo disponemos de uno de cada tipo.\n\n\n\n  Lo esperamos en las proximidades\n  de la " + TEXT_COLOR_RED +
                   u"Isla de los Pilares" + TEXT_COLOR_DEFAULT + u".\n  ¡No deje escapar esta oportunidad!\n\n  Le agradecemos que se haya tomado\n  el tiempo de leer esta carta.\n     Jefe suplente\n     Sucursal Isla de los Pilares" + TEXT_END},
       {"French",  u"  Cher Client,\n  Excusez-nous pour ce courrier\n  inattendu. N'hésitez pas à le\n  détruire s'il vous importune.\n\n  Voici une chance unique, pour vous seul!\n\n\n" +
-                    pad_str_4_lines(word_wrap_string(u"Besoin " + beedle500FrenchArticle + beedle500.getUTF16Name("French", Text::Type::PRETTY) + u", " + beedle950FrenchArticle + beedle950.getUTF16Name("French", Text::Type::PRETTY) + u", " +
-                    beedle900FrenchArticle + beedle900.getUTF16Name("French", Text::Type::PRETTY) + u"? Nous vous en proposons à des prix exceptionnels!", 39)) + u"\n  Mais attention : nous n'avons qu'un\n  seul article de chaque sorte!\n\n" +
+                    pad_str_4_lines(word_wrap_string(u"Besoin " + beedle500FrenchPreposition + beedle500.getUTF16Name("French", Text::Type::PRETTY) + u", " + beedle950FrenchPreposition + beedle950.getUTF16Name("French", Text::Type::PRETTY) + u", " +
+                    beedle900FrenchPreposition + beedle900.getUTF16Name("French", Text::Type::PRETTY) + u"? Nous vous en proposons à des prix exceptionnels!", 39)) + u"\n  Mais attention : nous n'avons qu'un\n  seul article de chaque sorte!\n\n" +
                   u"  Si vous êtes intéressé, n'hésitez pas à\n  venir acheter ces articles dans notre\n  nouvelle boutique, à l'" + TEXT_COLOR_RED + u"île de la Rocaille" + TEXT_COLOR_DEFAULT + u".\n\n" +
                   u"  Nous serons très heureux de vous\n  accueillir.\n\n\n  Nous tenons à vous offrir ce petit cadeau\n  pour vous remercier d'avoir lu ce courrier.\n  Fidèlement vôtre!\n    Boutique Terry de l'Ile de la Rocaille" + TEXT_END}}},
 
@@ -318,7 +319,7 @@ TextReplacements generate_text_replacements(World& world)
      {"07520",
      {{"English", SOUND(0x8E) + u"Hoorayyy! Yayyy!\nOh, thank you, Mr. Sailer!\n\n\n" + word_wrap_string(u"Please take this " + splooshFirstPrize.getUTF16Name("English") +
                                 u" as a sign of our gratitude. You are soooooo GREAT!", 43) + u'\0'},
-      {"Spanish", SOUND(0x8E) + u"¡Viva, viva!\n¡Gracias, señor, gracias!\n\n\n" + word_wrap_string(u"Por favor, " + splooshFirstSpanishConjugation + splooshFirstPrize.getUTF16Name("Spanish") +
+      {"Spanish", SOUND(0x8E) + u"¡Viva, viva!\n¡Gracias, señor, gracias!\n\n\n" + word_wrap_string(u"Por favor, " + splooshFirstSpanishPronoun + splooshFirstPrize.getUTF16Name("Spanish") +
                                  u" como muestra de gratitud.", 43) + u'\0'},
       {"French",  SOUND(0x8E) + u"Oui, oui!\nMerci l'ami!\n\n\n" + word_wrap_string(u"Nous tenons à te faire un cadeau pour te remercier de nous avoir protégés. Voici " +
                                 splooshFirstPrize.getUTF16Name("French", Text::Type::PRETTY) + u", prends-le!", 43) + u'\0'}}},
@@ -328,7 +329,7 @@ TextReplacements generate_text_replacements(World& world)
      {{"English", SOUND(0x8E) + u"Hoorayyy! Yayyy!\nOh, thank you so much, Mr. Sailer!\n\n\n" + word_wrap_string(u"This is our thanks to you! It's been passed down on our island for many years, so don't tell the island elder, OK? Here... " +
                                 TEXT_COLOR_RED + IMAGE(ImageTags::HEART) + TEXT_COLOR_DEFAULT + u"Please accept this " + splooshSecondPrize.getUTF16Name("English") + u'!', 43) + u'\0'},
       {"Spanish", SOUND(0x8E) + u"¡Viva, viva!\n¡Gracias, señor, gracias!\n\n\n" + word_wrap_string(u"Esta es nuestra muestra de gratitud. Ha sido pasado de generación en generación, así que no le digas a los ancianos de la isla, está bien? ¡Por favor!" +
-                                 TEXT_COLOR_RED + IMAGE(ImageTags::HEART) + TEXT_COLOR_DEFAULT + u"¡Acepta " + splooshSecondSpanishConjugation + splooshSecondPrize.getUTF16Name("Spanish") + u'!', 43) + u'\0'},
+                                 TEXT_COLOR_RED + IMAGE(ImageTags::HEART) + TEXT_COLOR_DEFAULT + u"¡Acepta " + splooshSecondSpanishPronoun + splooshSecondPrize.getUTF16Name("Spanish") + u'!', 43) + u'\0'},
       {"French",  SOUND(0x8E) + u"Oui, oui!\nMerci l'ami!\n\n\nNous tenons à te faire un cadeau pour\nte remercier de nous avoir protégés.\n\n\n" + word_wrap_string(u"Voici " +
                                 splooshSecondPrize.getUTF16Name("English", Text::Type::PRETTY) + u" qui se transmet depuis fort longtemps sur cette île. Prends-là et surtout ne le dis pas aux anciens!", 43) + u'\0'}}},
 
@@ -340,7 +341,7 @@ TextReplacements generate_text_replacements(World& world)
      {"12016",
      {{"English", word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("English", Text::Type::PRETTY) + bigOctoFairyEnglishImportance + TEXT_COLOR_CYAN + u", which may help you on your quest.", 43) + u'\0'},
       {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("Spanish", Text::Type::PRETTY) + bigOctoFairySpanishImportance + TEXT_COLOR_CYAN + u", que te ayudará en tu aventura.", 43) + u'\0'},
-      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("French", Text::Type::PRETTY) + bigOctoFairyFrenchImportance + TEXT_COLOR_CYAN + u", qui " + bigOctoFrenchPlurality + u" dans ton aventure.", 43) + u'\0'}}},
+      {"French",  word_wrap_string(TEXT_COLOR_CYAN + u"..." + octoFairyItem.getUTF16Name("French", Text::Type::PRETTY) + bigOctoFairyFrenchImportance + TEXT_COLOR_CYAN + u", qui " + bigOctoFrenchConjugation + u" dans ton aventure.", 43) + u'\0'}}},
      {"12017",
      {{"English", word_wrap_string(TEXT_COLOR_CYAN + u"When you find you have need of such an item, you must journey to that place.", 43) + u'\0'},
       {"Spanish", word_wrap_string(TEXT_COLOR_CYAN + u"Cuándo requieras el uso de tal objeto, dirígete a ese lugar.", 43) + u'\0'},
@@ -352,8 +353,8 @@ TextReplacements generate_text_replacements(World& world)
       {"Spanish", word_wrap_string(TEXT_COLOR_RED + beedle500.getUTF16Name("Spanish") + u"  500 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\n¡Queda solo una!" + TEXT_END},
       {"French",  word_wrap_string(TEXT_COLOR_RED + beedle500.getUTF16Name("French")  + u".  500 Rubis." + TEXT_COLOR_DEFAULT, 43) + u"\nIl ne me reste que celui-ci!" + TEXT_END}}},
      {"12109",
-     {{"English", word_wrap_string(beedle500EnglishPronoun + beedle500.getUTF16Name("English") + beedle500EnglishPlurality + u"a mere " + TEXT_COLOR_RED + u"500 Rupees" + TEXT_COLOR_DEFAULT, 43) + u"\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks" + TEXT_END},
-      {"Spanish", word_wrap_string(CAPITAL + beedle500SpanishConjugation + beedle500.getUTF16Name("Spanish") + TEXT_COLOR_DEFAULT + u" - Solo " + TEXT_COLOR_RED + u"500 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\n¡Cómprala sin pensarlo dos veces!\n" + TWO_CHOICES + u"Lo quiero\nNo, gracias" + TEXT_END},
+     {{"English", word_wrap_string(beedle500EnglishPronoun + beedle500.getUTF16Name("English") + beedle500EnglishConjugation + u"a mere " + TEXT_COLOR_RED + u"500 Rupees" + TEXT_COLOR_DEFAULT, 43) + u"\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks" + TEXT_END},
+      {"Spanish", word_wrap_string(CAPITAL + beedle500SpanishPronoun + beedle500.getUTF16Name("Spanish") + TEXT_COLOR_DEFAULT + u" - Solo " + TEXT_COLOR_RED + u"500 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\n¡Cómprala sin pensarlo dos veces!\n" + TWO_CHOICES + u"Lo quiero\nNo, gracias" + TEXT_END},
       {"French",  word_wrap_string(beedle500.getUTF16Name("French") + u" seulement " + TEXT_COLOR_RED + u"500 Rubis" + TEXT_COLOR_DEFAULT, 43) + u".\nAcheter!\n" + TWO_CHOICES + u"Oui\nSans façon" + TEXT_END}}},
 
      // Rock Spire Shop 950 Rupee Item
@@ -362,8 +363,8 @@ TextReplacements generate_text_replacements(World& world)
       {"Spanish", word_wrap_string(TEXT_COLOR_RED + beedle950.getUTF16Name("Spanish") + u"  950 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\nTambién es el único que me queda." + TEXT_END},
       {"French",  word_wrap_string(TEXT_COLOR_RED + beedle950.getUTF16Name("French") + u".  950 Rubis." + TEXT_COLOR_DEFAULT, 43) + u"\nLà encore, il ne m'en reste juste un." + TEXT_END}}},
      {"12110",
-     {{"English", word_wrap_string(beedle950EnglishPronoun + beedle950.getUTF16Name("English") + beedle950EnglishPlurality + u"only " + TEXT_COLOR_RED + u"950 Rupees" + TEXT_COLOR_DEFAULT, 43) + u"\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks" + TEXT_END},
-      {"Spanish", word_wrap_string(CAPITAL + beedle950SpanishConjugation + TEXT_COLOR_RED + beedle950.getUTF16Name("Spanish") + TEXT_COLOR_DEFAULT + beedle950SpanishPlurality + TEXT_COLOR_RED + u"950 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\nCompra... ¡Compra!\n" + TWO_CHOICES + u"Lo quiero\nNo, gracias" + TEXT_END},
+     {{"English", word_wrap_string(beedle950EnglishPronoun + beedle950.getUTF16Name("English") + beedle950EnglishConjugation + u"only " + TEXT_COLOR_RED + u"950 Rupees" + TEXT_COLOR_DEFAULT, 43) + u"\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks" + TEXT_END},
+      {"Spanish", word_wrap_string(CAPITAL + beedle950SpanishPronoun + TEXT_COLOR_RED + beedle950.getUTF16Name("Spanish") + TEXT_COLOR_DEFAULT + beedle950SpanishConjugation + TEXT_COLOR_RED + u"950 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\nCompra... ¡Compra!\n" + TWO_CHOICES + u"Lo quiero\nNo, gracias" + TEXT_END},
       {"French",  word_wrap_string(beedle950.getUTF16Name("French") + u" seulement " + TEXT_COLOR_RED + u"950 Rubis" + TEXT_COLOR_DEFAULT, 43) + u".\nAcheter!\n" + TWO_CHOICES + u"Oui\nSans façon" + TEXT_END}}},
 
      // Rock Spire Shop 900 Rupee Item
@@ -372,8 +373,8 @@ TextReplacements generate_text_replacements(World& world)
       {"Spanish", word_wrap_string(TEXT_COLOR_RED + beedle900.getUTF16Name("Spanish") + u"  900 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\nParece muy caro, pero ¡créeme que no te arrepentirás!" + TEXT_END},
       {"French",  word_wrap_string(TEXT_COLOR_RED + beedle900.getUTF16Name("French")  + u".  900 Rubis." + TEXT_COLOR_DEFAULT, 43) + u"\nC'est " + beedle900.getUTF16Name("French") + u", n'est-ce pas...\nDonc quel que soit son prix,\nvous parviendrez à l'amortir..." + TEXT_END}}},
      {"12111",
-     {{"English", word_wrap_string(beedle900EnglishPronoun + beedle900.getUTF16Name("English") + beedle900EnglishPlurality + u"just " + TEXT_COLOR_RED + u"900 Rupees" + TEXT_COLOR_DEFAULT, 43) + u"\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks" + TEXT_END},
-      {"Spanish", word_wrap_string(CAPITAL + beedle900SpanishConjugation + beedle900.getUTF16Name("Spanish") + beedle900SpanishPlurality + TEXT_COLOR_RED + u"900 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\nCompra... ¡Compra!\n" + TWO_CHOICES + u"Lo quiero\nNo, gracias" + TEXT_END},
+     {{"English", word_wrap_string(beedle900EnglishPronoun + beedle900.getUTF16Name("English") + beedle900EnglishConjugation + u"just " + TEXT_COLOR_RED + u"900 Rupees" + TEXT_COLOR_DEFAULT, 43) + u"\nBuy it! Buy it! Buy buy buy!\n" + TWO_CHOICES + u"I'll buy it\nNo thanks" + TEXT_END},
+      {"Spanish", word_wrap_string(CAPITAL + beedle900SpanishPronoun + beedle900.getUTF16Name("Spanish") + beedle900SpanishConjugation + TEXT_COLOR_RED + u"900 Rupias" + TEXT_COLOR_DEFAULT, 43) + u"\nCompra... ¡Compra!\n" + TWO_CHOICES + u"Lo quiero\nNo, gracias" + TEXT_END},
       {"French",  word_wrap_string(beedle900.getUTF16Name("French") + u" seulement " + TEXT_COLOR_RED + u"900 Rubis" + TEXT_COLOR_DEFAULT, 43) + u".\nAcheter!\n" + TWO_CHOICES + u"Oui\nSans façon" + TEXT_END}}},
  };
 }
