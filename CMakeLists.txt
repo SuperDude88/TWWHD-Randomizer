@@ -107,14 +107,6 @@ else()
   add_executable(wwhd_rando main.cpp)
 endif()
 
-if(GET_THREADS)
-  find_package(Threads REQUIRED)
-
-  if(CMAKE_USE_PTHREADS_INIT)
-    target_link_libraries(wwhd_rando PRIVATE Threads::Threads)
-  endif()
-endif()
-
 target_sources(wwhd_rando PRIVATE "randomizer.cpp" "options.cpp" "tweaks.cpp" "text_replacements.cpp")
 add_subdirectory("libs")
 add_subdirectory("utility")
@@ -148,4 +140,7 @@ if(DEFINED DEVKITPRO)
     #TVSPLASH   "${CMAKE_SOURCE_DIR}/platform/Splash.png"
     #DRCSPLASH  "${CMAKE_SOURCE_DIR}/platform/Splash.png"
   )
+else()
+  find_package(Threads REQUIRED)
+  target_link_libraries(wwhd_rando PRIVATE Threads::Threads)
 endif()
