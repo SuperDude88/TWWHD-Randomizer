@@ -41,9 +41,11 @@ target_sources(wwhd_rando PRIVATE mainwindow.cpp mainwindow.ui player_customizat
 target_link_libraries(wwhd_rando PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
 set_target_properties(wwhd_rando PROPERTIES
-    MACOSX_BUNDLE_wwhd_rando_IDENTIFIER my.example.com
+    MACOSX_BUNDLE_BUNDLE_NAME "WWHD Randomizer" # 15 character limit
+    MACOSX_BUNDLE_GUI_IDENTIFIER "com.github.superdude88.twwhd-randomizer"
+    MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2024 TWWHDR Contributors"
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
