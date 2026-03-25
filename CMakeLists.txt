@@ -39,8 +39,6 @@ if(DEFINED DEVKITPRO)
   add_compile_definitions(DEVKITPRO)
   add_compile_options(-Ofast -mcpu=750 -meabi -mhard-float -ffunction-sections -flto -Wall)
   add_link_options(-flto -fno-fat-lto-objects)
-elseif(APPLE)
-  add_compile_options(-fexperimental-library)
 endif()
 
 if(ENABLE_DEBUG)
