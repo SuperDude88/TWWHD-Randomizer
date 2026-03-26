@@ -13,3 +13,6 @@ jobs:
 
   build-mac:
     uses: ./.github/workflows/build_mac.yml
+
+  build-mac-arm:
+    uses: ./.github/workflows/build_mac_arm.yml
