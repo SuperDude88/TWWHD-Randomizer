@@ -59,7 +59,7 @@ PlandomizerError loadPlandomizer(const fspath& plandoFilepath, std::vector<Pland
                     }
                     if (locationObject.second["world"])
                     {
-                        plandoWorldId = std::stoi(locationObject.second["world"].as<std::string>());
+                        plandoWorldId = locationObject.second["world"].as<uint32_t>();
                         if (static_cast<size_t>(plandoWorldId) > numWorlds || plandoWorldId < 1)
                         {
                             ErrorLog::getInstance().log("Plandomizer Error: Bad World ID \"" + std::to_string(plandoWorldId) + "\"");

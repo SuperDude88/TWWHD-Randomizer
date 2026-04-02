@@ -12,8 +12,7 @@
     #include <dirent.h>
 #endif
 
-namespace Utility
-{
+namespace Utility {
     // std::filesystem is partially broken on Wii U, these are cross-platform replacements
 
     inline std::ostream& seek(std::ostream& stream, const std::streamoff& off, const std::ios::seekdir& way = std::ios::beg) {

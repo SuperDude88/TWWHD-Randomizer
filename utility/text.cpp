@@ -11,7 +11,7 @@ namespace Text {
 
     std::array<std::string, 3> supported_languages = {"English", "Spanish", "French"};
 
-    static std::unordered_map<Text::Color, std::u16string> nameToColor = {
+    static const std::unordered_map<Text::Color, std::u16string> nameToColor = {
         {Text::Color::NONE,    TEXT_COLOR_DEFAULT},
         {Text::Color::RED,     TEXT_COLOR_RED},
         {Text::Color::GREEN,   TEXT_COLOR_GREEN},
@@ -33,13 +33,13 @@ namespace Text {
         // If there are no '|'s then just return with the color surrounding the whole string
         if (str.find('|') == std::string::npos)
         {
-            auto textColor = nameToColor[color];
+            const auto& textColor = nameToColor.at(color);
             return textColor + str + TEXT_COLOR_DEFAULT;
         }
 
         // Alternate between the text color and default incase there are multiple
         // pairs of bars
-        auto textColor = nameToColor[color];
+        const auto& textColor = nameToColor.at(color);
         bool insertColor = false;
         for (size_t pos = 0; pos < str.length(); pos++)
         {

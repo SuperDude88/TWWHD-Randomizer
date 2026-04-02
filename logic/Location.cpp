@@ -9,7 +9,7 @@
 
 LocationCategory nameToLocationCategory(const std::string& name)
 {
-    static std::unordered_map<std::string, LocationCategory> categoryNameMap = {
+    static const std::unordered_map<std::string, LocationCategory> categoryNameMap = {
         {"Misc", LocationCategory::Misc},
         {"Dungeon", LocationCategory::Dungeon},
         {"Great Fairy", LocationCategory::GreatFairy},
@@ -51,7 +51,7 @@ LocationCategory nameToLocationCategory(const std::string& name)
 
 std::string locationCategoryToName(LocationCategory category)
 {
-    static std::unordered_map<LocationCategory, std::string> nameCategoryMap = {
+    static const std::unordered_map<LocationCategory, std::string> nameCategoryMap = {
         {LocationCategory::Misc, "Misc"},
         {LocationCategory::Dungeon, "Dungeon"},
         {LocationCategory::GreatFairy, "Great Fairy"},
@@ -93,7 +93,7 @@ std::string locationCategoryToName(LocationCategory category)
 
 LocationModificationType nameToModificationType(const std::string& name)
 {
-    static std::unordered_map<std::string, LocationModificationType> methodNameMap = {
+    static const std::unordered_map<std::string, LocationModificationType> methodNameMap = {
         {"Chest", LocationModificationType::Chest},
         {"Actor", LocationModificationType::Actor},
         {"Boss", LocationModificationType::Boss},

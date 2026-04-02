@@ -366,8 +366,7 @@ std::shared_ptr<Actor> Event::add_actor(const FileTypes::EventList& list, const 
     return actor;
 }
 
-namespace FileTypes
-{
+namespace FileTypes {
 
     const char* EventlistErrorGetName(EventlistError err) {
         switch (err) {

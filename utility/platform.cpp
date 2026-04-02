@@ -153,8 +153,7 @@ namespace Utility {
 }
 #endif
 
-namespace Utility
-{
+namespace Utility {
     void platformLog(const std::string& str)
     {
         std::unique_lock<std::mutex> lock(printMut);

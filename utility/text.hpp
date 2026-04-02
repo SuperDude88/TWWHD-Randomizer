@@ -4,8 +4,7 @@
 #include <array>
 #include <map>
 
-namespace Text
-  {
+namespace Text {
     enum struct Type
     {
         STANDARD = 0,

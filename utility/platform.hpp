@@ -16,8 +16,7 @@
     #error UNKNOWN PLATFORM 
 #endif
 
-namespace Utility
-{
+namespace Utility {
     void platformLog(const std::string& str);
 
     bool platformInit();

@@ -438,7 +438,7 @@ TweakError allow_all_items_to_be_field_items() {
             if (original_y_offset == 0) {
                 RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, item_info_entry_addr + 1), 0x28));
             }
-            uint8_t original_radius = elfUtil::read_u8(elf, elfUtil::AddressToOffset(elf, item_info_entry_addr + 2));
+            const uint8_t original_radius = elfUtil::read_u8(elf, elfUtil::AddressToOffset(elf, item_info_entry_addr + 2));
             if (original_radius == 0) {
                 RPX_ERROR_CHECK(elfUtil::write_u8(elf, elfUtil::AddressToOffset(elf, item_info_entry_addr + 2), 0x28));
             }
@@ -1354,10 +1354,10 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
         return TweakError::NONE;
     }
 
-    for (auto& [hohoLocation, hints] : world.hohoHints) {
+    for (const auto& [hohoLocation, hints] : world.hohoHints) {
         std::string island = "";
-        for (auto& hint : hints) {
-            for (auto region : hint.location->hintRegions) {
+        for (const auto& hint : hints) {
+            for (std::string region : hint.location->hintRegions) {
                 // If this region is a dungeon, use the dungeon's island instead
                 if (world.dungeons.contains(region)) {
                     region = world.dungeons[region].islands.front();
