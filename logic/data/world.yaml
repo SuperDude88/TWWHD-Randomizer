@@ -58,7 +58,7 @@
       Great Sea - Cyclos: Can_Sail_Away and Heros_Bow
       Great Sea - Goron Trading Reward: Can_Trade_With_All_Gorons and Rescued_Aryll and Delivery_Bag
       Great Sea - Withered Trees:
-          Can_Play_BoG and Empty_Bottle and can_access(Forest Haven Interior)
+          Can_Play_BoG and 'Can_Get_Forest_Water'
           and can_access(Star Island) and can_access(Mother & Child Isles) and can_access(Eastern Fairy Island)
           and can_access(Greatfish Isle) and can_access(Needle Rock Isle) and can_access(Private Oasis)
           and can_access(Shark Island) and can_access(Cliff Plateau Highest Isle)
@@ -638,7 +638,7 @@
 - Name: Windfall Lenzo's House Lower
   Locations:
       Windfall Island - Lenzo Become Assistant: can_access(Windfall Island) and can_access(Windfall Cafe Bar) and 'Can_Start_Lenzo_Quest'
-      Windfall Island - Lenzo Bring Forest Firefly: can_access(Windfall Island) and can_access(Windfall Cafe Bar) and 'Can_Start_Lenzo_Quest' and Empty_Bottle and can_access(Forest Haven Interior)
+      Windfall Island - Lenzo Bring Forest Firefly: can_access(Windfall Island) and can_access(Windfall Cafe Bar) and 'Can_Start_Lenzo_Quest' and 'Can_Get_Forest_Firefly'
   Exits:
       Windfall Island: Nothing
 
@@ -1483,6 +1483,9 @@
       The Great Sea: Nothing
 
 - Name: Forest Haven Interior
+  Events:
+      Can Get Forest Water: Empty_Bottle
+      Can Get Forest Firefly: Empty_Bottle
   Exits:
       Forest Haven: Nothing
       Forest Potion Shop: Nothing
