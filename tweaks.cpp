@@ -3593,6 +3593,7 @@ TweakError add_ff_warp_button() {
             Pane& newPane = layout.rootPane.children[0].duplicateChildPane(4); // L_WarpArea_00
             prt1& partPane = *dynamic_cast<prt1*>(newPane.pane.get());
             partPane.name = "L_WarpArea_09";
+            partPane.name.resize(0x18);
             partPane.translation.X = -158.0f;
             partPane.translation.Y = 198.0f;
 
