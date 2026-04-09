@@ -54,9 +54,9 @@ namespace Utility::Endian
     }
 
     // For enums
-    template<typename T, typename TBase = std::underlying_type_t<T>> requires CanByteswap<T> && std::is_enum_v<T>
+    template<typename T> requires CanByteswap<T> && std::is_enum_v<T>
     constexpr T toPlatform(const Type& src, const T& value) {
-        if (src != target) return static_cast<T>(byteswap(static_cast<TBase>(value)));
+        if (src != target) return static_cast<T>(byteswap(static_cast<std::underlying_type_t<T>>(value)));
         return value;
     }
 
@@ -67,8 +67,8 @@ namespace Utility::Endian
     }
 
     // For enums
-    template<typename T, typename TBase = std::underlying_type_t<T>> requires CanByteswap<T> && std::is_enum_v<T>
+    template<typename T> requires CanByteswap<T> && std::is_enum_v<T>
     constexpr void toPlatform_inplace(const Type& src, T& value) {
-        if (src != target) value = static_cast<T>(byteswap(static_cast<TBase>(value)));
+        if (src != target) value = static_cast<T>(byteswap(static_cast<std::underlying_type_t<T>>(value)));
     }
 }
