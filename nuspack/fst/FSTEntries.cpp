@@ -155,16 +155,8 @@ void FSTEntry::writeToStream(std::ostream& out) {
     else
     {
         const uint8_t type = typeAsByte();
-        out.write(reinterpret_cast<const char*>(&type), sizeof(type));
-
-        uint32_t nameoff = 0;
-        if(Utility::Endian::isBE()) {
-            nameoff = (nameOffset & 0x00FFFFFF) << 8;
-        }
-        else {
-            nameoff = Utility::Endian::byteswap24(nameOffset);
-        }
-        out.write(reinterpret_cast<const char*>(&nameoff), 3); // We need to write a 24bit int (big endian)
+        const uint32_t type_nameoff = Utility::Endian::toPlatform(eType::Big, (type << 24) | (nameOffset & 0x00FFFFFF));
+        out.write(reinterpret_cast<const char*>(&type_nameoff), sizeof(type_nameoff));
 
         if (isDir())
         {

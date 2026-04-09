@@ -18,19 +18,15 @@ namespace Utility::Endian
 #ifdef __cpp_lib_endian
     // Use the c++20 api if possible
     constexpr Type target = std::endian::native == std::endian::big ? Type::Big : Type::Little;
-    constexpr inline bool isBE() { return target == Type::Big; }
 #else
     // Do a runtime check otherwise
     Type getEndian();
     const Type target = getEndian();
-    inline bool isBE() { return target == Type::Big; }
 #endif
 
     uint64_t byteswap(const uint64_t& value);
 
     uint32_t byteswap(const uint32_t& value);
-
-    uint32_t byteswap24(const uint32_t& value); // Used in FST files
 
     uint16_t byteswap(const uint16_t& value);
 

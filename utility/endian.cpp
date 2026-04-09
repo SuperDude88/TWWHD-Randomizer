@@ -50,13 +50,6 @@ namespace Utility::Endian
             ((value & 0x000000FF) << 24);
     }
 
-    uint32_t byteswap24(const uint32_t& value)
-    {
-        return ((value & 0x00FF0000) >> 16) |
-            ((value & 0x0000FF00)) |
-            ((value & 0x000000FF) << 16);
-    }
-
     uint16_t byteswap(const uint16_t& value)
     {
         return ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
