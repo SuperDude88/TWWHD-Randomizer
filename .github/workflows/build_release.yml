@@ -21,8 +21,16 @@ jobs:
     secrets:
       SEED_KEY: ${{ secrets.SEED_KEY }}
   
-  build-mac:
-    uses: ./.github/workflows/build_mac.yml
+  build-mac-x64:
+    uses: ./.github/workflows/build_mac_x64.yml
+    with:
+      version: ${{ github.event.release.tag_name }}
+      build_type: Release
+    secrets:
+      SEED_KEY: ${{ secrets.SEED_KEY }}
+  
+  build-mac-arm:
+    uses: ./.github/workflows/build_mac_arm.yml
     with:
       version: ${{ github.event.release.tag_name }}
       build_type: Release
@@ -31,7 +39,7 @@ jobs:
 
   attach-to-release:
     name: Attach To Release
-    needs: [build-windows, build-wiiu, build-mac]
+    needs: [build-windows, build-wiiu, build-mac-x64, build-mac-arm]
     runs-on: ubuntu-latest
  
     steps:
@@ -53,10 +61,15 @@ jobs:
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}.wuhb # pass name so it doesn't get put in a folder
     
-     - name: Download Mac OS Artifact
+     - name: Download Mac OS Artifact (x64)
        uses: actions/download-artifact@v7
        with:
-        name: wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg # pass name so it doesn't get put in a folder
+        name: wwhd_rando_${{ github.event.release.tag_name }}_mac_x64.dmg # pass name so it doesn't get put in a folder
+    
+     - name: Download Mac OS Artifact (ARM)
+       uses: actions/download-artifact@v7
+       with:
+        name: wwhd_rando_${{ github.event.release.tag_name }}_mac_arm.dmg # pass name so it doesn't get put in a folder
 
      - name: Zip windows file
        uses: montudor/action-zip@v1
@@ -69,4 +82,4 @@ jobs:
        run: |
          ls -R
          mv wwhd_rando.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg
-         gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando.wuhb wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg
+         gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando.wuhb wwhd_rando_${{ github.event.release.tag_name }}_mac_x64.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac_arm.dmg
