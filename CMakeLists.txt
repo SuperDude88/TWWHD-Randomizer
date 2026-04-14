@@ -4,6 +4,13 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option(ENABLE_DEBUG "Build with debug features" OFF)
+option(ENABLE_TIMING "Build with timing features" OFF)
+option(DRY_RUN "Skip patching game files" OFF)
+option(LOGIC_TESTS "Logic tests will be run" OFF)
+option(QT_GUI "Build with Qt GUI" OFF)
+option(EMBED_DATA "Embed data in Qt app" OFF)
+
 # Versioning
 if(DEFINED RELEASE_TAG)
   # Use the new tag we're creating for this release (passed in workflow)
@@ -71,7 +78,6 @@ if(LOGIC_TESTS)
   endif()
 endif()
 
-
 # Path strings for logging
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
 add_compile_definitions(SOURCE_PATH_SIZE=${SOURCE_PATH_SIZE})
@@ -83,7 +89,7 @@ file(COPY "assets" DESTINATION "${CMAKE_BINARY_DIR}/data")                      
 file(COPY "logic/data/" DESTINATION "${CMAKE_BINARY_DIR}/data/logic" REGEX "^.*example.*$" EXCLUDE) # World, macros, and location info
 file(COPY "customizer/data/" DESTINATION "${CMAKE_BINARY_DIR}/data/customizer")                     # Default model info
 
-if(DEFINED QT_GUI)
+if(QT_GUI)
   message("Building with Qt GUI")
 
   find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
