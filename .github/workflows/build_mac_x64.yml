@@ -1,4 +1,4 @@
-name: Build - Mac
+name: Build - Mac (x64)
 
 on:
   workflow_dispatch:
@@ -30,8 +30,8 @@ env:
   EXTRA_CMAKE_FLAGS: ""
 
 jobs:
-  build-desktop-application-mac:
-    name: Build Desktop Application Mac
+  build-desktop-application-mac-x64:
+    name: Build Desktop Application Mac (x64)
     runs-on: macos-15-intel
 
     steps:
@@ -94,4 +94,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           path: ${{github.workspace}}/build/wwhd_rando.dmg
-          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_mac.dmg
+          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_mac_x64.dmg
