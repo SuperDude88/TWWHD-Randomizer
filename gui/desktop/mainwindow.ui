@@ -2480,7 +2480,7 @@ color: lightgray</string>
                <cursorShape>ArrowCursor</cursorShape>
               </property>
               <property name="autoFillBackground">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="styleSheet">
                <string notr="true"/>
