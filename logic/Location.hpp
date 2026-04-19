@@ -141,7 +141,7 @@ public:
     bool operator<(const Location& rhs) const;
 
     std::string getName() const;
-    std::u16string generateImportanceText(const std::string& language);
+    std::u16string generateImportanceText(const std::string& language) const;
     bool currentItemCanBeBarren() const;
     bool isBarrenAsChainLocation() const;
 };

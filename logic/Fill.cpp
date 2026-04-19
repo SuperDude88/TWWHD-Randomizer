@@ -339,7 +339,7 @@ void determineMajorItems(WorldPool& worlds, ItemPool& itemPool, LocationPool& al
     }
     for (auto& world : worlds)
     {
-        for (auto& location : world.getLocations(true))
+        for (auto& location : world.getProgressionLocations())
         {
             if (location->currentItem.getGameItemId() != GameItem::INVALID)
             {

@@ -190,7 +190,7 @@ bool Location::isBarrenAsChainLocation() const
     return !progression || (currentItem.canBeInBarrenRegion() && !isRequiredBossLocation);
 }
 
-std::u16string Location::generateImportanceText(const std::string& language)
+std::u16string Location::generateImportanceText(const std::string& language) const
 {
     const Item& item = currentItem;
 

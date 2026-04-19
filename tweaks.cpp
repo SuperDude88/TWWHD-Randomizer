@@ -1316,7 +1316,7 @@ TweakError update_ho_ho_dialog(World& world) {
 }
 
 TweakError update_kreeb_dialog(World& world) {
-    // Don't change text if theres no kreeb hints
+    // Don't change text if theres no Kreeb hints
     if (world.kreebHints.empty()) {
         return TweakError::NONE;
     }
@@ -1348,7 +1348,6 @@ TweakError update_kreeb_dialog(World& world) {
 }
 
 TweakError rotate_ho_ho_to_face_hints(World& world) {
-
     // If no ho ho hints, don't do anything
     if (world.hohoHints.empty()) {
         return TweakError::NONE;

@@ -54,7 +54,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
     // and seeing if taking away the item at each location can still access the goal locations
     for (auto& world : worlds)
     {
-        for (auto& potentialPathLocation : world.getLocations(true))
+        for (auto& potentialPathLocation : world.getProgressionLocations())
         {
             const Item itemAtLocation = potentialPathLocation->currentItem;
             if (itemAtLocation.isJunkItem())
@@ -68,7 +68,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
             // Run a search without the item
             runGeneralSearch(worlds);
 
-            for (auto& location : world.getLocations(true))
+            for (auto& location : world.getProgressionLocations())
             {
                 // If we never reached the goal location, then this location
                 // is "on the path to" the goal location. Since hints will refer
@@ -85,7 +85,7 @@ static HintError calculatePossiblePathLocations(WorldPool& worlds)
         }
 
         #ifdef ENABLE_DEBUG
-            for (auto& location : world.getLocations(true))
+            for (auto& location : world.getProgressionLocations())
             {
                 LOG_TO_DEBUG("Path locations for " + location->getName() + " [");
                 for (auto& pathLocation : location->pathLocations)
@@ -681,7 +681,7 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Hint
     // If ho ho is hinting triforces, make those hints now
     if (world.getSettings().ho_ho_triforce_hints)
     {
-        for (auto location : world.getLocations(/*onlyProgression =*/ true))
+        for (const auto location : world.getProgressionLocations())
         {
             if (location->currentItem.isTriforceShard())
             {
@@ -765,7 +765,7 @@ static HintError assignKreebHints(World& world, WorldPool& worlds)
     // Get all bow locations
     // Shuffle locations to prevent any possible meta-gaming where the last bow might be
     // since otherwise they'll appear in order of location id
-    auto allLocations = world.getLocations(/*onlyProgression = */ true);
+    auto allLocations = world.getProgressionLocations();
     shufflePool(allLocations);
     for (auto& location : allLocations)
     {
@@ -782,7 +782,7 @@ static HintError assignKorlSwordHints(World& world, WorldPool& worlds)
     // Get all sword locations
     // Shuffle locations to prevent any possible meta-gaming where the swords bow might be
     // since otherwise they'll appear in order of location id
-    auto allLocations = world.getLocations(/*onlyProgression = */ true);
+    auto allLocations = world.getProgressionLocations();
     shufflePool(allLocations);
     for (auto& location : allLocations)
     {

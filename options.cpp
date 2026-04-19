@@ -66,10 +66,10 @@ void Settings::resetDefaultSettings() {
     kreeb_bow_hints = false;
     ho_ho_hints = false;
     ho_ho_triforce_hints = false;
-    path_hints = false;
-    barren_hints = false;
-    item_hints = false;
-    location_hints = false;
+    path_hints = 0;
+    barren_hints = 0;
+    item_hints = 0;
+    location_hints = 0;
     use_always_hints = false;
     clearer_hints = false;
     hint_importance = false;
