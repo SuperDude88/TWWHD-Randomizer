@@ -1239,7 +1239,8 @@ void MainWindow::on_randomize_button_clicked()
     }
 
     // Check to make sure the output directory is not the same or a sub directory of the base game
-    if (config.outputDir.u32string().starts_with(config.gameBaseDir.u32string()))
+    const fspath& base = std::filesystem::weakly_canonical(config.gameBaseDir);
+    if (std::ranges::mismatch(base, std::filesystem::weakly_canonical(config.outputDir)).in1 == base.end())
     {
         show_warning_dialog("The output folder cannot be within the base game folder. Please select a different output folder.", "Bad output folder");
         return;
