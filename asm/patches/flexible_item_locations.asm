@@ -1007,3 +1007,13 @@ create_stone_head_use_original_id:
 ; Remove this check so that you can always cut it down with other items
 .org 0x021A5940
   nop ; Always take the branch for having the boomerang
+
+
+; To determine if you have decorated the pedestals around Windfall, Sam's actor first checks if you have the delivery bag
+; It then checks if the number of decorated pedestals is equal to the total number of pedestals
+; However, the pedestals do not appear until you have the delivery bag, which leaves the total count at 0
+; If you get the delivery bag on Windfall, Sam's first check will pass, but the pedestals still weren't created
+; Until you reload the island, his second check will also incorrectly pass (because 0 == 0) without decorating the island
+; Always create the pedestals to avoid this
+.org 0x02116328 ; in daDai_c::_create
+  nop ; always continue as though you have the delivery bag
