@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 
-static std::unordered_map<std::string, std::string> optionDescriptions = {
+static const std::unordered_map<std::string, std::string> optionDescriptions = {
     // Progression Locations
     {
       "progression_dungeons",

@@ -956,7 +956,7 @@ int nameToSettingInt(const std::string& name) {
 }
 
 Option nameToSetting(const std::string& name) {
-    static std::unordered_map<std::string, Option> optionNameMap = {
+    static const std::unordered_map<std::string, Option> optionNameMap = {
         {"Progress Dungeons", Option::ProgressDungeons},
         {"Progress Great Fairies", Option::ProgressGreatFairies},
         {"Progress Puzzle Caves", Option::ProgressPuzzleCaves},
@@ -1067,7 +1067,7 @@ Option nameToSetting(const std::string& name) {
 }
 
 std::string settingToName(const Option& setting) {
-    static std::unordered_map<Option, std::string> optionNameMap = {
+    static const std::unordered_map<Option, std::string> optionNameMap = {
         {Option::ProgressDungeons, "Progress Dungeons"},
         {Option::ProgressGreatFairies, "Progress Great Fairies"},
         {Option::ProgressPuzzleCaves, "Progress Puzzle Caves"},

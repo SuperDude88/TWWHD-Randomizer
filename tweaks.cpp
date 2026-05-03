@@ -1101,7 +1101,7 @@ TweakError fix_shop_item_y_offsets() {
             if (y_offset == 0.0f && ArrowID.count(id) == 0) {
                 // If the item didn't originally have a Y offset we need to give it one so it's not sunken into the pedestal.
                 // Only exception are for items 10 11 and 12 - arrow refill pickups. Those have no Y offset but look fine already.
-                static const float new_y_offset = 20.0f;
+                static constexpr float new_y_offset = 20.0f;
                 RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, display_data_addr + 0x10), new_y_offset));
             }
 

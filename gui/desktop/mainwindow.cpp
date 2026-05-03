@@ -1311,7 +1311,7 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 
         if (optionDescriptions.contains(optionName.toStdString()))
         {
-            update_option_description_text(optionDescriptions[optionName.toStdString()]);
+            update_option_description_text(optionDescriptions.at(optionName.toStdString()));
         }
         else
         {

@@ -1517,7 +1517,7 @@ bool World::isSphereEvent(const EventId& event)
         "Molgera Defeated",
     };
 
-    auto eventName = reverseEventMap[event];
+    const std::string& eventName = reverseEventMap[event];
     return sphereEvents.contains(eventName) && settings.isRequiredBoss(eventName);
 }
 
