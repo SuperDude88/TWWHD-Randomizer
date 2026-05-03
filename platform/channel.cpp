@@ -55,12 +55,12 @@ MCPError getTitlePath(const uint64_t& titleID, fspath& outPath) {
 }
 
 bool checkEnoughFreeSpace(const MCPInstallTarget& device, const uint64_t& minSpace) {
-    static const std::string deviceToPath[2] = {"/vol/storage_mlc01", "/vol/storage_usb01"};
+    static const std::array<std::string, 2> deviceToPath = {"/vol/storage_mlc01", "/vol/storage_usb01"};
     if(device < 0 || device > 1) {
         ErrorLog::getInstance().log("Invalid device for checkEnoughFreeSpace()!");
         return false;
     }
-    const std::string& path = deviceToPath[device]; // 0 is TARGET_MLC, 1 is TARGET_USB
+    const std::string& path = deviceToPath.at(device); // 0 is TARGET_MLC, 1 is TARGET_USB
 
     const FSAClientHandle handle = FSAAddClient(NULL);
     if(handle < 0) {
@@ -132,7 +132,7 @@ static bool installFreeChannel(const fspath& relPath, const MCPInstallTarget& lo
     }
 
     alignas(0x40) char installPath[FS_MAX_PATH]{};
-    const size_t count = path.string().copy(installPath, sizeof(installPath));
+    const size_t count = path.string().copy(installPath, sizeof(installPath) - 1);
     if(count != path.string().length()) {
         ErrorLog::getInstance().log("Could not copy full channel path \"" + relPath.string() + "\" to buffer");
         MCP_Close(mcpHandle);
@@ -175,7 +175,7 @@ static bool installFreeChannel(const fspath& relPath, const MCPInstallTarget& lo
     alignas(0x40) IOSVec pathInfoVector[1]{};
 
     pathInfoVector[0].vaddr = installPath;
-    pathInfoVector[0].len = FS_MAX_PATH;
+    pathInfoVector[0].len = sizeof(installPath);
 
     reinterpret_cast<uint32_t*>(&installInfo)[2] = MCP_COMMAND_INSTALL_ASYNC;
     reinterpret_cast<uint32_t*>(&installInfo)[3] = reinterpret_cast<uint32_t>(&pathInfoVector[0]);
