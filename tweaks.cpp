@@ -1098,7 +1098,7 @@ TweakError fix_shop_item_y_offsets() {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
             const float y_offset = elfUtil::read_float(elf, elfUtil::AddressToOffset(elf, display_data_addr + 0x10));
 
-            if (y_offset == 0.0f && ArrowID.count(id) == 0) {
+            if (y_offset == 0.0f && !ArrowID.contains(id)) {
                 // If the item didn't originally have a Y offset we need to give it one so it's not sunken into the pedestal.
                 // Only exception are for items 10 11 and 12 - arrow refill pickups. Those have no Y offset but look fine already.
                 static constexpr float new_y_offset = 20.0f;
@@ -2655,15 +2655,15 @@ TweakError add_barren_dungeon_hint_triggers(World& world) {
 
 TweakError update_tingle_statue_item_get_funcs() {
     const uint32_t item_get_func_ptr = 0x0001DA54; // First relevant relocation entry in .rela.data (overwrites .data section when loaded)
-    const std::unordered_map<int, std::string> symbol_name_by_item_id = { {0xA3, "dragon_tingle_statue_item_get_func"}, {0xA4, "forbidden_tingle_statue_item_get_func"}, {0xA5, "goddess_tingle_statue_item_get_func"}, {0xA6, "earth_tingle_statue_item_get_func"}, {0xA7, "wind_tingle_statue_item_get_func"} };
+    const std::unordered_map<uint8_t, std::string> symbol_name_by_item_id = { {0xA3, "dragon_tingle_statue_item_get_func"}, {0xA4, "forbidden_tingle_statue_item_get_func"}, {0xA5, "goddess_tingle_statue_item_get_func"}, {0xA6, "earth_tingle_statue_item_get_func"}, {0xA7, "wind_tingle_statue_item_get_func"} };
     RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
 
-    for (const uint8_t statue_id : {0xA3, 0xA4, 0xA5, 0xA6, 0xA7}) {
-        if(custom_symbols.count(symbol_name_by_item_id.at(statue_id)) == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    for (const auto& [statue_id, symbol] : symbol_name_by_item_id) {
+        if(!custom_symbols.contains(symbol)) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 
         const uint32_t item_func_addr = item_get_func_ptr + (statue_id * 0xC) + 8;
-        const uint32_t item_func_ptr = custom_symbols.at(symbol_name_by_item_id.at(statue_id));
-        
+        const uint32_t item_func_ptr = custom_symbols.at(symbol);
+
         rpx.addAction([=](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 

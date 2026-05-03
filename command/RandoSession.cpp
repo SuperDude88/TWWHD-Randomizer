@@ -470,7 +470,7 @@ std::shared_ptr<RandoSession::CacheEntry> RandoSession::getEntry(const std::vect
             resultKey = cacheKey + element;
         }
         // if we've already cached this
-        if (parentEntry->children.count(resultKey) > 0)
+        if (parentEntry->children.contains(resultKey))
         {
             cacheKey = resultKey;
             parentEntry = parentEntry->children.at(cacheKey);

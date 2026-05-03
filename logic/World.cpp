@@ -24,9 +24,9 @@ static std::stringstream lastError;
 #define YAML_FIELD_CHECK(ref, key, err) if(!ref[key]) {lastError << "Unable to find key: \"" << key << '"'; return err;}
 #define VALID_CHECK(e, invalid, msg, err) if(e == invalid) {lastError << msg; LOG_ERR_AND_RETURN(err);}
 #define ITEM_VALID_CHECK(item, msg) VALID_CHECK(item, GameItem::INVALID, msg, WorldLoadingError::GAME_ITEM_DOES_NOT_EXIST)
-#define AREA_VALID_CHECK(area, msg) VALID_CHECK(0, areaTable.count(area), msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
-#define REGION_VALID_CHECK(region, msg) VALID_CHECK(0, hintRegions.count(region), msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
-#define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(0, locationTable.count(loc), msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
+#define AREA_VALID_CHECK(area, msg) VALID_CHECK(areaTable.contains(area), false, msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
+#define REGION_VALID_CHECK(region, msg) VALID_CHECK(hintRegions.contains(region), false, msg, WorldLoadingError::AREA_DOES_NOT_EXIST)
+#define LOCATION_VALID_CHECK(loc, msg) VALID_CHECK(locationTable.contains(loc), false, msg, WorldLoadingError::LOCATION_DOES_NOT_EXIST)
 #define VALID_DUNGEON_CHECK(dungeon) if (!isValidDungeon(dungeon)) {ErrorLog::getInstance().log("Unrecognized dungeon name: \"" + dungeon + "\""); LOG_ERR_AND_RETURN(WorldLoadingError::INVALID_DUNGEON_NAME)};
 
 int World::eventCounter = 0;
