@@ -69,8 +69,6 @@ public:
     bool needsSavewarp() const;
     void setWindWarp(const bool& windWarp_);
     bool hasWindWarp() const;
-    int getWorldId() const;
-    void setWorldId(int& newWorldId);
     Entrance* getReverse();
     void setReverse(Entrance* reverseEntrance);
     Entrance* getReplaces();
@@ -120,7 +118,6 @@ private:
     uint8_t spawnId = 0xFF;
     bool savewarp = false;
     bool windWarp = false;
-    int worldId = -1;
     Entrance* reverse = nullptr;
     Entrance* replaces = nullptr;
     Entrance* assumed = nullptr;
