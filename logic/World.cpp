@@ -842,7 +842,6 @@ World::WorldLoadingError World::loadExit(const std::string& connectedArea, const
     AREA_VALID_CHECK(connectedArea, "Connected area of name \"" << connectedArea << "\" does not exist!");
     loadedExit.setParentArea(getArea(parentArea));
     loadedExit.setConnectedArea(getArea(connectedArea));
-    loadedExit.setWorldId(worldId);
     loadedExit.setWorld(this);
     // load exit requirements
     if(const RequirementError err = parseRequirementString(logicExpression, loadedExit.getRequirement(), this); err != RequirementError::NONE)

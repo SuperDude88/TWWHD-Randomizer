@@ -17,11 +17,11 @@ static std::string getSpoilerFormatEntrance(Entrance* entrance, const size_t& lo
 {
     // Print the world number if more than 1 world
     std::string worldNumber = " [W";
-    worldNumber = worlds.size() > 1 ? worldNumber + std::to_string(entrance->getWorldId() + 1) + "]" : "";
+    worldNumber = worlds.size() > 1 ? worldNumber + std::to_string(entrance->getWorld()->getWorldId() + 1) + "]" : "";
 
     auto currentEntranceName = entrance->getOriginalName(true);
     // Add an extra space if the world id is only 1 digit
-    size_t numSpaces = (longestEntranceLength - currentEntranceName.length()) + ((entrance->getWorldId() >= 9) ? 0 : 1);
+    size_t numSpaces = (longestEntranceLength - currentEntranceName.length()) + ((entrance->getWorld()->getWorldId() >= 9) ? 0 : 1);
     std::string spaces (numSpaces, ' ');
     
     auto replacement = entrance->getReplaces()->getOriginalName();
