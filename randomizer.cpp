@@ -219,7 +219,6 @@ public:
             return 1;
         }
 
-        //IMPROVEMENT: custom model things
         if(const ModelError err = config.settings.selectedModel.applyModel(); err != ModelError::NONE) {
             ErrorLog::getInstance().log("Failed to apply custom model, error " + errorToName(err));
             return 1;

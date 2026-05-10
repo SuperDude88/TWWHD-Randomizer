@@ -215,7 +215,7 @@ private:
         size_t listScrollPos = 0;
         size_t selectedListIdx = 0;
 
-        std::array<std::unique_ptr<BasicButton>, 4> toggles;
+        std::array<std::unique_ptr<BasicButton>, 5> toggles;
         
     public:
         PresetsSubpage(ColorPage& parent_);
