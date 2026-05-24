@@ -28,3 +28,16 @@
 ; Remove this restriction to match SD behavior
 .org 0x023FEBC4
   nop
+
+
+; HD capped the values of cCcD_Stts::m_cc_move to prevent the big pig throw
+; Uncap those values to allow the big pig to fly really far
+.org 0x021932A4 ; In daKb_execute
+  b 0x021932E8 ; Skip capping the X value
+.org 0x021932F0 ; In daKb_execute
+  b 0x02193328 ; Skip capping the Z value
+
+; Nintendo also moved Abe further from the house to prevent you from getting the glitchy pick-up
+; For some insane reason they did this through code, so remove that also
+.org 0x022F7E24 ; In daNpc_Ym1_c::createInit
+  b 0x022F7E70 ; Skip overwriting his position
