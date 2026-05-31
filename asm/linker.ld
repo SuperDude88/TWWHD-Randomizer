@@ -63,6 +63,7 @@ fopAcM_createItem = 0x025d8870;
 fopAcM_createItemFromTable = 0x025d8120;
 fopAcM_createItemForPresentDemo = 0x025d7dec;
 fopAcM_orderOtherEventId = 0x025d7a58;
+fopAcM_orderSpeakEvent = 0x025d76a8;
 SoldOutItem = 0x025bcecc;
 getSelectItemNo = 0x025bd22c;
 setEquipBottleItemEmpty = 0x025b5c4c;
