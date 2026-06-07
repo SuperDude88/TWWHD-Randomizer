@@ -536,12 +536,22 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
         {
             type = EntranceType::MISC;
         }
+        // Fairy fountain entrances are part of the caves pool
+        else if (type == EntranceType::FAIRY)
+        {
+            type = EntranceType::CAVE;
+        }
+        else if (type == EntranceType::FAIRY_REVERSE)
+        {
+            type = EntranceType::CAVE_REVERSE;
+        }
 
         // Check to make sure this type of entrance is being shuffled
         if (!entrancePools.contains(type))
         {
             // Check if its reverse is being shuffled if decoupled entrances are off
-            if (!entrance->isDecoupled() && entrance->getReverse() != nullptr && entrancePools.contains(entrance->getReverse()->getEntranceType()))
+            auto reverseType = entranceTypeToReverse(type);
+            if (!entrance->isDecoupled() && entrance->getReverse() != nullptr && entrancePools.contains(reverseType))
             {
                 // If this entrance has already been connected, throw an error
                 if (entrance->getConnectedArea())
