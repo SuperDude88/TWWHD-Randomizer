@@ -531,6 +531,11 @@ static EntranceShuffleError setPlandomizerEntrances(World& world, WorldPool& wor
             ErrorLog::getInstance().log("\"" + entrance->getOriginalName() + "\" is not an in-game entrance that can be shuffled.");
             return EntranceShuffleError::PLANDOMIZER_ERROR;
         }
+        // Change fairies to caves since they are merged into the caves pool
+        else if (type == EntranceType::FAIRY)
+        {
+            type = EntranceType::CAVE;
+        }
         // Change misc restrictive to misc since restrictive entrances are still in the misc pool
         else if (type == EntranceType::MISC_RESTRICTIVE)
         {
