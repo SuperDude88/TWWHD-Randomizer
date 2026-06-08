@@ -18,7 +18,10 @@
 #include <logic/WorldPool.hpp>
 #include <utility/text.hpp>
 
+// Complete Item Pool is all items that have not currently been placed
 #define GET_COMPLETE_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getItemPool());}
+// Full item pool includes items that have already been placed
+#define GET_FULL_ITEM_POOL(itemPool, worlds) for (auto& world : worlds) {addElementsToPool(itemPool, world.getFullItemPool());}
 #define GET_COMPLETE_PROGRESSION_LOCATION_POOL(locationPool, worlds) for (auto& world : worlds) {addElementsToPool(locationPool, world.getProgressionLocations());}
 #define ANY_WORLD_HAS_RACE_MODE(worlds) std::ranges::any_of(worlds, [](const World& world){return world.getSettings().progression_dungeons == ProgressionDungeons::RaceMode;})
 
@@ -68,6 +71,7 @@ public:
     WorldLoadingError setItemPools();
     ItemPool getItemPool() const;
     ItemPool& getItemPoolReference();
+    const ItemPool& getFullItemPool();
     ItemPool getStartingItems() const;
     ItemPool& getStartingItemsReference();
     int getStartingHeartCount() const;
@@ -150,6 +154,7 @@ private:
 
     Settings settings;
     ItemPool itemPool;
+    ItemPool fullItemPool; // Copy of itempool after it's made which doesn't get modified
     ItemPool startingItems;
     int worldId = -1;
     size_t numWorlds = 1;

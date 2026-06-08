@@ -177,6 +177,7 @@ World::WorldLoadingError World::setItemPools()
         ITEM_VALID_CHECK(nameToGameItem(item), item + " is not defined");
         itemPool.push_back(getItem(item));
     }
+    fullItemPool = itemPool;
     #ifdef ENABLE_DEBUG
         logItemPool("Items for world " + std::to_string(worldId + 1), itemPool);
     #endif
@@ -191,6 +192,10 @@ ItemPool World::getItemPool() const
 ItemPool& World::getItemPoolReference()
 {
     return itemPool;
+}
+
+const ItemPool& World::getFullItemPool() {
+    return fullItemPool;
 }
 
 ItemPool World::getStartingItems() const

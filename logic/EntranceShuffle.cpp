@@ -348,6 +348,33 @@ static EntranceShuffleError validateWorld(WorldPool& worlds, const Entrance* ent
                 }
             }
         }
+
+        // Check to make sure that going through Mesa's house isn't necessary to reach the windfall cafe
+        // Otherwise this locks out being able to get the Anton and Linda check since Mesa's door is locked
+        // at daytime
+        auto mesasHouseEntrance = world.getEntrance("Outset Island", "Outset Mesa's House");
+        if (mesasHouseEntrance->getConnectedArea() != nullptr)
+        {
+            // Disconnect Mesa's House
+            auto mesasHouseTarget = mesasHouseEntrance->disconnect();
+
+            // Get a full item pool since we won't collect any items locked behind Mesa's door. If there are any
+            // plandomized items behind Mesa's door that logically lock the cafe in a different place, that's still valid
+            ItemPool fullItemPool{};
+            LocationPool emptyLocations{};
+            GET_FULL_ITEM_POOL(fullItemPool, worlds);
+            getAccessibleLocations(worlds, fullItemPool, emptyLocations);
+
+            // Reconnect Mesa's House
+            mesasHouseEntrance->connect(mesasHouseTarget);
+
+            // If the windfall cafe bar is inaccessible from the previous search, then it's locked behind Mesa's House
+            if (!world.getArea("Windfall Cafe Bar")->isAccessible)
+            {
+                LOG_TO_DEBUG("Error: Windfall Cafe locked behind Mesa's House Entrance");
+                return EntranceShuffleError::ALL_LOCATIONS_NOT_REACHABLE;
+            }
+        }
     }
 
     return EntranceShuffleError::NONE;
