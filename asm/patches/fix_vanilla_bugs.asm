@@ -549,3 +549,32 @@ dpad_play_item_animations:
 ; visually and makes Blue ChuChus work more intuitively (IMPROVEMENT: do a more complete fix for the hookshot stuff that avoids that side effect)
 .org 0x0210D8C8 ; when being hit by the hookshot
   nop ; don't disable the At collision check
+
+
+
+; In either of Dampa's pig minigames, you can lock yourself out of finishing the game if you time taking damage with the pigs being "seen" by him
+; They each get marked as counted, but his text (and some necessary flags alongside it) never get updated properly
+; Change his code so that he will not mark more pigs as counted until any existing ones have already displayed their text
+; To do this, we check daNpcPeople_c::mEtcFlag & 0x80, since it is only set when a pig has just been counted
+; And gets unset when his text is displayed
+.org 0x022C3EC0 ; in daNpcPeople_c::checkPig
+  b dampa_check_for_pending_pigs
+.org @NextFreeSpace
+.global dampa_check_for_pending_pigs
+dampa_check_for_pending_pigs:
+  ; Pointer to Dampa's actor is in r29
+  lwz r11, 0x8CC(r29) ; Load mEtcFlag
+  rlwinm. r11, r11, 0x0, 0x18, 0x18 ; mEtcFlag & 0x80
+  bne try_reorder_speak_event ; A pig is currently waiting for text to be shown
+
+  lbz r11, 0x8FB(r29) ; Replace the line we overwrote to jump here
+  b 0x022C3EC4 ; Continue to see if this pig meets the requirements to be counted
+
+; If the flag for the pig counted text is still set when we try to check again the last text did not go through
+; We need to keep ordering the event until it goes through to avoid you needing to manually talk to Dampa
+try_reorder_speak_event:
+  mr r3, r29
+  bl fopAcM_orderSpeakEvent
+
+do_not_count_dampa_pig:
+  b 0x022C4048 ; Return without counting any new pigs
