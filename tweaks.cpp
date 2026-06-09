@@ -4302,6 +4302,9 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     if(settings.anyEntrancesShuffled()) {
         LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/entrance_rando_features_diff.yaml"));
     }
+    if(settings.randomize_door_entrances) {
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/mesa_door_fix_diff.yaml"));
+    }
 
     TWEAK_ERR_CHECK(fix_deku_leaf_model());
     TWEAK_ERR_CHECK(allow_all_items_to_be_field_items());
