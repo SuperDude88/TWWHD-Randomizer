@@ -28,6 +28,8 @@ namespace Utility {
         return false;
     };
 
+    // TODO: find a unified way to do this without blowing up the thread stacks
+    #ifdef DEVKITPRO
     static constexpr int FILE_BUF_SIZE = 25*1024*1024;
     class AlignedBufferWrapper {
         private:
@@ -37,6 +39,7 @@ namespace Utility {
             char* getBuffer() { return buffer; }
     };
     static ThreadLocal<AlignedBufferWrapper, DataIDs::FILE_OP_BUFFER> buf;
+    #endif
 
     bool copy_file(const fspath& from, const fspath& to) {
         Utility::platformLog("Copying " + Utility::toUtf8String(to));
@@ -167,10 +170,14 @@ namespace Utility {
             return 1;
         }
 
+        #ifdef DEVKITPRO
         while(file) {
             file.read(buf.get().getBuffer(), FILE_BUF_SIZE);
             fileContents.write(buf.get().getBuffer(), file.gcount());
         }
+        #else
+            fileContents << file.rdbuf();
+        #endif
 
         return 0;
     }
