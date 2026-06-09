@@ -36,6 +36,14 @@ jobs:
       build_type: Release
     secrets:
       SEED_KEY: ${{ secrets.SEED_KEY }}
+  
+  build-linux-x64:
+    uses: ./.github/workflows/build_linux_x64.yml
+    with:
+      version: ${{ github.event.release.tag_name }}
+      build_type: Release
+    secrets:
+      SEED_KEY: ${{ secrets.SEED_KEY }}
 
   attach-to-release:
     name: Attach To Release
@@ -70,6 +78,11 @@ jobs:
        uses: actions/download-artifact@v7
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}_mac_arm.dmg # pass name so it doesn't get put in a folder
+    
+     - name: Download Linux Artifact (x64)
+       uses: actions/download-artifact@v7
+       with:
+        name: wwhd_rando_${{ github.event.release.tag_name }}_linux_x64 # pass name so it doesn't get put in a folder
 
      - name: Zip windows file
        uses: montudor/action-zip@v1
