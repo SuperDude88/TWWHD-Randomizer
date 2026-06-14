@@ -4,7 +4,7 @@
 #include <utility/file.hpp>
 
 #if defined(QT_GUI)
-    #if defined(__APPLE__)
+    #if defined(__APPLE__) || defined(__linux__)
         #include <QStandardPaths>
     #else
         #include <QCoreApplication>
@@ -30,7 +30,7 @@ namespace Utility {
 
     fspath get_app_save_path() {
         fspath path;
-        #if defined(__APPLE__) && defined(QT_GUI)
+        #if (defined(__APPLE__) || defined(__linux__)) && defined(QT_GUI)
             path = fromQString(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
         #elif defined(QT_GUI)
             path = fromQString(QCoreApplication::applicationDirPath());
