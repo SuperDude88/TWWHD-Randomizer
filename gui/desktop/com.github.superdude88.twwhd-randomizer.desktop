@@ -1,0 +1,12 @@
+# https://specifications.freedesktop.org/desktop-entry/latest/recognized-keys.html
+# "Categories" should also include GameTool but that doesn't seem fully supported yet
+[Desktop Entry]
+Type=Application
+Name=The Wind Waker HD Randomizer
+GenericName=TWWHD Randomizer
+Comment=Randomizer for The Legend of Zelda: The Wind Waker HD
+Exec=wwhd_rando
+Terminal=false
+Categories=Utility;Qt;
+Keywords=randomizer;rando;wind waker;wind waker hd;tracker;mod;
+Icon=icon

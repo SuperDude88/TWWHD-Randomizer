@@ -69,6 +69,18 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: cmake --build build --config ${{ inputs.build_type }}
 
+      - name: Install linuxdeploy
+        working-directory: ${{ github.workspace }}
+        run: |
+          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy*.AppImage
+
+      - name: Create AppImage
+        working-directory: ${{ github.workspace }}
+        run: |
+          ./linuxdeploy-x86_64.AppImage --appdir AppDir -e build/wwhd_rando -d ./gui/desktop/com.github.superdude88.twwhd-randomizer.desktop -i ./gui/desktop/icon.svg --plugin qt --output appimage
+
       - name: Get Version
         id: get-version
         shell: pwsh
@@ -79,5 +91,5 @@ jobs:
       - name: Save Artifact
         uses: actions/upload-artifact@v6
         with:
-          path: ${{github.workspace}}/build/wwhd_rando
+          path: ${{github.workspace}}/The_Wind_Waker_HD_Randomizer-x86_64.AppImage
           name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_linux_x64
