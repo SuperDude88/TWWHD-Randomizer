@@ -12,7 +12,7 @@ namespace Utility::Str {
         std::string ret(str.size(), '\0');
         char* pszNext;
         const char16_t* pwszNext;
-        std::mbstate_t state = {0}; // zero-initialization represents the initial conversion state for mbstate_t
+        std::mbstate_t state{}; // zero-initialization represents the initial conversion state for mbstate_t
         const std::codecvt_base::result& res = std::use_facet<std::codecvt<char16_t, char, mbstate_t>>(std::locale::classic()).out(
             state, str.data(), str.data() + str.size(), pwszNext, ret.data(), ret.data() + ret.size(), pszNext);
 
@@ -27,7 +27,7 @@ namespace Utility::Str {
         std::u16string ret(str.size(), u'\0');
         const char* pszNext;
         char16_t* pwszNext;
-        std::mbstate_t state = {0}; // zero-initialization represents the initial conversion state for mbstate_t
+        std::mbstate_t state{}; // zero-initialization represents the initial conversion state for mbstate_t
         const std::codecvt_base::result& res = std::use_facet<std::codecvt<char16_t, char, mbstate_t>>(std::locale::classic()).in(
             state, str.data(), str.data() + str.size(), pszNext, ret.data(), ret.data() + ret.size(), pwszNext);
 
