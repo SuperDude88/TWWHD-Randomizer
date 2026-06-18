@@ -68,7 +68,7 @@ namespace Utility::Str {
 
     template<typename T> requires StringType<T>
     T assureNullTermination(const T& string) {
-        if(!string.empty() && string.back() == typename T::value_type(0)) return string;
+        if(string.ends_with(typename T::value_type(0))) return string;
 
         return string + typename T::value_type(0);
     }

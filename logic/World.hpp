@@ -81,7 +81,7 @@ public:
     void remapChart(GameItem chart, uint8_t island);
     void determineChartMappings();
     WorldLoadingError determineProgressionLocations();
-    WorldLoadingError setDungeonLocations(WorldPool& worlds);
+    WorldLoadingError setDungeonLocations();
     WorldLoadingError determineRequiredDungeons(WorldPool& worlds);
     int loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, const fspath& locationDataPath, const fspath& itemDataPath, const fspath& areaDataPath);
     Entrance* getEntrance(const std::string& parentArea, const std::string& connectedArea);

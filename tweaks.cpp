@@ -193,6 +193,8 @@ TweakError change_ship_starting_island(const uint8_t room_num) {
 }
 
 TweakError make_all_text_instant() {
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/b_button_skips_text_diff.yaml"));
+
     for (const auto& language : Text::supported_languages) {
         const fspath paths[4] = {
         "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT",
@@ -1152,7 +1154,7 @@ TweakError shorten_zephos_event() {
     list.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
         
-        if(event_list.Events_By_Name.count("TACT_HT") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        if(!event_list.Events_By_Name.contains("TACT_HT")) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
         std::shared_ptr<Event> wind_shrine_event = event_list.Events_By_Name.at("TACT_HT");
 
         std::shared_ptr<Actor> zephos = wind_shrine_event->get_actor("Hr");
@@ -1215,7 +1217,7 @@ TweakError update_korl_dialog(World& world) {
                 hintMessages.back().back() = u'\0';
             }
 
-            if(custom_symbols.count("last_korl_hint_message_number") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+            if(!custom_symbols.contains("last_korl_hint_message_number")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
             const uint32_t num_messages_address = custom_symbols.at("last_korl_hint_message_number");
             g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([num_messages_address, numExtra = hintMessages.size() - 1](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -1240,7 +1242,7 @@ TweakError update_korl_dialog(World& world) {
     }
     
     if (!world.korlHyruleHints.empty()) {
-        if(custom_symbols.count("use_different_korl_hyrule_text") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+        if(!custom_symbols.contains("use_different_korl_hyrule_text")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
         const uint32_t check_hyrule_text_addr = custom_symbols.at("use_different_korl_hyrule_text");
         g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([check_hyrule_text_addr](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -1421,7 +1423,7 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
 }
 
 TweakError set_starting_health(const uint16_t heartPieces, const uint16_t heartContainers) {
-    if(custom_symbols.count("starting_quarter_hearts") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("starting_quarter_hearts")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     const uint16_t starting_health = (heartContainers * 4) + heartPieces;
     const uint32_t starting_quarter_hearts_address = custom_symbols.at("starting_quarter_hearts");
 
@@ -1441,7 +1443,7 @@ TweakError set_starting_health(const uint16_t heartPieces, const uint16_t heartC
 }
 
 TweakError set_starting_magic(const uint8_t& startingMagic) {
-    if(custom_symbols.count("starting_magic") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("starting_magic")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     const uint32_t starting_magic_address = custom_symbols.at("starting_magic");
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([starting_magic_address, startingMagic](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -1455,7 +1457,7 @@ TweakError set_starting_magic(const uint8_t& startingMagic) {
 }
 
 TweakError set_damage_multiplier(const float& multiplier) {
-    if(custom_symbols.count("custom_damage_multiplier") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("custom_damage_multiplier")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     const uint32_t damage_multiplier_address = custom_symbols.at("custom_damage_multiplier");
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([damage_multiplier_address, multiplier](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -1492,7 +1494,7 @@ TweakError set_damage_multiplier(const float& multiplier) {
 }
 
 TweakError set_pig_color(const PigColor& color) {
-    if(custom_symbols.count("outset_pig_color") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("outset_pig_color")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     const uint32_t pig_color_address = custom_symbols.at("outset_pig_color");
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([pig_color_address, color](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -2027,7 +2029,7 @@ TweakError increase_misc_animations() {
 }
 
 TweakError set_casual_clothes() {
-    if(custom_symbols.count("should_start_with_heros_clothes") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("should_start_with_heros_clothes")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     const uint32_t starting_clothes_addr = custom_symbols.at("should_start_with_heros_clothes");
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -2057,7 +2059,7 @@ TweakError shorten_auction_intro_event() {
     entry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
 
-        if(event_list.Events_By_Name.count("AUCTION_START") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        if(!event_list.Events_By_Name.contains("AUCTION_START")) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
         std::shared_ptr<Event> auction_start_event = event_list.Events_By_Name.at("AUCTION_START");
         std::shared_ptr<Actor> camera = auction_start_event->get_actor("CAMERA");
         if (camera == nullptr) {
@@ -2091,7 +2093,7 @@ TweakError disable_invisible_walls() {
 }
 
 TweakError update_skip_rematch_bosses_game_variable(const bool& skipRefights) {
-    if(custom_symbols.count("skip_rematch_bosses") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("skip_rematch_bosses")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     const uint32_t skip_rematch_bosses_addr = custom_symbols.at("skip_rematch_bosses");
 
     RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
@@ -2112,7 +2114,7 @@ TweakError update_skip_rematch_bosses_game_variable(const bool& skipRefights) {
 }
 
 TweakError update_sword_mode_game_variable(const bool& remove_swords) {
-    if(custom_symbols.count("swordless") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("swordless")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     const uint32_t swordless_addr = custom_symbols.at("swordless");
 
     RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
@@ -2133,7 +2135,7 @@ TweakError update_sword_mode_game_variable(const bool& remove_swords) {
 }
 
 TweakError update_progressive_magic_always_double_game_variable(const bool& progressive_magic_always_double) {
-    if(custom_symbols.count("progressive_magic_always_double") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("progressive_magic_always_double")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     const uint32_t progressive_magic_always_double_addr = custom_symbols.at("progressive_magic_always_double");
 
     RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
@@ -2154,7 +2156,7 @@ TweakError update_progressive_magic_always_double_game_variable(const bool& prog
 }
 
 TweakError update_open_drc_game_variable(const bool& open_drc) {
-    if(custom_symbols.count("open_drc") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("open_drc")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     const uint32_t open_drc_addr = custom_symbols.at("open_drc");
 
     RandoSession::CacheEntry& entry = g_session.openGameFile("code/cking.rpx@RPX@ELF");
@@ -2196,7 +2198,7 @@ TweakError update_starting_gear(const Settings& settings) {
         LOG_ERR_AND_RETURN(TweakError::UNEXPECTED_VALUE);
     }
 
-    if(custom_symbols.count("starting_gear") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("starting_gear")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     const uint32_t starting_gear_array_addr = custom_symbols.at("starting_gear");
 
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([=](RandoSession* session, FileType* data) -> int {
@@ -2697,7 +2699,7 @@ TweakError show_seed_hash_on_title_screen(const std::u16string& hash) { // make 
     RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Layout/Title_00.szs@YAZ0@SARC@blyt/Title_00.bflyt@BFLYT");
     
     // add hash
-    entry.addAction([hash](RandoSession* sessio, FileType* data) -> int {
+    entry.addAction([hash](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(layout, FileTypes::FLYTFile, data)
 
         Pane& newPane = layout.rootPane.children[0].children[1].children[3].duplicateChildPane(1); // hidden version number text
@@ -2910,7 +2912,7 @@ TweakError remove_jabun_stone_door_event() {
     entry.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
         
-        if(event_list.Events_By_Name.count("ajav_uzu") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        if(!event_list.Events_By_Name.contains("ajav_uzu")) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
         std::shared_ptr<Event> unlock_cave_event = event_list.Events_By_Name.at("ajav_uzu");
         std::shared_ptr<Actor> director = unlock_cave_event->get_actor("DIRECTOR");
         if (director == nullptr) {
@@ -3384,7 +3386,7 @@ TweakError update_entrance_events() {
         entry.addAction([waterfall = *waterfall](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
 
-            if(event_list.Events_By_Name.count("fall") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+            if(!event_list.Events_By_Name.contains("fall")) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
             std::shared_ptr<Action> loadRoom = event_list.Events_By_Name.at("fall")->get_actor("DIRECTOR")->actions[1];
             if(loadRoom == nullptr) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
             loadRoom->get_prop("Stage")->value = waterfall.data.substr(0, 8);
@@ -3479,11 +3481,11 @@ TweakError replace_ctmc_chest_texture() {
 }
 
 TweakError apply_ingame_preferences(const Settings& settings) {
-    if(custom_symbols.count("target_type_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-    if(custom_symbols.count("camera_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-    if(custom_symbols.count("first_person_camera_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-    if(custom_symbols.count("gyroscope_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
-    if(custom_symbols.count("ui_display_preference") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("target_type_preference")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("camera_preference")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("first_person_camera_preference")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("gyroscope_preference")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("ui_display_preference")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
 
     const uint32_t target_type_preference_addr = custom_symbols.at("target_type_preference");
     const uint32_t camera_preference_addr = custom_symbols.at("camera_preference");
@@ -3566,7 +3568,7 @@ TweakError fix_needle_rock_island_salvage_flags() {
 
         std::vector<ChunkEntry*> scobs = dzr.entries_by_type("SCOB");
         for (ChunkEntry* scob : scobs) {
-            if (salvage_object_names.count(scob->data.substr(0, 8)) > 0 && types.count((scob->data[8] & 0xF0) >> 4) > 0 && flag.count((scob->data[8] & 0x0F) << 4 | (scob->data[9] & 0xF0) >> 4) > 0) {
+            if (salvage_object_names.contains(scob->data.substr(0, 8)) && types.contains((scob->data[8] & 0xF0) >> 4) && flag.contains((scob->data[8] & 0x0F) << 4 | (scob->data[9] & 0xF0) >> 4)) {
                 salvages.push_back(scob);
             }
         }
@@ -3586,7 +3588,7 @@ TweakError add_ff_warp_button() {
         RandoSession::CacheEntry& map = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@WarpMap_00.szs@YAZ0@SARC@blyt/WarpMap_00.bflyt@BFLYT");
 
         //add another WarpArea pane
-        map.addAction([](RandoSession* sessio, FileType* data) -> int {
+        map.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(layout, FileTypes::FLYTFile, data)
 
             Pane& newPane = layout.rootPane.children[0].duplicateChildPane(4); // L_WarpArea_00
@@ -3777,7 +3779,7 @@ TweakError allow_nonlinear_servants_of_the_towers() {
     list.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
         
-        if(event_list.Events_By_Name.count("Os_Finish") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        if(!event_list.Events_By_Name.contains("Os_Finish")) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
         std::shared_ptr<Event> os0_finish = event_list.Events_By_Name.at("Os_Finish");
 
         std::shared_ptr<Actor> os0 = os0_finish->get_actor("Os");
@@ -3830,7 +3832,7 @@ TweakError allow_nonlinear_servants_of_the_towers() {
 
 
         // West servant returned.
-        if(event_list.Events_By_Name.count("Os1_Finish") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        if(!event_list.Events_By_Name.contains("Os1_Finish")) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
         std::shared_ptr<Event> os1_finish = event_list.Events_By_Name.at("Os1_Finish");
 
         std::shared_ptr<Actor> os1 = os1_finish->get_actor("Os1");
@@ -3863,7 +3865,7 @@ TweakError allow_nonlinear_servants_of_the_towers() {
 
 
         // After west servant returned.
-        if(event_list.Events_By_Name.count("Os1_Message") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        if(!event_list.Events_By_Name.contains("Os1_Message")) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
         std::shared_ptr<Event> os1_message = event_list.Events_By_Name.at("Os1_Message");
         os1 = os1_message->get_actor("Os1");
         camera = os1_message->get_actor("CAMERA");
@@ -3874,7 +3876,7 @@ TweakError allow_nonlinear_servants_of_the_towers() {
 
 
         // North servant returned.
-        if(event_list.Events_By_Name.count("Os2_Finish") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        if(!event_list.Events_By_Name.contains("Os2_Finish")) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
         std::shared_ptr<Event> os2_finish = event_list.Events_By_Name.at("Os2_Finish");
 
         // Remove the east and west servants from being a part of this event.
@@ -3920,7 +3922,7 @@ TweakError allow_nonlinear_servants_of_the_towers() {
         
         
         // Tablet event where you play the Command Melody and get an item.
-        if(event_list.Events_By_Name.count("hsehi1_tact") == 0) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
+        if(!event_list.Events_By_Name.contains("hsehi1_tact")) LOG_ERR_AND_RETURN_BOOL(TweakError::MISSING_EVENT);
         std::shared_ptr<Event> hsehi1_tact = event_list.Events_By_Name.at("hsehi1_tact");
 
         camera = hsehi1_tact->get_actor("CAMERA");
@@ -4254,7 +4256,7 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     });
 
     // Update hurricane spin item func, not done through asm because of relocation things
-    if(custom_symbols.count("hurricane_spin_item_func") == 0) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
+    if(!custom_symbols.contains("hurricane_spin_item_func")) LOG_ERR_AND_RETURN(TweakError::MISSING_SYMBOL);
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
@@ -4263,7 +4265,6 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
     });
 
     if (settings.instant_text_boxes) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/b_button_skips_text_diff.yaml"));
         TWEAK_ERR_CHECK(make_all_text_instant());
     }
     if (settings.quiet_swift_sail) {

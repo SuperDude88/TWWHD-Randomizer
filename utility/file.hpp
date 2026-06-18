@@ -90,7 +90,7 @@ namespace Utility {
     inline bool create_directories(const fspath& fsPath) {
         #ifdef DEVKITPRO
             std::string temp = fsPath.string();
-            if(temp.back() == '/') temp.pop_back();
+            if(temp.ends_with('/')) temp.pop_back();
             for(size_t i = 0; i < temp.size(); i++) {
                 if(temp[i] == '/') {
                     const std::string& sub = temp.substr(0, i);

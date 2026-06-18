@@ -32,7 +32,7 @@ protected:
     
     void print() const {
         std::stringstream message;
-        message << stem << (stem.back() == ' ' ? "" : " ") << std::chrono::duration_cast<Units>(duration);
+        message << stem << (stem.ends_with(' ') ? "" : " ") << std::chrono::duration_cast<Units>(duration);
 
         Utility::platformLog(message.str());
         LOG_TO_DEBUG(message.str());

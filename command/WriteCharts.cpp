@@ -63,7 +63,7 @@ bool writeCharts(const WorldPool& worlds) {
                 CAST_ENTRY_TO_FILETYPE(dzr, FileTypes::DZXFile, data)
 
                 for(ChunkEntry* scob : dzr.entries_by_type("SCOB")) {
-                    if(salvage_object_names.count(scob->data.substr(0, 8)) > 0 && ((scob->data[8] & 0xF0) >> 4) == 0) {
+                    if(salvage_object_names.contains(scob->data.substr(0, 8)) && ((scob->data[8] & 0xF0) >> 4) == 0) {
                         uint32_t& params = *reinterpret_cast<uint32_t*>(&scob->data[8]);
                         Utility::Endian::toPlatform_inplace(eType::Big, params);
                         const uint32_t mask = 0x0FF00000;

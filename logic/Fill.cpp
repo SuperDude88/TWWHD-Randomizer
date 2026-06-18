@@ -51,7 +51,7 @@ static FillError fastFill(ItemPool& items, LocationPool& locations)
     return FillError::NONE;
 }
 
-static FillError fillTheRest(WorldPool& worlds, ItemPool& items, LocationPool& locations)
+static FillError fillTheRest(ItemPool& items, LocationPool& locations)
 {
     // First place the non consumable junk already in the pool
     // Filter out the consumable junk to place afterwards
@@ -761,7 +761,7 @@ FillError fill(WorldPool& worlds)
     FILL_ERROR_CHECK(assumedFill(worlds, remainingProgressionItems, itemPool, allLocations));
 
     // Fill the remaining locations with junk
-    FILL_ERROR_CHECK(fillTheRest(worlds, itemPool, allLocations));
+    FILL_ERROR_CHECK(fillTheRest(itemPool, allLocations));
 
     if (!gameBeatable(worlds))
     {

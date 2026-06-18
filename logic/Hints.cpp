@@ -760,7 +760,7 @@ static HintError assignHoHoHints(World& world, WorldPool& worlds, std::list<Hint
     return HintError::NONE;
 }
 
-static HintError assignKreebHints(World& world, WorldPool& worlds)
+static HintError assignKreebHints(World& world)
 {
     // Get all bow locations
     // Shuffle locations to prevent any possible meta-gaming where the last bow might be
@@ -777,7 +777,7 @@ static HintError assignKreebHints(World& world, WorldPool& worlds)
     return HintError::NONE;
 }
 
-static HintError assignKorlSwordHints(World& world, WorldPool& worlds)
+static HintError assignKorlSwordHints(World& world)
 {
     // Get all sword locations
     // Shuffle locations to prevent any possible meta-gaming where the swords bow might be
@@ -835,13 +835,13 @@ HintError generateHints(WorldPool& worlds)
         // Assign Kreeb Bow Hints if the setting is enabled
         if (settings.kreeb_bow_hints)
         {
-            assignKreebHints(world, worlds);
+            assignKreebHints(world);
         }
 
         // Assign Korl Sword Hints if the setting is enabled
         if (settings.korl_sword_hints)
         {
-            assignKorlSwordHints(world, worlds);
+            assignKorlSwordHints(world);
         }
 
         // Distribute hints evenly among the possible hint placement options

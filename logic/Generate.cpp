@@ -161,7 +161,7 @@ int generateWorlds(WorldPool& worlds, std::vector<Settings>& settingsVector)
       for (auto& world : worlds)
       {
           world.flattenLogicRequirements();
-          WORLD_LOADING_ERROR_CHECK(world.setDungeonLocations(worlds));
+          WORLD_LOADING_ERROR_CHECK(world.setDungeonLocations());
           WORLD_LOADING_ERROR_CHECK(world.determineRequiredDungeons(worlds));
       }
 

@@ -100,10 +100,10 @@ TextReplacements generate_text_replacements(World& world)
 
   // If the last item in a list in spanish with an 'i' change the and conjunction to 'e' instead of 'y'
   const std::u16string auction100Spanish = auction60.getUTF16Name("Spanish", Type::PRETTY, Color::NONE);
-  const std::u16string spanishAuctionFlyerConjunction = auction100Spanish[0] == u'i' || auction100Spanish[0] == u'I' ? u"e " : u"y ";
+  const std::u16string spanishAuctionFlyerConjunction = auction100Spanish.starts_with(u'i') || auction100Spanish.starts_with(u'I') ? u"e " : u"y ";
 
   const std::u16string savageFloor50Spanish = savageFloor50.getUTF16Name("Spanish", Type::CRYPTIC, Color::NONE);
-  const std::u16string spanishSavageConjunction = savageFloor50Spanish[0] == u'i' || savageFloor50Spanish[0] == u'I' ? u" e " : u" y ";
+  const std::u16string spanishSavageConjunction = savageFloor50Spanish.starts_with(u'i') || savageFloor50Spanish.starts_with(u'I') ? u" e " : u" y ";
 
   // French conjugation (of "aider") for Big Octo Fairy Hint
   const std::u16string bigOctoFrenchConjugation = IS_SINGULAR(octoFairyItem, "French") ? u"t'aidera" : u"t'aideront";

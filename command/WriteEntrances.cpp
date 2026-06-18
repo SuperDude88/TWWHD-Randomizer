@@ -240,7 +240,7 @@ bool writeEntrances(WorldPool& worlds) {
         list.addAction([filepath, replacementRoom, replacementSpawn, replacementStage](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(event_list, FileTypes::EventList, data)
 
-            if(event_list.Events_By_Name.count("WARP_WIND_AFTER") == 0) {
+            if(!event_list.Events_By_Name.contains("WARP_WIND_AFTER")) {
                 ErrorLog::getInstance().log("No Event WARP_WIND_AFTER in " + filepath.string());
                 return false;
             }

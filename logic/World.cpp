@@ -368,7 +368,7 @@ World::WorldLoadingError World::determineProgressionLocations()
 
 // Properly set the dungeons for boss room locations
 // in case boss/miniboss entrances are randomized
-World::WorldLoadingError World::setDungeonLocations(WorldPool& worlds)
+World::WorldLoadingError World::setDungeonLocations()
 {
     // Keep track of any unassigned boss locations
     LocationPool unassignedBossLocations = {};

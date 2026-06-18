@@ -267,7 +267,7 @@ ModificationError ModifySCOB::writeLocation(const Item& item) {
             stream.seekg(offset, std::ios::beg);
             SCOB scob = WWHDStructs::readSCOB(stream);
 
-            if (item_id_mask_by_actor_name.count(scob.actr.name) == 0) {
+            if (!item_id_mask_by_actor_name.contains(scob.actr.name)) {
                 LOG_ERR_AND_RETURN_BOOL(ModificationError::UNKNOWN_ACTOR_NAME)
             }
             LOG_AND_RETURN_BOOL_IF_ERR(setParam(scob.actr, item_id_mask_by_actor_name.at(scob.actr.name), static_cast<uint8_t>(item.getGameItemId())))
@@ -381,7 +381,7 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
         uint32_t address;
         const uint8_t itemID = static_cast<uint8_t>(item.getGameItemId());
 
-        if (symbol[0] == '@') { // support hardcoding addresses for checks like zunari (where a symbol and address are needed)
+        if (symbol.starts_with('@')) { // support hardcoding addresses for checks like zunari (where a symbol and address are needed)
             const std::string offsetStr = symbol.substr(1);
             address = std::strtoul(offsetStr.c_str(), nullptr, 0);
             if (address == 0 || address == std::numeric_limits<decltype(address)>::max())
@@ -390,7 +390,7 @@ ModificationError ModifySymbol::writeLocation(const Item& item) {
             }
         }
         else {
-            if (custom_symbols.count(symbol) == 0) LOG_ERR_AND_RETURN(ModificationError::INVALID_SYMBOL);
+            if (!custom_symbols.contains(symbol)) LOG_ERR_AND_RETURN(ModificationError::INVALID_SYMBOL);
             address = custom_symbols.at(symbol);
         }
 
