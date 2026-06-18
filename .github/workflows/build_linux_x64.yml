@@ -81,7 +81,10 @@ jobs:
         run: |
           export EXTRA_QT_MODULES="waylandcompositor;"
           export EXTRA_PLATFORM_PLUGINS="libqwayland.so;"
-          ./linuxdeploy-x86_64.AppImage --appdir AppDir -e build/wwhd_rando -d ./gui/desktop/com.github.superdude88.twwhd-randomizer.desktop -i ./gui/desktop/icon.svg --plugin qt --output appimage
+          ./linuxdeploy-x86_64.AppImage --appdir AppDir -e build/wwhd_rando -d ./gui/desktop/com.github.superdude88.twwhd-randomizer.desktop -i ./gui/desktop/icon.svg --plugin qt
+          mkdir -p ./AppDir/usr/share/metainfo
+          cp ./gui/desktop/com.github.superdude88.twwhd-randomizer.metainfo.xml ./AppDir/usr/share/metainfo/
+          ./linuxdeploy-x86_64.AppImage --appdir AppDir --output appimage
 
       - name: Get Version
         id: get-version

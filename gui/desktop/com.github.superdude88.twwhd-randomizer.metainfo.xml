@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>com.github.superdude88.twwhd-randomizer</id>
+	<metadata_license>MIT</metadata_license>
+	<project_license>MIT</project_license>
+	<name>Wind Waker HD Randomizer</name>
+	<summary>Randomizer for The Legend of Zelda: The Wind Waker HD</summary>
+	<description>
+		<p>A Randomizer for The Legend of Zelda: The Wind Waker HD.
+It shuffles all the items, makes the world open from the start, removes most cutscenes, and adds other tweaks to speed up mundane tasks.</p>
+	</description>
+	<categories>
+		<category>Utility</category>
+		<category>Qt</category>
+		<!-- <category>GameTool</category> -->
+	</categories>
+	<keywords>
+		<keyword>randomizer</keyword>
+		<keyword>wind waker</keyword>
+		<keyword>wind waker HD</keyword>
+		<keyword>tracker</keyword>
+		<keyword>mod</keyword>
+	</keywords>
+	<url type="homepage">https://github.com/SuperDude88/TWWHD-Randomizer</url>
+	<url type="bugtracker">https://github.com/SuperDude88/TWWHD-Randomizer/issues</url>
+	<launchable type="desktop-id">com.github.superdude88.twwhd-randomizer.desktop</launchable>
+	<provides>
+		<binary>wwhd_rando</binary>
+		<id>com.github.superdude88.twwhd-randomizer.desktop</id>
+	</provides>
+	<recommends>
+		<control>pointing</control>
+	</recommends>
+</component>
