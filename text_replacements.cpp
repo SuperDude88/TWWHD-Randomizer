@@ -202,8 +202,8 @@ TextReplacements generate_text_replacements(World& world)
      // Required bosses text
      {"00851",
      {{"English", u"You sense that this door will not open\nuntil the gigantic monsters lurking\nthroughout the world have been defeated...\0"s},
-      {"Spanish", u"You sense that this door will not open\nuntil the gigantic monsters lurking\nthroughout the world have been defeated...\0"s},
-      {"French",  u"You sense that this door will not open\nuntil the gigantic monsters lurking\nthroughout the world have been defeated...\0"s}}},
+      {"Spanish", u"Parece que no abrirá hasta que\ntodos los monstruos gigantes del mundo\nhayan sido abatidos...\0"s},
+      {"French",  u"On dirait que la porte ne s'ouvrira pas\ntant que vous n'aurez pas vaincu\nles monstres gigantesques toujours en vie.\0"s}}},
 
      // Swordless Text
      {"01128",
@@ -222,7 +222,7 @@ TextReplacements generate_text_replacements(World& world)
      {"01509",
      {{"English", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", this area is unrequired and\nthere are no valuable items in here. You can\nskip it in full confidence." + TEXT_END},
       {"Spanish", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", this area is unrequired and\nthere are no valuable items in here. You can\nskip it in full confidence." + TEXT_END}, //TODO:
-      {"French",  CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", this area is unrequired and\nthere are no valuable items in here. You can\nskip it in full confidence." + TEXT_END}}},
+      {"French",  CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", cet endroit n'est pas requis et\nil n'y a rien d'important ici. Tu peux\npartir en toute tranquillité." + TEXT_END}}},
 
      // Savage Labyrinth Hints
      {"00837",

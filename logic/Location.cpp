@@ -206,7 +206,6 @@ std::u16string Location::generateImportanceText(const std::string& language) con
     }
     else if (language == "French")
     {
-        // TODO: check this (borrowed from SSHDR fr_FR for now)
         required = u"nécessaire";
         possiblyRequired = u"potentiellement utile";
         notRequired = u"pas nécessaire";
