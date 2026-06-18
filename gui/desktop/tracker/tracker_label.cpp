@@ -325,7 +325,7 @@ QString TrackerLabel::getTooltipText()
     }
     else if (type == TrackerLabelType::Location)
     {
-        if (mainWindow->entrancePathsByLocation.contains(location) && currentArea != "")
+        if (mainWindow->entrancePathsByLocation.contains(location) && !currentArea.empty())
         {
             // By default, show whatever the shortest logical path to
             // the location is
@@ -628,7 +628,7 @@ QString TrackerLabel::getUsefulInformationText()
     };
 
     QString returnStr = "";
-    if (type == TrackerLabelType::Location && location && location->trackerNote != "")
+    if (type == TrackerLabelType::Location && location && !location->trackerNote.empty())
     {
         returnStr += formatData(location->trackerNote, location->trackerNoteAreas);
     }

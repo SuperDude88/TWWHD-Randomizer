@@ -151,8 +151,8 @@ bool writeEntrances(WorldPool& worlds) {
                     }
                 }
 
-                std::string dungeonName = replacementForThis->getParentArea()->dungeon;
-                if (dungeonName != "") {
+                const std::string& dungeonName = replacementForThis->getParentArea()->dungeon;
+                if (!dungeonName.empty()) {
                     auto dungeon = entrance->getWorld()->getDungeon(dungeonName);
                     replacementStage = dungeon.savewarpStage;
                     replacementRoom = dungeon.savewarpRoom;
@@ -201,8 +201,8 @@ bool writeEntrances(WorldPool& worlds) {
         if (!entrance->isDecoupled()) {
             // If this boss room is connected to a dungeon, then send the player
             // back out the exit of the dungeon
-            auto dungeonName = entrance->getReplaces()->getReverse()->getConnectedArea()->dungeon;
-            if (dungeonName != "") {
+            const std::string& dungeonName = entrance->getReplaces()->getReverse()->getConnectedArea()->dungeon;
+            if (!dungeonName.empty()) {
                 auto dungeonExit = entrance->getWorld()->getDungeon(dungeonName).startingEntrance->getReverse();
                 // If dungeon entrances are not mixed, and misc entrances aren't shuffled
                 // then send players back to the appropriate natural warp wind exit

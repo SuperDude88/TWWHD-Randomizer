@@ -1367,12 +1367,12 @@ TweakError rotate_ho_ho_to_face_hints(World& world) {
                 }
             }
         
-            if (island != "") {
+            if (!island.empty()) {
                 break;
             }
         }
 
-        if (island != "") {
+        if (!island.empty()) {
             LOG_TO_DEBUG("Rotating " + hohoLocation->getName() + " to face " + island);
             auto islandNumToFace = islandNameToRoomNum(island);
             auto hohoIslandNum = islandNameToRoomNum(hohoLocation->hintRegions.front());

@@ -16,7 +16,7 @@ using eType = Utility::Endian::Type;
 
 ModelError CustomModel::loadFromFolder() {
 
-    if (modelName == "") {
+    if (modelName.empty()) {
         modelName = "Link";
     }
 

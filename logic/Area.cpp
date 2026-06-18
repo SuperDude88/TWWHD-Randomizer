@@ -34,13 +34,13 @@ std::list<std::string> Area::findIslands()
         }
 
         // Block searching through areas that have general hint regions
-        if (area->hintRegion != "")
+        if (!area->hintRegion.empty())
         {
             continue;
         }
 
         // If we found an island, add it to the list
-        if (area->island != "")
+        if (!area->island.empty())
         {
             if (!elementInPool(area->island, islands))
             {
@@ -77,12 +77,12 @@ std::list<std::string> Area::findDungeons()
 
         // If we found an island or general hint region, then this
         // area isn't part of a dungeon
-        if (area->hintRegion != "" || area->island != "")
+        if (!area->hintRegion.empty() || !area->island.empty())
         {
             return {};
         }
 
-        if (area->dungeon != "")
+        if (!area->dungeon.empty())
         {
             if (!elementInPool(area->dungeon, dungeons))
             {
@@ -118,7 +118,7 @@ std::list<std::string> Area::findHintRegions(bool onlyNonIslands /* = false */)
 
         // If we found an island or general hint region, then this
         // area isn't part of a dungeon
-        if (area->hintRegion != "")
+        if (!area->hintRegion.empty())
         {
             if (!elementInPool(area->hintRegion, regions))
             {
@@ -126,7 +126,7 @@ std::list<std::string> Area::findHintRegions(bool onlyNonIslands /* = false */)
             }
         }
 
-        if (area->island != "" && !onlyNonIslands)
+        if (!area->island.empty() && !onlyNonIslands)
         {
             if (!elementInPool(area->island, regions))
             {
@@ -134,7 +134,7 @@ std::list<std::string> Area::findHintRegions(bool onlyNonIslands /* = false */)
             }
         }
 
-        if (area->dungeon != "")
+        if (!area->dungeon.empty())
         {
             if (!elementInPool(area->dungeon, regions))
             {
@@ -144,7 +144,7 @@ std::list<std::string> Area::findHintRegions(bool onlyNonIslands /* = false */)
 
         // If this area doesn't have any possible hint regions, add its entrances
         // to the queue as long as they haven't been checked yet
-        if (area->dungeon == "" && area->hintRegion == "" && area->island == "")
+        if (area->dungeon.empty() && area->hintRegion.empty() && area->island.empty())
         {
             for (const Entrance* entrance : area->entrances)
             {

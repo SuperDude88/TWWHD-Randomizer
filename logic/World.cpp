@@ -946,7 +946,7 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
             auto location = locationTable[locationName].get();
             location->accessPoints.push_back(&area->locations.back());
             // If this area is part of a dungeon, then add any locations to that dungeon
-            if (area->dungeon != "")
+            if (!area->dungeon.empty())
             {
                 dungeons[area->dungeon].locations.push_back(location);
                 LOG_TO_DEBUG("\t\tAdding location to dungeon " + area->dungeon);
@@ -954,11 +954,11 @@ World::WorldLoadingError World::loadArea(const YAML::Node& areaObject)
                 // dungeon, island, or general hint region
                 location->hintRegions = {area->dungeon};
             }
-            else if (area->island != "")
+            else if (!area->island.empty())
             {
                 location->hintRegions = {area->island};
             }
-            else if (area->hintRegion != "")
+            else if (!area->hintRegion.empty())
             {
                 location->hintRegions = {area->hintRegion};
             }
@@ -1281,9 +1281,9 @@ int World::loadWorld(const fspath& worldFilePath, const fspath& macrosFilePath, 
             exit.setOriginalName();
 
             // Set each dungeon's associated starting entrance
-            auto connectedDungeon = exit.getConnectedArea()->dungeon;
-            auto connectedArea = exit.getConnectedArea();
-            if (area->dungeon == "" && connectedDungeon != "")
+            const auto& connectedDungeon = exit.getConnectedArea()->dungeon;
+            const auto& connectedArea = exit.getConnectedArea();
+            if (area->dungeon.empty() && !connectedDungeon.empty())
             {
                 auto& dungeon = dungeons[connectedDungeon];
                 if (dungeon.startingArea == connectedArea)

@@ -955,7 +955,7 @@ void MainWindow::update_tracker()
     }
 
     // If the current tracker area is empty, then show all entrances
-    if (currentTrackerArea == "")
+    if (currentTrackerArea.empty())
     {
         auto allShuffleableEntrances = trackerWorld.getShuffledEntrances(EntranceType::ALL, false);
         shuffledEntrances = {{}};
@@ -1163,7 +1163,7 @@ void MainWindow::switch_to_area_tracker()
 void MainWindow::switch_to_entrances_tracker()
 {
     ui->tracker_locations_widget->setCurrentIndex(LOCATION_TRACKER_SPECIFIC_AREA_ENTRANCES);
-    ui->entrance_list_locations_button->setVisible(currentTrackerArea != "");
+    ui->entrance_list_locations_button->setVisible(!currentTrackerArea.empty());
     ui->source_entrance_filter_lineedit->setFocus();
 }
 
@@ -1768,11 +1768,11 @@ void MainWindow::set_areas_locations()
                 !location->categories.contains(LocationCategory::HoHoHint) &&
                 !location->categories.contains(LocationCategory::BlueChuChu))
             {
-                if (area->dungeon != "")
+                if (!area->dungeon.empty())
                 {
                     areaLocations[area->dungeon].insert(location);
                 }
-                else if (area->hintRegion != "")
+                else if (!area->hintRegion.empty())
                 {
                     areaLocations[area->hintRegion].insert(location);
                 }

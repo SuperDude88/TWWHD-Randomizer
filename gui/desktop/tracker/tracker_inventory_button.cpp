@@ -20,7 +20,7 @@ TrackerInventoryButton::TrackerInventoryButton(const std::vector<TrackerInventor
     for (size_t i = itemStates.size(); i > 0; i--)
     {
         auto& itemState = itemStates[i - 1];
-        if (itemState.trackerLabelStr == "")
+        if (itemState.trackerLabelStr.empty())
         {
             if (itemState.gameItem == GameItem::NOTHING)
             {

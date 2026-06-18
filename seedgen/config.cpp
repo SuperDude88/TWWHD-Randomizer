@@ -960,7 +960,7 @@ PermalinkError Config::loadPermalink(std::string b64permalink) {
 
     std::string permalink = b64_decode(b64permalink);
     // Empty string gets returned if there was an error
-    if (permalink == "") {
+    if (permalink.empty()) {
         LOG_ERR_AND_RETURN(PermalinkError::BAD_ENCODING);
     }
 

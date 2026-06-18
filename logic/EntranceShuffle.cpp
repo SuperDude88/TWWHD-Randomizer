@@ -145,7 +145,7 @@ EntranceShuffleError setAllEntrancesData(World& world)
         forwardEntrance->setEntranceType(type);
         forwardEntrance->setOriginalEntranceType(type);
         forwardEntrance->setAsPrimary();
-        if (returnEntry.parentArea != "")
+        if (!returnEntry.parentArea.empty())
         {
             auto returnEntrance = world.getEntrance(returnEntry.parentArea, returnEntry.connectedArea);
             if (returnEntrance == nullptr)

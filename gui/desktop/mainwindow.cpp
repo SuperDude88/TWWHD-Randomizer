@@ -178,7 +178,7 @@ void MainWindow::show_error_dialog(const std::string& msg, const std::string& ti
 void MainWindow::show_warning_dialog(const std::string& msg, const std::string& title /*= ""*/)
 {
     QPointer<QMessageBox> messageBox = new QMessageBox();
-    messageBox->setWindowTitle(title == "" ? defaultWindowTitle.c_str() : title.c_str());
+    messageBox->setWindowTitle(title.empty() ? defaultWindowTitle.c_str() : title.c_str());
     messageBox->setText(msg.c_str());
     messageBox->setIcon(QMessageBox::Warning);
     messageBox->exec();
@@ -187,7 +187,7 @@ void MainWindow::show_warning_dialog(const std::string& msg, const std::string& 
 void MainWindow::show_info_dialog(const std::string& msg, const std::string& title /*= ""*/)
 {
     QPointer<QMessageBox> messageBox = new QMessageBox();
-    messageBox->setWindowTitle(title == "" ? defaultWindowTitle.c_str() : title.c_str());
+    messageBox->setWindowTitle(title.empty() ? defaultWindowTitle.c_str() : title.c_str());
     messageBox->setText(msg.c_str());
     messageBox->setIcon(QMessageBox::NoIcon);
     messageBox->exec();
@@ -242,7 +242,7 @@ void MainWindow::update_mixed_pools_combobox_option(const QString& pool /*= ""*/
     for (size_t i = 0; i < poolCheckBoxes.size() - 1; i++)
     {
         auto& poolOption = poolCheckBoxes[i];
-        if (pool != "" && poolOption->text() == pool)
+        if (!pool.isEmpty() && poolOption->text() == pool)
         {
             poolOption->setCheckState(poolOption->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked);
         }
@@ -281,7 +281,7 @@ void MainWindow::update_mixed_pools_combobox_option(const QString& pool /*= ""*/
     }
 
     // Only update the config if the user manually selected an option
-    if (pool != "")
+    if (!pool.isEmpty())
     {
         UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_dungeons);
         UPDATE_CONFIG_STATE_MIXED_POOLS(config, mix_minibosses);
@@ -1169,7 +1169,7 @@ void MainWindow::on_ui_display_currentTextChanged(const QString &arg1)
 
 void MainWindow::update_option_description_text(const std::string& description /*= ""*/)
 {
-    if (description == "")
+    if (description.empty())
     {
         ui->option_description->setText("(Hover over an option to see a description of what it does.)");
         ui->option_description->setStyleSheet("color: grey;");
