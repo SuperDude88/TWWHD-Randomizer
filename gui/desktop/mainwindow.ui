@@ -3367,13 +3367,13 @@ color: lightgray</string>
         </property>
         <property name="minimumSize">
          <size>
-          <width>135</width>
+          <width>165</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>135</width>
+          <width>165</width>
           <height>16777215</height>
          </size>
         </property>
