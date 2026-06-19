@@ -16,3 +16,6 @@ jobs:
 
   build-mac-arm:
     uses: ./.github/workflows/build_mac_arm.yml
+
+  build-linux-x64:
+    uses: ./.github/workflows/build_linux_x64.yml

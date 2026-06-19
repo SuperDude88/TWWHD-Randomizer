@@ -1,0 +1,100 @@
+name: Build - Linux (x64)
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build Type'
+        default: "Debug"
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version'
+        default: ''
+        required: false
+        type: string
+      build_type:
+        description: 'Build Type'
+        default: "Debug"
+        required: false
+        type: string
+    secrets:
+      SEED_KEY:
+        description: 'Key used to complicate the seed string in release builds'
+        required: false
+
+env:
+  QT_VERSION: 6.10.1
+  EXTRA_CMAKE_FLAGS: ""
+
+jobs:
+  build-desktop-application-mac-x64:
+    name: Build Desktop Application Linux (x64)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '${{ env.QT_VERSION }}'
+          host: 'linux'
+          target: 'desktop'
+          arch: 'linux_gcc_64'
+          cache: true
+
+      - name: Set Debug Flags
+        if: inputs.build_type == 'Debug'
+        run: echo "EXTRA_CMAKE_FLAGS=-DENABLE_DEBUG=True ${{ env.EXTRA_CMAKE_FLAGS }}" >> $GITHUB_ENV
+
+      - name: Set Release Flags
+        if: inputs.build_type == 'Release' && inputs.version != ''
+        run: echo "EXTRA_CMAKE_FLAGS=-DRELEASE_TAG=${{ inputs.version }} ${{ env.EXTRA_CMAKE_FLAGS }}" >> $GITHUB_ENV
+
+      - name: Configure CMake
+        working-directory: ${{ github.workspace }}
+        env:
+          SEED_KEY: ${{ secrets.SEED_KEY }}
+        run: cmake -B build -DQT_GUI=True -DEMBED_DATA=True "${{ env.EXTRA_CMAKE_FLAGS }}"
+
+      - name: Build
+        working-directory: ${{ github.workspace }}
+        run: cmake --build build --config ${{ inputs.build_type }}
+
+      - name: Install linuxdeploy
+        working-directory: ${{ github.workspace }}
+        run: |
+          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy*.AppImage
+
+      - name: Create AppImage
+        working-directory: ${{ github.workspace }}
+        run: |
+          export EXTRA_QT_MODULES="waylandcompositor;"
+          export EXTRA_PLATFORM_PLUGINS="libqwayland.so;"
+          ./linuxdeploy-x86_64.AppImage --appdir AppDir -e build/wwhd_rando -d ./gui/desktop/com.github.superdude88.twwhd-randomizer.desktop -i ./gui/desktop/icon.svg --plugin qt
+          mkdir -p ./AppDir/usr/share/metainfo
+          cp ./gui/desktop/com.github.superdude88.twwhd-randomizer.metainfo.xml ./AppDir/usr/share/metainfo/
+          ./linuxdeploy-x86_64.AppImage --appdir AppDir --output appimage
+
+      - name: Get Version
+        id: get-version
+        shell: pwsh
+        working-directory: ${{ github.workspace }}/build
+        run: |
+          echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.\-a-z]*"') -Replace '.*("[0-9\.\-a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
+
+      - name: Save Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          path: ${{github.workspace}}/The_Wind_Waker_HD_Randomizer-x86_64.AppImage
+          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_linux_x64
