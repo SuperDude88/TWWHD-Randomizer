@@ -380,11 +380,11 @@ World::WorldLoadingError World::setDungeonLocations()
             auto loc = locAcc.location;
             if (loc->hintRegions.empty())
             {
-                auto connectedDungeons = area->findDungeons();
-                auto hintRegions = area->findHintRegions();
+                const auto& connectedDungeons = area->findDungeons();
+                const auto& hintRegions = area->findHintRegions();
                 if (!connectedDungeons.empty() && connectedDungeons.size() == hintRegions.size())
                 {
-                    auto& dungeonName = connectedDungeons.front();
+                    const auto& dungeonName = connectedDungeons.front();
                     auto& dungeon = getDungeon(dungeonName);
 
                     LOG_TO_DEBUG(loc->getName() + " has been assigned to dungeon " + dungeonName);

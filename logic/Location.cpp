@@ -160,15 +160,9 @@ bool Location::currentItemCanBeBarren() const
 
     // Get all the progression chain locations for this location's item
     auto chainLocations = currentItem.getChainLocations();
-    for (auto& loc : currentItem.getChainLocations())
-    {
-        // If any of the item's chain locations can be obtained with the items logically necessary to get the item at this location,
-        // then remove those locations from the list of chain locations, as this item will not help to obtain that specific chain location
-        if (!loc->progression || evaluateRequirement(world, loc->computedRequirement, &logicallyRequiredItems, &ownedEvents))
-        {
-            chainLocations.erase(loc);
-        }
-    }
+    // If any of the item's chain locations can be obtained with the items logically necessary to get the item at this location,
+    // then remove those locations from the list of chain locations, as this item will not help to obtain that specific chain location
+    std::erase_if(chainLocations, [&](const auto& loc) { return !loc->progression || evaluateRequirement(world, loc->computedRequirement, &logicallyRequiredItems, &ownedEvents); });
 
     // If any of the remaining chain locations have an item which can't be barren, or the location is a required race mode location, 
     // then this location's item isn't barren.
@@ -192,7 +186,17 @@ bool Location::isBarrenAsChainLocation() const
 
 std::u16string Location::generateImportanceText(const std::string& language) const
 {
+    // Don't generate hint importance text if hint importance is off
+    if(!world->getSettings().hint_importance) {
+        return u"";
+    }
+
+    // Also don't generate hint importance text if this item was always junk or has no progression chain locations
     const Item& item = currentItem;
+    if (item.wasAlwaysJunkItem() || std::ranges::none_of(item.getChainLocations(), [](const auto& loc) { return loc->progression; }))
+    {
+        return u"";
+    }
 
     std::u16string required = u"required";
     std::u16string possiblyRequired = u"possibly required";
@@ -209,23 +213,6 @@ std::u16string Location::generateImportanceText(const std::string& language) con
         required = u"nécessaire";
         possiblyRequired = u"potentiellement utile";
         notRequired = u"pas nécessaire";
-    }
-
-    // Get all the progression chain locations for this location's item
-    auto chainLocations = item.getChainLocations();
-    for (auto loc : item.getChainLocations())
-    {
-        if (!loc->progression)
-        {
-            chainLocations.erase(loc);
-        }
-    }
-
-    // If this item was always junk, or has no progression chain locations, or if hint importance is off
-    // then we won't generate any hint importance text for it
-    if (item.wasAlwaysJunkItem() || chainLocations.empty() || !world->getSettings().hint_importance)
-    {
-        return u"";
     }
 
     // If this item is on the path to Ganondorf, then it is required

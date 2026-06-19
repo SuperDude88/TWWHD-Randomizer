@@ -412,7 +412,7 @@ EntranceType entranceTypeToReverse(const EntranceType& type, bool miscReverse /*
         return EntranceType::MISC;
     }
 
-    std::unordered_map<EntranceType, EntranceType> typeReverseMap = {
+    static const std::unordered_map<EntranceType, EntranceType> typeReverseMap = {
         {EntranceType::NONE, EntranceType::NONE},
         {EntranceType::DUNGEON, EntranceType::DUNGEON_REVERSE},
         {EntranceType::DUNGEON_REVERSE, EntranceType::DUNGEON},
