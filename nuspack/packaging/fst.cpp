@@ -52,7 +52,7 @@ namespace FileTypes {
         const std::streamoff& strStart = out.tellp();
         for(const auto& [offset, string] : entries.strings.getStrings()) {
             Utility::seek(out, strStart + offset, std::ios::beg);
-            out.write(&string[0], string.size());
+            out.write(string.data(), string.size());
         }
 
         return FSTError::NONE;

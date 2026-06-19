@@ -64,7 +64,7 @@ std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
                 }
 
                 const std::string& strm = output.str();
-                outFile.write(&strm[0], strm.size());
+                outFile.write(strm.data(), strm.size());
                 output.str(std::string()); // reset stringstream
             }
             
@@ -82,7 +82,7 @@ std::variant<std::stringstream, std::ifstream> Content::PackDecrypted()
 
     if(outFile.is_open()) {
         const std::string& remaining = output.str();
-        outFile.write(&remaining[0], remaining.size()); // write whatever is left at the end
+        outFile.write(remaining.data(), remaining.size()); // write whatever is left at the end
 
         outFile.close();
         return std::ifstream(tmpPath, std::ios::binary);

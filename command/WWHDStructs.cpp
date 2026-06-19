@@ -10,7 +10,7 @@ namespace WWHDStructs {
         ACTR actr{};
 
         actr.name.resize(8);
-        in.read(&actr.name[0], 8);
+        in.read(actr.name.data(), actr.name.size());
         in.read(reinterpret_cast<char*>(&actr.params), sizeof(actr.params));
         in.read(reinterpret_cast<char*>(&actr.x_pos), sizeof(actr.x_pos));
         in.read(reinterpret_cast<char*>(&actr.y_pos), sizeof(actr.y_pos));

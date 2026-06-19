@@ -532,40 +532,39 @@ void Requirement::sortArgs()
 }
 
 // Returns a set of all items that are listed in this requirement
-std::unordered_set<GameItem> Requirement::getItems(World* world)
+std::unordered_set<GameItem> Requirement::getItems(World* world) const
 {
-    int expectedHearts;
-    Item item;
     std::unordered_set<GameItem> items = {};
-    std::unordered_set<GameItem> argItems = {};
+
     switch(type)
     {
     case RequirementType::OR:
     case RequirementType::AND:
         for (auto& arg : args)
         {
-            argItems = std::get<Requirement>(arg).getItems(world);
+            const auto& argItems = std::get<Requirement>(arg).getItems(world);
             items.insert(argItems.begin(), argItems.end());
         }
         break;
     case RequirementType::HAS_ITEM:
-        item = std::get<Item>(args[0]);
-        items.insert(item.getGameItemId());
+        items.insert(std::get<Item>(args[0]).getGameItemId());
         break;
     case RequirementType::COUNT:
-        item = std::get<Item>(args[1]);
-        items.insert(item.getGameItemId());
+        items.insert(std::get<Item>(args[1]).getGameItemId());
         break;
     case RequirementType::HEALTH:
         items.insert({GameItem::HeartContainer, GameItem::PieceOfHeart});
         break;
     case RequirementType::MACRO:
-        argItems = world->macros[std::get<MacroIndex>(args[0])].getItems(world);
+    {
+        const auto& argItems = world->macros[std::get<MacroIndex>(args[0])].getItems(world);
         items.insert(argItems.begin(), argItems.end());
         break;
-    default:
-        return items;
     }
+    default:
+        break;
+    }
+
     return items;
 }
 

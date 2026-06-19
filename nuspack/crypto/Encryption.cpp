@@ -11,7 +11,7 @@ using eType = Utility::Endian::Type;
 void Encryption::EncryptFileWithPadding(std::istream& input, const uint32_t& contentID, std::ostream& output, const uint32_t& blockSize) {
     const uint16_t write = Utility::Endian::toPlatform(eType::Big, static_cast<const uint16_t>(contentID));
     IV iv{0};
-    std::memcpy(&iv[0], &write, sizeof(uint16_t));
+    std::memcpy(iv.data(), &write, sizeof(uint16_t));
 
     EncryptSingleFile(input, output, input.seekg(0, std::ios::end).tellg(), iv, blockSize);
 }
@@ -25,13 +25,13 @@ void Encryption::EncryptSingleFile(std::istream& input, std::ostream& output, co
     do
     {
         std::string blockBuffer(blockSize, '\0');
-        input.read(&blockBuffer[0], blockSize);
+        input.read(blockBuffer.data(), blockBuffer.size());
         blockBuffer = Encrypt(blockBuffer).str();
 
         std::copy(blockBuffer.end() - 16, blockBuffer.end(), iv.begin());
 
         cur_position += blockSize;
-        output.write(&blockBuffer[0], blockBuffer.size());
+        output.write(blockBuffer.data(), blockBuffer.size());
     } while (cur_position < targetSize && input/* .gcount() == blockSize */);
 }
 
@@ -42,7 +42,7 @@ void Encryption::EncryptFileHashed(std::istream& input, std::ostream& output, co
     std::string buffer(hashBlockSize, '\0');
     do
     {
-        input.read(&buffer[0], hashBlockSize);
+        input.read(buffer.data(), buffer.size());
 
         const std::stringstream& encrypted = EncryptChunkHashed(buffer, block, hashes, content);
         output << encrypted.rdbuf();
@@ -60,7 +60,7 @@ void Encryption::EncryptFileHashed(std::istream& input, std::ostream& output, co
 std::stringstream Encryption::EncryptChunkHashed(const std::string& buffer, const uint32_t &block, ContentHashes &hashes, const Content &content) {
     const uint16_t& write = Utility::Endian::toPlatform(eType::Big, static_cast<const uint16_t>(content.id));
     iv = IV{0};
-    std::memcpy(&iv[0], &write, sizeof(uint16_t));
+    std::memcpy(iv.data(), &write, sizeof(uint16_t));
 
     std::string decryptedHashes = hashes.GetHashForBlock(block);
 

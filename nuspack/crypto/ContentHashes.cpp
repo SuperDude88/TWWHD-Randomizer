@@ -54,10 +54,10 @@ void ContentHashes::CalculateH0Hashes(std::istream& file) {
     std::string buffer(bufferSize, '\0');
     while (file)
     {
-        file.read(&buffer[0], bufferSize);
+        file.read(buffer.data(), buffer.size());
 
         if(file.gcount() > 0) {
-            const std::string hash = sha1(&buffer[0], buffer.size());
+            const std::string hash = sha1(buffer.data(), buffer.size());
             std::copy(hash.begin(), hash.end(), h0Hashes[blockCount].begin());
 
             blockCount++;

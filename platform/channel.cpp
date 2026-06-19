@@ -301,7 +301,7 @@ static bool packFreeChannel(const fspath& baseDir) {
         ErrorLog::getInstance().log("Failed to open filler content " + (DataPath / "content" / "filler.txt").string());
     }
     const std::string str("This is filler data so things don't break!");
-    data.write(&str[0], str.size());
+    data.write(str.data(), str.size());
     data.close();
 
     if(!Utility::copy(baseDir / "meta", DataPath / "meta")) {
@@ -325,7 +325,7 @@ static bool packFreeChannel(const fspath& baseDir) {
     meta.Print(&printer);
     std::ofstream metaOut(DataPath / "meta" / "meta.xml", std::ios::binary);
     std::string metaStr(printer.CStr());
-    metaOut.write(&metaStr[0], metaStr.size());
+    metaOut.write(metaStr.data(), metaStr.size());
     metaOut.close();
     printer.ClearBuffer();
 
@@ -341,7 +341,7 @@ static bool packFreeChannel(const fspath& baseDir) {
     app.Print(&printer);
     std::ofstream appOut(DataPath / "code" / "app.xml", std::ios::binary);
     std::string appStr(printer.CStr());
-    appOut.write(&appStr[0], appStr.size());
+    appOut.write(appStr.data(), appStr.size());
     appOut.close();
     
     // get common key
