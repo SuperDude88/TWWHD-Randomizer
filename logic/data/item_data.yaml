@@ -463,13 +463,13 @@
     Spanish: "una |Botella Tingle|"
     French: "une |Bouteille de Tingle|"
   Cryptic Names:
-    English: "a |device that hasn't worked in 7 years|"
-    Spanish: "un |dispositivo que no ha funcionado por 7 años|"
-    French: "un |appareil qui ne fonctionne plus depuis 7 ans|"
+    English: "a |device that hasn't worked in 8 years|"
+    Spanish: "un |dispositivo que no ha funcionado por 8 años|"
+    French: "un |appareil qui ne fonctionne plus depuis 8 ans|"
   Gender:
     English: None
     Spanish: Female
-    French: Female #Female (bouteille), Male (appareil)
+    French: Female # Female (bouteille), Male (appareil)
   Plurality:
     English: Singular
     Spanish: Singular
@@ -2382,7 +2382,7 @@
     French: Male
   Plurality:
     English: Singular
-    Spanish: Plural #("las") Plural. ("un") Singular.
+    Spanish: Plural # ("las") Plural. ("un") Singular.
     French: Singular
   Game Item Id: 0x9C
 
@@ -2582,7 +2582,7 @@
     French: "une |amélioration pour votre bourse|"
   Gender:
     English: None
-    Spanish: Male #("un") Male. ("una"). Female
+    Spanish: Male # ("un") Male. ("una"). Female
     French: Female
   Plurality:
     English: Singular
@@ -2663,7 +2663,7 @@
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
-    French: Male #Male (carquois), Female (amélioration)
+    French: Male # Male (carquois), Female (amélioration)
   Plurality:
     English: Singular
     Spanish: Singular
