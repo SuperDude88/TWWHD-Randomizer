@@ -66,5 +66,4 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           path: ${{github.workspace}}/build/wwhd_rando.wuhb
-          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}.wuhb
           archive: false

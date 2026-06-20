@@ -73,6 +73,13 @@ jobs:
         working-directory: ${{ github.workspace }}/build
         run: ../../Qt/${{ env.QT_VERSION }}/macos/bin/macdeployqt wwhd_rando.app
 
+      - name: Get Version
+        id: get-version
+        shell: pwsh
+        working-directory: ${{ github.workspace }}/build
+        run: |
+          echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.\-a-z]*"') -Replace '.*("[0-9\.\-a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
+
       - name: Create DMG
         working-directory: ${{ github.workspace }}/build
         run: |
@@ -81,18 +88,10 @@ jobs:
           cp -R wwhd_rando.app ./dmg_contents/wwhd_rando.app
           echo killing...; sudo pkill -9 XProtect >/dev/null || true;
           echo waiting...; while pgrep XProtect; do sleep 3; done;
-          hdiutil create -srcfolder ./dmg_contents wwhd_rando
-
-      - name: Get Version
-        id: get-version
-        shell: pwsh
-        working-directory: ${{ github.workspace }}/build
-        run: |
-          echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.\-a-z]*"') -Replace '.*("[0-9\.\-a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
+          hdiutil create -srcfolder ./dmg_contents wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_mac_arm.dmg
 
       - name: Save Artifact
         uses: actions/upload-artifact@v7
         with:
-          path: ${{github.workspace}}/build/wwhd_rando.dmg
-          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_mac_arm.dmg
+          path: ${{github.workspace}}/build/wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_mac_arm.dmg
           archive: false
