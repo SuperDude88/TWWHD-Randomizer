@@ -84,7 +84,4 @@ jobs:
      - name: Attach Files
        env:
         GITHUB_TOKEN: ${{ github.TOKEN }}
-       run: |
-         ls -R
-         mv wwhd_rando.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg
-         gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando.wuhb wwhd_rando_${{ github.event.release.tag_name }}_mac_x64.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac_arm.dmg wwhd_rando_${{ github.event.release.tag_name }}_linux_x64.AppImage
+       run: gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando.wuhb wwhd_rando_${{ github.event.release.tag_name }}_mac_x64.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac_arm.dmg wwhd_rando_${{ github.event.release.tag_name }}_linux_x64.AppImage
