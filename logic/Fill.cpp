@@ -621,7 +621,7 @@ static FillError placeBossItems(WorldPool& worlds, ItemPool& itemPool, LocationP
     }
 
     // Build up the list of boss items with major items.
-    auto majorItems = filterAndEraseFromPool(itemPool, [](const Item& item){return item.isMajorItem();});
+    auto majorItems = filterAndEraseFromPool(itemPool, [](const Item& item){ return item.isMajorItem() && !item.isSmallKey() && !item.isBigKey(); });
     generateBossItems(bossLocations, bossItems, majorItems, itemPool);
 
     logItemPool("Boss Items", bossItems);
