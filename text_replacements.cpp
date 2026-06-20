@@ -221,7 +221,7 @@ TextReplacements generate_text_replacements(World& world)
      // KoRL Barren Dungeon Text
      {"01509",
      {{"English", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", this area is unrequired and\nthere are no valuable items in here. You can\nskip it in full confidence." + TEXT_END},
-      {"Spanish", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", this area is unrequired and\nthere are no valuable items in here. You can\nskip it in full confidence." + TEXT_END}, //TODO:
+      {"Spanish", CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", aquí no hay objetos de valor.\nPuedes irte sin problema." + TEXT_END},
       {"French",  CAPITAL + REPLACE(ReplaceTags::PLAYER_NAME) + u", cet endroit n'est pas requis et\nil n'y a rien d'important ici. Tu peux\npartir en toute tranquillité." + TEXT_END}}},
 
      // Savage Labyrinth Hints
