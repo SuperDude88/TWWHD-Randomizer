@@ -55,39 +55,31 @@ jobs:
      - name: Checkout Repository
        uses: actions/checkout@v6
 
-     - name: Create Folder for Windows Files
-       run: mkdir wwhd_rando_${{ github.event.release.tag_name }}_windows
-
      - name: Download Windows Artifact
-       uses: actions/download-artifact@v7
+       uses: actions/download-artifact@v8
        with:
-        path: ${{ github.workspace }}/wwhd_rando_${{ github.event.release.tag_name }}_windows
-        name: wwhd_rando_${{ github.event.release.tag_name }}_windows # pass name so it doesn't get put in a folder
+        name: wwhd_rando_${{ github.event.release.tag_name }}_windows.zip # pass name so it doesn't get put in a folder
+        skip-decompress: true
 
      - name: Download Wii U Artifact
-       uses: actions/download-artifact@v7
+       uses: actions/download-artifact@v8
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}.wuhb # pass name so it doesn't get put in a folder
     
      - name: Download Mac OS Artifact (x64)
-       uses: actions/download-artifact@v7
+       uses: actions/download-artifact@v8
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}_mac_x64.dmg # pass name so it doesn't get put in a folder
     
      - name: Download Mac OS Artifact (ARM)
-       uses: actions/download-artifact@v7
+       uses: actions/download-artifact@v8
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}_mac_arm.dmg # pass name so it doesn't get put in a folder
     
      - name: Download Linux Artifact (x64)
-       uses: actions/download-artifact@v7
+       uses: actions/download-artifact@v8
        with:
         name: wwhd_rando_${{ github.event.release.tag_name }}_linux_x64.AppImage # pass name so it doesn't get put in a folder
-
-     - name: Zip windows file
-       uses: montudor/action-zip@v1
-       with:
-         args: zip -qq -r wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando_${{ github.event.release.tag_name }}_windows
 
      - name: Attach Files
        env:
@@ -95,4 +87,4 @@ jobs:
        run: |
          ls -R
          mv wwhd_rando.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac.dmg
-         gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando.wuhb wwhd_rando_${{ github.event.release.tag_name }}_mac_x64.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac_arm.dmg
+         gh release upload ${{ github.event.release.tag_name }} wwhd_rando_${{ github.event.release.tag_name }}_windows.zip wwhd_rando.wuhb wwhd_rando_${{ github.event.release.tag_name }}_mac_x64.dmg wwhd_rando_${{ github.event.release.tag_name }}_mac_arm.dmg wwhd_rando_${{ github.event.release.tag_name }}_linux_x64.AppImage
