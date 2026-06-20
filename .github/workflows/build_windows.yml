@@ -101,7 +101,8 @@ jobs:
           ${{ github.workspace }}\..\Qt\${{ env.QT_VERSION }}\mingw_64\bin\qtenv2.bat && cd ${{ github.workspace }}\build\wwhd_rando_windows && windeployqt wwhd_rando.exe --no-translations --no-system-d3d-compiler --no-opengl-sw
 
       - name: Save Artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           path: ${{github.workspace}}/build/wwhd_rando_windows
-          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_windows
+          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_windows.zip
+          archive: true

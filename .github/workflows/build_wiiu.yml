@@ -63,7 +63,7 @@ jobs:
           echo "RANDO_VERSION=$(((Get-Content version.hpp | Select-String -Pattern '#define RANDOMIZER_VERSION "[0-9\.\-a-z]*"') -Replace '.*("[0-9\.\-a-z]*").*', '$1') -Replace '"', '')" >> $env:GITHUB_OUTPUT
 
       - name: Save Artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           path: ${{github.workspace}}/build/wwhd_rando.wuhb
-          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}.wuhb
+          archive: false
