@@ -97,4 +97,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           path: ${{github.workspace}}/The_Wind_Waker_HD_Randomizer-x86_64.AppImage
-          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_linux_x64
+          name: wwhd_rando_${{ steps.get-version.outputs.RANDO_VERSION }}_linux_x64.AppImage

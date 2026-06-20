@@ -43,6 +43,9 @@ int main(int argc, char *argv[]) {
     #endif
 
     QApplication::setStyle("Fusion");
+    #ifdef __linux__
+        QApplication::setApplicationName("TWWHD Randomizer");
+    #endif
 
     QApplication a(argc, argv);
     QApplication::setPalette(getColorPalette());

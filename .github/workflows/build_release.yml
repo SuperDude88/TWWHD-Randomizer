@@ -82,7 +82,7 @@ jobs:
      - name: Download Linux Artifact (x64)
        uses: actions/download-artifact@v7
        with:
-        name: wwhd_rando_${{ github.event.release.tag_name }}_linux_x64 # pass name so it doesn't get put in a folder
+        name: wwhd_rando_${{ github.event.release.tag_name }}_linux_x64.AppImage # pass name so it doesn't get put in a folder
 
      - name: Zip windows file
        uses: montudor/action-zip@v1
