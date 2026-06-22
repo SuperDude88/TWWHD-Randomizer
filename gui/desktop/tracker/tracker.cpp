@@ -1087,23 +1087,16 @@ void MainWindow::update_tracker_areas_and_autosave()
                     break;
                 }
             }
-            // If any of this dungeon's randomized entrances are accessible, but *not* connected,
-            // then we can't know all the locations where the key(s) could possible be. So skip
-            // checking in this case.
-            if (areaEntrances.contains(dungeonName) &&
-                std::any_of(areaEntrances[dungeonName].begin(), areaEntrances[dungeonName].end(), [](Entrance* e){
-                    return e->hasBeenFound() && e->getConnectedArea() == nullptr;
-                }))
-            {
-                continue;
-            }
 
             for (auto i = itemCount; i < locationPools.size(); i++)
             {
                 // If all the locations in the pool are either marked or accessible
+                // and none of the entrances that lead to potential key locations are unconnected
                 // then add the key to the inventory calculation
                 auto& locPool = locationPools[i];
-                if (std::all_of(locPool.begin(), locPool.end(), [](Location* loc){return loc->marked || loc->hasBeenFound;}))
+                auto& entrancePool = ownDungeonKeyEntrances[item][i];
+                if (std::all_of(locPool.begin(), locPool.end(), [](Location* loc){return loc->marked || loc->hasBeenFound;}) &&
+                    std::none_of(entrancePool.begin(), entrancePool.end(), [](Entrance* e){return e->getConnectedArea() == nullptr;}))
                 {
                     addElementToPool(trackerInventoryExtras, item);
                     addedItems = true;
@@ -1683,6 +1676,7 @@ void MainWindow::tracker_disconnect_entrance(Entrance* connectedEntrance)
 void MainWindow::calculate_own_dungeon_key_locations()
 {
     ownDungeonKeyLocations.clear();
+    ownDungeonKeyEntrances.clear();
     auto& trackerWorld = trackerWorlds[0];
 
     bool smallKeys = trackerWorld.getSettings().dungeon_small_keys == PlacementOption::OwnDungeon;
@@ -1712,6 +1706,14 @@ void MainWindow::calculate_own_dungeon_key_locations()
 
         // Save the possible locations for this key
         ownDungeonKeyLocations[key].push_back(potentialKeyLocations);
+
+        EntrancePool potentialKeyEntrances = {};
+        for (auto entrance : areaEntrances[dungeonName]) {
+            if (entrance->hasBeenFound()) {
+                potentialKeyEntrances.push_back(entrance);
+            }
+        }
+        ownDungeonKeyEntrances[key].push_back(potentialKeyEntrances);
 
         // Add the key back to the pool to get ready for the next one
         addElementToPool(itemPool, key);
