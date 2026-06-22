@@ -1079,6 +1079,25 @@ void MainWindow::update_tracker_areas_and_autosave()
         {
             auto itemCount = elementCountInPool(item, trackerInventoryExtras);
 
+            // Get the dungeon this item is for
+            std::string dungeonName = "";
+            for (const auto& [name, dungeon] : trackerWorlds[0].dungeons) {
+                if (item.getName().starts_with(name)) {
+                    dungeonName = name;
+                    break;
+                }
+            }
+            // If any of this dungeon's randomized entrances are accessible, but *not* connected,
+            // then we can't know all the locations where the key(s) could possible be. So skip
+            // checking in this case.
+            if (areaEntrances.contains(dungeonName) &&
+                std::any_of(areaEntrances[dungeonName].begin(), areaEntrances[dungeonName].end(), [](Entrance* e){
+                    return e->hasBeenFound() && e->getConnectedArea() == nullptr;
+                }))
+            {
+                continue;
+            }
+
             for (auto i = itemCount; i < locationPools.size(); i++)
             {
                 // If all the locations in the pool are either marked or accessible
@@ -1611,6 +1630,7 @@ void MainWindow::tracker_change_entrance_connections(Entrance* target)
     // Update areas and entrances for all islands after changing a connection
     set_areas_locations();
     set_areas_entrances();
+    calculate_own_dungeon_key_locations();
     update_tracker_areas_and_autosave();
 
     // Change the text of the label for entrance we just connected
@@ -1679,14 +1699,16 @@ void MainWindow::calculate_own_dungeon_key_locations()
         {
             if (isAnyOf(key, dungeon.smallKey, dungeon.bigKey))
             {
-                dungeonName = name + " - ";
+                dungeonName = name;
                 break;
             }
         }
 
         // Find all possible locations for this key in the dungeon
         auto accessibleLocations = getAccessibleLocations(trackerWorlds, itemPool, trackerLocations, -1, true);
-        auto potentialKeyLocations = filterFromPool(accessibleLocations, [&](Location* loc){return loc->getName().starts_with(dungeonName);});
+        auto potentialKeyLocations = filterFromPool(accessibleLocations, [&](Location* loc){
+            return areaLocations[dungeonName].contains(loc);
+        });
 
         // Save the possible locations for this key
         ownDungeonKeyLocations[key].push_back(potentialKeyLocations);
