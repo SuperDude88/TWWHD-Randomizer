@@ -3,7 +3,7 @@
 #include <version.hpp>
 #include <utility/file.hpp>
 
-#if defined(QT_GUI)
+#ifdef QT_GUI
     #if defined(__APPLE__) || defined(__linux__)
         #include <QStandardPaths>
     #else
@@ -13,8 +13,8 @@
 
 namespace Utility {
     fspath get_data_path() {
-        #if defined(QT_GUI)
-            #if defined(EMBED_DATA)
+        #ifdef QT_GUI
+            #ifdef EMBED_DATA
                 return ":/";
             #else
                 return fromQString(QCoreApplication::applicationDirPath()) / "data/";

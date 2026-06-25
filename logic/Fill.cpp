@@ -106,7 +106,7 @@ FillError forwardFillUntilMoreFreeSpace(WorldPool& worlds, ItemPool& itemsToPlac
     while (accessibleLocations.size() < openLocations * worlds.size() || !successfullyPlacedItems)
     {
         successfullyPlacedItems = false;
-        #if ENABLE_DEBUG
+        #ifdef ENABLE_DEBUG
             for (const Location* loc : accessibleLocations)
             {
                 LOG_TO_DEBUG("\t" + loc->getName());

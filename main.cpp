@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 
 #ifdef QT_GUI
     // Init embedded resources if we're using them
-    #if defined(EMBED_DATA)
+    #ifdef EMBED_DATA
         Q_INIT_RESOURCE(data);
     #endif
 

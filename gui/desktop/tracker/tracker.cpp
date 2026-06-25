@@ -1077,26 +1077,17 @@ void MainWindow::update_tracker_areas_and_autosave()
         addedItems = false;
         for (auto& [item, locationPools] : ownDungeonKeyLocations)
         {
-            auto itemCount = elementCountInPool(item, trackerInventoryExtras);
-
-            // Get the dungeon this item is for
-            std::string dungeonName = "";
-            for (const auto& [name, dungeon] : trackerWorlds[0].dungeons) {
-                if (item.getName().starts_with(name)) {
-                    dungeonName = name;
-                    break;
-                }
-            }
+            const auto& itemCount = elementCountInPool(item, trackerInventoryExtras);
 
             for (auto i = itemCount; i < locationPools.size(); i++)
             {
                 // If all the locations in the pool are either marked or accessible
                 // and none of the entrances that lead to potential key locations are unconnected
                 // then add the key to the inventory calculation
-                auto& locPool = locationPools[i];
-                auto& entrancePool = ownDungeonKeyEntrances[item][i];
-                if (std::all_of(locPool.begin(), locPool.end(), [](Location* loc){return loc->marked || loc->hasBeenFound;}) &&
-                    std::none_of(entrancePool.begin(), entrancePool.end(), [](Entrance* e){return e->getConnectedArea() == nullptr;}))
+                const auto& locPool = locationPools[i];
+                const auto& entrancePool = ownDungeonKeyEntrances[item][i];
+                if (std::all_of(locPool.begin(), locPool.end(), [](Location* loc){ return loc->marked || loc->hasBeenFound; }) &&
+                    std::none_of(entrancePool.begin(), entrancePool.end(), [](Entrance* e){ return e->getConnectedArea() == nullptr; }))
                 {
                     addElementToPool(trackerInventoryExtras, item);
                     addedItems = true;
@@ -1678,23 +1669,23 @@ void MainWindow::calculate_own_dungeon_key_locations()
 {
     ownDungeonKeyLocations.clear();
     ownDungeonKeyEntrances.clear();
-    auto& trackerWorld = trackerWorlds[0];
+    const auto& trackerWorld = trackerWorlds[0];
 
-    bool smallKeys = trackerWorld.getSettings().dungeon_small_keys == PlacementOption::OwnDungeon;
-    bool bigKeys = trackerWorld.getSettings().dungeon_big_keys == PlacementOption::OwnDungeon;
+    const bool smallKeys = trackerWorld.getSettings().dungeon_small_keys == PlacementOption::OwnDungeon;
+    const bool bigKeys = trackerWorld.getSettings().dungeon_big_keys == PlacementOption::OwnDungeon;
 
-    auto itemPool = trackerWorld.getItemPool();
+    ItemPool itemPool = trackerWorld.getItemPool();
 
     for (const auto& [dungeonName, dungeon] : trackerWorld.dungeons)
     {
-        for (auto item : {dungeon.smallKey, dungeon.bigKey}) {
-            if ((item.isSmallKey() && smallKeys) || item.isBigKey() && bigKeys) {
-                auto keys = filterAndEraseFromPool(itemPool, [&](Item& i){return i.getGameItemId() == item.getGameItemId();});
+        for (const auto& item : {dungeon.smallKey, dungeon.bigKey}) {
+            if ((item.isSmallKey() && smallKeys) || (item.isBigKey() && bigKeys)) {
+                const auto& keys = filterAndEraseFromPool(itemPool, [&](Item& i){ return i.getGameItemId() == item.getGameItemId(); });
                 for (auto& key : keys)
                 {
                     // Find all possible locations for this key in the dungeon
                     auto accessibleLocations = getAccessibleLocations(trackerWorlds, itemPool, trackerLocations, -1, true);
-                    auto potentialKeyLocations = filterFromPool(accessibleLocations, [&](Location* loc){
+                    const auto& potentialKeyLocations = filterFromPool(accessibleLocations, [&](Location* loc){
                         return areaLocations[dungeonName].contains(loc);
                     });
 
