@@ -351,6 +351,9 @@ private:
     // Maps dungeon keys to the pool of locations they could possibly appear in
     // with the Own Dungeon setting
     std::unordered_map<Item, std::vector<LocationPool>> ownDungeonKeyLocations;
+    // Maps dungeon keys to the pool of entrances they could possibly reach with the
+    // Own Dungeon setting
+    std::unordered_map<Item, std::vector<EntrancePool>> ownDungeonKeyEntrances;
 
     // Maps island name to randomized entrances on the island
     std::unordered_map<std::string, std::list<Entrance*>> areaEntrances = {};
