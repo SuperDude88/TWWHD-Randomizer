@@ -191,44 +191,41 @@ static HintError calculatePossibleBarrenRegions(WorldPool& worlds)
         // of their locations. Otherwise add the location to the list of locations
         // in the barren region. For barren hints, dungeons within islands also
         // count as being part of the island.
-        for (auto& [name, location] : world.locationTable)
+        for (const auto& [name, location] : world.locationTable)
         {
-            // Locations which have known vanilla/expected items should not block a region from being barren
-            if (location->progression && !location->hasKnownVanillaItem && !location->hasExpectedItem)
-            {
-                for (auto& locAccess : location->accessPoints)
-                {
-                    auto area = locAccess->area;
-                    const auto& generalHintRegions = area->findHintRegions(/*onlyNonIslands = */true);
-                    const auto& islands = area->findIslands();
-                    for (auto hintRegions : {generalHintRegions, islands})
-                    {
-                        for (auto& hintRegion : hintRegions)
-                        {
-                            if (world.barrenRegions.contains(hintRegion))
-                            {
-                                if (location->currentItemCanBeBarren())
-                                {
+            // Locations which are non-progress or have known vanilla/expected items should not be considered in barren hints
+            // (so they should neither appear as a barren location nor block the region from being barren)
+            const bool& canBlockBarren = location->progression && !location->hasKnownVanillaItem && !location->hasExpectedItem;
+
+            // Keep track of which outside dependent location (if any) prevents this check from being barren
+            Location* nonBarrenDependent = nullptr;
+            if(const auto& it = std::ranges::find_if(location->outsideDependentLocations, [](const auto& loc){ return !loc->isBarrenAsChainLocation(); }); it != location->outsideDependentLocations.end()) {
+                nonBarrenDependent = *it;
+            }
+
+            if(!canBlockBarren && nonBarrenDependent == nullptr) continue;
+
+            const bool& isBarren = location->currentItemCanBeBarren();
+
+            for(const auto& locAccess : location->accessPoints) {
+                const auto& area = locAccess->area;
+                for(const auto& hintRegions : {area->findHintRegions(true), area->findIslands()}) {
+                    for(const auto& hintRegion : hintRegions) {
+                        if(world.barrenRegions.contains(hintRegion)) {
+                            if(canBlockBarren) {
+                                if(isBarren) {
                                     world.barrenRegions[hintRegion].insert(location.get());
                                 }
-                                else
-                                {
+                                else {
                                     LOG_TO_DEBUG("Removed " + hintRegion + " from barren pool due to item " + location->currentItem.getName() + " at location " + location->getName());
                                     world.barrenRegions.erase(hintRegion);
                                     continue;
                                 }
+                            }
 
-                                // Also make sure the outside dependent locations are barren a well
-                                for (auto outsideLoc : location->outsideDependentLocations)
-                                {
-                                    // If an outside dependent location is not barren, remove the region from being barren
-                                    if (!outsideLoc->isBarrenAsChainLocation())
-                                    {
-                                        LOG_TO_DEBUG("Removed " + hintRegion + " from barren pool due to item " + outsideLoc->currentItem.getName() + " at location " + outsideLoc->getName() + " which is dependent on " + location->getName());
-                                        world.barrenRegions.erase(hintRegion);
-                                        break;
-                                    }
-                                }
+                            if(nonBarrenDependent) {
+                                LOG_TO_DEBUG("Removed " + hintRegion + " from barren pool due to item " + nonBarrenDependent->currentItem.getName() + " at location " + nonBarrenDependent->getName() + " which is dependent on " + location->getName());
+                                world.barrenRegions.erase(hintRegion);
                             }
                         }
                     }
