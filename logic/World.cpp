@@ -538,6 +538,7 @@ World::WorldLoadingError World::determineRequiredDungeons(WorldPool& worlds)
                     // manually add it to the non-progress checks
                     if (!dungeon.hasNaturalBossLocation)
                     {
+                        dungeon.bossLocation->progression = false;
                         nonProgressRollbacks.push_back(dungeon.bossLocation);
                     }
 
