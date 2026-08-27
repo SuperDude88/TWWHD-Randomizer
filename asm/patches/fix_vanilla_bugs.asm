@@ -578,3 +578,33 @@ try_reorder_speak_event:
 
 do_not_count_dampa_pig:
   b 0x022C4048 ; Return without counting any new pigs
+
+; When buying an item from Beedle's special shop, it is possible to have 2 or 3 of the same items across the shop's selection.
+; If that happens, since Beedle only checks the item ID to determine which flags should be set, it may incorrectly set
+; a flag and never set the correct flag for the item we bought. The priority is: middle object -> left object -> right object.
+; This is a problem, since it means we can buy the same item repeatedly under those specific circumstances.
+; This fix checks for the selected item slot instead.
+
+; First, instead of checking if we are buying an item from the special shop to deliver a flag, we check if... we're on the special shop! 
+.org 0x0221557c ; in daNpcBs1_c::next_msgStatus
+  b check_which_beedle_shop
+
+.org @NextFreeSpace
+.global check_which_beedle_shop
+check_which_beedle_shop:
+  lbz r0, 0x99E(r27) ; Load the mType byte, if it's set to 1 then masked beedle was loaded
+  extsb. r0, r0
+  cmpwi r0, 1
+  bne check_which_beedle_shop_fail ; this is what happens if the original condition is not met
+  b 0x02215594
+check_which_beedle_shop_fail: ; need this for the relocation to work, otherwise it doesnt fit in 14 bits
+  b 0x02215630
+
+; More importantly, if we do check the condition, we need to replace the switch case the devs used to check
+; the slot of the selected item instead of the item ID. Fortunately r0 is loaded with the selected item idx, so we can use that.
+.org 0x022155ac ; in daNpcBs1_c::next_msgStatus
+  cmplwi r0, 1
+.org 0x022155b8 ; in daNpcBs1_c::next_msgStatus
+  cmplwi r0, 0
+.org 0x022155c0 ; in daNpcBs1_c::next_msgStatus
+  cmplwi r0, 2

@@ -1708,8 +1708,6 @@
   Type: RPX
   Offsets:
     - 0x101EAF57
-    - 0x0221557F
-    - 0x022155BB
 
 - Names:
     English: Rock Spire Isle - Beedle 950 Rupee Item
@@ -1722,8 +1720,6 @@
   Type: RPX
   Offsets:
     - 0x101EAF67
-    - 0x02215587
-    - 0x022155AF
 
 - Names:
     English: Rock Spire Isle - Beedle 900 Rupee Item
@@ -1736,8 +1732,6 @@
   Type: RPX
   Offsets:
     - 0x101EAF77
-    - 0x0221558F
-    - 0x022155C3
 
 - Names:
     English: Rock Spire Isle - Western Lookout Platform Destroy Cannons
