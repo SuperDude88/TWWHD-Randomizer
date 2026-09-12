@@ -578,3 +578,25 @@ try_reorder_speak_event:
 
 do_not_count_dampa_pig:
   b 0x022C4048 ; Return without counting any new pigs
+
+
+
+; In vanilla, placing a fountain idol, picking it up, and placing it again can crash the game if something shifts the heap around between placements
+; This is because it ends up with a dangling pointer to the animation in the model data, which is shared between instances of the actor
+; Clear that pointer after the actor finishes drawing to prevent the crash
+.org 0x02117944 ; In daStandItem_c::_draw
+  b clear_stand_item_bck_pointer
+.org @NextFreeSpace
+.global clear_stand_item_bck_pointer
+clear_stand_item_bck_pointer:
+  lwz r3, 0x3C0(r31) ; Pointer to skeletal animation
+  cmpwi r3, 0
+  beq clear_stand_item_bck_pointer_return ; Only clear the animation if it actually has one
+  lwz r3, 0x3BC(r31) ; Load J3DModel pointer
+  lwz r3, 0xAC(r3) ; Load J3DModelData pointer
+  lwz r3, 0x8(r3) ; Inlined J3DModelData->getJointNodePointer(0) per decomp
+  li r4, 0
+  stw r4, 0x14(r3) ; Inlined J3DJoint->setMtxCalc(NULL) per decomp
+clear_stand_item_bck_pointer_return:
+  li r3, 1 ; Replace the line we overwrote to jump here
+  b 0x02117948 ; Branch back
