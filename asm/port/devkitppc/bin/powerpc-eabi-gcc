@@ -1,0 +1,6 @@
+#!/bin/bash
+# stand-in for devkitPPC's gcc as TWWHD Randomizer's asm/assemble.py uses it: -E (host cpp) or -c (GNU as for PowerPC)
+R=${PPC_BINUTILS:?unpacked binutils-powerpc-linux-gnu .debs (root/usr/...)}; B=$R/usr/bin; export LD_LIBRARY_PATH=$R/usr/lib/x86_64-linux-gnu
+if [[ " $* " == *" -E "* ]]; then exec gcc "$@"; fi
+src="${@: -1}"; regs=""; [[ " $* " == *" -mregnames "* ]] && regs=-mregnames
+exec "$B/powerpc-linux-gnu-as" -mbig -a32 -many $regs -o "$(basename "${src%.*}").o" "$src"

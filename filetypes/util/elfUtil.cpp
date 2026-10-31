@@ -1,5 +1,7 @@
 #include "elfUtil.hpp"
 
+#include <utility/region.hpp>
+
 #include <utility/endian.hpp>
 #include <command/Log.hpp>
 
@@ -18,7 +20,11 @@ namespace elfUtil {
         return false;
     }
 
-    offset_t AddressToOffset(const FileTypes::ELF& elf, const uint32_t& address) { // calculates offset into section, returns first value as section index and second as offset
+    offset_t AddressToOffset(const FileTypes::ELF& elf, const uint32_t& address) {
+        return AddressToOffsetRaw(elf, Region::port(address));
+    }
+
+    offset_t AddressToOffsetRaw(const FileTypes::ELF& elf, const uint32_t& address) { // calculates offset into section, returns first value as section index and second as offset
         for (const uint16_t index : {2, 3, 4}) { // only check a few sections that might be written to
             if (containsAddress(address, elf.shdr_table[index].second.sh_addr, elf.shdr_table[index].second.sh_size)) {
                 return {index, address - elf.shdr_table[index].second.sh_addr};
@@ -27,7 +33,9 @@ namespace elfUtil {
         return {0, 0};
     }
 
-    offset_t AddressToOffset(const FileTypes::ELF& elf, const uint32_t& address, const uint16_t& sectionIndex) {
+    offset_t AddressToOffset(const FileTypes::ELF& elf, const uint32_t& usaAddress, const uint16_t& sectionIndex) {
+        // .rela.text (7) is addressed by USA table offsets, the others as they are
+        const uint32_t address = sectionIndex == 7 ? Region::portRelaText(usaAddress) : usaAddress;
         if (!containsAddress(address, elf.shdr_table[sectionIndex].second.sh_addr, elf.shdr_table[sectionIndex].second.sh_size)) {
             return { 0, 0 };
         }

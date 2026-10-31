@@ -11,6 +11,7 @@
 #include <libs/tinyxml2.hpp>
 #include <libs/yaml.hpp>
 #include <asm/patches/asm_constants.hpp>
+#include <utility/region.hpp>
 #include <filetypes/bflim.hpp>
 #include <filetypes/bflyt.hpp>
 #include <filetypes/bfres.hpp>
@@ -83,7 +84,7 @@ static TweakError Apply_Patch(const fspath& file_path) {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
             for (const auto& patch : patches["Data"]) {
                 const uint32_t offset = patch.first.as<uint32_t>();
-                offset_t sectionOffset = elfUtil::AddressToOffset(elf, offset);
+                offset_t sectionOffset = elfUtil::AddressToOffsetRaw(elf, offset); // the diffs are made for this release
                 if (!sectionOffset) { // address not in section
                     std::string data;
                     for (const uint8_t& byte : patch.second.as<std::vector<uint8_t>>()) {
@@ -118,7 +119,7 @@ static TweakError Apply_Patch(const fspath& file_path) {
                 CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
                 if(reloc.r_offset >= 0x10000000) {
-                    if(reloc.r_offset >= 0x1018C0C0) {   
+                    if(reloc.r_offset >= elf.shdr_table[4].second.sh_addr) { // .data's start (another in JPN)
                         RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 9, reloc)); // in the .data section, go in .rela.data
                     }
                     else {
@@ -193,14 +194,16 @@ TweakError change_ship_starting_island(const uint8_t room_num) {
 }
 
 TweakError make_all_text_instant() {
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/b_button_skips_text_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/b_button_skips_text_diff.yaml"));
 
     for (const auto& language : Text::supported_languages) {
+
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
         const fspath paths[4] = {
-        "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT",
-        "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT",
-        "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt@MSBT",
-        "content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT"
+        "content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT",
+        "content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT",
+        "content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message3_msbt.szs@YAZ0@SARC@message3.msbt@MSBT",
+        "content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT"
         };
 
         for (const auto& path : paths) {
@@ -209,54 +212,7 @@ TweakError make_all_text_instant() {
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data);
 
                 for (auto& [label, message] : msbt.messages_by_label) {
-                    std::u16string& String = message.text.message;
-
-                    message.attributes.drawType = 1; // draw instant
-
-                    std::u16string::size_type wait = String.find(u"\x0e\x01\x06\x02"s); // dont use macro because duration shouldnt matter
-                    while (wait != std::u16string::npos) {
-                        String.erase(wait, 5);
-                        wait = String.find(u"\x0e\x01\x06\x02"s);
-                    }
-
-                    // Most of these waits are in cutscenes like the credits
-                    // Removing them forces you to advance the text yourself which is undesirable
-                    // So only apply it to a few instances
-                    static const std::unordered_set<std::string> wait_dismiss_to_remove = {
-                        // Healing Grandma text
-                        "02034",
-                        "02039",
-                        "02040",
-                        // Tingle's text
-                        "03522",
-                        "04316",
-                        // Beedle's text
-                        "03956",
-                        // Hollo's text
-                        "05162",
-                        // Auction text
-                        "07416",
-                        // Killer Bees' text
-                        "09935",
-                        // Dampa's text
-                        "12920",
-                        // Flight Control Platform text
-                        "10930",
-                    };
-
-                    if(wait_dismiss_to_remove.contains(label)) {
-                        std::u16string::size_type wait_dismiss = String.find(u"\x0e\x01\x03\x02"s); // dont use macro because duration shouldnt matter
-                        while (wait_dismiss != std::u16string::npos) {
-                            String.erase(wait_dismiss, 5);
-                            wait_dismiss = String.find(u"\x0e\x01\x03\x02"s);
-                        }
-                    }
-
-                    std::u16string::size_type wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s); // dont use macro because duration shouldnt matter
-                    while (wait_dismiss_prompt != std::u16string::npos) {
-                        String.erase(wait_dismiss_prompt, 5);
-                        wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s);
-                    }
+                    Region::instantText(label, message); // shared with the packs without the randomizer's text (merge_packs)
                 }
             
                 return true;
@@ -342,7 +298,7 @@ TweakError allow_all_items_to_be_field_items() {
 
         if (item_id == 0xAA) {
             //szs_name_pointer = custom_symbols.at("hurricane_spin_item_resource_arc_name");
-            szs_name_pointer = szs_name_pointers.at(0x38); // issues with custom .szs currently, use sword model instead
+            szs_name_pointer = Region::port(szs_name_pointers.at(0x38)); // USA .rodata pointer; issues with custom .szs currently, use sword model instead
             item_resources_addr_to_fix = item_resources_list_start + item_id * 0x24;
 
 
@@ -350,7 +306,7 @@ TweakError allow_all_items_to_be_field_items() {
             //not needed because we use the sword model (would be for a custom szs)
         }
         else {
-            szs_name_pointer = szs_name_pointers.at(item_id_to_copy_from);
+            szs_name_pointer = Region::port(szs_name_pointers.at(item_id_to_copy_from)); // a USA .rodata pointer
         }
 
         rpx.addAction([=](RandoSession* session, FileType* data) -> int {
@@ -370,7 +326,7 @@ TweakError allow_all_items_to_be_field_items() {
 
         //need relocation entries so pointers work on console
         Elf32_Rela relocation;
-        relocation.r_offset = field_item_resources_addr;
+        relocation.r_offset = Region::port(field_item_resources_addr); // USA address
         if (section_start == 0x02000000) {
             relocation.r_info = 0x00000101; // need different .symtab index for .text pointer
         }
@@ -388,7 +344,7 @@ TweakError allow_all_items_to_be_field_items() {
 
         if (item_resources_addr_to_fix) {
             Elf32_Rela relocation2;
-            relocation2.r_offset = item_resources_addr_to_fix;
+            relocation2.r_offset = Region::port(item_resources_addr_to_fix); // USA address
             relocation2.r_info = relocation.r_info; // same as first entry
             relocation2.r_addend = relocation.r_addend; // same as first entry
 
@@ -427,7 +383,7 @@ TweakError allow_all_items_to_be_field_items() {
     });
 
     // execItemGet, mode_wait, and getYOffset had their switch cases optimized out, so their patches are a little more involved in HD
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/field_items_diff.yaml")); 
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/field_items_diff.yaml")); 
     
     const uint32_t item_info_list_start = 0x101E8674;
     for (unsigned int item_id = 0x00; item_id < 0xFF + 1; item_id++) {
@@ -506,7 +462,7 @@ TweakError remove_ff2_cutscenes(const bool& randomize_boss_entrances) {
 }
 
 TweakError make_items_progressive() {
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/make_items_progressive_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/make_items_progressive_diff.yaml"));
 
     const uint32_t item_get_func_pointer = 0x0001DA54; // First relevant relocation entry in .rela.data (overwrites .data section when loaded)
 
@@ -575,7 +531,9 @@ TweakError make_items_progressive() {
     };
 
     for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
     
         entry.addAction([messages, language](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
@@ -805,6 +763,7 @@ TweakError modify_title_screen() {
     rpx.addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
+        if (Region::current() == Region::Release::JPN) return true; // JPN's own values for its larger title
         RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x101F7048), 1.4f)); // scale
         RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x101F7044), 2.25f)); // possibly particle size, JP changes it for its larger title text
         RPX_ERROR_CHECK(elfUtil::write_float(elf, elfUtil::AddressToOffset(elf, 0x10108280), -38.0f)); // vertical position
@@ -838,7 +797,7 @@ TweakError update_name_and_icon() {
         metaRoot->FirstChildElement("shortname_pt")->SetText("The Wind Waker HD Randomizer");
 
         // change the title ID so it gets its own channel when repacked
-        metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
+        metaRoot->FirstChildElement("title_id")->SetText(Region::randomizedTitleId());
         
         tinyxml2::XMLPrinter printer;
         meta.Print(&printer);
@@ -855,7 +814,7 @@ TweakError update_name_and_icon() {
         tinyxml2::XMLDocument app;
         app.Parse(appStream.str().c_str(), appStream.str().size());
         tinyxml2::XMLElement* appRoot = app.RootElement();
-        appRoot->FirstChildElement("title_id")->SetText("0005000010143599");
+        appRoot->FirstChildElement("title_id")->SetText(Region::randomizedTitleId());
         
         tinyxml2::XMLPrinter printer;
         app.Print(&printer);
@@ -977,7 +936,9 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
         auto dungeon_item = world.getItem(dungeon_name + " " + item_data.base_item_name);
 
         for (const auto& language : Text::supported_languages) {
-            RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+
+            if (Region::packFor(language).empty()) continue; // no pack for it in this release
+            RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
             entry.addAction([=](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
@@ -998,7 +959,7 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
         const uint32_t item_resources_addr = item_resources_list_start + item_id * 0x24;
         const uint32_t field_item_resources_addr = field_item_resources_list_start + item_id * 0x1C;
 
-        const uint32_t szs_name_pointer = szs_name_pointers.at(base_item_id);
+        const uint32_t szs_name_pointer = Region::port(szs_name_pointers.at(base_item_id)); // a USA .rodata pointer
 
         rpx.addAction([=](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -1011,12 +972,12 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 
         // Need relocation entries so pointers work on console
         Elf32_Rela relocation;
-        relocation.r_offset = field_item_resources_addr;
+        relocation.r_offset = Region::port(field_item_resources_addr); // USA address
         relocation.r_info = 0x00000201;
         relocation.r_addend = szs_name_pointer - 0x10000000; // needs offset into .rodata section, subtract start address from data location
 
         Elf32_Rela relocation2;
-        relocation2.r_offset = item_resources_addr;
+        relocation2.r_offset = Region::port(item_resources_addr); // USA address
         relocation2.r_info = relocation.r_info; // same as first entry
         relocation2.r_addend = relocation.r_addend; // same as first entry
 
@@ -1119,6 +1080,7 @@ TweakError update_text_replacements(World& world) {
 
     for (auto& [messageLabel, languages] : textReplacements) {
         for (const auto& language : Text::supported_languages) {
+            if (Region::packFor(language).empty()) continue; // no pack for it in this release
             // Don't do anything if there's no text yet
             if (languages[language].empty()) continue;
 
@@ -1133,7 +1095,7 @@ TweakError update_text_replacements(World& world) {
                 messageNum = "4";
             }
 
-            fspath filePath = std::string("content/Common/Pack/permanent_2d_Us") + language + ".pack@SARC@message" + messageNum + "_msbt.szs@YAZ0@SARC@message" + messageNum + ".msbt@MSBT";
+            fspath filePath = std::string("content/Common/Pack/permanent_2d_") + Region::packFor(language) + ".pack@SARC@message" + messageNum + "_msbt.szs@YAZ0@SARC@message" + messageNum + ".msbt@MSBT";
             RandoSession::CacheEntry& entry = g_session.openGameFile(filePath);
             entry.addAction([language, messageLabel = messageLabel, languages = languages](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
@@ -1192,7 +1154,8 @@ TweakError update_korl_dialog(World& world) {
 
     if (!world.korlHints.empty()) {
         for (const auto& language: Text::supported_languages) {
-            RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
+            if (Region::packFor(language).empty()) continue; // no pack for it in this release
+            RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
 
             std::vector<std::u16string> hintMessages = {u""};
             size_t curLine = 0;
@@ -1253,6 +1216,8 @@ TweakError update_korl_dialog(World& world) {
         });
 
         for (const auto& language : Text::supported_languages) {
+
+            if (Region::packFor(language).empty()) continue; // no pack for it in this release
             std::u16string hintLines = u"";
             size_t i = 0; // counter to know when to add null terminator
             for (auto& hint : world.korlHyruleHints) {
@@ -1264,7 +1229,7 @@ TweakError update_korl_dialog(World& world) {
                 hintLines += Text::pad_str_4_lines(hintText);
             }
 
-            RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
+            RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message2_msbt.szs@YAZ0@SARC@message2.msbt@MSBT");
 
             entry.addAction([hintLines](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
@@ -1287,7 +1252,9 @@ TweakError update_ho_ho_dialog(World& world) {
     }
 
     for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT");
+
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT");
         
         entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
             for (auto& [hohoLocation, hints] : world.hohoHints) {
@@ -1324,7 +1291,9 @@ TweakError update_kreeb_dialog(World& world) {
     }
 
     for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT");
+
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message4_msbt.szs@YAZ0@SARC@message4.msbt@MSBT");
         
         entry.addAction([=, &world](RandoSession* session, FileType* data) -> int {
             std::u16string hintLines = u"";
@@ -1436,7 +1405,7 @@ TweakError set_starting_health(const uint16_t heartPieces, const uint16_t heartC
     });
 
     if(starting_health < 8) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/remove_low_health_effects_diff.yaml")); 
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/remove_low_health_effects_diff.yaml")); 
     }
 
     return TweakError::NONE;
@@ -1470,7 +1439,8 @@ TweakError set_damage_multiplier(const float& multiplier) {
     // Update the hero mode description if we changed the multiplier
     if(multiplier != 2.0f) {
         for (const auto& language : Text::supported_languages) {
-            RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@SequenceWindow_00_msbt.szs@YAZ0@SARC@SequenceWindow_00.msbt@MSBT");
+            if (Region::packFor(language).empty()) continue; // no pack for it in this release
+            RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@SequenceWindow_00_msbt.szs@YAZ0@SARC@SequenceWindow_00.msbt@MSBT");
             entry.addAction([=](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
@@ -1483,7 +1453,7 @@ TweakError set_damage_multiplier(const float& multiplier) {
                 std::u16string& message = msbt.messages_by_label["T_Msg_00_hardmode00"].text.message;
                 const std::u16string& replace = word_to_replace.at(language);
                 const std::u16string& replacement = Utility::Str::toUTF16(std::to_string(static_cast<uint8_t>(multiplier)) + "x");
-                message.replace(message.find(replace), replace.size(), replacement);
+                Region::replaceFound(message, replace, replacement); // as it is where the release words it otherwise
 
                 return true;
             });
@@ -1570,7 +1540,9 @@ TweakError add_pirate_ship_to_windfall() {
     });
     
     for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+    
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
         entry.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
             msbt.messages_by_label["03008"].attributes.soundEffect = 106;
@@ -1928,8 +1900,8 @@ TweakError increase_crawl_speed() {
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014EC04, 7), 0x000355C4)); // update .rela.text entry
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014EC4C, 7), 0x000355C4)); // update .rela.text entry
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014EC04, 7), Region::portRodataOffset(0x000355C4))); // update .rela.text entry
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014EC4C, 7), Region::portRodataOffset(0x000355C4))); // update .rela.text entry
 
         return true;
     });
@@ -1938,6 +1910,8 @@ TweakError increase_crawl_speed() {
 }
 
 TweakError add_chart_number_to_item_get_messages(World& world) {
+    // the name goes in at the English, Spanish and French wording's place; Japanese messages keep their own
+    if (Region::current() == Region::Release::JPN) return TweakError::NONE;
 
     std::unordered_map<std::string, size_t> replacementData = {
         {"English", 12},
@@ -1946,7 +1920,9 @@ TweakError add_chart_number_to_item_get_messages(World& world) {
     };
 
     for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
 
         auto replacementIndex = replacementData[language];
 
@@ -1962,6 +1938,7 @@ TweakError add_chart_number_to_item_get_messages(World& world) {
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
                 
                 auto& message = msbt.messages_by_label["00" + std::to_string(101 + item_id)].text.message;
+                if (message.find('!') == std::u16string::npos || message.find('!') < replacementIndex) return true; // worded otherwise
                 auto replacementLength = message.find('!') - replacementIndex;
 
                 message.replace(replacementIndex, replacementLength, u16itemName);
@@ -1979,7 +1956,7 @@ TweakError increase_grapple_animation_speed() {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x02170250), 0x394B000A));
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00075170, 7), 0x00010FFC)); // update .rela.text entry
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00075170, 7), Region::portRodataOffset(0x00010FFC))); // update .rela.text entry
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x100110C8), 0x41C80000));
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x021711D4), 0x390B0006));
 
@@ -1993,8 +1970,8 @@ TweakError increase_block_move_animation() {
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00153b00, 7), 0x00035AAC)); // update .rela.text entries
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00153b48, 7), 0x00035AAC));
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00153b00, 7), Region::portRodataOffset(0x00035AAC))); // update .rela.text entries
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00153b48, 7), Region::portRodataOffset(0x00035AAC)));
 
         uint32_t offset = 0x101CB424;
         for (unsigned int i = 0; i < 13; i++) { // 13 types of blocks total
@@ -2014,11 +1991,11 @@ TweakError increase_misc_animations() {
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
         
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00148820, 7), 0x000358D8));
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x001482a4, 7), 0x00035124));
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00148430, 7), 0x000358D8));
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00148310, 7), 0x00035AAC));
-        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014e2d4, 7), 0x00035530));
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00148820, 7), Region::portRodataOffset(0x000358D8)));
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x001482a4, 7), Region::portRodataOffset(0x00035124)));
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00148430, 7), Region::portRodataOffset(0x000358D8)));
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x00148310, 7), Region::portRodataOffset(0x00035AAC)));
+        RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x0014e2d4, 7), Region::portRodataOffset(0x00035530)));
 
         RPX_ERROR_CHECK(elfUtil::write_u32(elf, elfUtil::AddressToOffset(elf, 0x02508b50), 0x3880000A));
 
@@ -2288,7 +2265,8 @@ TweakError update_required_bosses(const World& world) {
 
     // Add the custom message text
     for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
         entry.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
@@ -2310,7 +2288,8 @@ TweakError update_required_bosses(const World& world) {
 
 TweakError add_hint_signs() {
     for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
     
         entry.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
@@ -2730,7 +2709,9 @@ TweakError implement_key_bag() {
     };
 
     for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& charm = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnCollectIcon_00.szs@YAZ0@SARC@timg/CollectIcon118_08^l.bflim@BFLIM");
+
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& charm = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@BtnCollectIcon_00.szs@YAZ0@SARC@timg/CollectIcon118_08^l.bflim@BFLIM");
         
         charm.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(pirates_charm, FileTypes::FLIMFile, data)
@@ -2740,7 +2721,7 @@ TweakError implement_key_bag() {
             return true;
         });
 
-        RandoSession::CacheEntry& units = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@unitString_msbt.szs@YAZ0@SARC@unitString.msbt@MSBT");
+        RandoSession::CacheEntry& units = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@unitString_msbt.szs@YAZ0@SARC@unitString.msbt@MSBT");
         units.addAction([messages, language](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
@@ -2772,7 +2753,9 @@ TweakError show_dungeon_markers_on_chart(World& world) {
     }
 
     for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& map = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@Map_00.szs@YAZ0@SARC@blyt/Map_00.bflyt@BFLYT");
+
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& map = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@Map_00.szs@YAZ0@SARC@blyt/Map_00.bflyt@BFLYT");
 
         map.addAction([room_numbers](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(map, FileTypes::FLYTFile, data)
@@ -3256,7 +3239,8 @@ TweakError fix_stone_head_bugs() {
 
 TweakError show_tingle_statues_on_quest_screen() {
     for (std::string language : Text::supported_languages) {
-        RandoSession::CacheEntry& icon = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_00^l.bflim@BFLIM");
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& icon = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_00^l.bflim@BFLIM");
         icon.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(tingle, FileTypes::FLIMFile, data)
             FILETYPE_ERROR_CHECK(tingle.replaceWithDDS(Utility::get_data_path() / "assets/Tingle.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, true));
@@ -3264,7 +3248,7 @@ TweakError show_tingle_statues_on_quest_screen() {
             return true;
         });
 
-        RandoSession::CacheEntry& shadow = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim@BFLIM");
+        RandoSession::CacheEntry& shadow = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@BtnMapIcon_00.szs@YAZ0@SARC@timg/MapBtn_07^t.bflim@BFLIM");
         shadow.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(shadow, FileTypes::FLIMFile, data)
             FILETYPE_ERROR_CHECK(shadow.replaceWithDDS(Utility::get_data_path() / "assets/TingleShadow.dds", GX2TileMode::GX2_TILE_MODE_DEFAULT, 0, false));
@@ -3585,7 +3569,9 @@ TweakError add_ff_warp_button() {
     using namespace NintendoWare::Layout;
 
     for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& map = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@WarpMap_00.szs@YAZ0@SARC@blyt/WarpMap_00.bflyt@BFLYT");
+
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& map = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@WarpMap_00.szs@YAZ0@SARC@blyt/WarpMap_00.bflyt@BFLYT");
 
         //add another WarpArea pane
         map.addAction([](RandoSession* session, FileType* data) -> int {
@@ -3602,7 +3588,7 @@ TweakError add_ff_warp_button() {
         });
 
         
-        RandoSession::CacheEntry& text = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+        RandoSession::CacheEntry& text = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
     
         text.addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
@@ -3619,6 +3605,9 @@ TweakError add_ff_warp_button() {
 }
 
 TweakError fix_vanilla_text() {
+    // fixes of the USA release's texts (other releases' messages are their own)
+    if (Region::current() != Region::Release::USA) return TweakError::NONE;
+
     // The spanish text for the 99 quiver says that you can hold up to 99 bombs
     RandoSession::CacheEntry& spanish1 = g_session.openGameFile("content/Common/Pack/permanent_2d_UsSpanish.pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
     spanish1.addAction([](RandoSession* session, FileType* data) -> int {
@@ -3646,7 +3635,8 @@ TweakError fix_vanilla_text() {
 
 TweakError make_item_get_text_dynamic() {
     for (const auto& language : Text::supported_languages) {
-        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_Us" + language + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
+        if (Region::packFor(language).empty()) continue; // no pack for it in this release
+        RandoSession::CacheEntry& entry = g_session.openGameFile("content/Common/Pack/permanent_2d_" + Region::packFor(language) + ".pack@SARC@message_msbt.szs@YAZ0@SARC@message.msbt@MSBT");
         entry.addAction([=](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
 
@@ -3661,7 +3651,7 @@ TweakError make_item_get_text_dynamic() {
 
                 std::u16string& message = msbt.messages_by_label["00140"].text.message;
                 const std::u16string& replace = word_to_replace.at(language);
-                message.replace(message.find(replace), replace.size(), REPLACE(ReplaceTags::ARROW_MAX));
+                Region::replaceFound(message, replace, REPLACE(ReplaceTags::ARROW_MAX)); // as it is where the release words it otherwise
             }
 
             // The item get message for bombs normally says you can carry up to 30
@@ -3678,7 +3668,7 @@ TweakError make_item_get_text_dynamic() {
 
                 std::u16string& message = msbt.messages_by_label["00150"].text.message;
                 const std::u16string& replace = word_to_replace.at(language);
-                message.replace(message.find(replace), replace.size(), TEXT_COLOR_RED REPLACE(ReplaceTags::BOMB_MAX) TEXT_COLOR_DEFAULT);
+                Region::replaceFound(message, replace, TEXT_COLOR_RED REPLACE(ReplaceTags::BOMB_MAX) TEXT_COLOR_DEFAULT); // as it is where the release words it otherwise
             }
 
             return true;
@@ -4214,25 +4204,25 @@ TweakError change_rock_in_dragon_roost_pond() {
 }
 
 TweakError apply_necessary_tweaks(const Settings& settings) {
-    LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(Utility::get_data_path() / "asm/custom_symbols.yaml"));
+    LOG_AND_RETURN_IF_ERR(Load_Custom_Symbols(Region::asmDir() / "custom_symbols.yaml"));
 
     const std::string seedHash = LogInfo::getSeedHash();
     const std::u16string u16_seedHash = Utility::Str::toUTF16(seedHash);
 
     TWEAK_ERR_CHECK(updateCodeSize());
 
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/custom_funcs_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/custom_actors_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/make_game_nonlinear_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/make_all_figurines_obtainable_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/remove_cutscenes_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/flexible_entrances_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/flexible_hint_locations_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/flexible_item_locations_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/fix_vanilla_bugs_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/misc_rando_features_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/switch_dungeon_flag_diff.yaml"));
-    LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/switch_op_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/custom_funcs_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/custom_actors_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/make_game_nonlinear_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/make_all_figurines_obtainable_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/remove_cutscenes_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/flexible_entrances_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/flexible_hint_locations_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/flexible_item_locations_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/fix_vanilla_bugs_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/misc_rando_features_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/switch_dungeon_flag_diff.yaml"));
+    LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/switch_op_diff.yaml"));
 
     g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
         CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
@@ -4248,9 +4238,9 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
         //blockMoveReloc.r_addend = 0;
         //RPX_ERROR_CHECK(elfUtil::addRelocation(elf, 7, blockMoveReloc));
 
-        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001c0ae8})); // would mess with save init
-        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00160224})); // would mess with salvage point patch
-        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x00199854})); // would overwrite getLayerNo patch
+        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, Region::portRelaText(0x001c0ae8)})); // would mess with save init
+        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, Region::portRelaText(0x00160224)})); // would mess with salvage point patch
+        RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, Region::portRelaText(0x00199854)})); // would overwrite getLayerNo patch
 
         return true;
     });
@@ -4268,43 +4258,43 @@ TweakError apply_necessary_tweaks(const Settings& settings) {
         TWEAK_ERR_CHECK(make_all_text_instant());
     }
     if (settings.quiet_swift_sail) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/quiet_swift_sail_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/quiet_swift_sail_diff.yaml"));
     }
     if (settings.fix_rng) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/fix_rng_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/fix_rng_diff.yaml"));
     }
     if (settings.performance) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/performance_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/performance_diff.yaml"));
     }
     if (settings.classic_mode) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/classic_features_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/classic_features_diff.yaml"));
     }
     if (settings.reveal_full_sea_chart) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/reveal_sea_chart_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/reveal_sea_chart_diff.yaml"));
     }
     if (settings.invert_sea_compass_x_axis) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/invert_sea_compass_x_axis_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/invert_sea_compass_x_axis_diff.yaml"));
     }
     if (settings.remove_swords) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/swordless_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/swordless_diff.yaml"));
         g_session.openGameFile("code/cking.rpx@RPX@ELF").addAction([](RandoSession* session, FileType* data) -> int {
             CAST_ENTRY_TO_FILETYPE(elf, FileTypes::ELF, data)
 
-            RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, 0x001C1ED4})); // would overwrite branch to custom code
+            RPX_ERROR_CHECK(elfUtil::removeRelocation(elf, {7, Region::portRelaText(0x001C1ED4)})); // would overwrite branch to custom code
             return true;
         });
     }
     if (settings.remove_music) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/remove_music_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/remove_music_diff.yaml"));
     }
     if(settings.chest_type_matches_contents) {
         TWEAK_ERR_CHECK(replace_ctmc_chest_texture());
     }
     if(settings.anyEntrancesShuffled()) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/entrance_rando_features_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/entrance_rando_features_diff.yaml"));
     }
     if(settings.randomize_door_entrances) {
-        LOG_AND_RETURN_IF_ERR(Apply_Patch(Utility::get_data_path() / "asm/patch_diffs/mesa_door_fix_diff.yaml"));
+        LOG_AND_RETURN_IF_ERR(Apply_Patch(Region::asmDir() / "patch_diffs/mesa_door_fix_diff.yaml"));
     }
 
     TWEAK_ERR_CHECK(fix_deku_leaf_model());

@@ -1,0 +1,3 @@
+#!/bin/bash
+R=${PPC_BINUTILS:?unpacked binutils-powerpc-linux-gnu .debs (root/usr/...)}; export LD_LIBRARY_PATH=$R/usr/lib/x86_64-linux-gnu
+exec $R/usr/bin/powerpc-linux-gnu-ld -m elf32ppc "$@"

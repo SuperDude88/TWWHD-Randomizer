@@ -16,6 +16,7 @@
 #include <utility/platform.hpp>
 #include <utility/string.hpp>
 #include <utility/file.hpp>
+#include <utility/region.hpp>
 #include <nuspack/packer.hpp>
 
 
@@ -320,7 +321,7 @@ static bool packFreeChannel(const fspath& baseDir) {
     }
 
     tinyxml2::XMLElement* metaRoot = meta.RootElement();
-    metaRoot->FirstChildElement("title_id")->SetText("0005000010143599");
+    metaRoot->FirstChildElement("title_id")->SetText(Region::randomizedTitleId());
     
     meta.Print(&printer);
     std::ofstream metaOut(DataPath / "meta" / "meta.xml", std::ios::binary);
@@ -336,7 +337,7 @@ static bool packFreeChannel(const fspath& baseDir) {
     }
 
     tinyxml2::XMLElement* appRoot = app.RootElement();
-    appRoot->FirstChildElement("title_id")->SetText("0005000010143599");
+    appRoot->FirstChildElement("title_id")->SetText(Region::randomizedTitleId());
     
     app.Print(&printer);
     std::ofstream appOut(DataPath / "code" / "app.xml", std::ios::binary);
@@ -377,7 +378,7 @@ bool createOutputChannel(const fspath& baseDir, const MCPInstallTarget& loc) {
     if(!installFreeChannel(CHANNEL_OUTPUT_PATH, loc)) return false;
 
     fspath outPath;
-    if(const auto& err = getTitlePath(0x0005000010143599, outPath); err < 0) return false;
+    if(const auto& err = getTitlePath(Region::randomizedTitleIdValue(), outPath); err < 0) return false;
     if(!Utility::mountDeviceAndConvertPath(outPath)) {
         ErrorLog::getInstance().log("Failed to mount output device");
         return false;

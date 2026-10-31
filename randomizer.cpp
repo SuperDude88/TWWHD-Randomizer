@@ -5,6 +5,7 @@
 #include <filesystem>
 
 #include <libs/tinyxml2.hpp>
+#include <utility/region.hpp>
 
 #include <tweaks.hpp>
 #include <seedgen/config.hpp>
@@ -74,25 +75,28 @@ private:
 
         const std::string titleId = root->FirstChildElement("title_id")->GetText();
         const std::string nameEn = root->FirstChildElement("longname_en")->GetText();
-        if(titleId != "0005000010143500" || nameEn != "THE LEGEND OF ZELDA\nThe Wind Waker HD")  {
-            if(titleId == "0005000010143400" || titleId == "0005000010143600") {
-                ErrorLog::getInstance().log("Incorrect region - game must be a NTSC-U / US copy");
-            }
-            else {
-                ErrorLog::getInstance().log("meta.xml does not match base game - dump is not valid");
-                ErrorLog::getInstance().log("ID " + titleId);
-                ErrorLog::getInstance().log("Name " + nameEn);
-            }
+        const bool knownRelease = titleId == "0005000010143500" || titleId == "0005000010143600" || titleId == "0005000010143400";
+        if(!knownRelease || nameEn != "THE LEGEND OF ZELDA\nThe Wind Waker HD")  {
+            ErrorLog::getInstance().log("meta.xml does not match base game - dump is not valid");
+            ErrorLog::getInstance().log("ID " + titleId);
+            ErrorLog::getInstance().log("Name " + nameEn);
 
+            return false;
+        }
+
+        // USA, EUR or JPN: the release's patches, addresses and language packs
+        if(std::string err; !Region::load(base, err)) {
+            ErrorLog::getInstance().log(err);
             return false;
         }
 
         const std::string region = root->FirstChildElement("region")->GetText();
-        if(region != "00000002") {
-            ErrorLog::getInstance().log("Incorrect region - game must be a NTSC-U / US copy");
+        if(region != Region::metaRegion()) {
+            ErrorLog::getInstance().log("meta.xml region " + region + " does not match the " + Region::name() + " release");
             return false;
         }
 
+        Utility::platformLog(std::string("Game release: ") + Region::name());
         return true;
     }
 
@@ -136,7 +140,7 @@ private:
         // But on console it should be correct once the channel is installed so it's a good sanity check
         #ifdef DEVKITPRO
             const std::string titleId = root->FirstChildElement("title_id")->GetText();
-            if(titleId != "0005000010143599")  {
+            if(titleId != Region::randomizedTitleId())  {
                 ErrorLog::getInstance().log("meta.xml does not match - custom channel is not valid");
                 ErrorLog::getInstance().log("ID " + titleId);
                 return false;
@@ -144,8 +148,8 @@ private:
         #endif
 
         const std::string region = root->FirstChildElement("region")->GetText();
-        if(region != "00000002") {
-            ErrorLog::getInstance().log("Incorrect region - game must be a NTSC-U / US copy");
+        if(region != Region::metaRegion()) {
+            ErrorLog::getInstance().log("Output's meta.xml region " + region + " does not match the input's " + Region::name() + " release");
             return false;
         }
 
@@ -292,6 +296,18 @@ public:
             return 1;
         }
 
+        // EUR/JPN: an address the randomizer writes to that has no counterpart in this release
+        if(Region::portFailed()) {
+            ErrorLog::getInstance().log(std::string("Addresses missing for the ") + Region::name() + " release:\n" + Region::portErrors());
+            return 1;
+        }
+
+        // EUR: German and Italian get the randomizer's changed English messages
+        if(std::string err; !Region::mergePacks(config.gameBaseDir, config.outputDir, config.settings.instant_text_boxes, err)) {
+            ErrorLog::getInstance().log(err);
+            return 1;
+        }
+
         // done!
         return 0;
     }
@@ -325,26 +341,41 @@ int mainRandomize() {
     }
 
     #ifdef DEVKITPRO
-        if(!SYSCheckTitleExists(0x0005000010143500)) {
-            ErrorLog::getInstance().log("Could not find game: you must have a NTSC-U / US copy of TWWHD!");
+        // USA, EUR or JPN: the first one installed (in this order)
+        uint64_t baseTitleId = 0;
+        for(const uint64_t titleId : {0x0005000010143500ULL, 0x0005000010143600ULL, 0x0005000010143400ULL}) {
+            if(SYSCheckTitleExists(titleId)) {
+                baseTitleId = titleId;
+                break;
+            }
+        }
+        if(baseTitleId == 0) {
+            ErrorLog::getInstance().log("Could not find game: you must have a copy of TWWHD (USA, Europe or Japan)!");
 
             return 1;
         }
-        if(const auto& err = getTitlePath(0x0005000010143500, load.gameBaseDir); err < 0) {
+        if(const auto& err = getTitlePath(baseTitleId, load.gameBaseDir); err < 0) {
             return 1;
         }
         if(!Utility::mountDeviceAndConvertPath(load.gameBaseDir)) {
             ErrorLog::getInstance().log("Failed mounting input device!");
             return 1;
         }
-        
-        if(!SYSCheckTitleExists(0x0005000010143599)) {
+
+        // the release decides the randomized channel's title ID
+        if(std::string err; !Region::load(load.gameBaseDir, err)) {
+            ErrorLog::getInstance().log(err);
+            return 1;
+        }
+        Utility::platformLog(std::string("Game release: ") + Region::name());
+
+        if(!SYSCheckTitleExists(Region::randomizedTitleIdValue())) {
             if(!createOutputChannel(load.gameBaseDir, pickInstallLocation())) {
                 return 1;
             }
             g_session.setFirstTimeSetup(true);
         }
-        if(const auto& err = getTitlePath(0x0005000010143599, load.outputDir); err < 0) {
+        if(const auto& err = getTitlePath(Region::randomizedTitleIdValue(), load.outputDir); err < 0) {
             return 1;
         }
         if(!Utility::mountDeviceAndConvertPath(load.outputDir)) {

@@ -8,7 +8,8 @@
 namespace elfUtil {
     bool containsAddress(const uint32_t& address, const uint32_t& memAddress, const uint32_t& sectionLen);
 
-    offset_t AddressToOffset(const FileTypes::ELF& elf, const uint32_t& address);
+    offset_t AddressToOffset(const FileTypes::ELF& elf, const uint32_t& address); // a USA address, ported (Region::port)
+    offset_t AddressToOffsetRaw(const FileTypes::ELF& elf, const uint32_t& address); // an address of this release
 
     offset_t AddressToOffset(const FileTypes::ELF& elf, const uint32_t& address, const uint16_t& sectionIndex);
 

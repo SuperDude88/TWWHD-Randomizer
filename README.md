@@ -27,14 +27,16 @@ If you seem to have discovered a bug, let us know in our [Discord server](https:
 ## Setup
 You can download the latest stable version of the randomizer from the [releases page](https://github.com/SuperDude88/TWWHD-Randomizer/releases). 
 
-This randomizer currently supports the USA version of TWWHD. The European and Japanese versions of the game will not work, nor will the original Wind Waker.
+This randomizer supports the USA, European and Japanese versions of TWWHD, on PC and on the Wii U. The original Wind Waker will not work.
+
+On the European version, the randomizer's changed text is in English for German and Italian (English, Spanish and French are translated as usual). On the Japanese version, the randomizer's text is in English; the rest of the game stays Japanese.
 
 ### On Console
 #### Preparing Homebrew
 Playing the randomizer on console requires a Wii U with the Aroma environment and sigpatches. A guide for installing Aroma can be found [here](https://wiiu.hacks.guide). After following the guide, you will need to add [01_sigpatches.rpx](https://github.com/marco-calautti/SigpatchesModuleWiiU/releases) to `sd:/wiiu/environments/aroma/modules/setup`. Make sure to read each page of the guide closely, and pay attention to which environment you are booting into.
 
 #### Using the Homebrew Application
-The patcher requires an accessible version of TWWHD (USA) on your Wii U (digital install or inserted disc). You must also have 2GB of space available for the randomized channel, either on the console's internal memory or a connected USB storage device (*\*This storage is reserved after first-time setup*).
+The patcher requires an accessible version of TWWHD (USA, Europe or Japan) on your Wii U (digital install or inserted disc). If more than one is installed, it uses the USA version first, then the European one. You must also have 2GB of space available for the randomized channel, either on the console's internal memory or a connected USB storage device (*\*This storage is reserved after first-time setup*).
 
 Once homebrew is set up, copy the `wwhd_randomizer.wuhb` from the releases page into `sd:/wiiu/apps`. Run the app from the home menu to open the patcher.
 
@@ -44,7 +46,7 @@ The first time it runs, the patcher will create a home menu channel for the rand
 To play the randomized game, you must have a CFW/sigpatches active. This should always be the case as long as you loaded Aroma with sigpatches. The randomized channel will have an orange, mirrored icon of the vanilla game.
 
 ### On Emulator
-This method will require that you have a decrypted USA copy of TWWHD on your computer. The decrypted game consists of a folder with 3 subfolders (`code`, `content`, and `meta`). It is *not* a single file like an `.iso` or a `.wad`. You can dump a disc or digital install from your Wii U with [dumpling](https://cemu.cfw.guide/using-dumpling.html).
+This method will require that you have a decrypted copy of TWWHD (USA, Europe or Japan) on your computer. The decrypted game consists of a folder with 3 subfolders (`code`, `content`, and `meta`). It is *not* a single file like an `.iso` or a `.wad`. You can dump a disc or digital install from your Wii U with [dumpling](https://cemu.cfw.guide/using-dumpling.html).
 
 Download the latest randomizer from the [releases page](https://github.com/SuperDude88/TWWHD-Randomizer/releases) and extract its contents to wherever you wish (Windows and Mac are currently supported). After extraction, double-click on the `wwhd_rando` application to open it (`wwhd_rando.exe` on Windows). Set the `Base Game Folder` to the folder which holds your vanilla game and the `Output Folder` to the location you want to place the randomized game. Once you've finished selecting your desired settings, click the `Randomize` button in the bottom-right and wait for the seed generation to finish. Afterwards, you will have the randomized game in the output folder. Note that generating a new seed will overwrite any previous seed in the output folder.
 
