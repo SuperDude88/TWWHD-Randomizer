@@ -9,7 +9,7 @@ namespace Utility::Str {
     std::string toUTF8(const std::u16string& str) {
         if(str.empty()) return "";
 
-        std::string ret(str.size(), '\0');
+        std::string ret(str.size() * 3, '\0'); // a UTF-16 unit takes up to 3 bytes in UTF-8 (a surrogate pair 4 for 2)
         char* pszNext;
         const char16_t* pwszNext;
         std::mbstate_t state{}; // zero-initialization represents the initial conversion state for mbstate_t
@@ -17,6 +17,7 @@ namespace Utility::Str {
             state, str.data(), str.data() + str.size(), pwszNext, ret.data(), ret.data() + ret.size(), pszNext);
 
         if(res == std::codecvt_base::error) return "";
+        ret.resize(pszNext - ret.data());
         return ret;
     }
 
