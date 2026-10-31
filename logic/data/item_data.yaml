@@ -2,364 +2,607 @@
     English: Heart Drop
     Spanish: Corazón
     French: Cœur
+    German: Herz
+    Italian: Cuore
+    Japanese: ハート
   Pretty Names:
     English: "a |Heart Drop|"
     Spanish: "un |Corazón|"
     French: "un |Cœur|"
+    German: "ein |Herz|"
+    Italian: "un |Cuore|"
+    Japanese: "|ハート|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x00
 
 - Names:
     English: Green Rupee
     Spanish: Rupia Verde
     French: Rubis Vert
+    German: Grüner Rubin
+    Italian: Rupia Verde
+    Japanese: 緑ルピー
   Pretty Names:
     English: "a |Green Rupee|"
     Spanish: "una |Rupia Verde|"
     French: "un |Rubis Vert|"
+    German: "ein |Grüner Rubin|"
+    Italian: "una |Rupia Verde|"
+    Japanese: "|緑ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x01
 
 - Names:
     English: Blue Rupee
     Spanish: Rupia Azul
     French: Rubis Bleu
+    German: Blauer Rubin
+    Italian: Rupia Blu
+    Japanese: 青ルピー
   Pretty Names:
     English: "a |Blue Rupee|"
     Spanish: "una |Rupia Azul|"
     French: "un |Rubis Bleu|"
+    German: "ein |Blauer Rubin|"
+    Italian: "una |Rupia Blu|"
+    Japanese: "|青ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x02
 
 - Names:
     English: Yellow Rupee
     Spanish: Rupia Amarilla
     French: Rubis Jaune
+    German: Gelber Rubin
+    Italian: Rupia Gialla
+    Japanese: 黄ルピー
   Pretty Names:
     English: "a |Yellow Rupee|"
     Spanish: "una |Rupia Amarilla|"
     French: "un |Rubis Jaune|"
+    German: "ein |Gelber Rubin|"
+    Italian: "una |Rupia Gialla|"
+    Japanese: "|黄ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x03
 
 - Names:
     English: Red Rupee
     Spanish: Rupia Roja
     French: Rubis Rouge
+    German: Roter Rubin
+    Italian: Rupia Rossa
+    Japanese: 赤ルピー
   Pretty Names:
     English: "a |Red Rupee|"
     Spanish: "una |Rupia Roja|"
     French: "un |Rubis Rouge|"
+    German: "ein |Roter Rubin|"
+    Italian: "una |Rupia Rossa|"
+    Japanese: "|赤ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x04
 
 - Names:
     English: Purple Rupee
     Spanish: Rupia Púrpura
     French: Rubis Violet
+    German: Violetter Rubin
+    Italian: Rupia Viola
+    Japanese: 紫ルピー
   Pretty Names:
     English: "a |Purple Rupee|"
     Spanish: "una |Rupia Púrpura|"
     French: "un |Rubis Violet|"
+    German: "ein |Violetter Rubin|"
+    Italian: "una |Rupia Viola|"
+    Japanese: "|紫ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x05
 
 - Names:
     English: Orange Rupee
     Spanish: Orange Rupee
     French: Rubis Orange
+    German: Oranger Rubin
+    Italian: Rupia Arancione
+    Japanese: オレンジルピー
   Pretty Names:
     English: "an |Orange Rupee|"
     Spanish: "una |Rupia Naranja|"
     French: "un |Rubis Orange|"
+    German: "ein |Oranger Rubin|"
+    Italian: "una |Rupia Arancione|"
+    Japanese: "|オレンジルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x06
 
 - Names:
     English: Piece of Heart
     Spanish: Pieza de Corazón
     French: Quart de Cœur
+    German: Herzteil
+    Italian: Frammento di Cuore
+    Japanese: ハートのかけら
   Pretty Names:
     English: "a |Piece of Heart|"
     Spanish: "una |Pieza de Corazón|"
     French: "un |Quart de Cœur|"
+    German: "ein |Herzteil|"
+    Italian: "un |Frammento di Cuore|"
+    Japanese: "|ハートのかけら|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x07
 
 - Names:
     English: Heart Container
     Spanish: Contenedor de Corazón
     French: Réceptacle de Cœur
+    German: Herzcontainer
+    Italian: Portacuore
+    Japanese: ハートの器
   Pretty Names:
     English: "a |Heart Container|"
     Spanish: "un |Contenedor de Corazón|"
     French: "un |Réceptacle de Cœur|"
+    German: "ein |Herzcontainer|"
+    Italian: "un |Portacuore|"
+    Japanese: "|ハートの器|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x08
 
 - Names:
     English: Small Magic Drop
     Spanish: Jarra Mágica Pequeña
     French: Petite Jarre Magique
+    German: Kleiner Magie-Krug
+    Italian: Ampolla Magica Piccola
+    Japanese: 小さな魔法のツボ
   Pretty Names:
     English: "a |Small Magic Drop|"
     Spanish: "una |Jarra Mágica Pequeña|"
     French: "une |Petite Jarre Magique|"
+    German: "ein |Kleiner Magie-Krug|"
+    Italian: "un'|Ampolla Magica Piccola|"
+    Japanese: "|小さな魔法のツボ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x09
 
 - Names:
     English: Large Magic Drop
     Spanish: Jarra Mágica Grande
     French: Grande Jarre Magique
+    German: Großer Magie-Krug
+    Italian: Ampolla Magica Grande
+    Japanese: 大きな魔法のツボ
   Pretty Names:
     English: "a |Large Magic Drop|"
     Spanish: "una |Jarra Mágica Grande|"
     French: "une |Grande Jarre Magique|"
+    German: "ein |Großer Magie-Krug|"
+    Italian: "un'|Ampolla Magica Grande|"
+    Japanese: "|大きな魔法のツボ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x0A
 
 - Names:
     English: Five Bombs
     Spanish: Bombas (5)
     French: Bombes (5)
+    German: Bomben (5)
+    Italian: Bombe (5)
+    Japanese: バクダン（５）
   Pretty Names:
     English: "|Five Bombs|"
     Spanish: "|Cinco Bombas|"
     French: "|Cinq Bombes|"
+    German: "|Bomben (5)|"
+    Italian: "|Bombe (5)|"
+    Japanese: "|バクダン（５）|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x0B
 
 - Names:
     English: Ten Bombs
     Spanish: Bombas (10)
     French: Bombes (10)
+    German: Bomben (10)
+    Italian: Bombe (10)
+    Japanese: バクダン（１０）
   Pretty Names:
     English: "|Ten Bombs|"
     Spanish: "|Diez Bombas|"
     French: "|Dix Bombes|"
+    German: "|Bomben (10)|"
+    Italian: "|Bombe (10)|"
+    Japanese: "|バクダン（１０）|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x0C
 
 - Names:
     English: Twenty Bombs
     Spanish: Bombas (20)
     French: Bombes (20)
+    German: Bomben (20)
+    Italian: Bombe (20)
+    Japanese: バクダン（２０）
   Pretty Names:
     English: "|Twenty Bombs|"
     Spanish: "|Veinte Bombas|"
     French: "|Vingt Bombes|"
+    German: "|Bomben (20)|"
+    Italian: "|Bombe (20)|"
+    Japanese: "|バクダン（２０）|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x0D
 
 - Names:
     English: Thirty Bombs
     Spanish: Bombas (30)
     French: Bombes (30)
+    German: Bomben (30)
+    Italian: Bombe (30)
+    Japanese: バクダン（３０）
   Pretty Names:
     English: "|Thirty Bombs|"
     Spanish: "|Treinta Bombas|"
     French: "|Trente Bombes|"
+    German: "|Bomben (30)|"
+    Italian: "|Bombe (30)|"
+    Japanese: "|バクダン（３０）|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x0E
 
 - Names:
     English: Silver Rupee
     Spanish: Rupia Plateada
     French: Rubis Argenté
+    German: Silberner Rubin
+    Italian: Rupia d'Argento
+    Japanese: シルバールピー
   Pretty Names:
     English: "a |Silver Rupee|"
     Spanish: "una |Rupia Plateada|"
     French: "un |Rubis Argenté|"
+    German: "ein |Silberner Rubin|"
+    Italian: "una |Rupia d'Argento|"
+    Japanese: "|シルバールピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x0F
 
 - Names:
     English: Ten Arrows
     Spanish: Flechas (10)
     French: Flèches (10)
+    German: Pfeile (10)
+    Italian: Frecce (10)
+    Japanese: 矢（１０）
   Pretty Names:
     English: "|Ten Arrows|"
     Spanish: "|Diez Flechas|"
     French: "|Dix Flèches|"
+    German: "|Pfeile (10)|"
+    Italian: "|Frecce (10)|"
+    Japanese: "|矢（１０）|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x10
 
 - Names:
     English: Twenty Arrows
     Spanish: Flechas (20)
     French: Flèches (20)
+    German: Pfeile (20)
+    Italian: Frecce (20)
+    Japanese: 矢（２０）
   Pretty Names:
     English: "|Twenty Arrows|"
     Spanish: "|Veinte Flechas|"
     French: "|Vingt Flèches|"
+    German: "|Pfeile (20)|"
+    Italian: "|Frecce (20)|"
+    Japanese: "|矢（２０）|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x11
 
 - Names:
     English: Thirty Arrows
     Spanish: Flechas (30)
     French: Flèches (30)
+    German: Pfeile (30)
+    Italian: Frecce (30)
+    Japanese: 矢（３０）
   Pretty Names:
     English: "|Thirty Arrows|"
     Spanish: "|Treinta Flechas|"
     French: "|Trente Flèches|"
+    German: "|Pfeile (30)|"
+    Italian: "|Frecce (30)|"
+    Japanese: "|矢（３０）|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x12
 
 - Names:
     English: Small Key
     Spanish: Llave Pequeña
     French: Petite Clé
+    German: Kleiner Schlüssel
+    Italian: Piccola Chiave
+    Japanese: 小さなカギ
   Pretty Names:
     English: "a |Small Key|"
     Spanish: "una |Llave Pequeña|"
     French: "une |Petite Clé|"
+    German: "ein |Kleiner Schlüssel|"
+    Italian: "una |Piccola Chiave|"
+    Japanese: "|小さなカギ|"
   Cryptic Names:
     English: "a |key|"
     Spanish: "una |llave|"
     French: "une |clé|"
+    German: "ein |Schlüssel|"
+    Italian: "una |chiave|"
+    Japanese: "|カギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Plural
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x15
 
 
@@ -367,18 +610,30 @@
     English: Fairy
     Spanish: Hada
     French: Fée
+    German: Fee
+    Italian: Fata
+    Japanese: 妖精
   Pretty Names:
     English: "a |Fairy|"
     Spanish: "un |Hada|"
     French: "une |Fée|"
+    German: "eine |Fee|"
+    Italian: "una |Fata|"
+    Japanese: "|妖精|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x16
 
 # joke message
@@ -386,94 +641,157 @@
     English: Yellow Rupee 2
     Spanish: Rupia Amarilla 2
     French: Rubis Jaune 2
+    German: Gelber Rubin
+    Italian: Rupia Gialla
+    Japanese: 黄ルピー
   Pretty Names:
     English: "a |Yellow Rupee|"
     Spanish: "una |Rupia Amarilla|"
     French: "un |Rubis Jaune|"
+    German: "ein |Gelber Rubin|"
+    Italian: "una |Rupia Gialla|"
+    Japanese: "|黄ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x1A
 
 - Names:
     English: Three Hearts
     Spanish: Tres Corazones
     French: Trois Cœurs
+    German: Drei Herzen
+    Italian: Tre Cuori
+    Japanese: ハート（３）
   Pretty Names:
     English: "|Three Hearts|"
     Spanish: "|Tres Corazones|"
     French: "|Trois Cœurs|"
+    German: "|Drei Herzen|"
+    Italian: "|Tre Cuori|"
+    Japanese: "|ハート（３）|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x1E
 
 - Names:
     English: Joy Pendant
     Spanish: Collar de la Felicidad
     French: Pendentif du Bonheur
+    German: Glücksamulett
+    Italian: Portafelicità
+    Japanese: 幸せのペンダント
   Pretty Names:
     English: "a |Joy Pendant|"
     Spanish: "un |Collar de la Felicidad|"
     French: "un |Pendentif du Bonheur|"
+    German: "ein |Glücksamulett|"
+    Italian: "un |Portafelicità|"
+    Japanese: "|幸せのペンダント|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x1F
 
 - Names:
     English: Telescope
     Spanish: Catalejo
     French: Longue-Vue
+    German: Fernrohr
+    Italian: Cannocchiale
+    Japanese: 望遠鏡
   Pretty Names:
     English: "a |Telescope|"
     Spanish: "un |Catalejo|"
     French: "une |Longue-Vue|"
+    German: "ein |Fernrohr|"
+    Italian: "un |Cannocchiale|"
+    Japanese: "|望遠鏡|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x20
 
 - Names:
     English: Tingle Bottle
     Spanish: Botella Tingle
     French: Bouteille de Tingle
+    German: Tingle-Flasche
+    Italian: Bottiglia Tingle
+    Japanese: チンクルボトル
   Pretty Names:
     English: "a |Tingle Bottle|"
     Spanish: "una |Botella Tingle|"
     French: "une |Bouteille de Tingle|"
+    German: "eine |Tingle-Flasche|"
+    Italian: "una |Bottiglia Tingle|"
+    Japanese: "|チンクルボトル|"
   Cryptic Names:
     English: "a |device that hasn't worked in 8 years|"
     Spanish: "un |dispositivo que no ha funcionado por 8 años|"
     French: "un |appareil qui ne fonctionne plus depuis 8 ans|"
+    German: "ein |Gerät, das seit 8 Jahren nicht funktioniert|"
+    Italian: "un |aggeggio che non funziona da 8 anni|"
+    Japanese: "|８年間　動かない道具|"
   Gender:
     English: None
     Spanish: Female
     French: Female # Female (bouteille), Male (appareil)
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x21
 
 
@@ -481,22 +799,37 @@
     English: Wind Waker
     Spanish: Batuta de los Vientos
     French: Baguette du Vent
+    German: Taktstock des Windes
+    Italian: Bacchetta del Vento
+    Japanese: 風のタクト
   Pretty Names:
     English: "the |Wind Waker|"
     Spanish: "la |Batuta de los Vientos|"
     French: "la |Baguette du Vent|"
+    German: "der |Taktstock des Windes|"
+    Italian: "la |Bacchetta del Vento|"
+    Japanese: "|風のタクト|"
   Cryptic Names:
     English: "the |wand of the wind conductor|"
     Spanish: "la |batuta que conduce el viento|"
     French: "le |bâton conducteur du vent|"
+    German: "der |Stab des Windgebieters|"
+    Italian: "la |bacchetta del direttore del vento|"
+    Japanese: "|風の指揮者の杖|"
   Gender:
     English: None
     Spanish: Female
     French: Female # Female (baguette), Male (bâton)
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x22
 
 
@@ -504,22 +837,37 @@
     English: Progressive Picto Box
     Spanish: Caja Luminográfica Progresiva
     French: Boîte à Image Progressive
+    German: Progressive Foto-Box
+    Italian: Immaginografo Progressivo
+    Japanese: 写し絵の箱（強化）
   Pretty Names:
     English: "a |Progressive Picto Box|"
     Spanish: "una |Caja Luminográfica Progresiva|"
     French: "une |Boîte à Image Progressive|"
+    German: "eine |Progressive Foto-Box|"
+    Italian: "un |Immaginografo Progressivo|"
+    Japanese: "|写し絵の箱（強化）|"
   Cryptic Names:
     English: "an |upgrade for your camera|"
     Spanish: "una |mejora para tu cámara|"
     French: "une |amélioration pour votre appareil photo|"
+    German: "ein |Upgrade für deine Kamera|"
+    Italian: "un |potenziamento per la tua fotocamera|"
+    Japanese: "|写し絵の箱の強化|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x23
 
 
@@ -527,22 +875,37 @@
     English: Spoils Bag
     Spanish: Bolsa de Trofeos
     French: Sac à Butin
+    German: Beutetasche
+    Italian: Borsello
+    Japanese: エモノ袋
   Pretty Names:
     English: "a |Spoils Bag|"
     Spanish: "una |Bolsa de Trofeos|"
     French: "un |Sac à Butin|"
+    German: "eine |Beutetasche|"
+    Italian: "un |Borsello|"
+    Japanese: "|エモノ袋|"
   Cryptic Names:
     English: "a |storage for collectibles|"
     Spanish: "un |saco para guardar tu coleción|"
     French: "une |sacoche pour vos récompenses|"
+    German: "ein |Behälter für Sammelstücke|"
+    Italian: "un |contenitore per oggetti da collezione|"
+    Japanese: "|集めた物を入れる袋|"
   Gender:
     English: None
     Spanish: Female
     French: Male # Male (sac), Female (sacoche)
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x24
 
 
@@ -550,22 +913,37 @@
     English: Grappling Hook
     Spanish: Garra
     French: Grappin-Griffe
+    German: Greifhaken
+    Italian: Rampino
+    Japanese: カギつめロープ
   Pretty Names:
     English: "a |Grappling Hook|"
     Spanish: "una |Garra|"
     French: "un |Grappin-Griffe|"
+    German: "ein |Greifhaken|"
+    Italian: "un |Rampino|"
+    Japanese: "|カギつめロープ|"
   Cryptic Names:
     English: "an |item to swing across platforms|"
     Spanish: "un |objeto para columpiarse entre plataformas|"
     French: "un |objet pour se balancer de plateforme en plateforme|"
+    German: "ein |Item, um sich über Abgründe zu schwingen|"
+    Italian: "uno |strumento per dondolarsi tra le piattaforme|"
+    Japanese: "|足場を渡る道具|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x25
 
 
@@ -573,40 +951,67 @@
     English: Deluxe Picto Box
     Spanish: Caja Cromográfica
     French: Boîte à Image DX
+    German: Foto-Box Deluxe
+    Italian: Immaginografo Deluxe
+    Japanese: 写し絵の箱ＤＸ
   Pretty Names:
     English: "a |Deluxe Picto Box|"
     Spanish: "una |Caja Cromográfica|"
     French: "une |Boîte à Image DX|"
+    German: "eine |Foto-Box Deluxe|"
+    Italian: "un |Immaginografo Deluxe|"
+    Japanese: "|写し絵の箱ＤＸ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x26
 
 - Names:
     English: Progressive Bow
     Spanish: Arco del Héroe Progresivo
     French: Arc Progressif
+    German: Progressiver Bogen
+    Italian: Arco Progressivo
+    Japanese: 勇者の弓（強化）
   Pretty Names:
     English: "a |Progressive Bow|"
     Spanish: "un |Arco del Héroe Progresivo|"
     French: "un |Arc Progressif|"
+    German: "ein |Progressiver Bogen|"
+    Italian: "un |Arco Progressivo|"
+    Japanese: "|勇者の弓（強化）|"
   Cryptic Names:
     English: "an |upgrade for your bow|"
     Spanish: "una |mejora para tu arco|"
     French: "une |amélioration pour votre arc|"
+    German: "ein |Upgrade für deinen Bogen|"
+    Italian: "un |potenziamento per il tuo arco|"
+    Japanese: "|弓の強化|"
   Gender:
     English: None
     Spanish: Male
     French: Male # Male (arc), Female (amélioration)
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x27
 
 
@@ -614,22 +1019,37 @@
     English: Power Bracelets
     Spanish: Brazaletes de Fuerza
     French: Bracelets de Force
+    German: Kraft-Armbänder
+    Italian: Superbracciali
+    Japanese: パワーリスト
   Pretty Names:
     English: "|Power Bracelets|"
     Spanish: los |Brazaletes de Fuerza|"
     French: "les |Bracelets de Force|"
+    German: "|Kraft-Armbänder|"
+    Italian: "i |Superbracciali|"
+    Japanese: "|パワーリスト|"
   Cryptic Names:
     English: "the |strength to lift heavy rocks|"
     Spanish: "la |fuerza para levantar rockas pesadas|"
     French: "la |force de soulever de lourds rochers|"
+    German: "die |Kraft, schwere Felsen zu heben|"
+    Italian: "la |forza per sollevare rocce pesanti|"
+    Japanese: "|重い岩を持ち上げる力|"
   Gender:
     English: None
     Spanish: Male
     French: Male # Male (bracelets), Female (force)
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural # Plural (bracelets), Singular (force)
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x28
 
 
@@ -637,22 +1057,37 @@
     English: Iron Boots
     Spanish: Botas de Plomo
     French: Bottes de Plomb
+    German: Eisenstiefel
+    Italian: Calzari di Piombo
+    Japanese: ヘビィブーツ
   Pretty Names:
     English: "|Iron Boots|"
     Spanish: "las |Botas de Plomo|"
     French: "les |Bottes de Plomb|"
+    German: "|Eisenstiefel|"
+    Italian: "i |Calzari di Piombo|"
+    Japanese: "|ヘビィブーツ|"
   Cryptic Names:
     English: "a |very heavy item|"
     Spanish: "un |objeto muy pesado|"
     French: "un |objet très lourd|"
+    German: "ein |sehr schweres Item|"
+    Italian: "uno |strumento molto pesante|"
+    Japanese: "|とても重い道具|"
   Gender:
     English: None
     Spanish: Female
     French: Female # Female (bottes), Male (objet)
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural # Plural (bottes), Singular (objet)
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x29
 
 
@@ -660,22 +1095,37 @@
     English: Magic Armor
     Spanish: Aura Mágica
     French: Armure Magique
+    German: Magische Barriere
+    Italian: Corazza Magica
+    Japanese: マジックシールド
   Pretty Names:
     English: "|Magic Armor|"
     Spanish: "el |Aura Mágica|"
     French: "une |Armure Magique|"
+    German: "die |Magische Barriere|"
+    Italian: "la |Corazza Magica|"
+    Japanese: "|マジックシールド|"
   Cryptic Names:
     English: "|purple protection|"
     Spanish: "una |protección púrpura|"
     French: "une |protection violette|"
+    German: "ein |violetter Schutz|"
+    Italian: "una |protezione viola|"
+    Japanese: "|紫色の守り|"
   Gender:
     English: None
     Spanish: Male # ("Aura mágica") Male. ("Protección púrpura") Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x2A
 
 
@@ -683,22 +1133,37 @@
     English: Bait Bag
     Spanish: Saco de Cebos
     French: Sac à Appâts
+    German: Futtertasche
+    Italian: Fagotto
+    Japanese: エサ袋
   Pretty Names:
     English: "a |Bait Bag|"
     Spanish: "un |Saco de Cebos|"
     French: "un |Sac à Appâts|"
+    German: "eine |Futtertasche|"
+    Italian: "un |Fagotto|"
+    Japanese: "|エサ袋|"
   Cryptic Names:
     English: "a |storage for food|"
     Spanish: "un |saco para guardar alimentos|"
     French: "une |sacoche à nourriture|"
+    German: "ein |Behälter für Futter|"
+    Italian: "un |contenitore per il cibo|"
+    Japanese: "|エサを入れる袋|"
   Gender:
     English: None
     Spanish: Male
     French: Male # Male (sac), Female (sacoche)
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x2C
 
 
@@ -706,22 +1171,37 @@
     English: Boomerang
     Spanish: Bumerán
     French: Boomerang
+    German: Bumerang
+    Italian: Boomerang
+    Japanese: ブーメラン
   Pretty Names:
     English: "a |Boomerang|"
     Spanish: "un |Bumerán|"
     French: "un |Boomerang|"
+    German: "ein |Bumerang|"
+    Italian: "un |Boomerang|"
+    Japanese: "|ブーメラン|"
   Cryptic Names:
     English: "an |item that always comes back to you|"
     Spanish: "un |objeto que siempre vuelve a tí|"
     French: "un |objet qui revient toujours|"
+    German: "ein |Item, das immer zu dir zurückkehrt|"
+    Italian: "uno |strumento che torna sempre da te|"
+    Japanese: "|必ず戻ってくる道具|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x2D
 
 
@@ -729,22 +1209,37 @@
     English: Hookshot
     Spanish: Gancho
     French: Grappin
+    German: Enterhaken
+    Italian: Arpione
+    Japanese: フックショット
   Pretty Names:
     English: "a |Hookshot|"
     Spanish: "un |Gancho|"
     French: "un |Grappin|"
+    German: "ein |Enterhaken|"
+    Italian: "un |Arpione|"
+    Japanese: "|フックショット|"
   Cryptic Names:
     English: "an |item that reels|"
     Spanish: "un |objeto que se estira y enrolla|"
     French: "un |objet qui s'allonge et se rétracte|"
+    German: "ein |Item, das dich heranzieht|"
+    Italian: "uno |strumento che ti tira a sé|"
+    Japanese: "|引き寄せる道具|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x2F
 
 
@@ -752,22 +1247,37 @@
     English: Delivery Bag
     Spanish: Saca de Cartero
     French: Sac de Facteur
+    German: Posttasche
+    Italian: Cartella
+    Japanese: 配達袋
   Pretty Names:
     English: "a |Delivery Bag|"
     Spanish: "una |Saca de Cartero|"
     French: "un |Sac de Facteur|"
+    German: "eine |Posttasche|"
+    Italian: "una |Cartella|"
+    Japanese: "|配達袋|"
   Cryptic Names:
     English: "a |storage for letters|"
     Spanish: "un |saco para guardar cartas|"
     French: "une |sacoche pour vos lettres|"
+    German: "ein |Behälter für Briefe|"
+    Italian: "un |contenitore per lettere|"
+    Japanese: "|手紙を入れる袋|"
   Gender:
     English: None
     Spanish: Female # ("Saca de Cartero") Female. ("Saco para guardar cartas") Male
     French: Male # Male (sac), Female (sacoche)
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x30
 
 
@@ -775,22 +1285,37 @@
     English: Bombs
     Spanish: Bombas
     French: Bombes
+    German: Bomben
+    Italian: Bombe
+    Japanese: バクダン
   Pretty Names:
     English: "|Bombs|"
     Spanish: "las |Bombas|"
     French: "les |Bombes|"
+    German: "die |Bomben|"
+    Italian: "le |Bombe|"
+    Japanese: "|バクダン|"
   Cryptic Names:
     English: "an |explosive item|"
     Spanish: "un |objeto explosivo|"
     French: "un |objet explosif|"
+    German: "ein |explosives Item|"
+    Italian: "uno |strumento esplosivo|"
+    Japanese: "|爆発する道具|"
   Gender:
     English: None
     Spanish: Female
     French: Female # Female (bombes), Male (objet)
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural # Plural (bombes), Singular (objet)
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x31
 
 
@@ -798,40 +1323,67 @@
     English: Heros Clothes
     Spanish: Ropas del Héroe
     French:
+    German: Heldengewand
+    Italian: Tunica dell'Eroe
+    Japanese: 勇者の服
   Pretty Names:
     English: "|Heros Clothes|"
     Spanish: "las |Ropas del Héroe|"
     French:
+    German: "das |Heldengewand|"
+    Italian: "la |Tunica dell'Eroe|"
+    Japanese: "|勇者の服|"
   Gender:
     English: None
     Spanish: Female
     French:
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French:
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x32
 
 - Names:
     English: Skull Hammer
     Spanish: Martillo
     French: Masse
+    German: Stahlhammer
+    Italian: Martello
+    Japanese: ハンマー
   Pretty Names:
     English: "the |Skull Hammer|"
     Spanish: "el |Martillo|"
     French: "la |Masse|"
+    German: "der |Stahlhammer|"
+    Italian: "il |Martello|"
+    Japanese: "|ハンマー|"
   Cryptic Names:
     English: "the |hammer of the dead|"
     Spanish: "el |martillo de los muertos|"
     French: "le |marteau de la mort|"
+    German: "der |Hammer der Toten|"
+    Italian: "il |martello dei morti|"
+    Japanese: "|死者のハンマー|"
   Gender:
     English: None
     Spanish: Male
     French: Female # Female (masse), Male (marteau)
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x33
 
 
@@ -839,22 +1391,37 @@
     English: Deku Leaf
     Spanish: Hoja Deku
     French: Feuille Mojo
+    German: Deku-Blatt
+    Italian: Foglia Deku
+    Japanese: デクの葉
   Pretty Names:
     English: "a |Deku Leaf|"
     Spanish: "la |Hoja Deku|"
     French: "une |Feuille Mojo|"
+    German: "ein |Deku-Blatt|"
+    Italian: "una |Foglia Deku|"
+    Japanese: "|デクの葉|"
   Cryptic Names:
     English: "a |magic leaf|"
     Spanish: "una |hoja mágica|"
     French: "une |feuille magique|"
+    German: "ein |magisches Blatt|"
+    Italian: "una |foglia magica|"
+    Japanese: "|魔法の葉|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x34
 
 
@@ -862,76 +1429,127 @@
     English: Fire Ice Arrows
     Spanish: Flechas de Fuego y Hielo
     French: Flèches de Glace et de Feu
+    German: Feuer- und Eispfeile
+    Italian: Frecce di Fuoco e di Ghiaccio
+    Japanese: 炎と氷の矢
   Pretty Names:
     English: "|Fire Ice Arrows|"
     Spanish: "las |Flechas de Fuego y Hielo|"
     French: "les |Flèches de Glace et de Feu|"
+    German: "die |Feuer- und Eispfeile|"
+    Italian: "le |Frecce di Fuoco e di Ghiaccio|"
+    Japanese: "|炎と氷の矢|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x35
 
 - Names:
     English: Light Arrow
     Spanish: Flechas de Luz
     French: Flèche de Lumière
+    German: Lichtpfeile
+    Italian: Freccia della Luce
+    Japanese: 光の矢
   Pretty Names:
     English: "a |Light Arrow|"
     Spanish: "las |Flechas de Luz|"
     French: "la |Flèche de Lumière|"
+    German: "die |Lichtpfeile|"
+    Italian: "la |Freccia della Luce|"
+    Japanese: "|光の矢|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Plural
     French: Singular
+    German: Plural
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x36
 
 - Names:
     English: Heros New Clothes
     Spanish: Ropas que solo ven los honestos
     French:
+    German: Gewand, das nur der Kluge und Taugliche sehen kann
+    Italian: Tunica dei Puri di Cuore
+    Japanese: 正直者にしか見えない服
   Pretty Names:
     English: "|Heros New Clothes|"
     Spanish: "las |Ropas que solo ven los honestos|"
     French:
+    German: "das |Gewand, das nur der Kluge und Taugliche sehen kann|"
+    Italian: "la |Tunica dei Puri di Cuore|"
+    Japanese: "|正直者にしか見えない服|"
   Gender:
     English: None
     Spanish: Female
     French:
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Plural
     French:
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x37
 
 - Names:
     English: Progressive Sword
     Spanish: Espada Progresiva
     French: Epée Progressive
+    German: Progressives Schwert
+    Italian: Spada Progressiva
+    Japanese: 剣（強化）
   Pretty Names:
     English: "a |Progressive Sword|"
     Spanish: "una |Espada Progresiva|"
     French: "une |Epée Progressive|"
+    German: "ein |Progressives Schwert|"
+    Italian: "una |Spada Progressiva|"
+    Japanese: "|剣（強化）|"
   Cryptic Names:
     English: "an |upgrade for your blade|"
     Spanish: "una |mejora a tu cuchilla|"
     French: "une |amélioration pour votre épée|"
+    German: "ein |Upgrade für deine Klinge|"
+    Italian: "un |potenziamento per la tua lama|"
+    Japanese: "|剣の強化|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x38
 
 
@@ -939,112 +1557,187 @@
     English: Master Sword Powerless
     Spanish: Espada Maestra sin restaurar
     French: Excalibur Affaibli
+    German: Master-Schwert (kraftlos)
+    Italian: Spada Suprema (indebolita)
+    Japanese: マスターソード（眠り）
   Pretty Names:
     English: "the |Master Sword Powerless|"
     Spanish: "la |Espada Maestra sin restaurar|"
     French:
+    German: "das |Master-Schwert (kraftlos)|"
+    Italian: "la |Spada Suprema (indebolita)|"
+    Japanese: "|マスターソード（眠り）|"
   Gender:
     English: None
     Spanish: Female
     French: None
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x39
 
 - Names:
     English: Master Sword Half
     Spanish: Espada Maestra semi-restaurada
     French: Excalibur Mi-Réanimé
+    German: Master-Schwert (halb erweckt)
+    Italian: Spada Suprema (semirisvegliata)
+    Japanese: マスターソード（半覚醒）
   Pretty Names:
     English: "the |Master Sword Half|"
     Spanish: "la |Espada Maestra semi-restaurada|"
     French:
+    German: "das |Master-Schwert (halb erweckt)|"
+    Italian: "la |Spada Suprema (semirisvegliata)|"
+    Japanese: "|マスターソード（半覚醒）|"
   Gender:
     English: None
     Spanish: Female
     French: None
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x3A
 
 - Names:
     English: Progressive Shield
     Spanish: Escudo progresivo
     French: Bouclier Progressif
+    German: Progressiver Schild
+    Italian: Scudo Progressivo
+    Japanese: 盾（強化）
   Pretty Names:
     English: "a |Progressive Shield|"
     Spanish: "un |Escudo progresivo|"
     French: "un |Bouclier Progressif|"
+    German: "ein |Progressiver Schild|"
+    Italian: "uno |Scudo Progressivo|"
+    Japanese: "|盾（強化）|"
   Cryptic Names:
     English: "a |defensive item|"
     Spanish: "un |objeto de defensa|"
     French: "un |objet de défense|"
+    German: "ein |Item zur Verteidigung|"
+    Italian: "uno |strumento difensivo|"
+    Japanese: "|身を守る道具|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x3B
 
 - Names:
     English: Mirror Shield
     Spanish: Escudo Espejo
     French: Bouclier Miroir
+    German: Spiegelschild
+    Italian: Scudo Specchio
+    Japanese: ミラーシールド
   Pretty Names:
     English: "the |Mirror Shield|"
     Spanish: "el |Escudo Espejo|"
     French: "le |Bouclier Miroir|"
+    German: "der |Spiegelschild|"
+    Italian: "lo |Scudo Specchio|"
+    Japanese: "|ミラーシールド|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x3C
 
 - Names:
     English: Recovered Heros Sword
     Spanish: Espada del Héroe Recuperada
     French:
+    German: Wiedergefundenes Heroenschwert
+    Italian: Spada dell'Eroe Ritrovata
+    Japanese: 落とした勇者の剣
   Pretty Names:
     English: "a |Recovered Heros Sword|"
     Spanish: "una |Espada del Héroe Recuperada|"
     French:
+    German: "das |Wiedergefundenes Heroenschwert|"
+    Italian: "la |Spada dell'Eroe Ritrovata|"
+    Japanese: "|落とした勇者の剣|"
   Gender:
     English: None
     Spanish: Male
     French:
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French:
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x3D
 
 - Names:
     English: Master Sword Full
     Spanish: Espada Maestra Restaurada
     French: Excalibur Réanimé
+    German: Master-Schwert (erweckt)
+    Italian: Spada Suprema (risvegliata)
+    Japanese: マスターソード（覚醒）
   Pretty Names:
     English: "a |Master Sword Full|"
     Spanish: "la |Espada Maestra Restaurada|"
     French: "|Excalibur Réanimé|"
+    German: "das |Master-Schwert (erweckt)|"
+    Italian: "la |Spada Suprema (risvegliata)|"
+    Japanese: "|マスターソード（覚醒）|"
   Gender:
     English: None
     Spanish: Female
     French: None
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x3E
 
 # alternate message
@@ -1052,1640 +1745,2744 @@
     English: Piece of Heart 2
     Spanish: Pieza de Corazón 2
     French: Quart de Cœur 2
+    German: Herzteil
+    Italian: Frammento di Cuore
+    Japanese: ハートのかけら
   Pretty Names:
     English: "a |Piece of Heart|"
     Spanish: "una |Pieza de Corazón|"
     French: "un |Quart de Cœur|"
+    German: "ein |Herzteil|"
+    Italian: "un |Frammento di Cuore|"
+    Japanese: "|ハートのかけら|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x3F
 
 - Names:
     English: Pirates Charm
     Spanish: Amuleto Pirata
     French: Amulette Pirate
+    German: Piratentalisman
+    Italian: Amuleto Pirata
+    Japanese: 海賊のお守り
   Pretty Names:
     English: "a |Pirates Charm|"
     Spanish: "un |Amuleto Pirata|"
     French: "une |Amulette Pirate|"
+    German: "der |Piratentalisman|"
+    Italian: "l'|Amuleto Pirata|"
+    Japanese: "|海賊のお守り|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x42
 
 - Names:
     English: Hero's Charm
     Spanish: Amuleto del Héroe
     French: Amulette du Héros
+    German: Heldentalisman
+    Italian: Amuleto dell'Eroe
+    Japanese: 勇者のお守り
   Pretty Names:
     English: "the |Hero's Charm|"
     Spanish: "el |Amuleto del Héroe|"
     French: "une |Amulette du Héros|"
+    German: "der |Heldentalisman|"
+    Italian: "l'|Amuleto dell'Eroe|"
+    Japanese: "|勇者のお守り|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x43
 
 - Names:
     English: Skull Necklace
     Spanish: Colgante Macabro
     French: Collier Macabre
+    German: Totenkopfkette
+    Italian: Collana Teschio
+    Japanese: ドクロの首飾り
   Pretty Names:
     English: "a |Skull Necklace|"
     Spanish: "un |Colgante Macabro|"
     French: "un |Collier Macabre|"
+    German: "eine |Totenkopfkette|"
+    Italian: "una |Collana Teschio|"
+    Japanese: "|ドクロの首飾り|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x45
 
 - Names:
     English: Boko Baba Seed
     Spanish: Semilla de Boko Baba
     French: Graine de Bokobaba
+    German: Plantagranda-Samen
+    Italian: Seme Nefentyax
+    Japanese: ボコババのタネ
   Pretty Names:
     English: "a |Boko Baba Seed|"
     Spanish: "una |Semilla de Boko Baba|"
     French: "une |Graine de Bokobaba|"
+    German: "ein |Plantagranda-Samen|"
+    Italian: "un |Seme Nefentyax|"
+    Japanese: "|ボコババのタネ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x46
 
 - Names:
     English: Golden Feather
     Spanish: Pluma Dorada
     French: Plume d'Or
+    German: Goldfeder
+    Italian: Piuma Dorata
+    Japanese: 金の羽根
   Pretty Names:
     English: "a |Golden Feather|"
     Spanish: "una |Pluma Dorada|"
     French: "une |Plume d'Or|"
+    German: "eine |Goldfeder|"
+    Italian: "una |Piuma Dorata|"
+    Japanese: "|金の羽根|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x47
 
 - Names:
     English: Knights Crest
     Spanish: Blasón de Guerrero
     French: Blason d'Epéiste
+    German: Ritterwappen
+    Italian: Emblema del Guerriero
+    Japanese: 剣士の紋章
   Pretty Names:
     English: "a |Knights Crest|"
     Spanish: "un |Blasón de Guerrero|"
     French: "un |Blason d'Epéiste|"
+    German: "ein |Ritterwappen|"
+    Italian: "un |Emblema del Guerriero|"
+    Japanese: "|剣士の紋章|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x48
 
 - Names:
     English: Red Chu Jelly
     Spanish: Jugo de Chuchu Rojo
     French: Gelée Chuchu Rouge
+    German: Rotes Schleim-Gelee
+    Italian: Gelatina ChuChu Rossa
+    Japanese: 赤チュチュゼリー
   Pretty Names:
     English: "a |Red Chu Jelly|"
     Spanish: "un |Jugo de Chuchu Rojo|"
     French: "une |Gelée Chuchu Rouge|"
+    German: "ein |Rotes Schleim-Gelee|"
+    Italian: "una |Gelatina ChuChu Rossa|"
+    Japanese: "|赤チュチュゼリー|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x49
 
 - Names:
     English: Green Chu Jelly
     Spanish: Jugo de Chuchu Verde
     French: Gelée Chuchu Verte
+    German: Grünes Schleim-Gelee
+    Italian: Gelatina ChuChu Verde
+    Japanese: 緑チュチュゼリー
   Pretty Names:
     English: "a |Green Chu Jelly|"
     Spanish: "un |Jugo de Chuchu Verde|"
     French: "une |Gelée Chuchu Verte|"
+    German: "ein |Grünes Schleim-Gelee|"
+    Italian: "una |Gelatina ChuChu Verde|"
+    Japanese: "|緑チュチュゼリー|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x4A
 
 - Names:
     English: Blue Chu Jelly
     Spanish: Jugo de Chuchu Azul
     French: Gelée Chuchu Bleue
+    German: Blaues Schleim-Gelee
+    Italian: Gelatina ChuChu Blu
+    Japanese: 青チュチュゼリー
   Pretty Names:
     English: "a |Blue Chu Jelly|"
     Spanish: "un |Jugo de Chuchu Azul|"
     French: "une |Gelée Chuchu Bleue|"
+    German: "ein |Blaues Schleim-Gelee|"
+    Italian: "una |Gelatina ChuChu Blu|"
+    Japanese: "|青チュチュゼリー|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x4B
 
 - Names:
     English: Dungeon Map
     Spanish: Mapa de la Mazmorra
     French: Carte du Donjon
+    German: Labyrinth-Karte
+    Italian: Mappa del Labirinto
+    Japanese: ダンジョンマップ
   Pretty Names:
     English: "a |Dungeon Map|"
     Spanish: "un |Mapa de la Mazmorra|"
     French: "une |Carte du Donjon|"
+    German: "eine |Labyrinth-Karte|"
+    Italian: "una |Mappa del Labirinto|"
+    Japanese: "|ダンジョンマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x4C
 
 - Names:
     English: Compass
     Spanish: Brújula
     French: Boussole
+    German: Kompass
+    Italian: Bussola
+    Japanese: コンパス
   Pretty Names:
     English: "a |Compass|"
     Spanish: "una |Brújula|"
     French: "une |Boussole|"
+    German: "ein |Kompass|"
+    Italian: "una |Bussola|"
+    Japanese: "|コンパス|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x4D
 
 - Names:
     English: Big Key
     Spanish: Gran Llave
     French: Grande Clé
+    German: Großer Schlüssel
+    Italian: Grande Chiave
+    Japanese: ボス部屋のカギ
   Pretty Names:
     English: "a |Big Key|"
     Spanish: "una |Gran Llave|"
     French: "une |Grande Clé|"
+    German: "ein |Großer Schlüssel|"
+    Italian: "una |Grande Chiave|"
+    Japanese: "|ボス部屋のカギ|"
   Cryptic Names:
     English: "an |ominous key|"
     Spanish: "una |llave siniestra|"
     French: "une |clé menaçante|"
+    German: "ein |unheilvoller Schlüssel|"
+    Italian: "una |chiave sinistra|"
+    Japanese: "|不吉なカギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x4E
 
 - Names:
     English: Empty Bottle
     Spanish: Botella
     French: Flacon
+    German: Flasche
+    Italian: Ampolla
+    Japanese: あきビン
   Pretty Names:
     English: "an |Empty Bottle|"
     Spanish: "una |Botella|"
     French: "un |Flacon|"
+    German: "eine |Flasche|"
+    Italian: "un'|Ampolla|"
+    Japanese: "|あきビン|"
   Cryptic Names:
     English: "a |glass container|"
     Spanish: "un |envase de vidrio|"
     French: "un |contenant en verre|"
+    German: "ein |Glasbehälter|"
+    Italian: "un |contenitore di vetro|"
+    Japanese: "|ガラスの入れ物|"
   Gender:
     English: None
     Spanish: Female # ("un") Male. ("una"). Female
     French: Male
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x50
 
 - Names:
     English: Red Potion
     Spanish: Poción Roja
     French: Potion Rouge
+    German: Rotes Elixier
+    Italian: Pozione Vita
+    Japanese: 赤いクスリ
   Pretty Names:
     English: "a |Red Potion|"
     Spanish: "una |Poción Roja|"
     French: "une |Potion Rouge|"
+    German: "ein |Rotes Elixier|"
+    Italian: "una |Pozione Vita|"
+    Japanese: "|赤いクスリ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x51
 
 - Names:
     English: Green Potion
     Spanish: Poción Verde
     French: Potion Verte
+    German: Grünes Elixier
+    Italian: Pozione Magica
+    Japanese: 緑のクスリ
   Pretty Names:
     English: "a |Green Potion|"
     Spanish: "una |Poción Verde|"
     French: "une |Potion Verte|"
+    German: "ein |Grünes Elixier|"
+    Italian: "una |Pozione Magica|"
+    Japanese: "|緑のクスリ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x52
 
 - Names:
     English: Blue Potion
     Spanish: Poción Azul
     French: Potion Bleue
+    German: Blaues Elixier
+    Italian: Pozione Curatutto
+    Japanese: 青いクスリ
   Pretty Names:
     English: "a |Blue Potion|"
     Spanish: "una |Poción Azul|"
     French: "une |Potion Bleue|"
+    German: "ein |Blaues Elixier|"
+    Italian: "una |Pozione Curatutto|"
+    Japanese: "|青いクスリ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x53
 
 - Names:
     English: Elixir Soup Half
     Spanish: Sopa de la Abuela (1/2)
     French: Soupe de Mémé (1/2)
+    German: Omas Suppe (1/2)
+    Italian: Zuppa della Casa (1/2)
+    Japanese: 特製スープ（１／２）
   Pretty Names:
     English: "|Elixir Soup Half|"
     Spanish: "|Sopa de la Abuela (1/2)|"
     French: "la |Soupe de Mémé (1/2)|"
+    German: "|Omas Suppe (1/2)|"
+    Italian: "la |Zuppa della Casa (1/2)|"
+    Japanese: "|特製スープ（１／２）|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x54
 
 - Names:
     English: Elixir Soup
     Spanish: Sopa de la Abuela
     French: Soupe de Mémé
+    German: Omas Suppe
+    Italian: Zuppa della Casa
+    Japanese: 特製スープ
   Pretty Names:
     English: "|Elixir Soup|"
     Spanish: "|Sopa de la Abuela|"
     French: "la |Soupe de Mémé|"
+    German: "|Omas Suppe|"
+    Italian: "la |Zuppa della Casa|"
+    Japanese: "|特製スープ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x55
 
 - Names:
     English: Bottled Water
     Spanish: Agua
     French: Eau
+    German: Wasser
+    Italian: Acqua
+    Japanese: 水
   Pretty Names:
     English: "|Bottled Water|"
     Spanish: "|Agua|"
     French: "de l'|Eau|"
+    German: "|Wasser|"
+    Italian: "l'|Acqua|"
+    Japanese: "|水|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x56
 
 - Names:
     English: Fairy In Bottle
     Spanish: Hada
     French: Fée
+    German: Fee in der Flasche
+    Italian: Fata in Ampolla
+    Japanese: ビンの妖精
   Pretty Names:
     English: "a |Fairy In Bottle|"
     Spanish: "un |Hada|"
     French: "une |Fée|"
+    German: "eine |Fee in der Flasche|"
+    Italian: "una |Fata in Ampolla|"
+    Japanese: "|ビンの妖精|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x57
 
 - Names:
     English: Forest Firefly
     Spanish: Luciérnaga del bosque
     French: Luciole de la Forêt
+    German: Tannglühwürmchen
+    Italian: Lucciola dei Boschi
+    Japanese: 森のホタル
   Pretty Names:
     English: "a |Forest Firefly|"
     Spanish: "una |Luciérnaga del bosque|"
     French: "une |Luciole de la Forêt|"
+    German: "ein |Tannglühwürmchen|"
+    Italian: "una |Lucciola dei Boschi|"
+    Japanese: "|森のホタル|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x58
 
 - Names:
     English: Forest Water
     Spanish: Agua del bosque
     French: Eau de la Forêt
+    German: Tanntopisches Wasser
+    Italian: Acqua dei Boschi
+    Japanese: 森の水
   Pretty Names:
     English: "|Forest Water|"
     Spanish: "|Agua del bosque|"
     French: "de l'|Eau de la Forêt|"
+    German: "|Tanntopisches Wasser|"
+    Italian: "l'|Acqua dei Boschi|"
+    Japanese: "|森の水|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x59
 
 - Names:
     English: Triforce Shard 1
     Spanish: Fragmento de la Trifuerza 1
     French: Fragment de la Triforce 1
+    German: Triforce-Splitter 1
+    Italian: Frammento di Triforza 1
+    Japanese: トライフォースのかけら１
   Pretty Names:
     English: "|Triforce Shard 1|"
     Spanish: "el |Fragmento de la Trifuerza 1|"
     French: "le |Fragment de la Triforce 1|"
+    German: "|Triforce-Splitter 1|"
+    Italian: "|Frammento di Triforza 1|"
+    Japanese: "|トライフォースのかけら１|"
   Cryptic Names:
     English: "a |piece of the power of the gods|"
     Spanish: "un |fragmento del poder de los dioses|"
     French: "un |fragment d'or|"
+    German: "ein |Stück der Macht der Götter|"
+    Italian: "un |frammento del potere degli dei|"
+    Japanese: "|神々の力のかけら|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x61
 
 - Names:
     English: Triforce Shard 2
     Spanish: Fragmento de la Trifuerza 2
     French: Fragment de la Triforce 2
+    German: Triforce-Splitter 2
+    Italian: Frammento di Triforza 2
+    Japanese: トライフォースのかけら２
   Pretty Names:
     English: "|Triforce Shard 2|"
     Spanish: "el |Fragmento de la Trifuerza 2|"
     French: "le |Fragment de la Triforce 2|"
+    German: "|Triforce-Splitter 2|"
+    Italian: "|Frammento di Triforza 2|"
+    Japanese: "|トライフォースのかけら２|"
   Cryptic Names:
     English: "a |piece of the power of the gods|"
     Spanish: "un |fragmento del poder de los dioses|"
     French: "un |fragment d'or|"
+    German: "ein |Stück der Macht der Götter|"
+    Italian: "un |frammento del potere degli dei|"
+    Japanese: "|神々の力のかけら|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x62
 
 - Names:
     English: Triforce Shard 3
     Spanish: Fragmento de la Trifuerza 3
     French: Fragment de la Triforce 3
+    German: Triforce-Splitter 3
+    Italian: Frammento di Triforza 3
+    Japanese: トライフォースのかけら３
   Pretty Names:
     English: "|Triforce Shard 3|"
     Spanish: "el |Fragmento de la Trifuerza 3|"
     French: "le |Fragment de la Triforce 3|"
+    German: "|Triforce-Splitter 3|"
+    Italian: "|Frammento di Triforza 3|"
+    Japanese: "|トライフォースのかけら３|"
   Cryptic Names:
     English: "a |piece of the power of the gods|"
     Spanish: "un |fragmento del poder de los dioses|"
     French: "un |fragment d'or|"
+    German: "ein |Stück der Macht der Götter|"
+    Italian: "un |frammento del potere degli dei|"
+    Japanese: "|神々の力のかけら|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x63
 
 - Names:
     English: Triforce Shard 4
     Spanish: Fragmento de la Trifuerza 4
     French: Fragment de la Triforce 4
+    German: Triforce-Splitter 4
+    Italian: Frammento di Triforza 4
+    Japanese: トライフォースのかけら４
   Pretty Names:
     English: "|Triforce Shard 4|"
     Spanish: "el |Fragmento de la Trifuerza 4|"
     French: "le |Fragment de la Triforce 4|"
+    German: "|Triforce-Splitter 4|"
+    Italian: "|Frammento di Triforza 4|"
+    Japanese: "|トライフォースのかけら４|"
   Cryptic Names:
     English: "a |piece of the power of the gods|"
     Spanish: "un |fragmento del poder de los dioses|"
     French: "un |fragment d'or|"
+    German: "ein |Stück der Macht der Götter|"
+    Italian: "un |frammento del potere degli dei|"
+    Japanese: "|神々の力のかけら|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x64
 
 - Names:
     English: Triforce Shard 5
     Spanish: Fragmento de la Trifuerza 5
     French: Fragment de la Triforce 5
+    German: Triforce-Splitter 5
+    Italian: Frammento di Triforza 5
+    Japanese: トライフォースのかけら５
   Pretty Names:
     English: "|Triforce Shard 5|"
     Spanish: "el |Fragmento de la Trifuerza 5|"
     French: "le |Fragment de la Triforce 5|"
+    German: "|Triforce-Splitter 5|"
+    Italian: "|Frammento di Triforza 5|"
+    Japanese: "|トライフォースのかけら５|"
   Cryptic Names:
     English: "a |piece of the power of the gods|"
     Spanish: "un |fragmento del poder de los dioses|"
     French: "un |fragment d'or|"
+    German: "ein |Stück der Macht der Götter|"
+    Italian: "un |frammento del potere degli dei|"
+    Japanese: "|神々の力のかけら|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x65
 
 - Names:
     English: Triforce Shard 6
     Spanish: Fragmento de la Trifuerza 6
     French: Fragment de la Triforce 6
+    German: Triforce-Splitter 6
+    Italian: Frammento di Triforza 6
+    Japanese: トライフォースのかけら６
   Pretty Names:
     English: "|Triforce Shard 6|"
     Spanish: "el |Fragmento de la Trifuerza 6|"
     French: "le |Fragment de la Triforce 6|"
+    German: "|Triforce-Splitter 6|"
+    Italian: "|Frammento di Triforza 6|"
+    Japanese: "|トライフォースのかけら６|"
   Cryptic Names:
     English: "a |piece of the power of the gods|"
     Spanish: "un |fragmento del poder de los dioses|"
     French: "un |fragment d'or|"
+    German: "ein |Stück der Macht der Götter|"
+    Italian: "un |frammento del potere degli dei|"
+    Japanese: "|神々の力のかけら|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x66
 
 - Names:
     English: Triforce Shard 7
     Spanish: Fragmento de la Trifuerza 7
     French: Fragment de la Triforce 7
+    German: Triforce-Splitter 7
+    Italian: Frammento di Triforza 7
+    Japanese: トライフォースのかけら７
   Pretty Names:
     English: "|Triforce Shard 7|"
     Spanish: "el |Fragmento de la Trifuerza 7|"
     French: "le |Fragment de la Triforce 7|"
+    German: "|Triforce-Splitter 7|"
+    Italian: "|Frammento di Triforza 7|"
+    Japanese: "|トライフォースのかけら７|"
   Cryptic Names:
     English: "a |piece of the power of the gods|"
     Spanish: "un |fragmento del poder de los dioses|"
     French: "un |fragment d'or|"
+    German: "ein |Stück der Macht der Götter|"
+    Italian: "un |frammento del potere degli dei|"
+    Japanese: "|神々の力のかけら|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x67
 
 - Names:
     English: Triforce Shard 8
     Spanish: Fragmento de la Trifuerza 8
     French: Fragment de la Triforce 8
+    German: Triforce-Splitter 8
+    Italian: Frammento di Triforza 8
+    Japanese: トライフォースのかけら８
   Pretty Names:
     English: "|Triforce Shard 8|"
     Spanish: "el |Fragmento de la Trifuerza 8|"
     French: "le |Fragment de la Triforce 8|"
+    German: "|Triforce-Splitter 8|"
+    Italian: "|Frammento di Triforza 8|"
+    Japanese: "|トライフォースのかけら８|"
   Cryptic Names:
     English: "a |piece of the power of the gods|"
     Spanish: "un |fragmento del poder de los dioses|"
     French: "un |fragment d'or|"
+    German: "ein |Stück der Macht der Götter|"
+    Italian: "un |frammento del potere degli dei|"
+    Japanese: "|神々の力のかけら|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x68
 
 - Names:
     English: Nayru's Pearl
     Spanish: Orbe de Nayru
     French: Perle de Nayru
+    German: Nayrus Deamont
+    Italian: Perla di Nayru
+    Japanese: ネールの神珠
   Pretty Names:
     English: "|Nayru's Pearl|"
     Spanish: "el |Orbe de Nayru|"
     French: "la |Perle de Nayru|"
+    German: "|Nayrus Deamont|"
+    Italian: "la |Perla di Nayru|"
+    Japanese: "|ネールの神珠|"
   Cryptic Names:
     English: "a |blue jewel|"
     Spanish: "una |perla azul|"
     French: "un |joyau bleu|"
+    German: "ein |blaues Juwel|"
+    Italian: "un |gioiello blu|"
+    Japanese: "|青い宝玉|"
   Gender:
     English: None
     Spanish: Female
     French: Female # Female (perle), Male (joyau)
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x69
 
 - Names:
     English: Din's Pearl
     Spanish: Orbe de Din
     French: Perle de Din
+    German: Dins Deamont
+    Italian: Perla di Din
+    Japanese: ディンの神珠
   Pretty Names:
     English: "|Din's Pearl|"
     Spanish: "el |Orbe de Din|"
     French: "la |Perle de Din|"
+    German: "|Dins Deamont|"
+    Italian: "la |Perla di Din|"
+    Japanese: "|ディンの神珠|"
   Cryptic Names:
     English: "a |red jewel|"
     Spanish: "una |perla roja|"
     French: "un |joyau rouge|"
+    German: "ein |rotes Juwel|"
+    Italian: "un |gioiello rosso|"
+    Japanese: "|赤い宝玉|"
   Gender:
     English: None
     Spanish: Female
     French: Female # Female (perle), Male (joyau)
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x6A
 
 - Names:
     English: Farore's Pearl
     Spanish: Orbe de Farore
     French: Perle de Farore
+    German: Farores Deamont
+    Italian: Perla di Farore
+    Japanese: フロルの神珠
   Pretty Names:
     English: "|Farore's Pearl|"
     Spanish: "el |Orbe de Farore|"
     French: "la |Perle de Farore|"
+    German: "|Farores Deamont|"
+    Italian: "la |Perla di Farore|"
+    Japanese: "|フロルの神珠|"
   Cryptic Names:
     English: "a |green jewel|"
     Spanish: "una |perla verde|"
     French: "un |joyau vert|"
+    German: "ein |grünes Juwel|"
+    Italian: "un |gioiello verde|"
+    Japanese: "|緑の宝玉|"
   Gender:
     English: None
     Spanish: Female
     French: Female # Female (perle), Male (joyau)
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x6B
 
 - Names:
     English: Wind's Requiem
     Spanish: Melodía del Viento
     French: Mélodie du Vent
+    German: Lied des Windes
+    Italian: Canzone del Vento
+    Japanese: 風の唄
   Pretty Names:
     English: "the |Wind's Requiem|"
     Spanish: "la |Melodía del Viento|"
     French: "la |Mélodie du Vent|"
+    German: "das |Lied des Windes|"
+    Italian: "la |Canzone del Vento|"
+    Japanese: "|風の唄|"
   Cryptic Names:
     English: "the |song of wind|"
     Spanish: "la |canción del viento|"
     French: "le |thème du vent|"
+    German: "das |Lied vom Wind|"
+    Italian: "la |canzone del vento|"
+    Japanese: "|風の調べ|"
   Gender:
     English: None
     Spanish: Female
     French: Female # Female (mélodie), Male (thème)
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x6D
 
 - Names:
     English: Ballad of Gales
     Spanish: Melodía del Tornado
     French: Requiem de la Tornade
+    German: Kanon des Sturmes
+    Italian: Melodia del Tifone
+    Japanese: 疾風の唄
   Pretty Names:
     English: "the |Ballad of Gales|"
     Spanish: "la |Melodía del Tornado|"
     French: "le |Requiem de la Tornade|"
+    German: "der |Kanon des Sturmes|"
+    Italian: "la |Melodia del Tifone|"
+    Japanese: "|疾風の唄|"
   Cryptic Names:
     English: "the |song of gales|"
     Spanish: "la |canción del tornado|"
     French: "le |thème de la tornade|"
+    German: "das |Lied der Stürme|"
+    Italian: "la |canzone delle tempeste|"
+    Japanese: "|疾風の調べ|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x6E
 
 - Names:
     English: Command Melody
     Spanish: Melodía de la Voluntad
     French: Air du Marionnettiste
+    German: Sonate des Puppenspielers
+    Italian: Canto del Burattino
+    Japanese: 操りの唄
   Pretty Names:
     English: "the |Command Melody|"
     Spanish: "la |Melodía de la Voluntad|"
     French: l'|Air du Marionnettiste|"
+    German: "die |Sonate des Puppenspielers|"
+    Italian: "il |Canto del Burattino|"
+    Japanese: "|操りの唄|"
   Cryptic Names:
     English: "the |song of command|"
     Spanish: "la |canción del control|"
     French: "le |thème du marionnettiste|"
+    German: "das |Lied der Kontrolle|"
+    Italian: "la |canzone del comando|"
+    Japanese: "|操りの調べ|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x6F
 
 - Names:
     English: Earth God's Lyric
     Spanish: Melodía del Espíritu de la Tierra
     French: Hymne du Dieu de la Terre
+    German: Hymne des Terragottes
+    Italian: Inno della Terra
+    Japanese: 地神の唄
   Pretty Names:
     English: "the |Earth God's Lyric|"
     Spanish: "la |Melodía del Espíritu de la Tierra|"
     French: l'|Hymne du Dieu de la Terre|"
+    German: "die |Hymne des Terragottes|"
+    Italian: "l'|Inno della Terra|"
+    Japanese: "|地神の唄|"
   Cryptic Names:
     English: "the |song of the earth's god|"
     Spanish: "la |canción del sabio de la tierra|"
     French: "le |thème du dieu de la terre|"
+    German: "das |Lied des Erdgottes|"
+    Italian: "la |canzone del dio della terra|"
+    Japanese: "|大地の神の調べ|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x70
 
 - Names:
     English: Wind God's Aria
     Spanish: Melodía del Espíritu del Viento
     French: Hymne du Dieu du Vent
+    German: Hymne des Zephirgottes
+    Italian: Inno del Vento
+    Japanese: 風神の唄
   Pretty Names:
     English: "the |Wind God's Aria|"
     Spanish: "la |Melodía del Espíritu del Viento|"
     French: l'|Hymne du Dieu du Vent|"
+    German: "die |Hymne des Zephirgottes|"
+    Italian: "l'|Inno del Vento|"
+    Japanese: "|風神の唄|"
   Cryptic Names:
     English: "the |song of the wind's god|"
     Spanish: "la |canción del sabio del viento|"
     French: "le |thème du dieu du vent|"
+    German: "das |Lied des Windgottes|"
+    Italian: "la |canzone del dio del vento|"
+    Japanese: "|風の神の調べ|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x71
 
 - Names:
     English: Song of Passing
     Spanish: Melodía del Transcurrir
     French: Chant du Soleil
+    German: Kleine Tag- und Nachtmusik
+    Italian: Sonata in Dì Notturno
+    Japanese: 昼夜の唄
   Pretty Names:
     English: "the |Song of Passing|"
     Spanish: "la |Melodía del Transcurrir|"
     French: "le |Chant du Soleil|"
+    German: "die |Kleine Tag- und Nachtmusik|"
+    Italian: "la |Sonata in Dì Notturno|"
+    Japanese: "|昼夜の唄|"
   Cryptic Names:
     English: "the |song of time|"
     Spanish: "la |canción del Sol|"
     French: "le |thème du soleil|"
+    German: "das |Lied der Zeit|"
+    Italian: "la |canzone del tempo|"
+    Japanese: "|時の調べ|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x72
 
 - Names:
     English: Swift Sail
     Spanish: Vela Veloz
     French: Voile Rapide
+    German: Siebenmeilen-Segel
+    Italian: Vela Rapida
+    Japanese: 快速の帆
   Pretty Names:
     English: "a |Swift Sail|"
     Spanish: "una |Vela Veloz|"
     French: "une |Voile Rapide|"
+    German: "ein |Siebenmeilen-Segel|"
+    Italian: "una |Vela Rapida|"
+    Japanese: "|快速の帆|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x77
 
 - Names:
     English: Progressive Sail
     Spanish: Vela Progresiva
     French: Voile de Bateau Progressive
+    German: Progressives Segel
+    Italian: Vela Progressiva
+    Japanese: 船の帆（強化）
   Pretty Names:
     English: "a |Progressive Sail|"
     Spanish: "una |Vela Progresiva|"
     French: "une |Voile de Bateau Progressive|"
+    German: "ein |Progressives Segel|"
+    Italian: "una |Vela Progressiva|"
+    Japanese: "|船の帆（強化）|"
   Cryptic Names:
     English: "a |wind follower|"
     Spanish: "|aquello que sigue el viento|"
     French: "une |toile portante|"
+    German: "ein |Gefährte des Windes|"
+    Italian: "un |seguace del vento|"
+    Japanese: "|風に乗る物|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x78
 
 - Names:
     English: Triforce Chart 1 Deciphered
     Spanish: Mapa de la Trifuerza 1 Decifrado
     French: Carte de la Triforce 1 Décryptée
+    German: Entschlüsselte Triforce-Karte 1
+    Italian: Mappa della Triforza 1 decifrata
+    Japanese: 解読したトライフォースのマップ１
   Pretty Names:
     English: "|Triforce Chart 1 Deciphered|"
     Spanish: "el |Mapa de la Trifuerza 1 Decifrado|"
     French: "la |Carte de la Triforce 1 Décryptée|"
+    German: "die |Entschlüsselte Triforce-Karte 1|"
+    Italian: "la |Mappa della Triforza 1 decifrata|"
+    Japanese: "|解読したトライフォースのマップ１|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x79
 
 - Names:
     English: Triforce Chart 2 Deciphered
     Spanish: Mapa de la Trifuerza 2 Decifrado
     French: Carte de la Triforce 2 Décryptée
+    German: Entschlüsselte Triforce-Karte 2
+    Italian: Mappa della Triforza 2 decifrata
+    Japanese: 解読したトライフォースのマップ２
   Pretty Names:
     English: "|Triforce Chart 2 Deciphered|"
     Spanish: "el |Mapa de la Trifuerza 2 Decifrado|"
     French: "la |Carte de la Triforce 2 Décryptée|"
+    German: "die |Entschlüsselte Triforce-Karte 2|"
+    Italian: "la |Mappa della Triforza 2 decifrata|"
+    Japanese: "|解読したトライフォースのマップ２|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x7A
 
 - Names:
     English: Triforce Chart 3 Deciphered
     Spanish: Mapa de la Trifuerza 3 Decifrado
     French: Carte de la Triforce 3 Décryptée
+    German: Entschlüsselte Triforce-Karte 3
+    Italian: Mappa della Triforza 3 decifrata
+    Japanese: 解読したトライフォースのマップ３
   Pretty Names:
     English: "|Triforce Chart 3 Deciphered|"
     Spanish: "el |Mapa de la Trifuerza 3 Decifrado|"
     French: "la |Carte de la Triforce 3 Décryptée|"
+    German: "die |Entschlüsselte Triforce-Karte 3|"
+    Italian: "la |Mappa della Triforza 3 decifrata|"
+    Japanese: "|解読したトライフォースのマップ３|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x7B
 
 - Names:
     English: Triforce Chart 4 Deciphered
     Spanish: Mapa de la Trifuerza 4 Decifrado
     French: Carte de la Triforce 4 Décryptée
+    German: Entschlüsselte Triforce-Karte 4
+    Italian: Mappa della Triforza 4 decifrata
+    Japanese: 解読したトライフォースのマップ４
   Pretty Names:
     English: "|Triforce Chart 4 Deciphered|"
     Spanish: "el |Mapa de la Trifuerza 4 Decifrado|"
     French: "la |Carte de la Triforce 4 Décryptée|"
+    German: "die |Entschlüsselte Triforce-Karte 4|"
+    Italian: "la |Mappa della Triforza 4 decifrata|"
+    Japanese: "|解読したトライフォースのマップ４|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x7C
 
 - Names:
     English: Triforce Chart 5 Deciphered
     Spanish: Mapa de la Trifuerza 5 Decifrado
     French: Carte de la Triforce 5 Décryptée
+    German: Entschlüsselte Triforce-Karte 5
+    Italian: Mappa della Triforza 5 decifrata
+    Japanese: 解読したトライフォースのマップ５
   Pretty Names:
     English: "|Triforce Chart 5 Deciphered|"
     Spanish: "el |Mapa de la Trifuerza 5 Decifrado|"
     French: "la |Carte de la Triforce 5 Décryptée|"
+    German: "die |Entschlüsselte Triforce-Karte 5|"
+    Italian: "la |Mappa della Triforza 5 decifrata|"
+    Japanese: "|解読したトライフォースのマップ５|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x7D
 
 - Names:
     English: Triforce Chart 6 Deciphered
     Spanish: Mapa de la Trifuerza 6 Decifrado
     French: Carte de la Triforce 6 Décryptée
+    German: Entschlüsselte Triforce-Karte 6
+    Italian: Mappa della Triforza 6 decifrata
+    Japanese: 解読したトライフォースのマップ６
   Pretty Names:
     English: "|Triforce Chart 6 Deciphered|"
     Spanish: "el |Mapa de la Trifuerza 6 Decifrado|"
     French: "la |Carte de la Triforce 6 Décryptée|"
+    German: "die |Entschlüsselte Triforce-Karte 6|"
+    Italian: "la |Mappa della Triforza 6 decifrata|"
+    Japanese: "|解読したトライフォースのマップ６|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x7E
 
 - Names:
     English: Triforce Chart 7 Deciphered
     Spanish: Mapa de la Trifuerza 7 Decifrado
     French: Carte de la Triforce 7 Décryptée
+    German: Entschlüsselte Triforce-Karte 7
+    Italian: Mappa della Triforza 7 decifrata
+    Japanese: 解読したトライフォースのマップ７
   Pretty Names:
     English: "|Triforce Chart 7 Deciphered|"
     Spanish: "el |Mapa de la Trifuerza 7 Decifrado|"
     French: "la |Carte de la Triforce 7 Décryptée|"
+    German: "die |Entschlüsselte Triforce-Karte 7|"
+    Italian: "la |Mappa della Triforza 7 decifrata|"
+    Japanese: "|解読したトライフォースのマップ７|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x7F
 
 - Names:
     English: Triforce Chart 8 Deciphered
     Spanish: Mapa de la Trifuerza 8 Decifrado
     French: Carte de la Triforce 8 Décryptée
+    German: Entschlüsselte Triforce-Karte 8
+    Italian: Mappa della Triforza 8 decifrata
+    Japanese: 解読したトライフォースのマップ８
   Pretty Names:
     English: "|Triforce Chart 8 Deciphered|"
     Spanish: "el |Mapa de la Trifuerza 8 Decifrado|"
     French: "la |Carte de la Triforce 8 Décryptée|"
+    German: "die |Entschlüsselte Triforce-Karte 8|"
+    Italian: "la |Mappa della Triforza 8 decifrata|"
+    Japanese: "|解読したトライフォースのマップ８|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x80
 
 - Names:
     English: All Purpose Bait
     Spanish: Cebo Multiuso
     French: Appât Universel
+    German: Universalfutter
+    Italian: Grani Multi
+    Japanese: 万能エサ
   Pretty Names:
     English: "|All Purpose Bait|"
     Spanish: "un |Cebo Multiuso|"
     French: "un |Appât Universel|"
+    German: "|Universalfutter|"
+    Italian: "i |Grani Multi|"
+    Japanese: "|万能エサ|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x82
 
 - Names:
     English: Hyoi Pear
     Spanish: Fruto de ajinjín
     French: Fruit Miam Miam
+    German: Putput-Frucht
+    Italian: Seme ChipChop
+    Japanese: ヒョイの実
   Pretty Names:
     English: "a |Hyoi Pear|"
     Spanish: "un |Fruto de ajinjín|"
     French: "un |Fruit Miam Miam|"
+    German: "eine |Putput-Frucht|"
+    Italian: "un |Seme ChipChop|"
+    Japanese: "|ヒョイの実|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x83
 
 - Names:
     English: Town Flower
     Spanish: Flor de Pueblo
     French: Fleur de la Ville
+    German: Stadtblume
+    Italian: Fiore di città
+    Japanese: 町の花
   Pretty Names:
     English: "a |Town Flower|"
     Spanish: "una |Flor de Pueblo|"
     French: "une |Fleur de la Ville|"
+    German: "eine |Stadtblume|"
+    Italian: "un |Fiore di città|"
+    Japanese: "|町の花|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x8C
 
 - Names:
     English: Sea Flower
     Spanish: Flores de Mar
     French: Fleur Marine
+    German: Meeresblume
+    Italian: Fiore di mare
+    Japanese: 海の花
   Pretty Names:
     English: "a |Sea Flower|"
     Spanish: unas |Flores de Mar|"
     French: "une |Fleur Marine|"
+    German: "eine |Meeresblume|"
+    Italian: "un |Fiore di mare|"
+    Japanese: "|海の花|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Plural
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x8D
 
 - Names:
     English: Exotic Flower
     Spanish: Flor del Sur
     French: Fleur du Sud
+    German: Südwind-Blume
+    Italian: Fiore esotico
+    Japanese: 南風の花
   Pretty Names:
     English: "an |Exotic Flower|"
     Spanish: "una |Flor del Sur|"
     French: "une |Fleur du Sud|"
+    German: "eine |Südwind-Blume|"
+    Italian: "un |Fiore esotico|"
+    Japanese: "|南風の花|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x8E
 
 - Names:
     English: Heros Flag
     Spanish: Banderín del Héroe
     French: Drapeau du Héros
+    German: Heldenfahne
+    Italian: Bandiera dell'Eroe
+    Japanese: 勇者の旗
   Pretty Names:
     English: "a |Heros Flag|"
     Spanish: "un |Banderín del Héroe|"
     French: "un |Drapeau du Héros|"
+    German: "eine |Heldenfahne|"
+    Italian: "una |Bandiera dell'Eroe|"
+    Japanese: "|勇者の旗|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x8F
 
 - Names:
     English: Big Catch Flag
     Spanish: Banderín del Pescador
     French: Drapeau de la Pêche Miraculeuse
+    German: Petri-Heil-Fahne
+    Italian: Bandiera del Pescatore
+    Japanese: 大漁祈願の旗
   Pretty Names:
     English: "a |Big Catch Flag|"
     Spanish: "un |Banderín del Pescador|"
     French: "un |Drapeau de la Pêche Miraculeuse|"
+    German: "eine |Petri-Heil-Fahne|"
+    Italian: "una |Bandiera del Pescatore|"
+    Japanese: "|大漁祈願の旗|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x90
 
 - Names:
     English: Big Sale Flag
     Spanish: Banderín de Saldo
     French: Drapeau des Soldes
+    German: Schlussverkaufsfahne
+    Italian: Bandiera della Svendita
+    Japanese: 大売出しの旗
   Pretty Names:
     English: "a |Big Sale Flag|"
     Spanish: "un |Banderín de Saldo|"
     French: "un |Drapeau des Soldes|"
+    German: "eine |Schlussverkaufsfahne|"
+    Italian: "una |Bandiera della Svendita|"
+    Japanese: "|大売出しの旗|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x91
 
 - Names:
     English: Pinwheel
     Spanish: Molinete
     French: Moulin à Vent
+    German: Windrad
+    Italian: Girandola
+    Japanese: 風車
   Pretty Names:
     English: "a |Pinwheel|"
     Spanish: "un |Molinete|"
     French: "un |Moulin à Vent|"
+    German: "ein |Windrad|"
+    Italian: "una |Girandola|"
+    Japanese: "|風車|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x92
 
 - Names:
     English: Sickle Moon Flag
     Spanish: Banderín de la Luna
     French: Drapeau du Croissant
+    German: Mondsichelfahne
+    Italian: Bandiera Spicchiodiluna
+    Japanese: 三日月の旗
   Pretty Names:
     English: "a |Sickle Moon Flag|"
     Spanish: "un |Banderín de la Luna|"
     French: "un |Drapeau du Croissant|"
+    German: "eine |Mondsichelfahne|"
+    Italian: "una |Bandiera Spicchiodiluna|"
+    Japanese: "|三日月の旗|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x93
 
 - Names:
     English: Skull Tower Idol
     Spanish: Cabezas Fósiles
     French: Statue Ricrâne
+    German: Fossilschädel-Statuette
+    Italian: Teste Fossili
+    Japanese: 化石頭部像
   Pretty Names:
     English: "a |Skull Tower Idol|"
     Spanish: unas |Cabezas Fósiles|"
     French: "une |Statue Ricrâne|"
+    German: "eine |Fossilschädel-Statuette|"
+    Italian: "le |Teste Fossili|"
+    Japanese: "|化石頭部像|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Plural
     French: Singular
+    German: Singular
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0x94
 
 - Names:
     English: Fountain Idol
     Spanish: Fuente de la Doncella
     French: Statue Naïade
+    German: Wasserkrugträgerin-Statuette
+    Italian: Fonte di Giara
+    Japanese: ツボの噴水像
   Pretty Names:
     English: "a |Fountain Idol|"
     Spanish: "una |Fuente de la Doncella|"
     French: "une |Statue Naïade|"
+    German: "eine |Wasserkrugträgerin-Statuette|"
+    Italian: "una |Fonte di Giara|"
+    Japanese: "|ツボの噴水像|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x95
 
 - Names:
     English: Postman Statue
     Spanish: Efigie del Cartero
     French: Statue du Facteur
+    German: Postboten-Statuette
+    Italian: Stele del Postino
+    Japanese: ポストマンの像
   Pretty Names:
     English: "a |Postman Statue|"
     Spanish: "una |Efigie del Cartero|"
     French: "une |Statue du Facteur|"
+    German: "eine |Postboten-Statuette|"
+    Italian: "una |Stele del Postino|"
+    Japanese: "|ポストマンの像|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x96
 
 - Names:
     English: Shop Guru Statue
     Spanish: Gran Mercader
     French: Statue du Marchand
+    German: Handelsgenie-Statuette
+    Italian: Statua del Gran Mercante
+    Japanese: 露天のあるじ像
   Pretty Names:
     English: "a |Shop Guru Statue|"
     Spanish: "el |Gran Mercader|"
     French: "une |Statue du Marchand|"
+    German: "eine |Handelsgenie-Statuette|"
+    Italian: "una |Statua del Gran Mercante|"
+    Japanese: "|露天のあるじ像|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x97
 
 - Names:
     English: Fathers Letter
     Spanish: Carta del padre
     French: Lettre de Père
+    German: Brief von Vater
+    Italian: Lettera del padre
+    Japanese: 父の手紙
   Pretty Names:
     English: "|Fathers Letter|"
     Spanish: "la |Carta del padre|"
     French: "la |Lettre de Père|"
+    German: "der |Brief von Vater|"
+    Italian: "la |Lettera del padre|"
+    Japanese: "|父の手紙|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x98
 
 - Names:
     English: Note to Mom
     Spanish: Carta a Mamá
     French: Lettre à la Mère
+    German: Brief an Mutter
+    Italian: Lettera alla madre
+    Japanese: お袋への手紙
   Pretty Names:
     English: "the |Note to Mom|"
     Spanish: "la |Carta a Mamá|"
     French: "la |Lettre à la Mère|"
+    German: "der |Brief an Mutter|"
+    Italian: "la |Lettera alla madre|"
+    Japanese: "|お袋への手紙|"
   Cryptic Names:
     English: "the |writings of a letter sorter|"
     Spanish: "la |escritura de un repartidor de cartas|"
     French: "les |écrits d'un trieur de lettres|"
+    German: "die |Zeilen eines Briefsortierers|"
+    Italian: "gli |scritti di uno smistatore di lettere|"
+    Japanese: "|手紙係の書いた物|"
   Gender:
     English: None
     Spanish: Female
     French: Female # Female (lettre), Male (écrits)
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular # Singular (lettre), Plural (écrits)
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x99
 
 - Names:
     English: Maggie's Letter
     Spanish: Carta de Dolores
     French: Lettre de Maggy
+    German: Dolores' Brief
+    Italian: Lettera di Maggy
+    Japanese: マギーの手紙
   Pretty Names:
     English: "|Maggie's Letter|"
     Spanish: "la |Carta de Dolores|"
     French: "la |Lettre de Maggy|"
+    German: "|Dolores' Brief|"
+    Italian: "la |Lettera di Maggy|"
+    Japanese: "|マギーの手紙|"
   Cryptic Names:
     English: "the |writings of a woman|"
     Spanish: "la |escritura de una jovencita|"
     French: "les |écrits d'une jeune femme|"
+    German: "die |Zeilen einer Frau|"
+    Italian: "gli |scritti di una donna|"
+    Japanese: "|ある女性の書いた物|"
   Gender:
     English: None
     Spanish: Female
     French: Female # Female (lettre), Male (écrits)
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular # Singular (lettre), Plural (écrits)
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x9A
 
 - Names:
     English: Moblin's Letter
     Spanish: Carta del Moblin
     French: Lettre du Molblin
+    German: Brief eines Moblin
+    Italian: Lettera di Grubbly
+    Japanese: モリブリンの手紙
   Pretty Names:
     English: "the |Moblin's Letter|"
     Spanish: "la |Carta del Moblin|"
     French: "la |Lettre du Molblin|"
+    German: "der |Brief eines Moblin|"
+    Italian: "la |Lettera di Grubbly|"
+    Japanese: "|モリブリンの手紙|"
   Cryptic Names:
     English: "the |writings of a creature|"
     Spanish: "la |escritura de una creatura|"
     French: "les |écrits d'une créature|"
+    German: "die |Zeilen einer Kreatur|"
+    Italian: "gli |scritti di una creatura|"
+    Japanese: "|ある魔物の書いた物|"
   Gender:
     English: None
     Spanish: Female
     French: Female # Female (lettre), Male (écrits)
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular # Singular (lettre), Plural (écrits)
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x9B
 
 - Names:
     English: Cabana Deed
     Spanish: Escrituras del Chalé
     French: Titre de Propriété de la Villa
+    German: Urkunde des Anwesens
+    Italian: Invito alla Villa
+    Japanese: 別荘の権利書
   Pretty Names:
     English: "a |Cabana Deed|"
     Spanish: "las |Escrituras del Chalé|"
     French: "un |Titre de Propriété de la Villa|"
+    German: "die |Urkunde des Anwesens|"
+    Italian: "l'|Invito alla Villa|"
+    Japanese: "|別荘の権利書|"
   Cryptic Names:
     English: "a |pass for a private residence|"
     Spanish: "un |pase a una propiedad privada|"
     French: "un |laissez-passer d'une résidence privée|"
+    German: "ein |Pass für ein privates Anwesen|"
+    Italian: "un |lasciapassare per una residenza privata|"
+    Japanese: "|別荘への通行証|"
   Gender:
     English: None
     Spanish: Female # ("Escrituras") Female. ("pase"). Male
     French: Male
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Plural # ("las") Plural. ("un") Singular.
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x9C
 
 - Names:
     English: Complimentary ID
     Spanish: Cupón de elogios
     French: Ticket Flatteur
+    German: Laudatio-Schein
+    Italian: Tagliando con Lode
+    Japanese: オホメ券
   Pretty Names:
     English: "a |Complimentary ID|"
     Spanish: "un |Cupón de elogios|"
     French: "un |Ticket Flatteur|"
+    German: "ein |Laudatio-Schein|"
+    Italian: "un |Tagliando con Lode|"
+    Japanese: "|オホメ券|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x9D
 
 - Names:
     English: Fill Up Coupon
     Spanish: Cupón de relleno
     French: Ticket de Plein
+    German: Prämien-Schein
+    Italian: Tagliando Ricarica
+    Japanese: 満タン券
   Pretty Names:
     English: "a |Fill Up Coupon|"
     Spanish: "un |Cupón de relleno|"
     French: "un |Ticket de Plein|"
+    German: "ein |Prämien-Schein|"
+    Italian: "un |Tagliando Ricarica|"
+    Japanese: "|満タン券|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x9E
 
 - Names:
     English: Legendary Pictograph
     Spanish: Luminografía Legendaria
     French: Photo de Légende
+    German: Legendäres Lichtbild
+    Italian: Immagine Leggendaria
+    Japanese: 伝説の写し絵
   Pretty Names:
     English: "a |Legendary Pictograph|"
     Spanish: "una |Luminografía Legendaria|"
     French: "une |Photo de Légende|"
+    German: "ein |Legendäres Lichtbild|"
+    Italian: "un'|Immagine Leggendaria|"
+    Japanese: "|伝説の写し絵|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x9F
 
 - Names:
     English: Dragon Tingle Statue
     Spanish: Tingle Draconiano
     French: Statue Tingle du Dragon
+    German: Drakonia-Tingle-Statue
+    Italian: Tingle dragone
+    Japanese: 竜のチンクル像
   Pretty Names:
     English: "a |Dragon Tingle Statue|"
     Spanish: "un |Tingle Draconiano|"
     French: "une |Statue Tingle du Dragon|"
+    German: "eine |Drakonia-Tingle-Statue|"
+    Italian: "|Tingle dragone|"
+    Japanese: "|竜のチンクル像|"
   Cryptic Names:
     English: "a |statue of a fairy|"
     Spanish: "una |estatua de un hada|"
     French: "une |statue d'une fée|"
+    German: "eine |Statue einer Fee|"
+    Italian: "una |statua di una fata|"
+    Japanese: "|妖精の像|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
     French: Female
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xA3
 
 - Names:
     English: Forbidden Tingle Statue
     Spanish: Tingle Prohibido
     French: Statue Tingle Défendue
+    German: Verbotene Tingle-Statue
+    Italian: Tingle proibito
+    Japanese: 禁断のチンクル像
   Pretty Names:
     English: "a |Forbidden Tingle Statue|"
     Spanish: "un |Tingle Prohibido|"
     French: "une |Statue Tingle Défendue|"
+    German: "eine |Verbotene Tingle-Statue|"
+    Italian: "|Tingle proibito|"
+    Japanese: "|禁断のチンクル像|"
   Cryptic Names:
     English: "a |statue of a fairy|"
     Spanish: "una |estatua de un hada|"
     French: "une |statue d'une fée|"
+    German: "eine |Statue einer Fee|"
+    Italian: "una |statua di una fata|"
+    Japanese: "|妖精の像|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
     French: Female
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xA4
 
 - Names:
     English: Goddess Tingle Statue
     Spanish: Tingle Divino
     French: Statue Tingle Divine
+    German: Göttliche Tingle-Statue
+    Italian: Tingle degli Spiriti
+    Japanese: 神のチンクル像
   Pretty Names:
     English: "a |Goddess Tingle Statue|"
     Spanish: "un |Tingle Divino|"
     French: "une |Statue Tingle Divine|"
+    German: "eine |Göttliche Tingle-Statue|"
+    Italian: "|Tingle degli Spiriti|"
+    Japanese: "|神のチンクル像|"
   Cryptic Names:
     English: "a |statue of a fairy|"
     Spanish: "una |estatua de un hada|"
     French: "une |statue d'une fée|"
+    German: "eine |Statue einer Fee|"
+    Italian: "una |statua di una fata|"
+    Japanese: "|妖精の像|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
     French: Female
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xA5
 
 - Names:
     English: Earth Tingle Statue
     Spanish: Tingle Terrestre
     French: Statue Tingle Terrestre
+    German: Terra-Tingle-Statue
+    Italian: Tingle terrestre
+    Japanese: 大地のチンクル像
   Pretty Names:
     English: "an |Earth Tingle Statue|"
     Spanish: "un |Tingle Terrestre|"
     French: "une |Statue Tingle Terrestre|"
+    German: "eine |Terra-Tingle-Statue|"
+    Italian: "|Tingle terrestre|"
+    Japanese: "|大地のチンクル像|"
   Cryptic Names:
     English: "a |statue of a fairy|"
     Spanish: "una |estatua de un hada|"
     French: "une |statue d'une fée|"
+    German: "eine |Statue einer Fee|"
+    Italian: "una |statua di una fata|"
+    Japanese: "|妖精の像|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
     French: Female
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xA6
 
 - Names:
     English: Wind Tingle Statue
     Spanish: Tingle Eólico
     French: Statue Tingle du Vent
+    German: Zephir-Tingle-Statue
+    Italian: Tingle eolico
+    Japanese: 風のチンクル像
   Pretty Names:
     English: "a |Wind Tingle Statue|"
     Spanish: "un |Tingle Eólico|"
     French: "une |Statue Tingle du Vent|"
+    German: "eine |Zephir-Tingle-Statue|"
+    Italian: "|Tingle eolico|"
+    Japanese: "|風のチンクル像|"
   Cryptic Names:
     English: "a |statue of a fairy|"
     Spanish: "una |estatua de un hada|"
     French: "une |statue d'une fée|"
+    German: "eine |Statue einer Fee|"
+    Italian: "una |statua di una fata|"
+    Japanese: "|妖精の像|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
     French: Female
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xA7
 
 - Names:
     English: Hurricane Spin
     Spanish: Ataque Huracán
     French: Attaque Tourbillon
+    German: Große Wirbelattacke
+    Italian: Gran Tornado
+    Japanese: 大回転斬り
   Pretty Names:
     English: "the |Hurricane Spin|"
     Spanish: "el |Ataque Huracán|"
     French: l'|Attaque Tourbillon|"
+    German: "die |Große Wirbelattacke|"
+    Italian: "il |Gran Tornado|"
+    Japanese: "|大回転斬り|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xAA
 
 - Names:
     English: Progressive Wallet
     Spanish: Zurrón Progresivo
     French: Bourse Progressive
+    German: Progressive Geldbörse
+    Italian: Borsa Progressiva
+    Japanese: サイフ（強化）
   Pretty Names:
     English: "a |Progressive Wallet|"
     Spanish: "un |Zurrón Progresivo|"
     French: "une |Bourse Progressive|"
+    German: "eine |Progressive Geldbörse|"
+    Italian: "una |Borsa Progressiva|"
+    Japanese: "|サイフ（強化）|"
   Cryptic Names:
     English: "an |upgrade for your Rupee bag|"
     Spanish: "una |mejora para tu saco de rupias|"
     French: "une |amélioration pour votre bourse|"
+    German: "ein |Upgrade für deine Geldbörse|"
+    Italian: "un |potenziamento per la tua borsa delle rupie|"
+    Japanese: "|サイフの強化|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xAB
 
 - Names:
     English: Five Thousand Wallet
     Spanish: Zurrón Gigante (5000)
     French: Bourse (5000)
+    German: Geldbörse (5000)
+    Italian: Borsa (5000)
+    Japanese: サイフ（５０００）
   Pretty Names:
     English: "the |Five Thousand Wallet|"
     Spanish: "el |Zurrón Gigante (5000)|"
     French: "la |Bourse (5000)|"
+    German: "die |Geldbörse (5000)|"
+    Italian: "la |Borsa (5000)|"
+    Japanese: "|サイフ（５０００）|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xAC
 
 - Names:
     English: Progressive Bomb Bag
     Spanish: Saco de Bombas Progresivo
     French: Sac de Bombes Progressif
+    German: Progressive Bombentasche
+    Italian: Borsa delle Bombe Progressiva
+    Japanese: バクダン袋（強化）
   Pretty Names:
     English: "a |Progressive Bomb Bag|"
     Spanish: "un |Saco de Bombas Progresivo|"
     French: "un |Sac de Bombes Progressif|"
+    German: "eine |Progressive Bombentasche|"
+    Italian: "una |Borsa delle Bombe Progressiva|"
+    Japanese: "|バクダン袋（強化）|"
   Cryptic Names:
     English: "an |upgrade for your bomb bag|"
     Spanish: "una |mejora para tu saco de bombas|"
     French: "une |amélioration pour votre sac de bombes|"
+    German: "ein |Upgrade für deine Bombentasche|"
+    Italian: "un |potenziamento per la tua borsa delle bombe|"
+    Japanese: "|バクダン袋の強化|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
     French: Male # Male (sac), Female (amélioration)
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xAD
 
 - Names:
     English: Ninety Nine Bomb Bag
     Spanish: Saco Gigante de Bombas (99)
     French: Sac de Bombes (99)
+    German: Bombentasche (99)
+    Italian: Borsa delle Bombe (99)
+    Japanese: バクダン袋（９９）
   Pretty Names:
     English: "a |Ninety Nine Bomb Bag|"
     Spanish: "un |Saco Gigante de Bombas (99)|"
     French: "le |Sac de Bombes (99)|"
+    German: "die |Bombentasche (99)|"
+    Italian: "la |Borsa delle Bombe (99)|"
+    Japanese: "|バクダン袋（９９）|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xAE
 
 - Names:
     English: Progressive Quiver
     Spanish: Carcaj Progresivo
     French: Carquois Progressif
+    German: Progressiver Köcher
+    Italian: Faretra Progressiva
+    Japanese: 矢立て（強化）
   Pretty Names:
     English: "a |Progressive Quiver|"
     Spanish: "un |Carcaj Progresivo|"
     French: "un |Carquois Progressif|"
+    German: "ein |Progressiver Köcher|"
+    Italian: "una |Faretra Progressiva|"
+    Japanese: "|矢立て（強化）|"
   Cryptic Names:
     English: "an |upgrade for your quiver|"
     Spanish: "una |mejora para tu estuche de flechas|"
     French: "une |amélioration pour votre carquois|"
+    German: "ein |Upgrade für deinen Köcher|"
+    Italian: "un |potenziamento per la tua faretra|"
+    Japanese: "|矢立ての強化|"
   Gender:
     English: None
     Spanish: Male # ("un") Male. ("una"). Female
     French: Male # Male (carquois), Female (amélioration)
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xAF
 
 - Names:
     English: Ninety Nine Quiver
     Spanish: Carcaj Gigante (99)
     French: Carquois (99)
+    German: Köcher (99)
+    Italian: Faretra (99)
+    Japanese: 矢立て（９９）
   Pretty Names:
     English: "the |Ninety Nine Quiver|"
     Spanish: "un |Carcaj Gigante (99)|"
     French: "le |Carquois (99)|"
+    German: "der |Köcher (99)|"
+    Italian: "la |Faretra (99)|"
+    Japanese: "|矢立て（９９）|"
   Gender:
     English: None
     Spanish: Male
     French: Male
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xB0
 
 # Added by rando
@@ -2693,18 +4490,30 @@
     English: Magic Meter
     Spanish: Barra de Magia
     French: Energie Magique
+    German: Magische Energie
+    Italian: Energia Magica
+    Japanese: 魔法力
   Pretty Names:
     English: "a |Magic Meter|"
     Spanish: "una |Barra de Magia|"
     French: "de l'|Energie Magique|"
+    German: "|Magische Energie|"
+    Italian: "l'|Energia Magica|"
+    Japanese: "|魔法力|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xB1
 
 # Replaces magic upgrade
@@ -2712,1428 +4521,2397 @@
     English: Progressive Magic Meter
     Spanish: Barra de Magia Progresiva
     French: Energie Magique Progressive
+    German: Progressive Magische Energie
+    Italian: Energia Magica Progressiva
+    Japanese: 魔法力（強化）
   Pretty Names:
     English: "a |Progressive Magic Meter|"
     Spanish: "una |Barra de Magia Progresiva|"
     French: "de l'|Energie Magique Progressive|"
+    German: "|Progressive Magische Energie|"
+    Italian: "l'|Energia Magica Progressiva|"
+    Japanese: "|魔法力（強化）|"
   Cryptic Names:
     English: "an |upgrade for your magic meter|"
     Spanish: "una |mejora a tu poder mágico|"
     French: "une |amélioration de votre énergie magique|"
+    German: "ein |Upgrade für deine Magie|"
+    Italian: "un |potenziamento per la tua magia|"
+    Japanese: "|魔法力の強化|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xB2
 
 - Names:
     English: Fifty Rupees
     Spanish: Cincuenta Rupias
     French: Cinquante Rubis
+    German: 50 Rubine
+    Italian: 50 Rupie
+    Japanese: ５０ルピー
   Pretty Names:
     English: "a |Fifty Rupees|"
     Spanish: "|Cincuenta Rupias|"
     French: "|Cinquante Rubis|"
+    German: "|50 Rubine|"
+    Italian: "|50 Rupie|"
+    Japanese: "|５０ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0xB3
 
 - Names:
     English: Hundred Rupees
     Spanish: Cien Rupias
     French: Cent Rubis
+    German: 100 Rubine
+    Italian: 100 Rupie
+    Japanese: １００ルピー
   Pretty Names:
     English: "a |Hundred Rupees|"
     Spanish: "|Cien Rupias|"
     French: "|Cent Rubis|"
+    German: "|100 Rubine|"
+    Italian: "|100 Rupie|"
+    Japanese: "|１００ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0xB4
 
 - Names:
     English: Hundred Fifty Rupees
     Spanish: Ciento cincuenta Rupias
     French: Cent-Cinquante Rubis
+    German: 150 Rubine
+    Italian: 150 Rupie
+    Japanese: １５０ルピー
   Pretty Names:
     English: "a |Hundred Fifty Rupees|"
     Spanish: "|Ciento cincuenta Rupias|"
     French: "|Cent-Cinquante Rubis|"
+    German: "|150 Rubine|"
+    Italian: "|150 Rupie|"
+    Japanese: "|１５０ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0xB5
 
 - Names:
     English: Two Hundred Rupees
     Spanish: Doscientas Rupias
     French: Deux-Cents Rubis
+    German: 200 Rubine
+    Italian: 200 Rupie
+    Japanese: ２００ルピー
   Pretty Names:
     English: "a |Two Hundred Rupees|"
     Spanish: "|Doscientas Rupias|"
     French: "|Deux-Cents Rubis|"
+    German: "|200 Rubine|"
+    Italian: "|200 Rupie|"
+    Japanese: "|２００ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0xB6
 
 - Names:
     English: Two Hundred Fifty Rupees
     Spanish: Doscientas cincuenta Rupias
     French: Deux-Cent-Cinquante Rubis
+    German: 250 Rubine
+    Italian: 250 Rupie
+    Japanese: ２５０ルピー
   Pretty Names:
     English: "a |Two Hundred Fifty Rupees|"
     Spanish: "|Doscientas cincuenta Rupias|"
     French: "|Deux-Cent-Cinquante Rubis|"
+    German: "|250 Rubine|"
+    Italian: "|250 Rupie|"
+    Japanese: "|２５０ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: None
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Plural
     Spanish: Plural
     French: Plural
+    German: Plural
+    Italian: Plural
+    Japanese: Singular
   Game Item Id: 0xB7
 
 - Names:
     English: Rainbow Rupee
     Spanish: Rupia Arcoíris
     French: Rubis Arc-en-Ciel
+    German: Regenbogen-Rubin
+    Italian: Rupia Arcobaleno
+    Japanese: 虹ルピー
   Pretty Names:
     English: "a |Rainbow Rupee|"
     Spanish: "una |Rupia Arcoíris|"
     French: "un |Rubis Arc-en-Ciel|"
+    German: "ein |Regenbogen-Rubin|"
+    Italian: "una |Rupia Arcobaleno|"
+    Japanese: "|虹ルピー|"
   Gender:
     English: None
     Spanish: Female
     French: Male
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xB8
 
 - Names:
     English: Submarine Chart
     Spanish: Mapa de Submarinos
     French: Carte des Sous-marins
+    German: U-Boot-Karte
+    Italian: Mappa dei Sottomarini
+    Japanese: センスイ艦マップ
   Pretty Names:
     English: "a |Submarine Chart|"
     Spanish: "un |Mapa de Submarinos|"
     French: "une |Carte des Sous-marins|"
+    German: "eine |U-Boot-Karte|"
+    Italian: "una |Mappa dei Sottomarini|"
+    Japanese: "|センスイ艦マップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xC2
 
 - Names:
     English: Beedle's Chart
     Spanish: Mapa de Terry
     French: Carte de Terry
+    German: Terri-Karte
+    Italian: Mappa di Terry
+    Japanese: テリーマップ
   Pretty Names:
     English: "|Beedle's Chart|"
     Spanish: "un |Mapa de Terry|"
     French: "une |Carte de Terry|"
+    German: "die |Terri-Karte|"
+    Italian: "la |Mappa di Terry|"
+    Japanese: "|テリーマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xC3
 
 - Names:
     English: Platform Chart
     Spanish: Mapa de Atalayas
     French: Carte des Tours de Guet
+    German: Wachposten-Karte
+    Italian: Mappa delle Piattaforme
+    Japanese: やぐらマップ
   Pretty Names:
     English: "a |Platform Chart|"
     Spanish: "un |Mapa de Atalayas|"
     French: "une |Carte des Tours de Guet|"
+    German: "eine |Wachposten-Karte|"
+    Italian: "una |Mappa delle Piattaforme|"
+    Japanese: "|やぐらマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xC4
 
 - Names:
     English: Light Ring Chart
     Spanish: Mapa de círculos de Luz
     French: Carte des Cercles de Lumière
+    German: Leuchtzirkel-Karte
+    Italian: Mappa dei Cerchi Luminosi
+    Japanese: 光の輪出現マップ
   Pretty Names:
     English: "a |Light Ring Chart|"
     Spanish: "un |Mapa de círculos de Luz|"
     French: "une |Carte des Cercles de Lumière|"
+    German: "eine |Leuchtzirkel-Karte|"
+    Italian: "una |Mappa dei Cerchi Luminosi|"
+    Japanese: "|光の輪出現マップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xC5
 
 - Names:
     English: Secret Cave Chart
     Spanish: Mapa de Cuevas Secretas
     French: Carte Secrète
+    German: Geheimeingang-Karte
+    Italian: Mappa dei Segreti
+    Japanese: 秘密の入り口マップ
   Pretty Names:
     English: "a |Secret Cave Chart|"
     Spanish: "un |Mapa de Cuevas Secretas|"
     French: "une |Carte Secrète|"
+    German: "eine |Geheimeingang-Karte|"
+    Italian: "una |Mappa dei Segreti|"
+    Japanese: "|秘密の入り口マップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xC6
 
 - Names:
     English: Sea Hearts Chart
     Spanish: Mapa Marino de Corazones
     French: Carte Marine des Cœurs
+    German: Meeresherzen-Karte
+    Italian: Mappa dei Cuori di Mare
+    Japanese: 海のハートマップ
   Pretty Names:
     English: "a |Sea Hearts Chart|"
     Spanish: "un |Mapa Marino de Corazones|"
     French: "une |Carte Marine des Cœurs|"
+    German: "eine |Meeresherzen-Karte|"
+    Italian: "una |Mappa dei Cuori di Mare|"
+    Japanese: "|海のハートマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xC7
 
 - Names:
     English: Island Hearts Chart
     Spanish: Mapa Isleño de Corazones
     French: Carte Insulaire des Cœurs
+    German: Inselherzen-Karte
+    Italian: Mappa dei Cuori d'Isola
+    Japanese: 島のハートマップ
   Pretty Names:
     English: "an |Island Hearts Chart|"
     Spanish: "un |Mapa Isleño de Corazones|"
     French: "une |Carte Insulaire des Cœurs|"
+    German: "eine |Inselherzen-Karte|"
+    Italian: "una |Mappa dei Cuori d'Isola|"
+    Japanese: "|島のハートマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xC8
 
 - Names:
     English: Great Fairy Chart
     Spanish: Mapa de las Grandes Hadas
     French: Carte des Grandes Fées
+    German: Große-Feen-Karte
+    Italian: Mappa delle Fate Radiose
+    Japanese: 大妖精マップ
   Pretty Names:
     English: "a |Great Fairy Chart|"
     Spanish: "un |Mapa de las Grandes Hadas|"
     French: "une |Carte des Grandes Fées|"
+    German: "eine |Große-Feen-Karte|"
+    Italian: "una |Mappa delle Fate Radiose|"
+    Japanese: "|大妖精マップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xC9
 
 - Names:
     English: Octo Chart
     Spanish: Mapa de Calamares
     French: Carte des Kalamars
+    German: Oktalus-Karte
+    Italian: Mappa Octo
+    Japanese: イカマップ
   Pretty Names:
     English: "an |Octo Chart|"
     Spanish: "un |Mapa de Calamares|"
     French: "une |Carte des Kalamars|"
+    German: "eine |Oktalus-Karte|"
+    Italian: "una |Mappa Octo|"
+    Japanese: "|イカマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xCA
 
 - Names:
     English: INcredible Chart
     Spanish: Mapa A-lu-ci-nante
     French: Super Carte
+    German: Wahnsinns-Karte
+    Italian: SuperMappa
+    Japanese: すんごいマップ
   Pretty Names:
     English: "an |INcredible Chart|"
     Spanish: "un |Mapa A-lu-ci-nante|"
     French: "une |Super Carte|"
+    German: "eine |Wahnsinns-Karte|"
+    Italian: "una |SuperMappa|"
+    Japanese: "|すんごいマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xCB
 
 - Names:
     English: Treasure Chart 7
     Spanish: Mapa del Tesoro 7
     French: Carte au Trésor 7
+    German: Schatzkarte 7
+    Italian: Mappa del Tesoro 7
+    Japanese: 宝のマップ７
   Pretty Names:
     English: "|Treasure Chart 7|"
     Spanish: "|Mapa del Tesoro 7|"
     French: "la |Carte au Trésor 7|"
+    German: "eine |Schatzkarte 7|"
+    Italian: "una |Mappa del Tesoro 7|"
+    Japanese: "|宝のマップ７|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xCC
 
 - Names:
     English: Treasure Chart 27
     Spanish: Mapa del Tesoro 27
     French: Carte au Trésor 27
+    German: Schatzkarte 27
+    Italian: Mappa del Tesoro 27
+    Japanese: 宝のマップ２７
   Pretty Names:
     English: "|Treasure Chart 27|"
     Spanish: "|Mapa del Tesoro 27|"
     French: "la |Carte au Trésor 27|"
+    German: "eine |Schatzkarte 27|"
+    Italian: "una |Mappa del Tesoro 27|"
+    Japanese: "|宝のマップ２７|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xCD
 
 - Names:
     English: Treasure Chart 21
     Spanish: Mapa del Tesoro 21
     French: Carte au Trésor 21
+    German: Schatzkarte 21
+    Italian: Mappa del Tesoro 21
+    Japanese: 宝のマップ２１
   Pretty Names:
     English: "|Treasure Chart 21|"
     Spanish: "|Mapa del Tesoro 21|"
     French: "la |Carte au Trésor 21|"
+    German: "eine |Schatzkarte 21|"
+    Italian: "una |Mappa del Tesoro 21|"
+    Japanese: "|宝のマップ２１|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xCE
 
 - Names:
     English: Treasure Chart 13
     Spanish: Mapa del Tesoro 13
     French: Carte au Trésor 13
+    German: Schatzkarte 13
+    Italian: Mappa del Tesoro 13
+    Japanese: 宝のマップ１３
   Pretty Names:
     English: "|Treasure Chart 13|"
     Spanish: "|Mapa del Tesoro 13|"
     French: "la |Carte au Trésor 13|"
+    German: "eine |Schatzkarte 13|"
+    Italian: "una |Mappa del Tesoro 13|"
+    Japanese: "|宝のマップ１３|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xCF
 
 - Names:
     English: Treasure Chart 32
     Spanish: Mapa del Tesoro 32
     French: Carte au Trésor 32
+    German: Schatzkarte 32
+    Italian: Mappa del Tesoro 32
+    Japanese: 宝のマップ３２
   Pretty Names:
     English: "|Treasure Chart 32|"
     Spanish: "|Mapa del Tesoro 32|"
     French: "la |Carte au Trésor 32|"
+    German: "eine |Schatzkarte 32|"
+    Italian: "una |Mappa del Tesoro 32|"
+    Japanese: "|宝のマップ３２|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xD0
 
 - Names:
     English: Treasure Chart 19
     Spanish: Mapa del Tesoro 19
     French: Carte au Trésor 19
+    German: Schatzkarte 19
+    Italian: Mappa del Tesoro 19
+    Japanese: 宝のマップ１９
   Pretty Names:
     English: "|Treasure Chart 19|"
     Spanish: "|Mapa del Tesoro 19|"
     French: "la |Carte au Trésor 19|"
+    German: "eine |Schatzkarte 19|"
+    Italian: "una |Mappa del Tesoro 19|"
+    Japanese: "|宝のマップ１９|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xD1
 
 - Names:
     English: Treasure Chart 41
     Spanish: Mapa del Tesoro 41
     French: Carte au Trésor 41
+    German: Schatzkarte 41
+    Italian: Mappa del Tesoro 41
+    Japanese: 宝のマップ４１
   Pretty Names:
     English: "|Treasure Chart 41|"
     Spanish: "|Mapa del Tesoro 41|"
     French: "la |Carte au Trésor 41|"
+    German: "eine |Schatzkarte 41|"
+    Italian: "una |Mappa del Tesoro 41|"
+    Japanese: "|宝のマップ４１|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xD2
 
 - Names:
     English: Treasure Chart 26
     Spanish: Mapa del Tesoro 26
     French: Carte au Trésor 26
+    German: Schatzkarte 26
+    Italian: Mappa del Tesoro 26
+    Japanese: 宝のマップ２６
   Pretty Names:
     English: "|Treasure Chart 26|"
     Spanish: "|Mapa del Tesoro 26|"
     French: "la |Carte au Trésor 26|"
+    German: "eine |Schatzkarte 26|"
+    Italian: "una |Mappa del Tesoro 26|"
+    Japanese: "|宝のマップ２６|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xD3
 
 - Names:
     English: Treasure Chart 8
     Spanish: Mapa del Tesoro 8
     French: Carte au Trésor 8
+    German: Schatzkarte 8
+    Italian: Mappa del Tesoro 8
+    Japanese: 宝のマップ８
   Pretty Names:
     English: "|Treasure Chart 8|"
     Spanish: "|Mapa del Tesoro 8|"
     French: "la |Carte au Trésor 8|"
+    German: "eine |Schatzkarte 8|"
+    Italian: "una |Mappa del Tesoro 8|"
+    Japanese: "|宝のマップ８|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xD4
 
 - Names:
     English: Treasure Chart 37
     Spanish: Mapa del Tesoro 37
     French: Carte au Trésor 37
+    German: Schatzkarte 37
+    Italian: Mappa del Tesoro 37
+    Japanese: 宝のマップ３７
   Pretty Names:
     English: "|Treasure Chart 37|"
     Spanish: "|Mapa del Tesoro 37|"
     French: "la |Carte au Trésor 37|"
+    German: "eine |Schatzkarte 37|"
+    Italian: "una |Mappa del Tesoro 37|"
+    Japanese: "|宝のマップ３７|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xD5
 
 - Names:
     English: Treasure Chart 25
     Spanish: Mapa del Tesoro 25
     French: Carte au Trésor 25
+    German: Schatzkarte 25
+    Italian: Mappa del Tesoro 25
+    Japanese: 宝のマップ２５
   Pretty Names:
     English: "|Treasure Chart 25|"
     Spanish: "|Mapa del Tesoro 25|"
     French: "la |Carte au Trésor 25|"
+    German: "eine |Schatzkarte 25|"
+    Italian: "una |Mappa del Tesoro 25|"
+    Japanese: "|宝のマップ２５|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xD6
 
 - Names:
     English: Treasure Chart 17
     Spanish: Mapa del Tesoro 17
     French: Carte au Trésor 17
+    German: Schatzkarte 17
+    Italian: Mappa del Tesoro 17
+    Japanese: 宝のマップ１７
   Pretty Names:
     English: "|Treasure Chart 17|"
     Spanish: "|Mapa del Tesoro 17|"
     French: "la |Carte au Trésor 17|"
+    German: "eine |Schatzkarte 17|"
+    Italian: "una |Mappa del Tesoro 17|"
+    Japanese: "|宝のマップ１７|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xD7
 
 - Names:
     English: Treasure Chart 36
     Spanish: Mapa del Tesoro 36
     French: Carte au Trésor 36
+    German: Schatzkarte 36
+    Italian: Mappa del Tesoro 36
+    Japanese: 宝のマップ３６
   Pretty Names:
     English: "|Treasure Chart 36|"
     Spanish: "|Mapa del Tesoro 36|"
     French: "la |Carte au Trésor 36|"
+    German: "eine |Schatzkarte 36|"
+    Italian: "una |Mappa del Tesoro 36|"
+    Japanese: "|宝のマップ３６|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xD8
 
 - Names:
     English: Treasure Chart 22
     Spanish: Mapa del Tesoro 22
     French: Carte au Trésor 22
+    German: Schatzkarte 22
+    Italian: Mappa del Tesoro 22
+    Japanese: 宝のマップ２２
   Pretty Names:
     English: "|Treasure Chart 22|"
     Spanish: "|Mapa del Tesoro 22|"
     French: "la |Carte au Trésor 22|"
+    German: "eine |Schatzkarte 22|"
+    Italian: "una |Mappa del Tesoro 22|"
+    Japanese: "|宝のマップ２２|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xD9
 
 - Names:
     English: Treasure Chart 9
     Spanish: Mapa del Tesoro 9
     French: Carte au Trésor 9
+    German: Schatzkarte 9
+    Italian: Mappa del Tesoro 9
+    Japanese: 宝のマップ９
   Pretty Names:
     English: "|Treasure Chart 9|"
     Spanish: "|Mapa del Tesoro 9|"
     French: "la |Carte au Trésor 9|"
+    German: "eine |Schatzkarte 9|"
+    Italian: "una |Mappa del Tesoro 9|"
+    Japanese: "|宝のマップ９|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xDA
 
 - Names:
     English: Ghost Ship Chart
     Spanish: Mapa del Barco Fantasma
     French: Carte du Vaisseau Fantôme
+    German: Geisterschiff-Karte
+    Italian: Mappa della Nave Fantasma
+    Japanese: 幽霊船のマップ
   Pretty Names:
     English: "the |Ghost Ship Chart|"
     Spanish: "el |Mapa del Barco Fantasma|"
     French: "la |Carte du Vaisseau Fantôme|"
+    German: "die |Geisterschiff-Karte|"
+    Italian: "la |Mappa della Nave Fantasma|"
+    Japanese: "|幽霊船のマップ|"
   Cryptic Names:
     English: "a |map of fear|"
     Spanish: "un |mapa terrorífico|"
     French: "une |carte de la peur|"
+    German: "eine |Karte des Grauens|"
+    Italian: "una |mappa della paura|"
+    Japanese: "|恐怖のマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xDB
 
 - Names:
     English: Tingle's Chart
     Spanish: Mapa de Tingle
     French: Carte de Tingle
+    German: Tingles Karte
+    Italian: Mappa Tingle
+    Japanese: チンクルのマップ
   Pretty Names:
     English: "|Tingle's Chart|"
     Spanish: "el |Mapa de Tingle|"
     French: "la |Carte de Tingle|"
+    German: "|Tingles Karte|"
+    Italian: "la |Mappa Tingle|"
+    Japanese: "|チンクルのマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xDC
 
 - Names:
     English: Treasure Chart 14
     Spanish: Mapa del Tesoro 14
     French: Carte au Trésor 14
+    German: Schatzkarte 14
+    Italian: Mappa del Tesoro 14
+    Japanese: 宝のマップ１４
   Pretty Names:
     English: "|Treasure Chart 14|"
     Spanish: "|Mapa del Tesoro 14|"
     French: "la |Carte au Trésor 14|"
+    German: "eine |Schatzkarte 14|"
+    Italian: "una |Mappa del Tesoro 14|"
+    Japanese: "|宝のマップ１４|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xDD
 
 - Names:
     English: Treasure Chart 10
     Spanish: Mapa del Tesoro 10
     French: Carte au Trésor 10
+    German: Schatzkarte 10
+    Italian: Mappa del Tesoro 10
+    Japanese: 宝のマップ１０
   Pretty Names:
     English: "|Treasure Chart 10|"
     Spanish: "|Mapa del Tesoro 10|"
     French: "la |Carte au Trésor 10|"
+    German: "eine |Schatzkarte 10|"
+    Italian: "una |Mappa del Tesoro 10|"
+    Japanese: "|宝のマップ１０|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xDE
 
 - Names:
     English: Treasure Chart 40
     Spanish: Mapa del Tesoro 40
     French: Carte au Trésor 40
+    German: Schatzkarte 40
+    Italian: Mappa del Tesoro 40
+    Japanese: 宝のマップ４０
   Pretty Names:
     English: "|Treasure Chart 40|"
     Spanish: "|Mapa del Tesoro 40|"
     French: "la |Carte au Trésor 40|"
+    German: "eine |Schatzkarte 40|"
+    Italian: "una |Mappa del Tesoro 40|"
+    Japanese: "|宝のマップ４０|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xDF
 
 - Names:
     English: Treasure Chart 3
     Spanish: Mapa del Tesoro 3
     French: Carte au Trésor 3
+    German: Schatzkarte 3
+    Italian: Mappa del Tesoro 3
+    Japanese: 宝のマップ３
   Pretty Names:
     English: "|Treasure Chart 3|"
     Spanish: "|Mapa del Tesoro 3|"
     French: "la |Carte au Trésor 3|"
+    German: "eine |Schatzkarte 3|"
+    Italian: "una |Mappa del Tesoro 3|"
+    Japanese: "|宝のマップ３|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xE0
 
 - Names:
     English: Treasure Chart 4
     Spanish: Mapa del Tesoro 4
     French: Carte au Trésor 4
+    German: Schatzkarte 4
+    Italian: Mappa del Tesoro 4
+    Japanese: 宝のマップ４
   Pretty Names:
     English: "|Treasure Chart 4|"
     Spanish: "|Mapa del Tesoro 4|"
     French: "la |Carte au Trésor 4|"
+    German: "eine |Schatzkarte 4|"
+    Italian: "una |Mappa del Tesoro 4|"
+    Japanese: "|宝のマップ４|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xE1
 
 - Names:
     English: Treasure Chart 28
     Spanish: Mapa del Tesoro 28
     French: Carte au Trésor 28
+    German: Schatzkarte 28
+    Italian: Mappa del Tesoro 28
+    Japanese: 宝のマップ２８
   Pretty Names:
     English: "|Treasure Chart 28|"
     Spanish: "|Mapa del Tesoro 28|"
     French: "la |Carte au Trésor 28|"
+    German: "eine |Schatzkarte 28|"
+    Italian: "una |Mappa del Tesoro 28|"
+    Japanese: "|宝のマップ２８|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xE2
 
 - Names:
     English: Treasure Chart 16
     Spanish: Mapa del Tesoro 16
     French: Carte au Trésor 16
+    German: Schatzkarte 16
+    Italian: Mappa del Tesoro 16
+    Japanese: 宝のマップ１６
   Pretty Names:
     English: "|Treasure Chart 16|"
     Spanish: "|Mapa del Tesoro 16|"
     French: "la |Carte au Trésor 16|"
+    German: "eine |Schatzkarte 16|"
+    Italian: "una |Mappa del Tesoro 16|"
+    Japanese: "|宝のマップ１６|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xE3
 
 - Names:
     English: Treasure Chart 18
     Spanish: Mapa del Tesoro 18
     French: Carte au Trésor 18
+    German: Schatzkarte 18
+    Italian: Mappa del Tesoro 18
+    Japanese: 宝のマップ１８
   Pretty Names:
     English: "|Treasure Chart 18|"
     Spanish: "|Mapa del Tesoro 18|"
     French: "la |Carte au Trésor 18|"
+    German: "eine |Schatzkarte 18|"
+    Italian: "una |Mappa del Tesoro 18|"
+    Japanese: "|宝のマップ１８|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xE4
 
 - Names:
     English: Treasure Chart 34
     Spanish: Mapa del Tesoro 34
     French: Carte au Trésor 34
+    German: Schatzkarte 34
+    Italian: Mappa del Tesoro 34
+    Japanese: 宝のマップ３４
   Pretty Names:
     English: "|Treasure Chart 34|"
     Spanish: "|Mapa del Tesoro 34|"
     French: "la |Carte au Trésor 34|"
+    German: "eine |Schatzkarte 34|"
+    Italian: "una |Mappa del Tesoro 34|"
+    Japanese: "|宝のマップ３４|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xE5
 
 - Names:
     English: Treasure Chart 29
     Spanish: Mapa del Tesoro 29
     French: Carte au Trésor 29
+    German: Schatzkarte 29
+    Italian: Mappa del Tesoro 29
+    Japanese: 宝のマップ２９
   Pretty Names:
     English: "|Treasure Chart 29|"
     Spanish: "|Mapa del Tesoro 29|"
     French: "la |Carte au Trésor 29|"
+    German: "eine |Schatzkarte 29|"
+    Italian: "una |Mappa del Tesoro 29|"
+    Japanese: "|宝のマップ２９|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xE6
 
 - Names:
     English: Treasure Chart 1
     Spanish: Mapa del Tesoro 1
     French: Carte au Trésor 1
+    German: Schatzkarte 1
+    Italian: Mappa del Tesoro 1
+    Japanese: 宝のマップ１
   Pretty Names:
     English: "|Treasure Chart 1|"
     Spanish: "|Mapa del Tesoro 1|"
     French: "la |Carte au Trésor 1|"
+    German: "eine |Schatzkarte 1|"
+    Italian: "una |Mappa del Tesoro 1|"
+    Japanese: "|宝のマップ１|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xE7
 
 - Names:
     English: Treasure Chart 35
     Spanish: Mapa del Tesoro 35
     French: Carte au Trésor 35
+    German: Schatzkarte 35
+    Italian: Mappa del Tesoro 35
+    Japanese: 宝のマップ３５
   Pretty Names:
     English: "|Treasure Chart 35|"
     Spanish: "|Mapa del Tesoro 35|"
     French: "la |Carte au Trésor 35|"
+    German: "eine |Schatzkarte 35|"
+    Italian: "una |Mappa del Tesoro 35|"
+    Japanese: "|宝のマップ３５|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xE8
 
 - Names:
     English: Treasure Chart 12
     Spanish: Mapa del Tesoro 12
     French: Carte au Trésor 12
+    German: Schatzkarte 12
+    Italian: Mappa del Tesoro 12
+    Japanese: 宝のマップ１２
   Pretty Names:
     English: "|Treasure Chart 12|"
     Spanish: "|Mapa del Tesoro 12|"
     French: "la |Carte au Trésor 12|"
+    German: "eine |Schatzkarte 12|"
+    Italian: "una |Mappa del Tesoro 12|"
+    Japanese: "|宝のマップ１２|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xE9
 
 - Names:
     English: Treasure Chart 6
     Spanish: Mapa del Tesoro 6
     French: Carte au Trésor 6
+    German: Schatzkarte 6
+    Italian: Mappa del Tesoro 6
+    Japanese: 宝のマップ６
   Pretty Names:
     English: "|Treasure Chart 6|"
     Spanish: "|Mapa del Tesoro 6|"
     French: "la |Carte au Trésor 6|"
+    German: "eine |Schatzkarte 6|"
+    Italian: "una |Mappa del Tesoro 6|"
+    Japanese: "|宝のマップ６|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xEA
 
 - Names:
     English: Treasure Chart 24
     Spanish: Mapa del Tesoro 24
     French: Carte au Trésor 24
+    German: Schatzkarte 24
+    Italian: Mappa del Tesoro 24
+    Japanese: 宝のマップ２４
   Pretty Names:
     English: "|Treasure Chart 24|"
     Spanish: "|Mapa del Tesoro 24|"
     French: "la |Carte au Trésor 24|"
+    German: "eine |Schatzkarte 24|"
+    Italian: "una |Mappa del Tesoro 24|"
+    Japanese: "|宝のマップ２４|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xEB
 
 - Names:
     English: Treasure Chart 39
     Spanish: Mapa del Tesoro 39
     French: Carte au Trésor 39
+    German: Schatzkarte 39
+    Italian: Mappa del Tesoro 39
+    Japanese: 宝のマップ３９
   Pretty Names:
     English: "|Treasure Chart 39|"
     Spanish: "|Mapa del Tesoro 39|"
     French: "la |Carte au Trésor 39|"
+    German: "eine |Schatzkarte 39|"
+    Italian: "una |Mappa del Tesoro 39|"
+    Japanese: "|宝のマップ３９|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xEC
 
 - Names:
     English: Treasure Chart 38
     Spanish: Mapa del Tesoro 38
     French: Carte au Trésor 38
+    German: Schatzkarte 38
+    Italian: Mappa del Tesoro 38
+    Japanese: 宝のマップ３８
   Pretty Names:
     English: "|Treasure Chart 38|"
     Spanish: "|Mapa del Tesoro 38|"
     French: "la |Carte au Trésor 38|"
+    German: "eine |Schatzkarte 38|"
+    Italian: "una |Mappa del Tesoro 38|"
+    Japanese: "|宝のマップ３８|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xED
 
 - Names:
     English: Treasure Chart 2
     Spanish: Mapa del Tesoro 2
     French: Carte au Trésor 2
+    German: Schatzkarte 2
+    Italian: Mappa del Tesoro 2
+    Japanese: 宝のマップ２
   Pretty Names:
     English: "|Treasure Chart 2|"
     Spanish: "|Mapa del Tesoro 2|"
     French: "la |Carte au Trésor 2|"
+    German: "eine |Schatzkarte 2|"
+    Italian: "una |Mappa del Tesoro 2|"
+    Japanese: "|宝のマップ２|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xEE
 
 - Names:
     English: Treasure Chart 33
     Spanish: Mapa del Tesoro 33
     French: Carte au Trésor 33
+    German: Schatzkarte 33
+    Italian: Mappa del Tesoro 33
+    Japanese: 宝のマップ３３
   Pretty Names:
     English: "|Treasure Chart 33|"
     Spanish: "|Mapa del Tesoro 33|"
     French: "la |Carte au Trésor 33|"
+    German: "eine |Schatzkarte 33|"
+    Italian: "una |Mappa del Tesoro 33|"
+    Japanese: "|宝のマップ３３|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xEF
 
 - Names:
     English: Treasure Chart 31
     Spanish: Mapa del Tesoro 31
     French: Carte au Trésor 31
+    German: Schatzkarte 31
+    Italian: Mappa del Tesoro 31
+    Japanese: 宝のマップ３１
   Pretty Names:
     English: "|Treasure Chart 31|"
     Spanish: "|Mapa del Tesoro 31|"
     French: "la |Carte au Trésor 31|"
+    German: "eine |Schatzkarte 31|"
+    Italian: "una |Mappa del Tesoro 31|"
+    Japanese: "|宝のマップ３１|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xF0
 
 - Names:
     English: Treasure Chart 23
     Spanish: Mapa del Tesoro 23
     French: Carte au Trésor 23
+    German: Schatzkarte 23
+    Italian: Mappa del Tesoro 23
+    Japanese: 宝のマップ２３
   Pretty Names:
     English: "|Treasure Chart 23|"
     Spanish: "|Mapa del Tesoro 23|"
     French: "la |Carte au Trésor 23|"
+    German: "eine |Schatzkarte 23|"
+    Italian: "una |Mappa del Tesoro 23|"
+    Japanese: "|宝のマップ２３|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xF1
 
 - Names:
     English: Treasure Chart 5
     Spanish: Mapa del Tesoro 5
     French: Carte au Trésor 5
+    German: Schatzkarte 5
+    Italian: Mappa del Tesoro 5
+    Japanese: 宝のマップ５
   Pretty Names:
     English: "|Treasure Chart 5|"
     Spanish: "|Mapa del Tesoro 5|"
     French: "la |Carte au Trésor 5|"
+    German: "eine |Schatzkarte 5|"
+    Italian: "una |Mappa del Tesoro 5|"
+    Japanese: "|宝のマップ５|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xF2
 
 - Names:
     English: Treasure Chart 20
     Spanish: Mapa del Tesoro 20
     French: Carte au Trésor 20
+    German: Schatzkarte 20
+    Italian: Mappa del Tesoro 20
+    Japanese: 宝のマップ２０
   Pretty Names:
     English: "|Treasure Chart 20|"
     Spanish: "|Mapa del Tesoro 20|"
     French: "la |Carte au Trésor 20|"
+    German: "eine |Schatzkarte 20|"
+    Italian: "una |Mappa del Tesoro 20|"
+    Japanese: "|宝のマップ２０|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xF3
 
 - Names:
     English: Treasure Chart 30
     Spanish: Mapa del Tesoro 30
     French: Carte au Trésor 30
+    German: Schatzkarte 30
+    Italian: Mappa del Tesoro 30
+    Japanese: 宝のマップ３０
   Pretty Names:
     English: "|Treasure Chart 30|"
     Spanish: "|Mapa del Tesoro 30|"
     French: "la |Carte au Trésor 30|"
+    German: "eine |Schatzkarte 30|"
+    Italian: "una |Mappa del Tesoro 30|"
+    Japanese: "|宝のマップ３０|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xF4
 
 - Names:
     English: Treasure Chart 15
     Spanish: Mapa del Tesoro 15
     French: Carte au Trésor 15
+    German: Schatzkarte 15
+    Italian: Mappa del Tesoro 15
+    Japanese: 宝のマップ１５
   Pretty Names:
     English: "|Treasure Chart 15|"
     Spanish: "|Mapa del Tesoro 15|"
     French: "la |Carte au Trésor 15|"
+    German: "eine |Schatzkarte 15|"
+    Italian: "una |Mappa del Tesoro 15|"
+    Japanese: "|宝のマップ１５|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xF5
 
 - Names:
     English: Treasure Chart 11
     Spanish: Mapa del Tesoro 11
     French: Carte au Trésor 11
+    German: Schatzkarte 11
+    Italian: Mappa del Tesoro 11
+    Japanese: 宝のマップ１１
   Pretty Names:
     English: "|Treasure Chart 11|"
     Spanish: "|Mapa del Tesoro 11|"
     French: "la |Carte au Trésor 11|"
+    German: "eine |Schatzkarte 11|"
+    Italian: "una |Mappa del Tesoro 11|"
+    Japanese: "|宝のマップ１１|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xF6
 
 - Names:
     English: Treasure Chart 46
     Spanish: Mapa del Tesoro 46
     French: Carte au Trésor 46
+    German: Schatzkarte 46
+    Italian: Mappa del Tesoro 46
+    Japanese: 宝のマップ４６
   Pretty Names:
     English: "|Treasure Chart 46|"
     Spanish: "|Mapa del Tesoro 46|"
     French: "la |Carte au Trésor 46|"
+    German: "eine |Schatzkarte 46|"
+    Italian: "una |Mappa del Tesoro 46|"
+    Japanese: "|宝のマップ４６|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xF7
 
 - Names:
     English: Treasure Chart 45
     Spanish: Mapa del Tesoro 45
     French: Carte au Trésor 45
+    German: Schatzkarte 45
+    Italian: Mappa del Tesoro 45
+    Japanese: 宝のマップ４５
   Pretty Names:
     English: "|Treasure Chart 45|"
     Spanish: "|Mapa del Tesoro 45|"
     French: "la |Carte au Trésor 45|"
+    German: "eine |Schatzkarte 45|"
+    Italian: "una |Mappa del Tesoro 45|"
+    Japanese: "|宝のマップ４５|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xF8
 
 - Names:
     English: Treasure Chart 44
     Spanish: Mapa del Tesoro 44
     French: Carte au Trésor 44
+    German: Schatzkarte 44
+    Italian: Mappa del Tesoro 44
+    Japanese: 宝のマップ４４
   Pretty Names:
     English: "|Treasure Chart 44|"
     Spanish: "|Mapa del Tesoro 44|"
     French: "la |Carte au Trésor 44|"
+    German: "eine |Schatzkarte 44|"
+    Italian: "una |Mappa del Tesoro 44|"
+    Japanese: "|宝のマップ４４|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xF9
 
 - Names:
     English: Triforce Chart 3
     Spanish: Mapa de la Trifuerza 3
     French: Carte de la Triforce 3
+    German: Triforce-Karte 3
+    Italian: Mappa della Triforza 3
+    Japanese: トライフォースのマップ３
   Pretty Names:
     English: "|Triforce Chart 3|"
     Spanish: "|Mapa de la Trifuerza 3|"
     French: "la |Carte de la Triforce 3|"
+    German: "eine |Triforce-Karte 3|"
+    Italian: "una |Mappa della Triforza 3|"
+    Japanese: "|トライフォースのマップ３|"
   Cryptic Names:
     English: "a |purple map|"
     Spanish: "un |mapa púrpura|"
     French: "une |carte violette|"
+    German: "eine |violette Karte|"
+    Italian: "una |mappa viola|"
+    Japanese: "|紫のマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xFA
 
 - Names:
     English: Treasure Chart 43
     Spanish: Mapa del Tesoro 43
     French: Carte au Trésor 43
+    German: Schatzkarte 43
+    Italian: Mappa del Tesoro 43
+    Japanese: 宝のマップ４３
   Pretty Names:
     English: "|Treasure Chart 43|"
     Spanish: "|Mapa del Tesoro 43|"
     French: "la |Carte au Trésor 43|"
+    German: "eine |Schatzkarte 43|"
+    Italian: "una |Mappa del Tesoro 43|"
+    Japanese: "|宝のマップ４３|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xFB
 
 - Names:
     English: Triforce Chart 2
     Spanish: Mapa de la Trifuerza 2
     French: Carte de la Triforce 2
+    German: Triforce-Karte 2
+    Italian: Mappa della Triforza 2
+    Japanese: トライフォースのマップ２
   Pretty Names:
     English: "|Triforce Chart 2|"
     Spanish: "|Mapa de la Trifuerza 2|"
     French: "la |Carte de la Triforce 2|"
+    German: "eine |Triforce-Karte 2|"
+    Italian: "una |Mappa della Triforza 2|"
+    Japanese: "|トライフォースのマップ２|"
   Cryptic Names:
     English: "a |purple map|"
     Spanish: "un |mapa púrpura|"
     French: "une |carte violette|"
+    German: "eine |violette Karte|"
+    Italian: "una |mappa viola|"
+    Japanese: "|紫のマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xFC
 
 - Names:
     English: Treasure Chart 42
     Spanish: Mapa del Tesoro 42
     French: Carte au Trésor 42
+    German: Schatzkarte 42
+    Italian: Mappa del Tesoro 42
+    Japanese: 宝のマップ４２
   Pretty Names:
     English: "|Treasure Chart 42|"
     Spanish: "|Mapa del Tesoro 42|"
     French: "la |Carte au Trésor 42|"
+    German: "eine |Schatzkarte 42|"
+    Italian: "una |Mappa del Tesoro 42|"
+    Japanese: "|宝のマップ４２|"
   Cryptic Names:
     English: "a |blue map|"
     Spanish: "un |mapa azul|"
     French: "une |carte bleue|"
+    German: "eine |blaue Karte|"
+    Italian: "una |mappa blu|"
+    Japanese: "|青いマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xFD
 
 - Names:
     English: Triforce Chart 1
     Spanish: Mapa de la Trifuerza 1
     French: Carte de la Triforce 1
+    German: Triforce-Karte 1
+    Italian: Mappa della Triforza 1
+    Japanese: トライフォースのマップ１
   Pretty Names:
     English: "|Triforce Chart 1|"
     Spanish: "|Mapa de la Trifuerza 1|"
     French: "la |Carte de la Triforce 1|"
+    German: "eine |Triforce-Karte 1|"
+    Italian: "una |Mappa della Triforza 1|"
+    Japanese: "|トライフォースのマップ１|"
   Cryptic Names:
     English: "a |purple map|"
     Spanish: "un |mapa púrpura|"
     French: "une |carte violette|"
+    German: "eine |violette Karte|"
+    Italian: "una |mappa viola|"
+    Japanese: "|紫のマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0xFE
 
 # Custom Items
@@ -4141,22 +6919,37 @@
     English: Dragon Roost Cavern Small Key
     Spanish: Llave Pequeña de la Cueva del Dragón
     French: Petite Clé de la Caverne du Dragon
+    German: Kleiner Schlüssel des Drako-Sanktuariums
+    Italian: Piccola Chiave della Caverna del Drago
+    Japanese: 竜の山のほこらの小さなカギ
   Pretty Names:
     English: "a |Dragon Roost Cavern Small Key|"
     Spanish: "una |Llave Pequeña de la Cueva del Dragón|"
     French: "une |Petite Clé de la Caverne du Dragon|"
+    German: "ein |Kleiner Schlüssel des Drako-Sanktuariums|"
+    Italian: "una |Piccola Chiave della Caverna del Drago|"
+    Japanese: "|竜の山のほこらの小さなカギ|"
   Cryptic Names:
     English: "a |key|"
     Spanish: "una |llave|"
     French: "une |clé|"
+    German: "ein |Schlüssel|"
+    Italian: "una |chiave|"
+    Japanese: "|カギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x40
   Small Key Dungeon: Dragon Roost Cavern
   Small Key Count: 4
@@ -4165,22 +6958,37 @@
     English: Dragon Roost Cavern Big Key
     Spanish: Gran Llave de la Cueva del Dragón
     French: Grande Clé de la Caverne du Dragon
+    German: Großer Schlüssel des Drako-Sanktuariums
+    Italian: Grande Chiave della Caverna del Drago
+    Japanese: 竜の山のほこらのボス部屋のカギ
   Pretty Names:
     English: "the |Dragon Roost Cavern Big Key|"
     Spanish: "la |Gran Llave de la Cueva del Dragón|"
     French: "la |Grande Clé de la Caverne du Dragon|"
+    German: "der |Großer Schlüssel des Drako-Sanktuariums|"
+    Italian: "la |Grande Chiave della Caverna del Drago|"
+    Japanese: "|竜の山のほこらのボス部屋のカギ|"
   Cryptic Names:
     English: "an |ominous key|"
     Spanish: "una |llave siniestra|"
     French: "une |clé menaçante|"
+    German: "ein |unheilvoller Schlüssel|"
+    Italian: "una |chiave sinistra|"
+    Japanese: "|不吉なカギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x41
   Big Key Dungeon: Dragon Roost Cavern
   
@@ -4188,18 +6996,30 @@
     English: Dragon Roost Cavern Dungeon Map
     Spanish: Mapa de la Mazmorra de la Cueva del Dragón
     French: Carte du Donjon de la Caverne du Dragon
+    German: Labyrinth-Karte des Drako-Sanktuariums
+    Italian: Mappa della Caverna del Drago
+    Japanese: 竜の山のほこらのダンジョンマップ
   Pretty Names:
     English: "the |Dragon Roost Cavern Dungeon Map|"
     Spanish: "el |Mapa de la Mazmorra de la Cueva del Dragón|"
     French: "la |Carte du Donjon de la Caverne du Dragon|"
+    German: "die |Labyrinth-Karte des Drako-Sanktuariums|"
+    Italian: "la |Mappa della Caverna del Drago|"
+    Japanese: "|竜の山のほこらのダンジョンマップ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x5A
   Map Dungeon: Dragon Roost Cavern
 
@@ -4207,18 +7027,30 @@
     English: Dragon Roost Cavern Compass
     Spanish: Brújula de la Cueva del Dragón
     French: Boussole de la Caverne du Dragon
+    German: Kompass des Drako-Sanktuariums
+    Italian: Bussola della Caverna del Drago
+    Japanese: 竜の山のほこらのコンパス
   Pretty Names:
     English: "the |Dragon Roost Cavern Compass|"
     Spanish: "la |Brújula de la Cueva del Dragón|"
     French: "la |Boussole de la Caverne du Dragon|"
+    German: "der |Kompass des Drako-Sanktuariums|"
+    Italian: "la |Bussola della Caverna del Drago|"
+    Japanese: "|竜の山のほこらのコンパス|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x5B
   Compass Dungeon: Dragon Roost Cavern
 
@@ -4226,22 +7058,37 @@
     English: Forbidden Woods Small Key
     Spanish: Llave Pequeña del Bosque Prohibido
     French: Petite Clé des Bois Défendus
+    German: Kleiner Schlüssel des Verbotenen Hains
+    Italian: Piccola Chiave del Bosco Proibito
+    Japanese: 禁断の森の小さなカギ
   Pretty Names:
     English: "a |Forbidden Woods Small Key|"
     Spanish: "una |Llave Pequeña del Bosque Prohibido|"
     French: "une |Petite Clé des Bois Défendus|"
+    German: "ein |Kleiner Schlüssel des Verbotenen Hains|"
+    Italian: "una |Piccola Chiave del Bosco Proibito|"
+    Japanese: "|禁断の森の小さなカギ|"
   Cryptic Names:
     English: "a |key|"
     Spanish: "una |llave|"
     French: "une |clé|"
+    German: "ein |Schlüssel|"
+    Italian: "una |chiave|"
+    Japanese: "|カギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x5C
   Small Key Dungeon: Forbidden Woods
   Small Key Count: 1
@@ -4250,22 +7097,37 @@
     English: Forbidden Woods Big Key
     Spanish: Gran Llave del Bosque Prohibido
     French: Grande Clé des Bois Défendus
+    German: Großer Schlüssel des Verbotenen Hains
+    Italian: Grande Chiave del Bosco Proibito
+    Japanese: 禁断の森のボス部屋のカギ
   Pretty Names:
     English: "the |Forbidden Woods Big Key|"
     Spanish: "la |Gran Llave del Bosque Prohibido|"
     French: "la |Grande Clé des Bois Défendus|"
+    German: "der |Großer Schlüssel des Verbotenen Hains|"
+    Italian: "la |Grande Chiave del Bosco Proibito|"
+    Japanese: "|禁断の森のボス部屋のカギ|"
   Cryptic Names:
     English: "an |ominous key|"
     Spanish: "una |llave siniestra|"
     French: "une |clé menaçante|"
+    German: "ein |unheilvoller Schlüssel|"
+    Italian: "una |chiave sinistra|"
+    Japanese: "|不吉なカギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x5D
   Big Key Dungeon: Forbidden Woods
 
@@ -4273,18 +7135,30 @@
     English: Forbidden Woods Dungeon Map
     Spanish: Mapa de la Mazmorra del Bosque Prohibido
     French: Carte du Donjon des Bois Défendus
+    German: Labyrinth-Karte des Verbotenen Hains
+    Italian: Mappa del Bosco Proibito
+    Japanese: 禁断の森のダンジョンマップ
   Pretty Names:
     English: "the |Forbidden Woods Dungeon Map|"
     Spanish: "el |Mapa de la Mazmorra del Bosque Prohibido|"
     French: "la |Carte du Donjon des Bois Défendus|"
+    German: "die |Labyrinth-Karte des Verbotenen Hains|"
+    Italian: "la |Mappa del Bosco Proibito|"
+    Japanese: "|禁断の森のダンジョンマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x5E
   Map Dungeon: Forbidden Woods
 
@@ -4292,18 +7166,30 @@
     English: Forbidden Woods Compass
     Spanish: Brújula del Bosque Prohibido
     French: Boussole des Bois Défendus
+    German: Kompass des Verbotenen Hains
+    Italian: Bussola del Bosco Proibito
+    Japanese: 禁断の森のコンパス
   Pretty Names:
     English: "a |Forbidden Woods Compass|"
     Spanish: "la |Brújula del Bosque Prohibido|"
     French: "la |Boussole des Bois Défendus|"
+    German: "der |Kompass des Verbotenen Hains|"
+    Italian: "la |Bussola del Bosco Proibito|"
+    Japanese: "|禁断の森のコンパス|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x5F
   Compass Dungeon: Forbidden Woods
 
@@ -4311,22 +7197,37 @@
     English: Tower of the Gods Small Key
     Spanish: Llave Pequeña de la Torre de los Dioses
     French: Petite Clé de la Tour des Dieux
+    German: Kleiner Schlüssel des Turms der Götter
+    Italian: Piccola Chiave della Torre degli Spiriti
+    Japanese: 神の塔の小さなカギ
   Pretty Names:
     English: "a |Tower of the Gods Small Key|"
     Spanish: "una |Llave Pequeña de la Torre de los Dioses|"
     French: "une |Petite Clé de la Tour des Dieux|"
+    German: "ein |Kleiner Schlüssel des Turms der Götter|"
+    Italian: "una |Piccola Chiave della Torre degli Spiriti|"
+    Japanese: "|神の塔の小さなカギ|"
   Cryptic Names:
     English: "a |key|"
     Spanish: "una |llave|"
     French: "une |clé|"
+    German: "ein |Schlüssel|"
+    Italian: "una |chiave|"
+    Japanese: "|カギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x60
   Small Key Dungeon: Tower of the Gods
   Small Key Count: 2
@@ -4336,22 +7237,37 @@
     English: Tower of the Gods Big Key
     Spanish: Gran Llave de la torre de los Dioses
     French: Grande Clé de la Tour des Dieux
+    German: Großer Schlüssel des Turms der Götter
+    Italian: Grande Chiave della Torre degli Spiriti
+    Japanese: 神の塔のボス部屋のカギ
   Pretty Names:
     English: "the |Tower of the Gods Big Key|"
     Spanish: "la |Gran Llave de la torre de los Dioses|"
     French: "la |Grande Clé de la Tour des Dieux|"
+    German: "der |Großer Schlüssel des Turms der Götter|"
+    Italian: "la |Grande Chiave della Torre degli Spiriti|"
+    Japanese: "|神の塔のボス部屋のカギ|"
   Cryptic Names:
     English: "an |ominous key|"
     Spanish: "una |llave siniestra|"
     French: "une |clé menaçante|"
+    German: "ein |unheilvoller Schlüssel|"
+    Italian: "una |chiave sinistra|"
+    Japanese: "|不吉なカギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x73
   Big Key Dungeon: Tower of the Gods
 
@@ -4360,18 +7276,30 @@
     English: Tower of the Gods Dungeon Map
     Spanish: Mapa de la Mazmorra de la Torre de los Dioses
     French: Carte du Donjon de la Tour des Dieux
+    German: Labyrinth-Karte des Turms der Götter
+    Italian: Mappa della Torre degli Spiriti
+    Japanese: 神の塔のダンジョンマップ
   Pretty Names:
     English: "the |Tower of the Gods Dungeon Map|"
     Spanish: "el |Mapa de la Mazmorra de la Torre de los Dioses|"
     French: "la |Carte du Donjon de la Tour des Dieux|"
+    German: "die |Labyrinth-Karte des Turms der Götter|"
+    Italian: "la |Mappa della Torre degli Spiriti|"
+    Japanese: "|神の塔のダンジョンマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x74
   Map Dungeon: Tower of the Gods
 
@@ -4379,18 +7307,30 @@
     English: Tower of the Gods Compass
     Spanish: Brújula de la Torre de los Dioses
     French: Boussole de la Tour des Dieux
+    German: Kompass des Turms der Götter
+    Italian: Bussola della Torre degli Spiriti
+    Japanese: 神の塔のコンパス
   Pretty Names:
     English: "the |Tower of the Gods Compass|"
     Spanish: "la |Brújula de la Torre de los Dioses|"
     French: "la |Boussole de la Tour des Dieux|"
+    German: "der |Kompass des Turms der Götter|"
+    Italian: "la |Bussola della Torre degli Spiriti|"
+    Japanese: "|神の塔のコンパス|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x75
   Compass Dungeon: Tower of the Gods
 
@@ -4398,18 +7338,30 @@
     English: Forsaken Fortress Dungeon Map
     Spanish: Mapa de la Mazmorra de la Isla del Diablo
     French: Carte du Donjon de la Forteresse Maudite
+    German: Labyrinth-Karte der Verwunschenen Bastion
+    Italian: Mappa della Fortezza dei Demoni
+    Japanese: 魔獣島のダンジョンマップ
   Pretty Names:
     English: "the |Forsaken Fortress Dungeon Map|"
     Spanish: "el |Mapa de la Mazmorra de la Isla del Diablo|"
     French: "la |Carte du Donjon de la Forteresse Maudite|"
+    German: "die |Labyrinth-Karte der Verwunschenen Bastion|"
+    Italian: "la |Mappa della Fortezza dei Demoni|"
+    Japanese: "|魔獣島のダンジョンマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x76
   Map Dungeon: Forsaken Fortress
 
@@ -4417,18 +7369,30 @@
     English: Forsaken Fortress Compass
     Spanish: Brújula de la Isla del Diablo
     French: Boussole de la Forteresse Maudite
+    German: Kompass der Verwunschenen Bastion
+    Italian: Bussola della Fortezza dei Demoni
+    Japanese: 魔獣島のコンパス
   Pretty Names:
     English: "the |Forsaken Fortress Compass|"
     Spanish: "la |Brújula de la Isla del Diablo|"
     French: "la |Boussole de la Forteresse Maudite|"
+    German: "der |Kompass der Verwunschenen Bastion|"
+    Italian: "la |Bussola della Fortezza dei Demoni|"
+    Japanese: "|魔獣島のコンパス|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x81
   Compass Dungeon: Forsaken Fortress
 
@@ -4436,22 +7400,37 @@
     English: Earth Temple Small Key
     Spanish: Lave Pequeña del Templo de la Tierra
     French: Petite Clé du Temple de la Terre
+    German: Kleiner Schlüssel des Terratempels
+    Italian: Piccola Chiave del Santuario della Terra
+    Japanese: 大地の神殿の小さなカギ
   Pretty Names:
     English: "an |Earth Temple Small Key|"
     Spanish: "una |Lave Pequeña del Templo de la Tierra|"
     French: "une |Petite Clé du Temple de la Terre|"
+    German: "ein |Kleiner Schlüssel des Terratempels|"
+    Italian: "una |Piccola Chiave del Santuario della Terra|"
+    Japanese: "|大地の神殿の小さなカギ|"
   Cryptic Names:
     English: "a |key|"
     Spanish: "una |llave|"
     French: "une |clé|"
+    German: "ein |Schlüssel|"
+    Italian: "una |chiave|"
+    Japanese: "|カギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x84
   Small Key Dungeon: Earth Temple
   Small Key Count: 3
@@ -4461,22 +7440,37 @@
     English: Earth Temple Big Key
     Spanish: Gran Llave del Templo de la Tierra
     French: Grande Clé du Temple de la Terre
+    German: Großer Schlüssel des Terratempels
+    Italian: Grande Chiave del Santuario della Terra
+    Japanese: 大地の神殿のボス部屋のカギ
   Pretty Names:
     English: "the |Earth Temple Big Key|"
     Spanish: "la |Gran Llave del Templo de la Tierra|"
     French: "la |Grande Clé du Temple de la Terre|"
+    German: "der |Großer Schlüssel des Terratempels|"
+    Italian: "la |Grande Chiave del Santuario della Terra|"
+    Japanese: "|大地の神殿のボス部屋のカギ|"
   Cryptic Names:
     English: "an |ominous key|"
     Spanish: "una |llave siniestra|"
     French: "une |clé menaçante|"
+    German: "ein |unheilvoller Schlüssel|"
+    Italian: "una |chiave sinistra|"
+    Japanese: "|不吉なカギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x85
   Big Key Dungeon: Earth Temple
 
@@ -4485,18 +7479,30 @@
     English: Earth Temple Dungeon Map
     Spanish: Mapa de la Mazmorra del Templo de la Tierra
     French: Carte du Donjon du Temple de la Terre
+    German: Labyrinth-Karte des Terratempels
+    Italian: Mappa del Santuario della Terra
+    Japanese: 大地の神殿のダンジョンマップ
   Pretty Names:
     English: "the |Earth Temple Dungeon Map|"
     Spanish: "el |Mapa de la Mazmorra del Templo de la Tierra|"
     French: "la |Carte du Donjon du Temple de la Terre|"
+    German: "die |Labyrinth-Karte des Terratempels|"
+    Italian: "la |Mappa del Santuario della Terra|"
+    Japanese: "|大地の神殿のダンジョンマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x86
   Map Dungeon: Earth Temple
 
@@ -4504,18 +7510,30 @@
     English: Earth Temple Compass
     Spanish: Brújula del Templo de la Tierra
     French: Boussole du Temple de la Terre
+    German: Kompass des Terratempels
+    Italian: Bussola del Santuario della Terra
+    Japanese: 大地の神殿のコンパス
   Pretty Names:
     English: "the |Earth Temple Compass|"
     Spanish: "la |Brújula del Templo de la Tierra|"
     French: "la |Boussole du Temple de la Terre|"
+    German: "der |Kompass des Terratempels|"
+    Italian: "la |Bussola del Santuario della Terra|"
+    Japanese: "|大地の神殿のコンパス|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x87
   Compass Dungeon: Earth Temple
 
@@ -4523,22 +7541,37 @@
     English: Wind Temple Small Key
     Spanish: Llave Pequeña del Templo del Viento
     French: Petite Clé du Temple du Vent
+    German: Kleiner Schlüssel des Zephirtempels
+    Italian: Piccola Chiave del Santuario del Vento
+    Japanese: 風の神殿の小さなカギ
   Pretty Names:
     English: "a |Wind Temple Small Key|"
     Spanish: "una |Llave Pequeña del Templo del Viento|"
     French: "une |Petite Clé du Temple du Vent|"
+    German: "ein |Kleiner Schlüssel des Zephirtempels|"
+    Italian: "una |Piccola Chiave del Santuario del Vento|"
+    Japanese: "|風の神殿の小さなカギ|"
   Cryptic Names:
     English: "a |key|"
     Spanish: "una |llave|"
     French: "une |clé|"
+    German: "ein |Schlüssel|"
+    Italian: "una |chiave|"
+    Japanese: "|カギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x88
   Small Key Dungeon: Wind Temple
   Small Key Count: 2
@@ -4547,22 +7580,37 @@
     English: Wind Temple Big Key
     Spanish: Gran Llave del Templo del Viento
     French: Grande Clé du Temple du Vent
+    German: Großer Schlüssel des Zephirtempels
+    Italian: Grande Chiave del Santuario del Vento
+    Japanese: 風の神殿のボス部屋のカギ
   Pretty Names:
     English: "the |Wind Temple Big Key|"
     Spanish: "la |Gran Llave del Templo del Viento|"
     French: "la |Grande Clé du Temple du Vent|"
+    German: "der |Großer Schlüssel des Zephirtempels|"
+    Italian: "la |Grande Chiave del Santuario del Vento|"
+    Japanese: "|風の神殿のボス部屋のカギ|"
   Cryptic Names:
     English: "an |ominous key|"
     Spanish: "una |llave siniestra|"
     French: "une |clé menaçante|"
+    German: "ein |unheilvoller Schlüssel|"
+    Italian: "una |chiave sinistra|"
+    Japanese: "|不吉なカギ|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x89
   Big Key Dungeon: Wind Temple
 
@@ -4571,18 +7619,30 @@
     English: Wind Temple Dungeon Map
     Spanish: Mapa de la Mazmorra del Templo del Viento
     French: Carte du Donjon du Temple du Vent
+    German: Labyrinth-Karte des Zephirtempels
+    Italian: Mappa del Santuario del Vento
+    Japanese: 風の神殿のダンジョンマップ
   Pretty Names:
     English: "the |Wind Temple Dungeon Map|"
     Spanish: "el |Mapa de la Mazmorra del Templo del Viento|"
     French: "la |Carte du Donjon du Temple du Vent|"
+    German: "die |Labyrinth-Karte des Zephirtempels|"
+    Italian: "la |Mappa del Santuario del Vento|"
+    Japanese: "|風の神殿のダンジョンマップ|"
   Gender:
     English: None
     Spanish: Male
     French: Female
+    German: Female
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x8A
   Map Dungeon: Wind Temple
 
@@ -4590,18 +7650,30 @@
     English: Wind Temple Compass
     Spanish: Brújula del Templo del Viento
     French: Boussole du Temple du Vent
+    German: Kompass des Zephirtempels
+    Italian: Bussola del Santuario del Vento
+    Japanese: 風の神殿のコンパス
   Pretty Names:
     English: "the |Wind Temple Compass|"
     Spanish: "la |Brújula del Templo del Viento|"
     French: "la |Boussole du Temple du Vent|"
+    German: "der |Kompass des Zephirtempels|"
+    Italian: "la |Bussola del Santuario del Vento|"
+    Japanese: "|風の神殿のコンパス|"
   Gender:
     English: None
     Spanish: Female
     French: Female
+    German: Male
+    Italian: Female
+    Japanese: None
   Plurality:
     English: Singular
     Spanish: Singular
     French: Singular
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x8B
   Compass Dungeon: Wind Temple
 
@@ -4611,18 +7683,30 @@
     English: Nothing
     Spanish:
     French:
+    German: Nichts
+    Italian: Niente
+    Japanese: なし
   Pretty Names:
     English: Nothing
     Spanish:
     French:
+    German: "|Nichts|"
+    Italian: "|Niente|"
+    Japanese: "|なし|"
   Gender:
     English: None
     Spanish:
     French:
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish:
     French:
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x17
 
 # Dummy item to check for game beatability
@@ -4630,16 +7714,28 @@
     English: Game Beatable
     Spanish:
     French:
+    German: Spiel schaffbar
+    Italian: Gioco completabile
+    Japanese: クリア可能
   Pretty Names:
     English: Game Beatable
     Spanish:
     French:
+    German: "|Spiel schaffbar|"
+    Italian: "|Gioco completabile|"
+    Japanese: "|クリア可能|"
   Gender:
     English: None
     Spanish:
     French:
+    German: None
+    Italian: Male
+    Japanese: None
   Plurality:
     English: Singular
     Spanish:
     French:
+    German: Singular
+    Italian: Singular
+    Japanese: Singular
   Game Item Id: 0x18

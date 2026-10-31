@@ -656,6 +656,13 @@ World::WorldLoadingError World::reparseMacro(const std::string& macroName)
     return WorldLoadingError::NONE;
 }
 
+// A language a data file has no entry for gets the English one
+static std::string translatedField(const YAML::Node& field, const std::string& language)
+{
+    const YAML::Node value = field[language];
+    return (value.IsDefined() ? value : field["English"]).as<std::string>();
+}
+
 World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
 {
     YAML_FIELD_CHECK(locationObject, "Names", WorldLoadingError::ITEM_MISSING_KEY);
@@ -671,7 +678,7 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
     location->categories.clear();
     for (const auto& language : Text::supported_languages)
     {
-        location->names[language] = locationObject["Names"][language].as<std::string>();
+        location->names[language] = translatedField(locationObject["Names"], language);
     }
 
     for (const auto& category : locationObject["Category"])
@@ -769,7 +776,7 @@ World::WorldLoadingError World::loadLocation(const YAML::Node& locationObject)
     {
         for (const auto& language : Text::supported_languages)
         {
-            location->goalNames[language] = locationObject["Goal Names"][language].as<std::string>();
+            location->goalNames[language] = translatedField(locationObject["Goal Names"], language);
         }
     }
 
@@ -1002,11 +1009,11 @@ World::WorldLoadingError World::loadItem(const YAML::Node& itemObject)
     // Load item names for all languages
     for (const auto& language : Text::supported_languages)
     {
-        item.setName(language, Text::Type::STANDARD, itemObject["Names"][language].as<std::string>());
+        item.setName(language, Text::Type::STANDARD, translatedField(itemObject["Names"], language));
 
         if (itemObject["Pretty Names"])
         {
-            item.setName(language, Text::Type::PRETTY, itemObject["Pretty Names"][language].as<std::string>());
+            item.setName(language, Text::Type::PRETTY, translatedField(itemObject["Pretty Names"], language));
         }
         else
         {
@@ -1015,7 +1022,7 @@ World::WorldLoadingError World::loadItem(const YAML::Node& itemObject)
 
         if (itemObject["Cryptic Names"])
         {
-            item.setName(language, Text::Type::CRYPTIC, itemObject["Cryptic Names"][language].as<std::string>());
+            item.setName(language, Text::Type::CRYPTIC, translatedField(itemObject["Cryptic Names"], language));
         }
         else
         {
@@ -1024,12 +1031,12 @@ World::WorldLoadingError World::loadItem(const YAML::Node& itemObject)
 
         if (itemObject["Gender"])
         {
-            itemTranslations[gameItemId][language].gender = Text::string_to_gender(itemObject["Gender"][language].as<std::string>());
+            itemTranslations[gameItemId][language].gender = Text::string_to_gender(translatedField(itemObject["Gender"], language));
         }
 
         if (itemObject["Plurality"])
         {
-            itemTranslations[gameItemId][language].plurality = Text::string_to_plurality(itemObject["Plurality"][language].as<std::string>());
+            itemTranslations[gameItemId][language].plurality = Text::string_to_plurality(translatedField(itemObject["Plurality"], language));
         }
     }
 
@@ -1080,11 +1087,11 @@ World::WorldLoadingError World::loadAreaTranslations(const YAML::Node& areaObjec
     // Load area names for all languages
     for (const auto& language : Text::supported_languages)
     {
-        hintRegions[areaName][language].types[Text::Type::STANDARD] = areaObject["Names"][language].as<std::string>();
+        hintRegions[areaName][language].types[Text::Type::STANDARD] = translatedField(areaObject["Names"], language);
 
         if (areaObject["Pretty Names"])
         {
-            hintRegions[areaName][language].types[Text::Type::PRETTY] = areaObject["Pretty Names"][language].as<std::string>();
+            hintRegions[areaName][language].types[Text::Type::PRETTY] = translatedField(areaObject["Pretty Names"], language);
         }
         else
         {
@@ -1093,7 +1100,7 @@ World::WorldLoadingError World::loadAreaTranslations(const YAML::Node& areaObjec
 
         if (areaObject["Cryptic Names"])
         {
-            hintRegions[areaName][language].types[Text::Type::CRYPTIC] = areaObject["Cryptic Names"][language].as<std::string>();
+            hintRegions[areaName][language].types[Text::Type::CRYPTIC] = translatedField(areaObject["Cryptic Names"], language);
         }
         else
         {

@@ -302,12 +302,6 @@ public:
             return 1;
         }
 
-        // EUR: German and Italian get the randomizer's changed English messages
-        if(std::string err; !Region::mergePacks(config.gameBaseDir, config.outputDir, config.settings.instant_text_boxes, err)) {
-            ErrorLog::getInstance().log(err);
-            return 1;
-        }
-
         // done!
         return 0;
     }

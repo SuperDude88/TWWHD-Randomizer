@@ -46,7 +46,7 @@ namespace Text {
         Plurality plurality;
     };
 
-    extern std::array<std::string, 3> supported_languages;
+    extern std::array<std::string, 6> supported_languages;
 
     std::u16string apply_name_color(std::u16string str, const Color& color);
     std::u16string word_wrap_string(const std::u16string& string, const size_t& max_line_len); //IMPROVEMENT: use font data to do this "properly"

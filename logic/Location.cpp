@@ -214,20 +214,41 @@ std::u16string Location::generateImportanceText(const std::string& language) con
         possiblyRequired = u"potentiellement utile";
         notRequired = u"pas nécessaire";
     }
+    else if (language == "German")
+    {
+        required = u"benötigt";
+        possiblyRequired = u"vielleicht benötigt";
+        notRequired = u"nicht benötigt";
+    }
+    else if (language == "Italian")
+    {
+        required = u"serve";
+        possiblyRequired = u"forse serve";
+        notRequired = u"non serve";
+    }
+    else if (language == "Japanese")
+    {
+        required = u"必要";
+        possiblyRequired = u"必要かも";
+        notRequired = u"不要";
+    }
+
+    const std::u16string open = language == "Japanese" ? u"（" : u" (";
+    const std::u16string close = language == "Japanese" ? u"）" : u")";
 
     // If this item is on the path to Ganondorf, then it is required
     const auto& requiredLocations = world->locationTable["Ganon's Tower - Defeat Ganondorf"]->pathLocations;
     if (elementInPool(this, requiredLocations))
     {
-        return u" (" + TEXT_COLOR_GREEN + required + TEXT_COLOR_DEFAULT + u")";
+        return open + TEXT_COLOR_GREEN + required + TEXT_COLOR_DEFAULT + close;
     }
 
     // If this item can be in a barren region, then it's not required
     if (currentItemCanBeBarren())
     {
-        return u" (" + TEXT_COLOR_GRAY + notRequired + TEXT_COLOR_DEFAULT + u")";
+        return open + TEXT_COLOR_GRAY + notRequired + TEXT_COLOR_DEFAULT + close;
     }
 
     // If the item doesn't fall into required or not required, then it's possibly required
-    return u" (" + TEXT_COLOR_YELLOW + possiblyRequired + TEXT_COLOR_DEFAULT + u")";
+    return open + TEXT_COLOR_YELLOW + possiblyRequired + TEXT_COLOR_DEFAULT + close;
 }

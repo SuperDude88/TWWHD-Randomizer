@@ -7,6 +7,25 @@
 #include <filetypes/util/msbtMacros.hpp>
 #include <utility/string.hpp>
 
+// German, Italian and Japanese lists of hint regions: "A, B und C" / "A, B e C" / "A、BとC"
+static std::u16string joinHintRegions(const World* world, const std::list<std::string>& regions, const std::string& language, const Text::Color& color)
+{
+    const std::u16string lastSeparator = language == "German" ? u" und "s : language == "Italian" ? u" e "s : u"と"s;
+    const std::u16string separator = language == "Japanese" ? u"、"s : u", "s;
+    std::u16string text = u"";
+    size_t i = 0;
+    for (const auto& region : regions)
+    {
+        if (i > 0)
+        {
+            text += i == regions.size() - 1 ? lastSeparator : separator;
+        }
+        text += world->getUTF16HintRegion(region, language, Text::Type::PRETTY, color);
+        i++;
+    }
+    return text;
+}
+
 template<typename Container>
 static Location* getHintableLocation(Container& locations)
 {
@@ -296,6 +315,9 @@ static HintError generatePathHintMessage(Location* location, Location* goalLocat
     hint.text["English"] = HINT_PREFIX_ENGLISH + englishRegionText + englishConjugation + u" on the path to "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["English"]) + TEXT_COLOR_DEFAULT + u"."s;
     hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishRegionText + spanishConjugation + u" hacia el camino de "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["Spanish"]) + TEXT_COLOR_DEFAULT + u"."s;
     hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchConjugation + u" sur le chemin de "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["French"]) + TEXT_COLOR_DEFAULT + u"."s;
+    hint.text["German"] = HINT_PREFIX_GERMAN + joinHintRegions(world, location->hintRegions, "German", Text::Color::CYAN) + (totalRegions == 1 ? u" liege"s : u" liegen"s) + u" auf dem Weg zu "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["German"]) + TEXT_COLOR_DEFAULT + u"."s;
+    hint.text["Italian"] = HINT_PREFIX_ITALIAN + joinHintRegions(world, location->hintRegions, "Italian", Text::Color::CYAN) + (totalRegions == 1 ? u" sia"s : u" siano"s) + u" sulla via per "s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["Italian"]) + TEXT_COLOR_DEFAULT + u"."s;
+    hint.text["Japanese"] = HINT_PREFIX_JAPANESE + joinHintRegions(world, location->hintRegions, "Japanese", Text::Color::CYAN) + u"は　"s + TEXT_COLOR_RED + Utility::Str::toUTF16(goalLocation->goalNames["Japanese"]) + TEXT_COLOR_DEFAULT + u"への道に　あるらしい。"s;
     hint.type = HintType::PATH;
     hint.location = location;
 
@@ -373,6 +395,9 @@ static HintError generateBarrenHintMessage(const std::string& barrenRegion, std:
     hint.text["English"] = HINT_PREFIX_ENGLISH u"visiting " + world.getUTF16HintRegion(barrenRegion, "English", Text::Type::PRETTY, Text::Color::BLUE) + u" is a foolish choice."s;
     hint.text["Spanish"] = HINT_PREFIX_SPANISH u"visitar " + world.getUTF16HintRegion(barrenRegion, "Spanish", Text::Type::PRETTY, Text::Color::BLUE) + u" es una idea imprudente."s;
     hint.text["French"] = HINT_PREFIX_FRENCH u"visiter " + world.getUTF16HintRegion(barrenRegion, "French", Text::Type::PRETTY, Text::Color::BLUE) + u" est un choix imprudent."s;
+    hint.text["German"] = HINT_PREFIX_GERMAN + world.getUTF16HintRegion(barrenRegion, "German", Text::Type::PRETTY, Text::Color::BLUE) + u" sei keinen Besuch wert."s;
+    hint.text["Italian"] = HINT_PREFIX_ITALIAN u"visitare " + world.getUTF16HintRegion(barrenRegion, "Italian", Text::Type::PRETTY, Text::Color::BLUE) + u" sia una scelta sciocca."s;
+    hint.text["Japanese"] = HINT_PREFIX_JAPANESE + world.getUTF16HintRegion(barrenRegion, "Japanese", Text::Type::PRETTY, Text::Color::BLUE) + u"に行くのは　おろかなことらしい。"s;
     hint.type = HintType::BARREN;
 
     return HintError::NONE;
@@ -504,6 +529,11 @@ static HintError generateItemHintMessage(Location* location, std::list<Hint>& hi
     hint.text["English"] = HINT_PREFIX_ENGLISH + englishHintedItem + englishItemImportance + u" can be found at "s + englishRegionText + u"."s;
     hint.text["Spanish"] = HINT_PREFIX_SPANISH + spanishHintedItem + spanishItemImportance + u" se encuentra en "s + spanishRegionText + u"."s;
     hint.text["French"] = HINT_PREFIX_FRENCH + frenchRegionText + frenchConjugation + frenchHintedItem + frenchItemImportance + u"."s;
+    const bool germanPlural = item.getWorld()->itemTranslations[item.getGameItemId()]["German"].plurality == Text::Plurality::PLURAL;
+    const bool italianPlural = item.getWorld()->itemTranslations[item.getGameItemId()]["Italian"].plurality == Text::Plurality::PLURAL;
+    hint.text["German"] = HINT_PREFIX_GERMAN + item.getUTF16Name("German", textType, Text::Color::CYAN) + location->generateImportanceText("German") + (germanPlural ? u" seien"s : u" sei"s) + u" hier zu finden: "s + joinHintRegions(world, hintRegions, "German", Text::Color::RED) + u"."s;
+    hint.text["Italian"] = HINT_PREFIX_ITALIAN + item.getUTF16Name("Italian", textType, Text::Color::CYAN) + location->generateImportanceText("Italian") + (italianPlural ? u" si trovino"s : u" si trovi"s) + u" qui: "s + joinHintRegions(world, hintRegions, "Italian", Text::Color::RED) + u"."s;
+    hint.text["Japanese"] = HINT_PREFIX_JAPANESE + item.getUTF16Name("Japanese", textType, Text::Color::CYAN) + location->generateImportanceText("Japanese") + u"は　"s + joinHintRegions(world, hintRegions, "Japanese", Text::Color::RED) + u"に　あるらしい。"s;
     hint.type = HintType::ITEM;
     hint.location = location;
 
@@ -591,6 +621,10 @@ static HintError generateLocationHintMessage(Location* location, std::list<Hint>
     hint.text["English"] = HINT_PREFIX_ENGLISH + TEXT_COLOR_RED + englishLocation + TEXT_COLOR_DEFAULT + u" rewards " + englishHintedItem + englishItemImportance + u"."s;
     hint.text["Spanish"] = HINT_PREFIX_SPANISH + TEXT_COLOR_RED + spanishLocation + TEXT_COLOR_DEFAULT + u" otorgará " + spanishHintedItem + spanishItemImportance + u"."s;
     hint.text["French"] = HINT_PREFIX_FRENCH + TEXT_COLOR_RED + frenchLocation + TEXT_COLOR_DEFAULT + u" aurait pour récompense " + frenchHintedItem + frenchItemImportance + u"."s;
+    const bool germanPlural = item.getWorld()->itemTranslations[item.getGameItemId()]["German"].plurality == Text::Plurality::PLURAL;
+    hint.text["German"] = HINT_PREFIX_GERMAN + item.getUTF16Name("German", textType, Text::Color::RED) + location->generateImportanceText("German") + (germanPlural ? u" warten"s : u" warte"s) + u" hier: "s + TEXT_COLOR_RED + Utility::Str::toUTF16(location->names["German"]) + TEXT_COLOR_DEFAULT + u"."s;
+    hint.text["Italian"] = HINT_PREFIX_ITALIAN + TEXT_COLOR_RED + Utility::Str::toUTF16(location->names["Italian"]) + TEXT_COLOR_DEFAULT + u" offra "s + item.getUTF16Name("Italian", textType, Text::Color::RED) + location->generateImportanceText("Italian") + u"."s;
+    hint.text["Japanese"] = HINT_PREFIX_JAPANESE + TEXT_COLOR_RED + Utility::Str::toUTF16(location->names["Japanese"]) + TEXT_COLOR_DEFAULT + u"では　"s + item.getUTF16Name("Japanese", textType, Text::Color::RED) + location->generateImportanceText("Japanese") + u"が　手に入るらしい。"s;
     hint.type = HintType::LOCATION;
     hint.location = location;
 

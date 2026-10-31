@@ -4,823 +4,1354 @@
     English: Mailbox
     Spanish: Buzón
     French: Boîte aux Lettres
+    German: Briefkasten
+    Italian: Buca delle lettere
+    Japanese: ポスト
   Pretty Names:
     English: "the |Mailbox|"
     Spanish: "el |Buzón|"
     French: "la |Boîte aux Lettres|"
+    German: "der |Briefkasten|"
+    Italian: "la |Buca delle lettere|"
+    Japanese: "|ポスト|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: The Great Sea
     Spanish: Gran Mar
     French: Océan
+    German: Großes Meer
+    Italian: Grande Oceano
+    Japanese: 大海原
   Pretty Names:
     English: "the |Great Sea|"
     Spanish: "el |Gran Mar|"
     French: "l'|Océan|"
+    German: "das |Große Meer|"
+    Italian: "il |Grande Oceano|"
+    Japanese: "|大海原|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Forsaken Fortress Sector
     Spanish: Sector de la Isla del Diablo
     French: Secteur de la Forteresse Maudite
+    German: Sektor der Verwunschenen Bastion
+    Italian: Settore della Fortezza dei Demoni
+    Japanese: 魔獣島の海域
   Pretty Names:
     English: "the |Forsaken Fortress Sector|"
     Spanish: "el |Sector de la Isla del Diablo|"
     French: "le |Secteur de la Forteresse Maudite|"
+    German: "der |Sektor der Verwunschenen Bastion|"
+    Italian: "il |Settore della Fortezza dei Demoni|"
+    Japanese: "|魔獣島の海域|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Star Island
     Spanish: Isla Estrella
     French: Ile Etoilée
+    German: Eiland des Sternenstaubs
+    Italian: Isola Stella
+    Japanese: 星島
   Pretty Names:
     English: "|Star Island|"
     Spanish: "la |Isla Estrella|"
     French: "l'|Ile Etoilée|"
+    German: "das |Eiland des Sternenstaubs|"
+    Italian: "l'|Isola Stella|"
+    Japanese: "|星島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Northern Fairy Island
     Spanish: Isla del Hada del Norte
     French: Ilot Septentrional des Fées
+    German: Nördliches Feen-Cordial
+    Italian: Oasi Fata del Nord
+    Japanese: 北の妖精島
   Pretty Names:
     English: "|Northern Fairy Island|"
     Spanish: "la |Isla del Hada del Norte|"
     French: "l'|Ilot Septentrional des Fées|"
+    German: "das |Nördliche Feen-Cordial|"
+    Italian: "l'|Oasi Fata del Nord|"
+    Japanese: "|北の妖精島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Gale Isle
     Spanish: Isla del Viento
     French: Ile du Vent
+    German: Zephir-Insel
+    Italian: Isola del Vento
+    Japanese: 風の島
   Pretty Names:
     English: "|Gale Isle|"
     Spanish: "la |Isla del Viento|"
     French: "l'|Ile du Vent|"
+    German: "die |Zephir-Insel|"
+    Italian: "l'|Isola del Vento|"
+    Japanese: "|風の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Crescent Moon Island
     Spanish: Isla de la Luna
     French: Ile du Croissant
+    German: Schimmernde Sichel
+    Italian: Isola Luna
+    Japanese: 月島
   Pretty Names:
     English: "|Crescent Moon Island|"
     Spanish: "la |Isla de la Luna|"
     French: "l'|Ile du Croissant|"
+    German: "die |Schimmernde Sichel|"
+    Italian: "l'|Isola Luna|"
+    Japanese: "|月島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Seven Star Isles
     Spanish: Isla Osa Mayor
     French: Archipel Ursa Major
+    German: Isla Ursa Major
+    Italian: Arcipelago Orsa Maggiore
+    Japanese: 七星島
   Pretty Names:
     English: "|Seven Star Isles|"
     Spanish: "la |Isla Osa Mayor|"
     French: "l'|Archipel Ursa Major|"
+    German: "die |Isla Ursa Major|"
+    Italian: "l'|Arcipelago Orsa Maggiore|"
+    Japanese: "|七星島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Overlook Island
     Spanish: Isla de las Torres
     French: Ile aux Trois Tours
+    German: Isla Rah-Bunzla
+    Italian: Isola Bellavista
+    Japanese: 高台の島
   Pretty Names:
     English: "|Overlook Island|"
     Spanish: "la |Isla de las Torres|"
     French: "l'|Ile aux Trois Tours|"
+    German: "die |Isla Rah-Bunzla|"
+    Italian: "l'|Isola Bellavista|"
+    Japanese: "|高台の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Four Eye Reef
     Spanish: Islas del Cuatro
     French: Ile de la Face Quatre
+    German: Vieraugen-Riff
+    Italian: Isola dei Quattro
+    Japanese: 四の目島
   Pretty Names:
     English: "|Four Eye Reef|"
     Spanish: "las |Islas del Cuatro|"
     French: "l'|Ile de la Face Quatre|"
+    German: "das |Vieraugen-Riff|"
+    Italian: "l'|Isola dei Quattro|"
+    Japanese: "|四の目島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Mother & Child Isles
     Spanish: Islas Madre e Hija
     French: Ile Géminée
+    German: Mutter-und-Kind-Insel
+    Italian: Isola della Diade
+    Japanese: 親子島
   Pretty Names:
     English: "|Mother & Child Isles|"
     Spanish: "las |Islas Madre e Hija|"
     French: "l'|Ile Géminée|"
+    German: "die |Mutter-und-Kind-Insel|"
+    Italian: "l'|Isola della Diade|"
+    Japanese: "|親子島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Spectacle Island
     Spanish: Isla Calabaza
     French: Ile des Binocles
+    German: Isla Binokular
+    Italian: Isola Occhiali
+    Japanese: めがね島
   Pretty Names:
     English: "|Spectacle Island|"
     Spanish: "la |Isla Calabaza|"
     French: "l'|Iles des Binocles|"
+    German: "die |Isla Binokular|"
+    Italian: "l'|Isola Occhiali|"
+    Japanese: "|めがね島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Windfall Island
     Spanish: Isla Taura
     French: Mercantîle
+    German: Port Monee
+    Italian: Isola Taura
+    Japanese: タウラ島
   Pretty Names:
     English: "|Windfall Island|"
     Spanish: "la |Isla Taura|"
     French: "|Mercantîle|"
+    German: "|Port Monee|"
+    Italian: "l'|Isola Taura|"
+    Japanese: "|タウラ島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Pawprint Isle
     Spanish: Isla de la Huella
     French: Pas de Chat
+    German: Tapsen-Insel
+    Italian: Isola Orma
+    Japanese: 足形島
   Pretty Names:
     English: "|Pawprint Isle|"
     Spanish: "la |Isla de la Huella|"
     French: "|Pas de Chat|"
+    German: "die |Tapsen-Insel|"
+    Italian: "l'|Isola Orma|"
+    Japanese: "|足形島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Dragon Roost Island
     Spanish: Isla del Dragón
     French: Ile du Dragon
+    German: Drakonia
+    Italian: Isola del Drago
+    Japanese: 竜の島
   Pretty Names:
     English: "|Dragon Roost Island|"
     Spanish: "la |Isla del Dragón|"
     French: "l'|Ile du Dragon|"
+    German: "|Drakonia|"
+    Italian: "l'|Isola del Drago|"
+    Japanese: "|竜の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Flight Control Platform
     Spanish: Andamio de vuelo
     French: Tour de l'Envol
+    German: Flugplatz
+    Italian: Piattaforma di Volo
+    Japanese: 飛行やぐら
   Pretty Names:
     English: "the |Flight Control Platform|"
     Spanish: "el |Andamio de vuelo|"
     French: "la |Tour de l'Envol|"
+    German: "der |Flugplatz|"
+    Italian: "la |Piattaforma di Volo|"
+    Japanese: "|飛行やぐら|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Western Fairy Island
     Spanish: Isla del Hada del Oeste
     French: Ilot Occidental des Fées
+    German: Westliches Feen-Cordial
+    Italian: Oasi Fata dell'Ovest
+    Japanese: 西の妖精島
   Pretty Names:
     English: "|Western Fairy Island|"
     Spanish: "la |Isla del Hada del Oeste|"
     French: "l'|Ilot Occidental des Fées|"
+    German: "das |Westliche Feen-Cordial|"
+    Italian: "l'|Oasi Fata dell'Ovest|"
+    Japanese: "|西の妖精島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Rock Spire Isle
     Spanish: Isla de los Pilares
     French: Ile de la Rocaille
+    German: Isla Stalagmitica
+    Italian: Isola della Rocca
+    Japanese: 石渡り島
   Pretty Names:
     English: "|Rock Spire Isle|"
     Spanish: "la |Isla de los Pilares|"
     French: "l'|Ile de la Rocaille|"
+    German: "die |Isla Stalagmitica|"
+    Italian: "l'|Isola della Rocca|"
+    Japanese: "|石渡り島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Tingle Island
     Spanish: Isla de Tingle
     French: Ile de Tingle
+    German: Tingles Insel
+    Italian: Isola Tingle
+    Japanese: チンクル島
   Pretty Names:
     English: "|Tingle Island|"
     Spanish: "la |Isla de Tingle|"
     French: "l'|Ile de Tingle|"
+    German: "|Tingles Insel|"
+    Italian: "l'|Isola Tingle|"
+    Japanese: "|チンクル島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Northern Triangle Island
     Spanish: Isla Triángulo del Norte
     French: Ile Triangulaire du Nord
+    German: Nördliche Triangel-Insel
+    Italian: Isola Freccia del Nord
+    Japanese: 北の三角島
   Pretty Names:
     English: "|Northern Triangle Island|"
     Spanish: "la |Isla Triángulo del Norte|"
     French: "l'|Ile Triangulaire du Nord|"
+    German: "die |Nördliche Triangel-Insel|"
+    Italian: "l'|Isola Freccia del Nord|"
+    Japanese: "|北の三角島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Eastern Fairy Island
     Spanish: Isla del Hada del Este
     French: Ilot Oriental des Fées
+    German: Östliches Feen-Cordial
+    Italian: Oasi Fata dell'Est
+    Japanese: 東の妖精島
   Pretty Names:
     English: "|Eastern Fairy Island|"
     Spanish: "la |Isla del Hada del Este|"
     French: "l'|Ilot Oriental des Fées|"
+    German: "das |Östliche Feen-Cordial|"
+    Italian: "l'|Oasi Fata dell'Est|"
+    Japanese: "|東の妖精島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Fire Mountain
     Spanish: Isla del Volcán
     French: Montagne de Feu
+    German: Ignis-Spitze
+    Italian: Vulcanalia
+    Japanese: 火山島
   Pretty Names:
     English: "|Fire Mountain|"
     Spanish: "la |Isla del Volcán|"
     French: "la |Montagne de Feu|"
+    German: "die |Ignis-Spitze|"
+    Italian: "la |Vulcanalia|"
+    Japanese: "|火山島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Star Belt Archipelago
     Spanish: Isla Orión
     French: Archipel d'Orion
+    German: Isla Orion
+    Italian: Arcipelago Orione
+    Japanese: 三連星島
   Pretty Names:
     English: "the |Star Belt Archipelago|"
     Spanish: "la |Isla Orión|"
     French: "l'|Archipel d'Orion|"
+    German: "die |Isla Orion|"
+    Italian: "l'|Arcipelago Orione|"
+    Japanese: "|三連星島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Three Eye Reef
     Spanish: Islas del Tres
     French: Ile de la Face Trois
+    German: Dreiaugen-Riff
+    Italian: Isola dei Tre
+    Japanese: 三の目島
   Pretty Names:
     English: "|Three Eye Reef|"
     Spanish: "las |Islas del Tres|"
     French: "l'|Ile de la Face Trois|"
+    German: "das |Dreiaugen-Riff|"
+    Italian: "l'|Isola dei Tre|"
+    Japanese: "|三の目島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Greatfish Isle
     Spanish: Islas Pez Volador
     French: Ile du Poisson
+    German: Ichthusk
+    Italian: Arcipelago della Manta
+    Japanese: 魚の島
   Pretty Names:
     English: "|Greatfish Isle|"
     Spanish: "las |Islas Pez Volador|"
     French: "l'|Ile du Poisson|"
+    German: "|Ichthusk|"
+    Italian: "l'|Arcipelago della Manta|"
+    Japanese: "|魚の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Cyclops Reef
     Spanish: Islas del Uno
     French: Ile de la Face Une
+    German: Einaugen-Riff
+    Italian: Isola dell'Uno
+    Japanese: 一の目島
   Pretty Names:
     English: "|Cyclops Reef|"
     Spanish: "las |Islas del Uno|"
     French: "l'|Ile de la Face Une|"
+    German: "das |Einaugen-Riff|"
+    Italian: "l'|Isola dell'Uno|"
+    Japanese: "|一の目島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Six Eye Reef
     Spanish: Islas del Seis
     French: Ile de la Face Six
+    German: Sechsaugen-Riff
+    Italian: Isola dei Sei
+    Japanese: 六の目島
   Pretty Names:
     English: "|Six Eye Reef|"
     Spanish: "las |Islas del Seis|"
     French: "l'|Ile de la Face Six|"
+    German: "das |Sechsaugen-Riff|"
+    Italian: "l'|Isola dei Sei|"
+    Japanese: "|六の目島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Tower of the Gods Sector
     Spanish: Sector de la Torre de los Dioses
     French: Secteur de la Tour des Dieux
+    German: Sektor des Turms der Götter
+    Italian: Settore della Torre degli Spiriti
+    Japanese: 神の塔の海域
   Pretty Names:
     English: "the |Tower of the Gods Sector|"
     Spanish: "el |Sector de la Torre de los Dioses|"
     French: "le |Secteur de la Tour des Dieux|"
+    German: "der |Sektor des Turms der Götter|"
+    Italian: "il |Settore della Torre degli Spiriti|"
+    Japanese: "|神の塔の海域|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Eastern Triangle Island
     Spanish: Isla Triángulo del Este
     French: Ile Triangulaire de l'Est
+    German: Östliche Triangel-Insel
+    Italian: Isola Freccia dell'Est
+    Japanese: 東の三角島
   Pretty Names:
     English: "|Eastern Triangle Island|"
     Spanish: "la |Isla Triángulo del Este|"
     French: "l'|Ile Triangulaire de l'Est|"
+    German: "die |Östliche Triangel-Insel|"
+    Italian: "l'|Isola Freccia dell'Est|"
+    Japanese: "|東の三角島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Thorned Fairy Island
     Spanish: Isla del Hada Custodiada
     French: Ilot Epineux des Fées
+    German: Dornarm-Feen-Cordial
+    Italian: Oasi della Fata Avvinta
+    Japanese: トゲの妖精島
   Pretty Names:
     English: "|Thorned Fairy Island|"
     Spanish: "la |Isla del Hada Custodiada|"
     French: "l'|Ilot Epineux des Fées|"
+    German: "das |Dornarm-Feen-Cordial|"
+    Italian: "l'|Oasi della Fata Avvinta|"
+    Japanese: "|トゲの妖精島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Needle Rock Isle
     Spanish: Isla de la Aguja
     French: Serrure de Pierre
+    German: Nadelfels-Insel
+    Italian: Isola della Guglia
+    Japanese: 針岩の島
   Pretty Names:
     English: "|Needle Rock Isle|"
     Spanish: "la |Isla de la Aguja|"
     French: "la |Serrure de Pierre|"
+    German: "die |Nadelfels-Insel|"
+    Italian: "l'|Isola della Guglia|"
+    Japanese: "|針岩の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Islet of Steel
     Spanish: Isla de Hierro
     French: Canonnière
+    German: Schwimmende Festung
+    Italian: Isola di Ferro
+    Japanese: 鉄の島
   Pretty Names:
     English: "the |Islet of Steel|"
     Spanish: "la |Isla de Hierro|"
     French: "la |Canonnière|"
+    German: "die |Schwimmende Festung|"
+    Italian: "l'|Isola di Ferro|"
+    Japanese: "|鉄の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Stone Watcher Island
     Spanish: Isla Cabeza de Piedra
     French: Ile de la Tête de Pierre
+    German: Capo Grande
+    Italian: Isola del Guardiano
+    Japanese: 巨顔石島
   Pretty Names:
     English: "|Stone Watcher Island|"
     Spanish: "la |Isla Cabeza de Piedra|"
     French: "l'|Ile de la Tête de Pierre|"
+    German: "|Capo Grande|"
+    Italian: "l'|Isola del Guardiano|"
+    Japanese: "|巨顔石島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Southern Triangle Island
     Spanish: Isla Triángulo del Sur
     French: Ile Triangulaire du Sud
+    German: Südliche Triangel-Insel
+    Italian: Isola Freccia del Sud
+    Japanese: 南の三角島
   Pretty Names:
     English: "|Southern Triangle Island|"
     Spanish: "la |Isla Triángulo del Sur|"
     French: "l'|Ile Triangulaire du Sud|"
+    German: "die |Südliche Triangel-Insel|"
+    Italian: "l'|Isola Freccia del Sud|"
+    Japanese: "|南の三角島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Private Oasis
     Spanish: Isla de Quién
     French: Ile de Qui-ça
+    German: Niemandsland
+    Italian: Isola di Chi
+    Japanese: ダレの島
   Pretty Names:
     English: "the |Private Oasis|"
     Spanish: "la |Isla de Quién|"
     French: "l'|Ile de Qui-ça|"
+    German: "das |Niemandsland|"
+    Italian: "l'|Isola di Chi|"
+    Japanese: "|ダレの島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Bomb Island
     Spanish: Isla Bomba
     French: Ile de la Bombe
+    German: Isla Bomba
+    Italian: Isola Bomba
+    Japanese: バクダン島
   Pretty Names:
     English: "|Bomb Island|"
     Spanish: "la |Isla Bomba|"
     French: "l'|Ile de la Bombe|"
+    German: "die |Isla Bomba|"
+    Italian: "l'|Isola Bomba|"
+    Japanese: "|バクダン島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Birds Peak Rock
     Spanish: Isla de los Nidos
     French: Ile aux Nichoirs
+    German: Greifenhorst-Insel
+    Italian: Isola dei Nidi
+    Japanese: 高鳥岩の島
   Pretty Names:
     English: "|Birds Peak Rock|"
     Spanish: "la |Isla de los Nidos|"
     French: "l'|Ile aux Nichoirs|"
+    German: "die |Greifenhorst-Insel|"
+    Italian: "l'|Isola dei Nidi|"
+    Japanese: "|高鳥岩の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Diamond Steppe Island
     Spanish: Isla Rombo
     French: Ile du Losange
+    German: Rhombus-Insel
+    Italian: Isola Diamante
+    Japanese: ひし形段の島
   Pretty Names:
     English: "|Diamond Steppe Island|"
     Spanish: "la |Isla Rombo|"
     French: "l'|Ile du Losange|"
+    German: "die |Rhombus-Insel|"
+    Italian: "l'|Isola Diamante|"
+    Japanese: "|ひし形段の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Five Eye Reef
     Spanish: Islas del Cinco
     French: Ile de la Face Cinq
+    German: Fünfaugen-Riff
+    Italian: Isola dei Cinque
+    Japanese: 五の目島
   Pretty Names:
     English: "|Five Eye Reef|"
     Spanish: "las |Islas del Cinco|"
     French: "l'|Ile de la Face Cinq|"
+    German: "das |Fünfaugen-Riff|"
+    Italian: "l'|Isola dei Cinque|"
+    Japanese: "|五の目島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Shark Island
     Spanish: Islas Tiburón
     French: Ile du Requin
+    German: Haifisch-Insel
+    Italian: Isola Squalo
+    Japanese: さめ島
   Pretty Names:
     English: "|Shark Island|"
     Spanish: "las |Islas Tiburón|"
     French: "l'|Ile du Requin|"
+    German: "die |Haifisch-Insel|"
+    Italian: "l'|Isola Squalo|"
+    Japanese: "|さめ島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Southern Fairy Island
     Spanish: Isla del Hada del Sur
     French: Ilot Méridional des Fées
+    German: Südliches Feen-Cordial
+    Italian: Oasi Fata del Sud
+    Japanese: 南の妖精島
   Pretty Names:
     English: "|Southern Fairy Island|"
     Spanish: "la |Isla del Hada del Sur|"
     French: "l'|Ilot Méridional des Fées|"
+    German: "das |Südliche Feen-Cordial|"
+    Italian: "l'|Oasi Fata del Sud|"
+    Japanese: "|南の妖精島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Ice Ring Isle
     Spanish: Isla del Hielo
     French: Ile Gelée
+    German: Firn-Insel
+    Italian: Inlandsis
+    Japanese: 氷山島
   Pretty Names:
     English: "|Ice Ring Isle|"
     Spanish: "la |Isla del Hielo|"
     French: "l'|Ile Gelée|"
+    German: "die |Firn-Insel|"
+    Italian: "l'|Inlandsis|"
+    Japanese: "|氷山島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Forest Haven
     Spanish: Isla del Bosque
     French: Ile aux Forêts
+    German: Tanntopia
+    Italian: Arcipelago dei Boschi
+    Japanese: 森の島
   Pretty Names:
     English: "|Forest Haven|"
     Spanish: "la |Isla del Bosque|"
     French: "l'|Ile aux Forêts|"
+    German: "|Tanntopia|"
+    Italian: "l'|Arcipelago dei Boschi|"
+    Japanese: "|森の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Cliff Plateau Isles
     Spanish: Islas Conectadas
     French: Saut de Roc
+    German: Flugfels-Insel
+    Italian: Isola Trampolino
+    Japanese: とび岩の島
   Pretty Names:
     English: "|Cliff Plateau Isles|"
     Spanish: "las |Islas Conectadas|"
     French: "|Saut de Roc|"
+    German: "die |Flugfels-Insel|"
+    Italian: "l'|Isola Trampolino|"
+    Japanese: "|とび岩の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Horseshoe Island
     Spanish: Isla Herradura
     French: Ile du Fer à Cheval
+    German: Hufeisen-Insel
+    Italian: Isola Ferdicavallo
+    Japanese: てい鉄形の島
   Pretty Names:
     English: "|Horseshoe Island|"
     Spanish: "la |Isla Herradura|"
     French: "l'|Ile du Fer à Cheval|"
+    German: "die |Hufeisen-Insel|"
+    Italian: "l'|Isola Ferdicavallo|"
+    Japanese: "|てい鉄形の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Outset Island
     Spanish: Isla Initia
     French: Ile de l'Aurore
+    German: Präludien
+    Italian: Isola Primula
+    Japanese: プロロ島
   Pretty Names:
     English: "|Outset Island|"
     Spanish: "la |Isla Initia|"
     French: "l'|Ile de l'Aurore|"
+    German: "|Präludien|"
+    Italian: "l'|Isola Primula|"
+    Japanese: "|プロロ島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Headstone Island
     Spanish: Isla de la Tierra
     French: Ile de la Terre
+    German: Terra-Insel
+    Italian: Isola della Terra
+    Japanese: 大地の島
   Pretty Names:
     English: "|Headstone Island|"
     Spanish: "la |Isla de la Tierra|"
     French: "l'|Ile de la Terre|"
+    German: "die |Terra-Insel|"
+    Italian: "l'|Isola della Terra|"
+    Japanese: "|大地の島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Two Eye Reef
     Spanish: Islas del Dos
     French: Ile de la Face Deux
+    German: Zweiaugen-Riff
+    Italian: Isola dei Due
+    Japanese: 二の目島
   Pretty Names:
     English: "|Two Eye Reef|"
     Spanish: "las |Islas del Dos|"
     French: "l'|Ile de la Face Deux|"
+    German: "das |Zweiaugen-Riff|"
+    Italian: "l'|Isola dei Due|"
+    Japanese: "|二の目島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Angular Isles
     Spanish: Islas Cuadri
     French: Ilots Kif Kif
+    German: Treppstieg-Insel
+    Italian: Isola Cube
+    Japanese: カクカク島
   Pretty Names:
     English: "|Angular Isles|"
     Spanish: "las |Islas Cuadri|"
     French: "les |Ilots Kif Kif|"
+    German: "die |Treppstieg-Insel|"
+    Italian: "l'|Isola Cube|"
+    Japanese: "|カクカク島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Boating Course
     Spanish: Zona de regata
     French: Batodrome
+    German: Nautodrom
+    Italian: Navodromo
+    Japanese: 船レース場
   Pretty Names:
     English: "the |Boating Course|"
     Spanish: "la |Zona de regata|"
     French: "le |Batodrome|"
+    German: "das |Nautodrom|"
+    Italian: "il |Navodromo|"
+    Japanese: "|船レース場|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Five Star Isles
     Spanish: Isla Casiopeia
     French: Archipel de Cassiopée
+    German: Isla Kassiopeia
+    Italian: Arcipelago Cassiopea
+    Japanese: 五星島
   Pretty Names:
     English: "|Five Star Isles|"
     Spanish: "la |Isla Casiopeia|"
     French: "l'|Archipel de Cassiopée|"
+    German: "die |Isla Kassiopeia|"
+    Italian: "l'|Arcipelago Cassiopea|"
+    Japanese: "|五星島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Forsaken Fortress
     Spanish: Isla del Diablo
     French: Forteresse Maudite
+    German: Verwunschene Bastion
+    Italian: Fortezza dei Demoni
+    Japanese: 魔獣島
   Pretty Names:
     English: "|Forsaken Fortress|"
     Spanish: "la |Isla del Diablo|"
     French: "la |Forteresse Maudite|"
+    German: "die |Verwunschene Bastion|"
+    Italian: "la |Fortezza dei Demoni|"
+    Japanese: "|魔獣島|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Dragon Roost Cavern
     Spanish: Cueva del Dragón
     French: Caverne du Dragon
+    German: Drako-Sanktuarium
+    Italian: Caverna del Drago
+    Japanese: 竜の山のほこら
   Pretty Names:
     English: "|Dragon Roost Cavern|"
     Spanish: "la |Cueva del Dragón|"
     French: "la |Caverne du Dragon|"
+    German: "das |Drako-Sanktuarium|"
+    Italian: "la |Caverna del Drago|"
+    Japanese: "|竜の山のほこら|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Forbidden Woods
     Spanish: Bosque Prohibido
     French: Bois Défendus
+    German: Verbotener Hain
+    Italian: Bosco Proibito
+    Japanese: 禁断の森
   Pretty Names:
     English: "|Forbidden Woods|"
     Spanish: "el |Bosque Prohibido|"
     French: "les |Bois Défendus|"
+    German: "der |Verbotene Hain|"
+    Italian: "il |Bosco Proibito|"
+    Japanese: "|禁断の森|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Tower of the Gods
     Spanish: Torre de los Dioses
     French: Tour des Dieux
+    German: Turm der Götter
+    Italian: Torre degli Spiriti
+    Japanese: 神の塔
   Pretty Names:
     English: "the |Tower of the Gods|"
     Spanish: "la |Torre de los Dioses|"
     French: "la |Tour des Dieux|"
+    German: "der |Turm der Götter|"
+    Italian: "la |Torre degli Spiriti|"
+    Japanese: "|神の塔|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Earth Temple
     Spanish: Templo de la Tierra
     French: Temple de la Terre
+    German: Terratempel
+    Italian: Santuario della Terra
+    Japanese: 大地の神殿
   Pretty Names:
     English: "the |Earth Temple|"
     Spanish: "el |Templo de la Tierra|"
     French: "le |Temple de la Terre|"
+    German: "der |Terratempel|"
+    Italian: "il |Santuario della Terra|"
+    Japanese: "|大地の神殿|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Wind Temple
     Spanish: Templo del Viento
     French: Temple du Vent
+    German: Zephirtempel
+    Italian: Santuario del Vento
+    Japanese: 風の神殿
   Pretty Names:
     English: "the |Wind Temple|"
     Spanish: "el |Templo del Viento|"
     French: "le |Temple du Vent|"
+    German: "der |Zephirtempel|"
+    Italian: "il |Santuario del Vento|"
+    Japanese: "|風の神殿|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Hyrule
     Spanish: Hyrule
     French: Hyrule
+    German: Hyrule
+    Italian: Hyrule
+    Japanese: ハイラル
   Pretty Names:
     English: "|Hyrule|"
     Spanish: "|Hyrule|"
     French: "|Hyrule|"
+    German: "|Hyrule|"
+    Italian: "|Hyrule|"
+    Japanese: "|ハイラル|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:
 
 
 - Names:
     English: Ganon's Tower
     Spanish: Castillo de Ganon
     French: Château de Ganon
+    German: Ganons Kastell
+    Italian: Castello di Ganon
+    Japanese: ガノン城
   Pretty Names:
     English: "|Ganon's Tower|"
     Spanish: "el |Castillo de Ganon|"
     French: "le |Château de Ganon|"
+    German: "|Ganons Kastell|"
+    Italian: "il |Castello di Ganon|"
+    Japanese: "|ガノン城|"
   Cryptic Names:
     English:
     Spanish:
     French:
+    German:
+    Italian:
+    Japanese:

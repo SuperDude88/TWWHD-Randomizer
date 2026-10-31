@@ -36,19 +36,14 @@ uint32_t portRodataOffset(uint32_t usaOffset);
 bool portFailed();
 const std::string& portErrors();
 
-// language packs: {pack file name part ("UsEnglish", "EuGerman", ...), text language ("English", "Spanish", "French")};
-// a pack whose language the randomizer has no text for gets the English text
+// language packs: {pack file name part ("UsEnglish", "EuGerman", ...), text language ("English", "German", ...)}
 struct Pack {
     std::string pack, language;
 };
 const std::vector<Pack>& packs();
 // the pack for a text language ("English" -> "EuEnglish"), "" if this release has none for it
 std::string packFor(const std::string& language);
-// make_all_text_instant's change of one message
-void instantText(const std::string& label, Message& message);
 // `what` in `message` replaced by `with`; false (message as it is) when the release's text doesn't have it
 bool replaceFound(std::u16string& message, const std::u16string& what, const std::u16string& with);
-// EUR: the German and Italian packs in `outDir` get the messages and files the randomizer changed in the English one
-bool mergePacks(const fspath& gameBaseDir, const fspath& outDir, bool instant, std::string& err);
 
 }  // namespace Region

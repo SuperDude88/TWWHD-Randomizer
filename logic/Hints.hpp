@@ -8,6 +8,9 @@
 #define HINT_PREFIX_ENGLISH u"They say that "
 #define HINT_PREFIX_SPANISH u"Dicen que "
 #define HINT_PREFIX_FRENCH  u"J'ai entendu dire que "
+#define HINT_PREFIX_GERMAN  u"Man sagt, "
+#define HINT_PREFIX_ITALIAN u"Si dice che "
+#define HINT_PREFIX_JAPANESE u"うわさによると、"
 
 enum struct HintError
 {

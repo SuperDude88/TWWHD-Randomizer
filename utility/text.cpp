@@ -6,10 +6,11 @@
 #include <command/Log.hpp>
 
 #include <unordered_map>
+#include <string_view>
 
 namespace Text {
 
-    std::array<std::string, 3> supported_languages = {"English", "Spanish", "French"};
+    std::array<std::string, 6> supported_languages = {"English", "Spanish", "French", "German", "Italian", "Japanese"};
 
     static const std::unordered_map<Text::Color, std::u16string> nameToColor = {
         {Text::Color::NONE,    TEXT_COLOR_DEFAULT},
@@ -54,6 +55,16 @@ namespace Text {
         return str;
     }
 
+    // Japanese: kana, kanji and full-width characters take two columns and a line can break between them
+    static bool is_wide_char(const char16_t& c) {
+        return (c >= 0x2E80 && c <= 0x9FFF) || (c >= 0xF900 && c <= 0xFAFF) || (c >= 0xFF00 && c <= 0xFF60) || (c >= 0xFFE0 && c <= 0xFFE6);
+    }
+
+    // characters that don't start a line in Japanese
+    static bool is_no_break_before(const char16_t& c) {
+        return std::u16string_view(u"、。，．・：；？！ー）」』】〕…～ぁぃぅぇぉっゃゅょァィゥェォッャュョ").find(c) != std::u16string_view::npos;
+    }
+
     std::u16string word_wrap_string(const std::u16string& string, const size_t& max_line_len) {
         size_t index_in_str = 0;
         std::u16string wordwrapped_str;
@@ -85,6 +96,20 @@ namespace Text {
                 len_curr_line += curr_word_len + 1;
                 current_word = u"";
                 curr_word_len = 0;
+                index_in_str += 1;
+            }
+            else if (is_wide_char(character)) {
+                // the word before it ends here; the wide character goes on this line if it fits
+                wordwrapped_str += current_word;
+                len_curr_line += curr_word_len;
+                current_word = u"";
+                curr_word_len = 0;
+                if (len_curr_line + 2 > max_line_len && len_curr_line > 0 && !is_no_break_before(character)) {
+                    wordwrapped_str += u'\n';
+                    len_curr_line = 0;
+                }
+                wordwrapped_str += character;
+                len_curr_line += 2;
                 index_in_str += 1;
             }
             else {

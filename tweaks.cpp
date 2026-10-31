@@ -69,6 +69,25 @@ static TweakError Load_Custom_Symbols(const fspath& file_path) {
     return TweakError::NONE;
 }
 
+// Japanese numbers are written with full-width digits
+static std::u16string full_width_number(const unsigned int& number) {
+    std::u16string digits;
+    for (const char c : std::to_string(number)) {
+        digits += static_cast<char16_t>(u'０' + (c - '0'));
+    }
+    return digits;
+}
+
+// Japanese: a number and its counter ("３０本") with any reading tags between them replaced by `with`
+static bool replace_japanese_count(std::u16string& message, const std::u16string& number, const char16_t& counter, const std::u16string& with) {
+    const size_t start = message.find(number);
+    if (start == std::u16string::npos) return false;
+    const size_t end = message.find(counter, start);
+    if (end == std::u16string::npos || end - start > 16) return false;
+    message.replace(start, end + 1 - start, with);
+    return true;
+}
+
 static TweakError Apply_Patch(const fspath& file_path) {
     YAML::Node patches;
     if(!LoadYAML(patches, file_path, true)) {
@@ -212,7 +231,54 @@ TweakError make_all_text_instant() {
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data);
 
                 for (auto& [label, message] : msbt.messages_by_label) {
-                    Region::instantText(label, message); // shared with the packs without the randomizer's text (merge_packs)
+                    std::u16string& String = message.text.message;
+
+                    message.attributes.drawType = 1; // draw instant
+
+                    std::u16string::size_type wait = String.find(u"\x0e\x01\x06\x02"s); // dont use macro because duration shouldnt matter
+                    while (wait != std::u16string::npos) {
+                        String.erase(wait, 5);
+                        wait = String.find(u"\x0e\x01\x06\x02"s);
+                    }
+
+                    // Most of these waits are in cutscenes like the credits
+                    // Removing them forces you to advance the text yourself which is undesirable
+                    // So only apply it to a few instances
+                    static const std::unordered_set<std::string> wait_dismiss_to_remove = {
+                        // Healing Grandma text
+                        "02034",
+                        "02039",
+                        "02040",
+                        // Tingle's text
+                        "03522",
+                        "04316",
+                        // Beedle's text
+                        "03956",
+                        // Hollo's text
+                        "05162",
+                        // Auction text
+                        "07416",
+                        // Killer Bees' text
+                        "09935",
+                        // Dampa's text
+                        "12920",
+                        // Flight Control Platform text
+                        "10930",
+                    };
+
+                    if(wait_dismiss_to_remove.contains(label)) {
+                        std::u16string::size_type wait_dismiss = String.find(u"\x0e\x01\x03\x02"s); // dont use macro because duration shouldnt matter
+                        while (wait_dismiss != std::u16string::npos) {
+                            String.erase(wait_dismiss, 5);
+                            wait_dismiss = String.find(u"\x0e\x01\x03\x02"s);
+                        }
+                    }
+
+                    std::u16string::size_type wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s); // dont use macro because duration shouldnt matter
+                    while (wait_dismiss_prompt != std::u16string::npos) {
+                        String.erase(wait_dismiss_prompt, 5);
+                        wait_dismiss_prompt = String.find(u"\x0e\x01\x02\x02"s);
+                    }
                 }
             
                 return true;
@@ -528,6 +594,9 @@ TweakError make_items_progressive() {
         {"English", DRAW_INSTANT + u"You got " + TEXT_COLOR_RED + u"magic power" + TEXT_COLOR_DEFAULT + u"!\nNow you can use magic items!\0"s},
         {"Spanish", DRAW_INSTANT + u"¡Has obtenido el " + TEXT_COLOR_RED + u"Poder Mágico" + TEXT_COLOR_DEFAULT + u"!\n¡Ahora podrás utilizar objetos mágicos!\0"s},
         {"French", DRAW_INSTANT + u"Vous obtenez l'" + TEXT_COLOR_RED + u"Energie Magique" + TEXT_COLOR_DEFAULT + u"!\n" + Text::word_wrap_string(u"Vous pouvez maintenant utiliser les objets magiques!\0"s, 43)},
+        {"German", DRAW_INSTANT + u"Du hast " + TEXT_COLOR_RED + u"Magische Energie" + TEXT_COLOR_DEFAULT + u" erhalten!\nJetzt kannst du magische Items benutzen!\0"s},
+        {"Italian", DRAW_INSTANT + u"Hai ottenuto l'" + TEXT_COLOR_RED + u"energia magica" + TEXT_COLOR_DEFAULT + u"!\nOra puoi usare gli strumenti magici!\0"s},
+        {"Japanese", DRAW_INSTANT + TEXT_COLOR_RED + u"魔法力" + TEXT_COLOR_DEFAULT + u"を手に入れた！\n魔法を使うアイテムが使えるようになった！\0"s},
     };
 
     for (const auto& language : Text::supported_languages) {
@@ -915,6 +984,9 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
       {"English", u"You got "},
       {"Spanish", u"¡Has conseguido "},
       {"French", u"Vous obtenez "},
+      {"German", u"Du erhältst: "},
+      {"Italian", u"Hai ottenuto: "},
+      {"Japanese", u""},
     };
 
     RandoSession::CacheEntry& rpx = g_session.openGameFile("code/cking.rpx@RPX@ELF");
@@ -944,7 +1016,8 @@ TweakError allow_dungeon_items_to_appear_anywhere(World& world) {
 
                 const uint32_t message_id = 101 + item_id;
                 const Message& to_copy = msbt.messages_by_label["00" + std::to_string(101 + base_item_id)];
-                std::u16string message = messageBegin.at(language) + dungeon_item.getUTF16Name(language, Text::Type::PRETTY) + u"!"s + TEXT_END;
+                const bool newLanguage = language == "German" || language == "Italian" || language == "Japanese"; // "Du erhältst: |name|!"
+                std::u16string message = messageBegin.at(language) + dungeon_item.getUTF16Name(language, newLanguage ? Text::Type::STANDARD : Text::Type::PRETTY) + (language == "Japanese" ? u"を手に入れた！"s : u"!"s) + TEXT_END;
 
                 message = Text::word_wrap_string(message, 39);
                 msbt.addMessage("00" + std::to_string(message_id), to_copy.attributes, to_copy.style, message);
@@ -1263,7 +1336,12 @@ TweakError update_ho_ho_dialog(World& world) {
                 for (auto& hint : hints) {
                     std::u16string hintText = u"";
                     if (i == 0) {
-                        hintText += SOUND(0x0103) u"Ho ho! "s;
+                        static const std::unordered_map<std::string, std::u16string> laugh = {
+                            {"German", u"Ähehe! "s},
+                            {"Italian", u"Ahàhà! "s},
+                            {"Japanese", u"オホホッ！　"s},
+                        };
+                        hintText += SOUND(0x0103) + (laugh.contains(language) ? laugh.at(language) : u"Ho ho! "s);
                     }
                     i++;
                     hintText += hint.text[language];
@@ -1448,11 +1526,18 @@ TweakError set_damage_multiplier(const float& multiplier) {
                     {"English", u"double"s},
                     {"Spanish", u"el doble"s},
                     {"French", u"doublés"s},
+                    {"German", u"doppelt"s},
+                    {"Italian", u"il doppio dei danni"s},
+                    {"Japanese", u"２"s},
                 };
 
                 std::u16string& message = msbt.messages_by_label["T_Msg_00_hardmode00"].text.message;
                 const std::u16string& replace = word_to_replace.at(language);
-                const std::u16string& replacement = Utility::Str::toUTF16(std::to_string(static_cast<uint8_t>(multiplier)) + "x");
+                const unsigned int times = static_cast<uint8_t>(multiplier);
+                std::u16string replacement = Utility::Str::toUTF16(std::to_string(times) + "x");
+                if (language == "German") replacement = Utility::Str::toUTF16(std::to_string(times)) + u"-mal"s;
+                if (language == "Italian") replacement = u"danni moltiplicati per "s + Utility::Str::toUTF16(std::to_string(times));
+                if (language == "Japanese") replacement = full_width_number(times);
                 Region::replaceFound(message, replace, replacement); // as it is where the release words it otherwise
 
                 return true;
@@ -1910,13 +1995,13 @@ TweakError increase_crawl_speed() {
 }
 
 TweakError add_chart_number_to_item_get_messages(World& world) {
-    // the name goes in at the English, Spanish and French wording's place; Japanese messages keep their own
-    if (Region::current() == Region::Release::JPN) return TweakError::NONE;
-
     std::unordered_map<std::string, size_t> replacementData = {
         {"English", 12},
         {"Spanish", 18},
         {"French", 17},
+        {"German", 0}, // these replace the item name in its color instead
+        {"Italian", 0},
+        {"Japanese", 0},
     };
 
     for (const auto& language : Text::supported_languages) {
@@ -1932,12 +2017,24 @@ TweakError add_chart_number_to_item_get_messages(World& world) {
             // Get the properly formated item name
             auto itemName = gameItemToName(idToGameItem(item_id));
             const std::u16string u16itemName = world.getItem(itemName).getUTF16Name(language, Text::Type::PRETTY);
+            const std::u16string u16plainName = world.getItem(itemName).getUTF16Name(language, Text::Type::STANDARD, Text::Color::RAW);
 
             // The message between the "You obtained " and the next '!' will be replaced
             entry.addAction([=](RandoSession* session, FileType* data) -> int {
                 CAST_ENTRY_TO_FILETYPE(msbt, FileTypes::MSBTFile, data)
                 
                 auto& message = msbt.messages_by_label["00" + std::to_string(101 + item_id)].text.message;
+                if (replacementIndex == 0) {
+                    // "Du hast eine |Schatzkarte| gefunden!": the name between the red color and the next color change
+                    const size_t start = message.find(TEXT_COLOR_RED);
+                    if (start == std::u16string::npos) return true;
+                    const size_t nameStart = start + std::u16string(TEXT_COLOR_RED).size();
+                    const size_t nameEnd = message.find(u"\x0E\x00\x03"s, nameStart); // the next color change (reading tags inside stay)
+                    if (nameEnd == std::u16string::npos) return true;
+                    const std::u16string oldName = message.substr(nameStart, nameEnd - nameStart);
+                    message.replace(nameStart, nameEnd - nameStart, u16plainName + (oldName.ends_with(u' ') ? u" " : u""));
+                    return true;
+                }
                 if (message.find('!') == std::u16string::npos || message.find('!') < replacementIndex) return true; // worded otherwise
                 auto replacementLength = message.find('!') - replacementIndex;
 
@@ -2706,6 +2803,9 @@ TweakError implement_key_bag() {
         {"English", u" +Big\0"s},
         {"Spanish", u" +Jefe\0"s},
         {"French", u" +Boss\0"s},
+        {"German", u" +Groß\0"s},
+        {"Italian", u" +Grande\0"s},
+        {"Japanese", u"＋ボス\0"s},
     };
 
     for (const auto& language : Text::supported_languages) {
@@ -3647,11 +3747,18 @@ TweakError make_item_get_text_dynamic() {
                     {"English", u"30 arrows"s},
                     {"Spanish", u"30 flechas"s},
                     {"French", u"30 flèches"s},
+                    {"German", u"30 Pfeile"s},
+                    {"Italian", u"30 Frecce"s},
                 };
 
                 std::u16string& message = msbt.messages_by_label["00140"].text.message;
-                const std::u16string& replace = word_to_replace.at(language);
-                Region::replaceFound(message, replace, REPLACE(ReplaceTags::ARROW_MAX)); // as it is where the release words it otherwise
+                if (language == "Japanese") {
+                    replace_japanese_count(message, u"３０"s, u'本', REPLACE(ReplaceTags::ARROW_MAX));
+                }
+                else {
+                    const std::u16string& replace = word_to_replace.at(language);
+                    Region::replaceFound(message, replace, REPLACE(ReplaceTags::ARROW_MAX)); // as it is where the release words it otherwise
+                }
             }
 
             // The item get message for bombs normally says you can carry up to 30
@@ -3664,11 +3771,21 @@ TweakError make_item_get_text_dynamic() {
                     {"English", TEXT_COLOR_RED u"30"s TEXT_COLOR_DEFAULT},
                     {"Spanish", TEXT_COLOR_RED u"30"s TEXT_COLOR_DEFAULT},
                     {"French", TEXT_COLOR_RED u"30 "s TEXT_COLOR_DEFAULT u"bombes"s},
+                    {"German", TEXT_COLOR_RED u"30 Stück"s TEXT_COLOR_DEFAULT},
+                    {"Italian", TEXT_COLOR_RED u"massimo 30"s TEXT_COLOR_DEFAULT},
                 };
 
                 std::u16string& message = msbt.messages_by_label["00150"].text.message;
-                const std::u16string& replace = word_to_replace.at(language);
-                Region::replaceFound(message, replace, TEXT_COLOR_RED REPLACE(ReplaceTags::BOMB_MAX) TEXT_COLOR_DEFAULT); // as it is where the release words it otherwise
+                if (language == "Japanese") {
+                    replace_japanese_count(message, u"３０"s, u'個', REPLACE(ReplaceTags::BOMB_MAX));
+                }
+                else if (language == "Italian") {
+                    Region::replaceFound(message, word_to_replace.at(language), TEXT_COLOR_RED u"massimo "s REPLACE(ReplaceTags::BOMB_MAX) TEXT_COLOR_DEFAULT);
+                }
+                else {
+                    const std::u16string& replace = word_to_replace.at(language);
+                    Region::replaceFound(message, replace, TEXT_COLOR_RED REPLACE(ReplaceTags::BOMB_MAX) TEXT_COLOR_DEFAULT); // as it is where the release words it otherwise
+                }
             }
 
             return true;
