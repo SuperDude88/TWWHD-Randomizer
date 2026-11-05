@@ -576,10 +576,10 @@ static FillError handleDungeonItems(WorldPool& worlds, ItemPool& itemPool)
 {
     // For each world, place dungeon items starting with the most restrictive settings
     // first. Start with the Own Dungeon setting
-    randomizeOwnDungeon(worlds, itemPool);
+    FILL_ERROR_CHECK(randomizeOwnDungeon(worlds, itemPool));
 
     // Now do the any dungeon and overworld settings
-    randomizeRestrictedDungeonItems(worlds, itemPool);
+    FILL_ERROR_CHECK(randomizeRestrictedDungeonItems(worlds, itemPool));
 
     return FillError::NONE;
 }
